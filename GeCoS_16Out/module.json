@@ -9,6 +9,6 @@
   ],
   "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
   "childRequirements": [],
-  "implemented": ["{8D44CA24-3B35-4918-9CBD-85A28C0C8917}"],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
   "prefix": "GeCoS_16Out"
 }
