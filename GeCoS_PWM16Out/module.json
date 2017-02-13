@@ -1,0 +1,14 @@
+{
+  "id": "{E6CD7AEF-064A-42EF-A5CD-B81453DA762C}",
+  "name": "GeCoS_PWM16Out",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_PWM16Out"
+  ],
+  "parentRequirements": ["{A0DAAF26-4A2D-4350-963E-CC02E74BD414}"],
+  "childRequirements": [],
+  "implemented": ["{8D44CA24-3B35-4918-9CBD-85A28C0C8917}"],
+  "prefix": "GeCoS_PWM16Out"
+}
