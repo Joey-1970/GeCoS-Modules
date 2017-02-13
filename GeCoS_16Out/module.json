@@ -7,7 +7,7 @@
   [
     "GeCoS_16Out"
   ],
-  "parentRequirements": ["{A0DAAF26-4A2D-4350-963E-CC02E74BD414}"],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
   "childRequirements": [],
   "implemented": ["{8D44CA24-3B35-4918-9CBD-85A28C0C8917}"],
   "prefix": "GeCoS_16Out"
