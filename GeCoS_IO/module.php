@@ -112,14 +112,18 @@ class GeCoS_IO extends IPSModule
 				// Notify Handle zurücksetzen falls gesetzt
 				If (GetValueInteger($this->GetIDForIdent("Handle")) >= 0) {
 					// Handle löschen
+					// Alle Handle bis GetValueInteger($this->GetIDForIdent("Handle") löschen!
 					//$this->ClientSocket(pack("LLLL", 21, GetValueInteger($this->GetIDForIdent("Handle")), 0, 0));
 				}
 				// Notify Starten
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));
+				
+				//$this->Get_PinUpdate();
+				//$this->I2C_Possible();
 				//Notify Pin 17 + 27 = Bitmask 134348800
-				$this->Get_PinUpdate();
-				$this->I2C_Possible();
+				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134348800, 0), 16);
+				
 				$this->SetStatus(102);
 				
 			}
