@@ -67,7 +67,6 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
 			
-			
 			$this->RegisterVariableBoolean("I2C_Used", "I2C_Used", "", 140);
 			$this->DisableAction("I2C_Used");
 			IPS_SetHidden($this->GetIDForIdent("I2C_Used"), true);
@@ -126,8 +125,7 @@ class GeCoS_IO extends IPSModule
 				//Notify Pin 17 + 27 = Bitmask 134348800
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134348800, 0), 16);
 				
-				$this->SetStatus(102);
-				
+				$this->SetStatus(102);	
 			}
 			else {
 				$this->SetStatus(104);
