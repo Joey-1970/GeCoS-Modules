@@ -1,30 +1,48 @@
 <?
-class IPS2GPIO_IO extends IPSModule
+class GeCoS_IO extends IPSModule
 {
-	  public function __construct($InstanceID) {
-            // Diese Zeile nicht löschen
-            parent::__construct($InstanceID);
-         }
-	  public function Create() 
-	  {
+ 	public function __construct($InstanceID) {
+            	// Diese Zeile nicht löschen
+            	parent::__construct($InstanceID);
+	}
+	 
+	public function Create() 
+	{
 	    	// Diese Zeile nicht entfernen
 	    	parent::Create();
 	    
 	    	// Modul-Eigenschaftserstellung
 	    	$this->RegisterPropertyBoolean("Open", false);
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
-	    	$this->RegisterPropertyString("User", "User");
-	    	$this->RegisterPropertyString("Password", "Passwort");
-	    	$this->RegisterPropertyBoolean("I2C_Used", false);
-	    	$this->RegisterPropertyBoolean("Serial_Used", false);
-	    	$this->RegisterPropertyBoolean("SPI_Used", false);
-		$this->RegisterPropertyBoolean("1Wire_Used", false);
-		$this->RegisterPropertyBoolean("Multiplexer", false);
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
-	  public function ApplyChanges()
-	  {
+	public function GetConfigurationForm() 
+	{ 
+		$arrayStatus = array(); 
+		$arrayStatus[] = array("code" => 101, "icon" => "inactive", "caption" => "Instanz wird erstellt"); 
+		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
+		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
+		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
+		
+		$arrayElements = array(); 
+		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+ 		$arrayElements[] = array("name" => "IPAddress", "type" => "ValidationTextBox",  "caption" => "IP");
+		
+		
+		$arrayActions = array();
+		If ($this->ReadPropertyBoolean("Open") == true) {   
+			$arrayActions[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoS_IO_PIGPIOD_Restart($id);');
+		}
+		else {
+			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
+		}
+		
+ 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
+ 	} 
+	  
+	public function ApplyChanges()
+	{
 		//Never delete this line!
 		parent::ApplyChanges();
 		
@@ -49,42 +67,14 @@ class IPS2GPIO_IO extends IPSModule
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
 			
-			$this->RegisterVariableString("PinPossible", "PinPossible", "", 110);
-			$this->DisableAction("PinPossible");
-			IPS_SetHidden($this->GetIDForIdent("PinPossible"), true);
-			
-			$this->RegisterVariableString("PinUsed", "PinUsed", "", 120);
-			$this->DisableAction("PinUsed");
-			IPS_SetHidden($this->GetIDForIdent("PinUsed"), true);
-			
-			$this->RegisterVariableString("PinNotify", "PinNotify", "", 130);
-			$this->DisableAction("PinNotify");
-			IPS_SetHidden($this->GetIDForIdent("PinNotify"), true);
 			
 			$this->RegisterVariableBoolean("I2C_Used", "I2C_Used", "", 140);
 			$this->DisableAction("I2C_Used");
 			IPS_SetHidden($this->GetIDForIdent("I2C_Used"), true);
 			
-			$this->RegisterVariableString("I2C_Possible", "I2C_Possible", "", 145);
-			$this->DisableAction("I2C_Possible");
-			IPS_SetHidden($this->GetIDForIdent("I2C_Possible"), true);
-			
-			$this->RegisterVariableString("PinI2C", "PinI2C", "", 150);
-			$this->DisableAction("PinI2C");
-			IPS_SetHidden($this->GetIDForIdent("PinI2C"), true);
-			
 			$this->RegisterVariableString("I2C_Handle", "I2C_Handle", "", 160);
 			$this->DisableAction("I2C_Handle");
 			IPS_SetHidden($this->GetIDForIdent("I2C_Handle"), true);
-			
-			
-			$this->RegisterVariableBoolean("Serial_Used", "Serial_Used", "", 170);
-			$this->DisableAction("Serial_Used");
-			IPS_SetHidden($this->GetIDForIdent("Serial_Used"), true);
-			
-			$this->RegisterVariableInteger("Serial_Handle", "Serial_Handle", "", 180);
-			$this->DisableAction("Serial_Handle");
-			IPS_SetHidden($this->GetIDForIdent("Serial_Handle"), true);
 			
 			$this->SetBuffer("SerialNotify", "false");
 			$this->SetBuffer("Default_I2C_Bus", 1);
@@ -105,7 +95,7 @@ class IPS2GPIO_IO extends IPSModule
 		                	IPS_SetProperty($ParentID, 'Port', 8888);
 				}
 				If (IPS_GetName($ParentID) == "Client Socket") {
-		                	IPS_SetName($ParentID, "IPS2GPIO");
+		                	IPS_SetName($ParentID, "GeCoS");
 				}
 			}
 	
@@ -113,10 +103,9 @@ class IPS2GPIO_IO extends IPSModule
 				// Hardware und Softwareversion feststellen
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
 				
-				If ($this->ReadPropertyBoolean("I2C_Used") == true)  {
-					// I2C-Handle zurücksetzen
-					$this->ResetI2CHandle();
-				}
+				// I2C-Handle zurücksetzen
+				$this->ResetI2CHandle();
+
 				$I2C_DeviceHandle = array();
 				SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 				
@@ -142,6 +131,7 @@ class IPS2GPIO_IO extends IPSModule
 			return;
 		}
 	}
+	
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
         IPS_LogMessage("IPS2GPIO MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
