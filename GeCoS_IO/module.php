@@ -117,7 +117,7 @@ class GeCoS_IO extends IPSModule
 				// Notify Starten
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));
-				
+				//Notify Pin 17 + 27 = Bitmask 134348800
 				$this->Get_PinUpdate();
 				$this->I2C_Possible();
 				$this->SetStatus(102);
