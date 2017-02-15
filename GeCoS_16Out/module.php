@@ -12,7 +12,38 @@
  	    	$this->RegisterPropertyInteger("DeviceAddress", 35);
 		$this->RegisterPropertyInteger("DeviceBus", 1);
         }
- 
+ 	
+	public function GetConfigurationForm() 
+	{ 
+		$arrayStatus = array(); 
+		$arrayStatus[] = array("code" => 101, "icon" => "inactive", "caption" => "Instanz wird erstellt"); 
+		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
+		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
+				
+		$arrayElements = array(); 
+		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+ 		
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "104 dez. / 0x68h", "value" => 104);
+		$arrayOptions[] = array("label" => "106 dez. / 0x6Ah", "value" => 106);
+		$arrayOptions[] = array("label" => "108 dez. / 0x6Ch", "value" => 108);
+		$arrayOptions[] = array("label" => "110 dez. / 0x6Eh", "value" => 110);
+		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
+		
+		$arrayElements[] = array("type" => "Label", "label" => "I²C-Bus (Default ist 1)");
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
+		
+		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "Device Bus", "options" => $arrayOptions );
+				
+		$arrayActions = array();
+		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
+		
+		
+ 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
+ 	}           
+	  
         // Überschreibt die intere IPS_ApplyChanges($id) Funktion
         public function ApplyChanges() 
         {
