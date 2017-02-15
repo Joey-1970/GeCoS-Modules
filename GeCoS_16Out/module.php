@@ -56,7 +56,7 @@
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
-			$this->RegisterVariableBoolean("Output_X".$i, "Ausgang X".$i, "", ($i + 1) * 10);
+			$this->RegisterVariableBoolean("Output_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
 			$this->EnableAction("Output_X".$i);	
 		}
 		
