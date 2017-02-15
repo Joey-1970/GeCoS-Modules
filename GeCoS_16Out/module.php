@@ -9,8 +9,8 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 35);
-		$this->RegisterPropertyInteger("DeviceBus", 1);
+ 	    	$this->RegisterPropertyInteger("DeviceAddress", 32);
+		$this->RegisterPropertyInteger("DeviceBus", 0);
         }
  	
 	public function GetConfigurationForm() 
@@ -56,6 +56,10 @@
 
 		
 		//Status-Variablen anlegen
+		for ($i = 0; $i <= 15; $i++) {
+			$this->RegisterVariableBoolean("Output_X".$i, "Ausgang X".$i, "", ($i + 1) * 10);
+			$this->EnableAction("Output_X".$i);	
+		}
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
 			// Logging setzen
