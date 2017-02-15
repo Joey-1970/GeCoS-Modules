@@ -27,10 +27,9 @@
 		for ($i = 32; $i <= 238; $i = $i + 2) {
 		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
 		}
-		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
-		$arrayElements[] = array("type" => "Label", "label" => "I²C-Bus");
+		$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
