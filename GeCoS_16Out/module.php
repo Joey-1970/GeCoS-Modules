@@ -121,7 +121,7 @@
  	}
 	// Beginn der Funktionen
 	// Führt eine Messung aus
-	public function Measurement()
+	private function Measurement()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
 		
