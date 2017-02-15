@@ -27,7 +27,7 @@
 		$arrayOptions[] = array("label" => "32 dez. / 0x20h", "value" => 32);
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
-		$arrayElements[] = array("type" => "Label", "label" => "I²C-Bus");
+		$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
@@ -52,6 +52,10 @@
 	    	// Profil anlegen
 		
 		//Status-Variablen anlegen
+		for ($i = 0; $i <= 15; $i++) {
+			$this->RegisterVariableFloat("Output_X".$i, "Ausgang X".$i, "~Intensity.255", ($i + 1) * 10);
+			$this->EnableAction("Output_X".$i);	
+		}
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
 			// Logging setzen
