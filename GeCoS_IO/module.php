@@ -539,7 +539,7 @@ class GeCoS_IO extends IPSModule
 			SetValueInteger($this->GetIDForIdent("Serial_Handle"), -1);
 			SetValueBoolean($this->GetIDForIdent("Serial_Used"), false);
 			// den Notify für den TxD-Pin einschalten
-
+		}
 		else {
 			// wird Serial nicht benötigt die Pin auf in Input setzen
 			$this->CommandClientSocket(pack("LLLL", 0, 14, 0, 0).pack("LLLL", 0, 15, 0, 0), 16);
