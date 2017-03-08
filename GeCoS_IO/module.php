@@ -118,8 +118,8 @@ class GeCoS_IO extends IPSModule
 				//$this->I2C_Possible();
 				// I²C Bus 1 für RTC, Serielle Schnittstelle,
 				// I²C Bus 3 und 4
-				//Notify Pin 17 + 27 = Bitmask 134348800
-				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134348800, 0), 16);
+				//Notify Pin 17 + 27 + 15= Bitmask 134381568
+				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 				
 				$this->SetStatus(102);	
 			}
@@ -847,7 +847,7 @@ class GeCoS_IO extends IPSModule
            				IPS_LogMessage("IPS2GPIO Handle",$response[4]);
            				SetValueInteger($this->GetIDForIdent("Handle"), $response[4]);
            				
-           				$this->ClientSocket(pack("LLLL", 19, $response[4], $this->CalcBitmask(), 0));
+           				$this->ClientSocket(pack("LLLL", 19, $response[4], 134381568, 0));
            			}
            			else {
            				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));		
