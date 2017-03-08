@@ -67,10 +67,6 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
 			
-			$this->RegisterVariableBoolean("I2C_Used", "I2C_Used", "", 140);
-			$this->DisableAction("I2C_Used");
-			IPS_SetHidden($this->GetIDForIdent("I2C_Used"), true);
-			
 			$this->RegisterVariableString("I2C_Handle", "I2C_Handle", "", 160);
 			$this->DisableAction("I2C_Handle");
 			IPS_SetHidden($this->GetIDForIdent("I2C_Handle"), true);
@@ -426,45 +422,20 @@ class GeCoS_IO extends IPSModule
 	    		// wenn es sich um mehrere Notifikationen handelt
 	    		$DataArray = str_split($Message, 12);
 	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Notify-Datensätze");
-	    		$PinNotify = unserialize(GetValueString($this->GetIDForIdent("PinNotify")));
 	    		for ($i = 0; $i < min(5, Count($DataArray)); $i++) {
 				$MessageParts = unpack("L*", $DataArray[$i]);
-				for ($j = 0; $j < Count($PinNotify); $j++) {
-	    				$Bitvalue = boolval($MessageParts[3]&(1<<$PinNotify[$j]));
-	    				If ($this->ReadPropertyBoolean("Serial_Used") == false) {
-	    					// Serieller Port ist deaktiviert
-	    					IPS_LogMessage("IPS2GPIO Notify: ","Pin ".$PinNotify[$j]." Value ->".$Bitvalue);
-	    					$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"notify", "Pin" => $PinNotify[$j], "Value"=> $Bitvalue, "Timestamp"=> $MessageArray[2])));
-	    				}
-	    				else {
-	    					If ($PinNotify[$j] <> 15) {
-	    						// alle Pins außer dem RxD werden normal verarbeitet
-	    						IPS_LogMessage("IPS2GPIO Notify: ","Pin ".$PinNotify[$j]." Value ->".$Bitvalue);
-	    						$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"notify", "Pin" => $PinNotify[$j], "Value"=> $Bitvalue, "Timestamp"=> $MessageArray[2])));
-	    					}
-	    					elseif (($PinNotify[$j] == 15) AND ($i < 2)) {
-	    						If ($this->GetBuffer("SerialNotify") <> $Bitvalue) {
-		    						// Einlesen der Seriellen Daten veranlassen
-		    						IPS_LogMessage("IPS2GPIO Notify: ","Pin ".$PinNotify[$j]." Value ->".$Bitvalue);
-		    						//IPS_LogMessage("IPS2GPIO Check Bytes Serial", "Handle: ".GetValueInteger($this->GetIDForIdent("Serial_Handle")));
-			   					IPS_Sleep(75);
-			   					$this->CommandClientSocket(pack("L*", 82, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, 0), 16);
-			   				 	$this->SetBuffer("SerialNotify", $Bitvalue);	
-	    						}
-	    					}
-	    				}
-				}
+				
+				// Wert von Pin 17
+				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
+				// Wert von Pin 27
+				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
+				
 			}
 		}
 	 	else {
 	 		// Prüfen ob Daten im Serial Buffer vorhanden sind
-			If ($this->ReadPropertyBoolean("Serial_Used") == true) {
-				IPS_Sleep(75);
-				$this->CommandClientSocket(pack("L*", 82, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, 0), 16);
-			}
-			else {
-				IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: Datensätze nicht differenzierbar!");
-			}
+			IPS_Sleep(75);
+			$this->CommandClientSocket(pack("L*", 82, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, 0), 16);
 	 	}
 	 }
  
