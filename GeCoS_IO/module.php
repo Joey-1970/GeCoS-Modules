@@ -121,6 +121,12 @@ class GeCoS_IO extends IPSModule
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 				
+				// RTC einrichten
+				$this->CommandClientSocket(pack("LLLLL", 54, 1, 104, 4, 0), 16);
+				
+				// MUX einrichten
+				$this->CommandClientSocket(pack("LLLLL", 54, 1, 112, 4, 0), 16);
+				
 				$this->SetStatus(102);	
 			}
 			else {
@@ -161,126 +167,14 @@ class GeCoS_IO extends IPSModule
 	    	$data = json_decode($JSONString);
 	    	
 	 	switch ($data->Function) {
-		    // GPIO Kommunikation
-		    case "gpio_destroy":
-		    	// Löschen einer GPIO-Belegung
-		    	// aus der Liste der genutzten GPIO
-		    	$PinUsed = unserialize(GetValueString($this->GetIDForIdent("PinUsed")));
-		    	IPS_LogMessage("IPS2GPIO GPIO Destroy: ",$data->Pin);
-		    	if (in_array($data->Pin, $PinUsed)) {
-		    		IPS_LogMessage("IPS2GPIO GPIO Destroy: ","Pin in PinUsed");
-		    		array_splice($PinUsed, $data->Pin, 1);	
-		    	}
-		    	SetValueString($this->GetIDForIdent("PinUsed"), serialize($PinUsed));
-		        // aus der Liste der Notify-GPIO
-		        $PinNotify = unserialize(GetValueString($this->GetIDForIdent("PinNotify")));
-		        if (in_array($data->Pin, $PinNotify)) {
-		    		IPS_LogMessage("IPS2GPIO GPIO Destroy: ","Pin in PinNotify");
-		    		array_splice($PinNotify, $data->Pin, 1);
-		    		SetValueString($this->GetIDForIdent("PinNotify"), serialize($PinNotify));
-		    		If (GetValueInteger($this->GetIDForIdent("Handle")) >= 0) {
-			           	// Notify neu setzen
-			           	$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 16);
-				}
-		    	}
-		        break;
-		    case "set_PWM_dutycycle":
-		    	// Dimmt einen Pin
-		    	If ($data->Pin >= 0) {
-		        	//IPS_LogMessage("IPS2GPIO Set Intensity : ",$data->Pin." , ".$data->Value);
-		        	$this->CommandClientSocket(pack("LLLL", 5, $data->Pin, $data->Value, 0), 16);
-		        }
-		        break;
-		    case "set_PWM_dutycycle_RGB":
-		    	// Setzt die RGB-Farben
-		    	If (($data->Pin_R >= 0) AND ($data->Pin_G >= 0) AND ($data->Pin_B >= 0)) {
-		        	//IPS_LogMessage("IPS2GPIO Set Intensity RGB : ",$data->Pin_R." , ".$data->Value_R." ".$data->Pin_G." , ".$data->Value_G." ".$data->Pin_B." , ".$data->Value_B);  
-		        	$this->CommandClientSocket(pack("LLLL", 5, $data->Pin_R, $data->Value_R, 0).pack("LLLL", 5, $data->Pin_G, $data->Value_G, 0).pack("LLLL", 5, $data->Pin_B, $data->Value_B, 0), 48);
-		    	}
-		        break;
-		    case "set_value":
-		    	// Schaltet den Pin
-		    	If ($data->Pin >= 0) {
-		    		//IPS_LogMessage("IPS2GPIO SetValue Parameter : ",$data->Pin." , ".$data->Value); 
-		    		$this->CommandClientSocket(pack("LLLL", 4, $data->Pin, $data->Value, 0), 16);
-		    	}
-		        break;
-		    case "set_trigger":
-		    	// Setzten einen Trigger
-		    	If ($data->Pin >= 0) {
-		        	//IPS_LogMessage("IPS2GPIO SetTrigger Parameter : ",$data->Pin." , ".$data->Time);
-		        	$this->CommandClientSocket(pack("LLLLL", 37, $data->Pin, $data->Time, 4, 1), 16);
-		    	}
-		        break;
-		    
 		// interne Kommunikation
-		case "set_usedpin":
-		   	If ($data->Pin >= 0) {
-				// Prüfen, ob der gewählte GPIO bei dem Modell überhaupt vorhanden ist
-				$PinPossible = unserialize(GetValueString($this->GetIDForIdent("PinPossible")));
-				if (in_array($data->Pin, $PinPossible)) {
-			    		//IPS_LogMessage("IPS2GPIO Pin: ","Gewählter Pin ist bei diesem Modell verfügbar");
-			    		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"status", "Pin"=>$data->Pin, "Status"=>102, "HardwareRev"=>GetValueInteger($this->GetIDForIdent("HardwareRev")))));
-				}
-				else {
-					IPS_LogMessage("IPS2GPIO Pin: ","Gewählter Pin ist bei diesem Modell nicht verfügbar!");
-					$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"status", "Pin"=>$data->Pin, "Status"=>201, "HardwareRev"=>GetValueInteger($this->GetIDForIdent("HardwareRev")))));
-				}
-				// Erstellt ein Array für alle Pins die genutzt werden 	
-				$PinUsed = unserialize(GetValueString($this->GetIDForIdent("PinUsed")));
-				// Prüft, ob der ausgeählte Pin schon einmal genutzt wird
-			        If (array_key_exists($data->Pin, $PinUsed)) {
-			        	If ($PinUsed[$data->Pin] <> $data->InstanceID) {
-			        		IPS_LogMessage("IPS2GPIO Pin", "Achtung: Pin ".$data->Pin." wird mehrfach genutzt!");
-			        		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"status", "Pin"=>$data->Pin, "Status"=>200, "HardwareRev"=>GetValueInteger($this->GetIDForIdent("HardwareRev")))));
-			        	}	
-			        }
-			        $PinUsed[$data->Pin] = $data->InstanceID;
-			        // Messages einrichten
-			        $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
-		        	$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
-			        // Erstellt ein Array für alle Pins für die die Notifikation erforderlich ist
-			        If ($data->Notify == true) {				
-					// startet das Notify neu
-					$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 16);
-					// Setzt den Glitch Filter
-					//IPS_LogMessage("IPS2GPIO SetGlitchFilter Parameter",$data->Pin." , ".$data->GlitchFilter);
-					$this->CommandClientSocket(pack("LLLL", 97, $data->Pin, $data->GlitchFilter, 0), 16);
-			        }
-			        // Pin in den entsprechenden R/W-Mode setzen, ggf. gleichzeitig Pull-Up/Down setzen
-				If ($data->Modus == 0) {
-					// R/W-Mode und Pull Up/Down Widerstände für den Pin setzen
-					//IPS_LogMessage("IPS2GPIO Set Pull Up/Down",$data->Pin." , ".$data->Resistance);
-					//IPS_LogMessage("IPS2GPIO SetMode",$data->Pin." , ".$data->Modus);
-			        	$this->CommandClientSocket(pack("LLLL", 0, $data->Pin, 0, 0).pack("LLLL", 2, $data->Pin, $data->Resistance, 0), 32);
-				}
-				else {
-					// R/W-Mode setzen
-					//IPS_LogMessage("IPS2GPIO SetMode",$data->Pin." , ".$data->Modus);
-					$this->CommandClientSocket(pack("LLLL", 0, $data->Pin, $data->Modus, 0), 16);
-					SetValueString($this->GetIDForIdent("PinUsed"), serialize($PinUsed));
-				}
-		   	}
-		        break;
+		
 		   case "get_pinupdate":
 		   	$this->Get_PinUpdate();
 		   	break;
-		   case "get_freepin":
-		   	$PinPossible = unserialize(GetValueString($this->GetIDForIdent("PinPossible")));
-		   	$PinUsed = unserialize(GetValueString($this->GetIDForIdent("PinUsed")));
-		   	$PinFreeArray = array_diff_assoc($PinPossible, $PinUsed);
-		   	If (is_array($PinFreeArray)) {
-		   		IPS_LogMessage("IPS2GPIO Pin", "Pin ".$PinFreeArray[0]." ist noch ungenutzt");
-			        $this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"freepin", "Pin"=>$PinFreeArray[0])));
-		   	}
-		   	else {
-		   		IPS_LogMessage("IPS2GPIO Pin", "Achtung: Kein ungenutzter Pin gefunden");	
-		   	}
-		   	break;
+		   
 		   // I2C Kommunikation
-		   case "set_used_i2c":
-		   	SetValueBoolean($this->GetIDForIdent("I2C_Used"), true);
-		   	
+		   case "set_used_i2c":		   	
 		   	// die genutzten Device Adressen anlegen
 		   	$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 		   	// Bei Bus 1 Addition von 128
