@@ -429,6 +429,8 @@ class GeCoS_IO extends IPSModule
 				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
 				// Wert von Pin 27
 				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
+				// Wert von Pin 15
+				$Bitvalue_17 = boolval($MessageParts[3]&(1<<15));
 				
 			}
 		}
