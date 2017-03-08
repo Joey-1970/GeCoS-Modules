@@ -321,11 +321,13 @@ class GeCoS_IO extends IPSModule
 				
 				// Wert von Pin 17
 				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
+				IPS_LogMessage("GeCoS", "Bit 17: ".$Bitvalue_17);
 				// Wert von Pin 27
 				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
+				IPS_LogMessage("GeCoS", "Bit 27: ".$Bitvalue_27);
 				// Wert von Pin 15
-				$Bitvalue_17 = boolval($MessageParts[3]&(1<<15));
-				
+				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
+				IPS_LogMessage("GeCoS", "Bit 15: ".$Bitvalue_15);
 			}
 		}
 	 	else {
@@ -432,13 +434,8 @@ class GeCoS_IO extends IPSModule
 		SetValueString($this->GetIDForIdent("PinUsed"), serialize($PinUsed));
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"get_used_i2c")));
-		// Ermitteln der sonstigen genutzen GPIO
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"get_usedpin")));
-		// Ermitteln der sonstigen Seriellen Schnittstellen-Daten
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"get_serial")));
-		// Start-trigger für andere Instanzen (BT, RPi)
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"get_start_trigger")));
 	}
+	
 	private function ClientSocket(String $message)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
@@ -808,35 +805,6 @@ class GeCoS_IO extends IPSModule
 	
         return $Result;
 	}
-	private function SSH_Connect_Array(String $Command)
-	{
-	        If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			set_include_path(__DIR__);
-			require_once (__DIR__ . '/Net/SSH2.php');
-			$ssh = new Net_SSH2($this->ReadPropertyString("IPAddress"));
-			$login = @$ssh->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
-			if ($login == false)
-			{
-			    	IPS_LogMessage("IPS2GPIO SSH-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
-			    	$Result = "";
-				return false;
-			}
-			$ResultArray = Array();
-			$CommandArray = unserialize($Command);
-			for ($i = 0; $i < Count($CommandArray); $i++) {
-				$ResultArray[key($CommandArray)] = $ssh->exec($CommandArray[key($CommandArray)]);
-				next($CommandArray);
-			}
-			$ssh->disconnect();
-			$Result = serialize($ResultArray);
-		}
-		else {
-			$ResultArray = Array();
-			$Result = serialize($ResultArray);
-		}
-		//IPS_LogMessage("IPS2GPIO SSH-Connect","Ergebnis: ".$Result);
-        return $Result;
-	}
 	
 	private function GetOneWireDevices()
 	{
@@ -879,47 +847,6 @@ class GeCoS_IO extends IPSModule
 			$Result = serialize($ResultArray);
 		}
 	return $Result;
-	}
-	
-	private function I2C_Possible()
-	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			set_include_path(__DIR__);
-			require_once (__DIR__ . '/Net/SFTP.php');
-			$sftp = new Net_SFTP($this->ReadPropertyString("IPAddress"));
-			$login = @$sftp->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
-			
-			if ($login == false)
-			{
-			    	IPS_LogMessage("IPS2GPIO SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
-			    	$Result = "";
-				return false;
-			}
-			//IPS_LogMessage("IPS2GPIO SFTP-Connect","Verbindung hergestellt");
-			
-			$Path = "/sys/bus/i2c/devices";
-			// Prüfen, ob der 1-Wire Server die Verzeichnisse angelegt hat
-			if (!$sftp->file_exists($Path)) {
-				IPS_LogMessage("IPS2GPIO SFTP-Connect",$Path." nicht gefunden! Ist I²C aktiviert?");
-				return;
-			}
-			
-			// den Inhalt des Verzeichnisses ermitteln
-			$I2C_Bus = array();
-			$Dir = $sftp->nlist($Path);
-			//print_r($Dir);
-			for ($i = 0; $i < Count($Dir); $i++) {
-				//echo substr($Dir[$i], 0, 3);
-				if (substr($Dir[$i], 0, 3) == "i2c") {
-					$I2C_Bus[] = intval(str_replace("i2c-", "",$Dir[$i]));
-				}
-			}
-			SetValueString($this->GetIDForIdent("I2C_Possible"), serialize($I2C_Bus));
-		}
-		else {
-			$ResultArray = Array();
-			SetValueString($this->GetIDForIdent("I2C_Possible"), "");
-		}
 	}
 	
 	private function ConnectionTest()
