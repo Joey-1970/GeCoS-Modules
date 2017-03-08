@@ -122,10 +122,10 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 				
 				// RTC einrichten
-				$this->CommandClientSocket(pack("LLLLL", 54, 1, 104, 4, 0), 16);
+				$this->GetOnboardI2CHandle(1, 104);
 				
 				// MUX einrichten
-				$this->CommandClientSocket(pack("LLLLL", 54, 1, 112, 4, 0), 16);
+				$this->GetOnboardI2CHandle(1, 112);
 				
 				$this->SetStatus(102);	
 			}
@@ -1010,6 +1010,19 @@ class GeCoS_IO extends IPSModule
 	return $Status;
 	}
   	
+	private function GetOnboardI2CHandle($DeviceBus, $DeviceAddress)
+	{
+		// die genutzten Device Adressen anlegen
+		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
+		// Bei Bus 1 Addition von 128
+		$I2C_DeviceHandle[($DeviceBus << 7) + $DeviceAddress] = -1;
+		// genutzte Device-Ident noch ohne Handle sichern
+		SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+		// Handle ermitteln
+		$this->CommandClientSocket(pack("LLLLL", 54, $DeviceBus, $DeviceAddress, 4, 0), 16);	
+		   	
+	}
+	
   	private function GetErrorText(Int $ErrorNumber)
 	{
 		$ErrorMessage = array(1 => "PI_INIT_FAILED", 2 => "PI_BAD_USER_GPIO", 3 => "PI_BAD_GPIO", 4 => "PI_BAD_MODE", 5 => "PI_BAD_LEVEL", 6 => "PI_BAD_PUD", 7 => "PI_BAD_PULSEWIDTH",
