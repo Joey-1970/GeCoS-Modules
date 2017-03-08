@@ -244,12 +244,7 @@ class GeCoS_IO extends IPSModule
 			        $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        	$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 			        // Erstellt ein Array für alle Pins für die die Notifikation erforderlich ist
-			        If ($data->Notify == true) {
-			        	$PinNotify = unserialize(GetValueString($this->GetIDForIdent("PinNotify")));
-				        if (in_array($data->Pin, $PinNotify) == false) {
-						$PinNotify[] = $data->Pin;
-					}
-					SetValueString($this->GetIDForIdent("PinNotify"), serialize($PinNotify));
+			        If ($data->Notify == true) {				
 					// startet das Notify neu
 					$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 16);
 					// Setzt den Glitch Filter
@@ -496,8 +491,7 @@ class GeCoS_IO extends IPSModule
 	private function Get_PinUpdate()
 	{
 		// Pins ermitteln für die ein Notify erforderlich ist
-		$PinNotify = array();
-		SetValueString($this->GetIDForIdent("PinNotify"), serialize($PinNotify));
+		
 		// Notify zurücksetzen	
 		If (GetValueInteger($this->GetIDForIdent("Handle")) >= 0) {
 	           	$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 16);
@@ -545,11 +539,7 @@ class GeCoS_IO extends IPSModule
 			SetValueInteger($this->GetIDForIdent("Serial_Handle"), -1);
 			SetValueBoolean($this->GetIDForIdent("Serial_Used"), false);
 			// den Notify für den TxD-Pin einschalten
-	   		$PinNotify = unserialize(GetValueString($this->GetIDForIdent("PinNotify")));
-			$PinNotify[0] = 15;
-			SetValueString($this->GetIDForIdent("PinNotify"), serialize($PinNotify));
-			$this->CommandClientSocket(pack("L*", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 16);
-		}
+
 		else {
 			// wird Serial nicht benötigt die Pin auf in Input setzen
 			$this->CommandClientSocket(pack("LLLL", 0, 14, 0, 0).pack("LLLL", 0, 15, 0, 0), 16);
@@ -1069,16 +1059,6 @@ class GeCoS_IO extends IPSModule
 			$ResultArray = Array();
 			SetValueString($this->GetIDForIdent("I2C_Possible"), "");
 		}
-	}
-	
-	private function CalcBitmask()
-	{
-		$PinNotify = unserialize(GetValueString($this->GetIDForIdent("PinNotify")));
-		$Bitmask = 0;
-		for ($i = 0; $i < Count($PinNotify); $i++) {
-    			$Bitmask = $Bitmask + pow(2, $PinNotify[$i]);
-		}
-	return $Bitmask;	
 	}
 	
 	private function ConnectionTest()
