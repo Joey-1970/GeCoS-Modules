@@ -937,6 +937,12 @@ class GeCoS_IO extends IPSModule
 	return $Status;
 	}
   	
+	private function SetMUX($Port)
+	{
+		$this->CommandClientSocket(pack("L*", 60, intval($this->GetI2C_DeviceHandle(240)), $Port + 4, 0), 16); 
+	return;
+	}
+	
 	private function GetOnboardI2CHandle($DeviceBus, $DeviceAddress)
 	{
 		// die genutzten Device Adressen anlegen
