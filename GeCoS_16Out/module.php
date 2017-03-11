@@ -180,9 +180,12 @@
 	public function SetPinOutput(Int $Output, Bool $Value)
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("020F") )));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("030F") )));
+			If ($Output <= 7) {
+				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("02".dechex($Output)) )));
+			}
+			else {
+				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("03".dechex($Output)) )));
+			}
 		}
 	}	
 	
