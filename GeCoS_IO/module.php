@@ -114,7 +114,7 @@ class GeCoS_IO extends IPSModule
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));
 				
-				//$this->Get_PinUpdate();
+				//
 				//$this->I2C_Possible();
 				// I²C Bus 1 für RTC, Serielle Schnittstelle,
 				// I²C Bus 3 und 4
@@ -127,6 +127,7 @@ class GeCoS_IO extends IPSModule
 				// MUX einrichten
 				$this->GetOnboardI2CHandle(1, 112);
 				
+				$this->Get_PinUpdate();
 				$this->SetStatus(102);	
 			}
 			else {
@@ -388,22 +389,12 @@ class GeCoS_IO extends IPSModule
 		}
 		// Pins ermitteln die genutzt werden
 		$PinUsed = array();
-		SetValueBoolean($this->GetIDForIdent("I2C_Used"), false);
 		// Reservieren der Schnittstellen GPIO
-		If (($this->ReadPropertyBoolean("I2C_Used") == true) AND (GetValueInteger($this->GetIDForIdent("HardwareRev"))) <= 3) {
-			$PinUsed[0] = 99999; 
-			$PinUsed[1] = 99999;
-			$this->CommandClientSocket(pack("LLLL", 0, 0, 4, 0).pack("LLLL", 0, 1, 4, 0), 32);
-		}
-		elseif (($this->ReadPropertyBoolean("I2C_Used") == true) AND (GetValueInteger($this->GetIDForIdent("HardwareRev"))) > 3) {
-			$PinUsed[2] = 99999; 
-			$PinUsed[3] = 99999;
-			$this->CommandClientSocket(pack("LLLL", 0, 2, 4, 0).pack("LLLL", 0, 3, 4, 0), 32);
-		}
-		elseif ($this->ReadPropertyBoolean("I2C_Used") == false) {
-			// wird I²C nicht benötigt die Pin auf in Input setzen
-			$this->CommandClientSocket(pack("LLLL", 0, 0, 0, 0).pack("LLLL", 0, 1, 0, 0).pack("LLLL", 0, 2, 0, 0).pack("LLLL", 0, 3, 0, 0), 64);
-		}
+		$PinUsed[2] = 99999; 
+		$PinUsed[3] = 99999;
+		$this->CommandClientSocket(pack("LLLL", 0, 2, 4, 0).pack("LLLL", 0, 3, 4, 0), 32);
+		
+		/*
 		SetValueBoolean($this->GetIDForIdent("Serial_Used"), false);
 		If ($this->ReadPropertyBoolean("Serial_Used") == true)  {
 			$PinUsed[14] = 99999; 
@@ -445,8 +436,8 @@ class GeCoS_IO extends IPSModule
 			// wird 1-Wire nicht benötigt die Pin auf Input setzen
 			$this->CommandClientSocket(pack("LLLL", 0, 4, 0, 0), 16);
 		}
+		*/
 		// Sichern der Voreinstellungen
-		SetValueString($this->GetIDForIdent("PinUsed"), serialize($PinUsed));
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"get_used_i2c")));
 	}
