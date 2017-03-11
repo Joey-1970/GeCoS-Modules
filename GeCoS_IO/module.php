@@ -204,7 +204,7 @@ class GeCoS_IO extends IPSModule
 				SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 		   	}
 		   	break;
-		   case "i2c_read_byte":
+		case "i2c_read_byte":
 		   	//IPS_LogMessage("IPS2GPIO I2C Read Byte Parameter: ",$data->Handle." , ".$data->Register); 
 		   	If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 		   		$this->CommandClientSocket(pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register, 0), 16);
@@ -219,7 +219,7 @@ class GeCoS_IO extends IPSModule
 		case "i2c_write_bytes":
 		   	//IPS_LogMessage("IPS2GPIO I2C Write Byte Handle: ","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value);  	
 		   	If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
-		   		$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), $data->Value, 0), 16);
+		   		$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, strlen($Command)).$Command, 16);
 		   	}
 		   	break;	
 		case "i2c_read_byte_onhandle":
