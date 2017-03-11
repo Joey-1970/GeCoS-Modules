@@ -10,7 +10,7 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 32);
-		$this->RegisterPropertyInteger("DeviceBus", 3);
+		$this->RegisterPropertyInteger("DeviceBus", 4);
         }
  	
 	public function GetConfigurationForm() 
@@ -31,8 +31,8 @@
 		
 		$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 3);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 4);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "Device Bus", "options" => $arrayOptions );
 				
