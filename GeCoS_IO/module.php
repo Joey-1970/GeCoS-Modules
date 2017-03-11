@@ -939,7 +939,11 @@ class GeCoS_IO extends IPSModule
   	
 	private function SetMUX($Port)
 	{
-		$this->CommandClientSocket(pack("L*", 60, intval($this->GetI2C_DeviceHandle(240)), $Port + 4, 0), 16); 
+		// PCA9542
+		// 0 = No Channel selected
+		// 4 = Channel 0
+		// 5 = Channel 1
+		$this->CommandClientSocket(pack("L*", 60, intval($this->GetI2C_DeviceHandle(240)), $Port, 0), 16); 
 	return;
 	}
 	
