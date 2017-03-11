@@ -179,6 +179,7 @@
 	// Führt eine Messung aus
 	public function SetPinOutput(Int $Output, Bool $Value)
 	{
+		IPS_LogMessage("GeCoS_16Out","Output: ".$Output); 
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			If ($Output <= 7) {
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("02".dechex($Output)) )));
