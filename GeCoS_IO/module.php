@@ -226,7 +226,7 @@ class GeCoS_IO extends IPSModule
 		   	IPS_LogMessage("GeCoS_IO","DeviceIdent: ".$data->DeviceIdent); 
 			If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 		   		$this->SetMUX($data->DeviceIdent >> 7);
-				IPS_LogMessage("GeCoS_IO","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value.", Bus: ".$data->DeviceIdent >> 7); 
+				//IPS_LogMessage("GeCoS_IO","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value.", Bus: ".$data->DeviceIdent >> 7); 
 				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, strlen($data->Command)).$data->Command, 16);
 		   	}
 		   	break;	
