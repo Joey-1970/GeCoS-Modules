@@ -74,6 +74,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("SerialNotify", "false");
 			$this->SetBuffer("Default_I2C_Bus", 1);
 			$this->SetBuffer("Default_Serial_Bus", 0);
+			$this->SetBuffer("MUX_Channel", 0);
 			
 			$ParentID = $this->GetParentID();
 		        // Änderung an den untergeordneten Instanzen
@@ -122,9 +123,11 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 				
 				// RTC einrichten
+				$this->SetBuffer("MUX_Channel", 1);
 				$this->GetOnboardI2CHandle(1, 104);
 				
 				// MUX einrichten
+				$this->SetBuffer("MUX_Channel", 1);
 				$this->GetOnboardI2CHandle(1, 112);
 				
 				$this->Get_PinUpdate();
@@ -593,7 +596,7 @@ class GeCoS_IO extends IPSModule
            				//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
            				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
  					// Hier wird der ermittelte Handle der DiviceAdresse/Bus hinzugefügt
-					$I2C_DeviceHandle[($response[2] << 7) + $response[3]] = $response[4];
+					$I2C_DeviceHandle[($this->GetBuffer("MUX_Channel") << 7) + $response[3]] = $response[4];
 					
 					//$I2C_DeviceHandle[$response[3]] = $response[4];
  					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
@@ -949,6 +952,8 @@ class GeCoS_IO extends IPSModule
 		// 0 = No Channel selected
 		// 4 = Channel 0
 		// 5 = Channel 1
+		
+		$this->SetBuffer("MUX_Channel", $Port);
 		$this->CommandClientSocket(pack("L*", 60, intval($this->GetI2C_DeviceHandle(240)), $Port, 0), 16); 
 	return;
 	}
