@@ -439,7 +439,7 @@ class GeCoS_IO extends IPSModule
 		*/
 		// Sichern der Voreinstellungen
 		// Ermitteln der genutzten I2C-Adressen
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"get_used_i2c")));
+		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 	}
 	
 	private function ClientSocket(String $message)
