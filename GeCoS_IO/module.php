@@ -186,7 +186,7 @@ class GeCoS_IO extends IPSModule
 			$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 		   	// Handle ermitteln
-			IPS_LogMessage("GeCoS_IO","DeviceBus: ".$data->DeviceBus); 
+			IPS_LogMessage("GeCoS_IO","DeviceBus: ".$data->DeviceBus." DeviceAddress: ".$data->DeviceAddress); 
 		   	$this->SetMUX($data->DeviceBus);
 			$this->CommandClientSocket(pack("LLLLL", 54, 1, $data->DeviceAddress, 4, 0), 16);	
 		   	
