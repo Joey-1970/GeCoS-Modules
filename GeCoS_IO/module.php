@@ -185,7 +185,8 @@ class GeCoS_IO extends IPSModule
 			$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 		   	// Handle ermitteln
-		   	$this->CommandClientSocket(pack("LLLLL", 54, $data->DeviceBus, $data->DeviceAddress, 4, 0), 16);	
+		   	$this->SetMUX($data->DeviceBus);
+			$this->CommandClientSocket(pack("LLLLL", 54, $data->DeviceBus, $data->DeviceAddress, 4, 0), 16);	
 		   	
 			//IPS_LogMessage("IPS2GPIO I2C Handle: ","Device Adresse: ".$data->DeviceAddress.", Hardware Rev:: ".GetValueInteger($this->GetIDForIdent("HardwareRev"))); 
 		   	break;
