@@ -75,8 +75,7 @@
 				
 				// Setup
 				$this->Setup();
-				// Erste Messdaten einlesen
-				$this->Measurement();
+				
 				$this->SetStatus(102);
 			}
 			else {
@@ -92,7 +91,7 @@
 	 	switch ($data->Function) {
 			   case "get_used_i2c":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
+					$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 					$this->ApplyChanges();
 				}
 				break;
@@ -119,11 +118,69 @@
 			  	break;
 	 	}
  	}
+	
+		public function RequestAction($Ident, $Value) 
+	{
+  		switch($Ident) {
+	        case "Output_X0":
+	            $this->SetPinOutput(0, $Value);
+	            break;
+	        case "Output_X1":
+	            $this->SetPinOutput(1, $Value);
+	            break;
+	        case "Output_X2":
+	            $this->SetPinOutput(2, $Value);
+	            break;
+	        case "Output_X3":
+	            $this->SetPinOutput(3, $Value);
+	            break;
+	        case "Output_X4":
+	            $this->SetPinOutput(4, $Value);
+	            break;
+	        case "Output_X5":
+	            $this->SetPinOutput(5, $Value);
+	            break;    
+	        case "Output_X6":
+	            $this->SetPinOutput(6, $Value);
+	            break;
+	        case "Output_X7":
+	            $this->SetPinOutput(7, $Value);
+	            break;
+	        case "Output_X8":
+	            $this->SetPinOutput(8, $Value);
+	            break;
+	        case "Output_X9":
+	            $this->SetPinOutput(9, $Value);
+	            break;
+	        case "Output_X10":
+	            $this->SetPinOutput(10, $Value);
+	            break;
+	        case "Output_X11":
+	            $this->SetPinOutput(11, $Value);
+	            break;
+	        case "Output_X12":
+	            $this->SetPinOutput(12, $Value);
+	            break;
+	        case "Output_X13":
+	            $this->SetPinOutput(13, $Value);
+	            break;    
+	        case "Output_X14":
+	            $this->SetPinOutput(14, $Value);
+	            break;
+	        case "Output_X15":
+	            $this->SetPinOutput(15, $Value);
+	            break;
+	        default:
+	            throw new Exception("Invalid Ident");
+	    	}
+	}
+	    
 	// Beginn der Funktionen
 	// Führt eine Messung aus
-	private function Measurement()
+	public function SetPinOutput(Int $Output, Bool $Value)
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("02FF") )));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("03FF") )));
 		}
