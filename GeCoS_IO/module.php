@@ -126,10 +126,10 @@ class GeCoS_IO extends IPSModule
 				$this->SetMUX(1);
 				
 				// RTC einrichten
-				$this->GetOnboardI2CHandle(1, 104);
+				$this->GetOnboardI2CHandle(104);
 				
 				// MUX einrichten
-				$this->GetOnboardI2CHandle(1, 112);
+				$this->GetOnboardI2CHandle(112);
 				
 				$this->Get_PinUpdate();
 				$this->SetStatus(102);	
@@ -638,7 +638,7 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "60":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO I2C Write Byte Handle","Handle: ".$response[2]." Value: ".$response[4]);
+           				IPS_LogMessage("GeCoS_IO","Handle: ".$response[2]." Value: ".$response[4]);
 		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Register" => $response[3], "Value" => $response[4])));
            			}
            			else {
@@ -963,16 +963,16 @@ class GeCoS_IO extends IPSModule
 	return;
 	}
 	
-	private function GetOnboardI2CHandle($DeviceBus, $DeviceAddress)
+	private function GetOnboardI2CHandle($DeviceAddress)
 	{
 		// die genutzten Device Adressen anlegen
 		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 		// Bei Bus 1 Addition von 128
-		$I2C_DeviceHandle[($DeviceBus << 7) + $DeviceAddress] = -1;
+		$I2C_DeviceHandle[(1 << 7) + $DeviceAddress] = -1;
 		// genutzte Device-Ident noch ohne Handle sichern
 		SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 		// Handle ermitteln
-		$this->CommandClientSocket(pack("LLLLL", 54, $DeviceBus, $DeviceAddress, 4, 0), 16);	
+		$this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);	
 		   	
 	}
 	
