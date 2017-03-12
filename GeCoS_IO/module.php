@@ -225,9 +225,10 @@ class GeCoS_IO extends IPSModule
 			break;  
 		case "i2c_write_bytes":
 		   	//IPS_LogMessage("IPS2GPIO I2C Write Byte Handle: ","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value);  	
-		   	IPS_LogMessage("GeCoS_IO","DeviceIdent: ".$data->DeviceIdent); 
+		   	//IPS_LogMessage("GeCoS_IO","DeviceIdent: ".$data->DeviceIdent); 
 			If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
-		   		$this->SetMUX($data->DeviceIdent >> 7);
+		   		IPS_LogMessage("GeCoS_IO","Command: ".$data->Command);
+				$this->SetMUX($data->DeviceIdent >> 7);
 				//IPS_LogMessage("GeCoS_IO","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value.", Bus: ".$data->DeviceIdent >> 7); 
 				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, strlen($data->Command)).$data->Command, 16);
 		   	}
@@ -630,7 +631,7 @@ class GeCoS_IO extends IPSModule
 				break;
 			case "57":
            			If ($response[4] >= 0) {
-           				IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Value: ".$response[4]);
+           				//IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Value: ".$response[4]);
 		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Value" => $response[4])));
            			}
            			else {
@@ -648,7 +649,7 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "60":
            			If ($response[4] >= 0) {
-           				IPS_LogMessage("GeCoS_IO","Handle: ".$response[2]." Value: ".$response[4]);
+           				//IPS_LogMessage("GeCoS_IO","Handle: ".$response[2]." Value: ".$response[4]);
 		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Register" => $response[3], "Value" => $response[4])));
            			}
            			else {
