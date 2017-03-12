@@ -181,7 +181,7 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			If ($Output <= 7) {
 				for ($i = 0; $i <= 7; $i++) {
-				If ($this->GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
+				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
 					// wenn true dann Eingang		
 					$Bitmask = $Bitmask + pow(2, $i);
 					}		
