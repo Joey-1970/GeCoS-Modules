@@ -122,12 +122,13 @@ class GeCoS_IO extends IPSModule
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 				
+				// MUX setzen
+				$this->SetMUX(1);
+				
 				// RTC einrichten
-				$this->SetBuffer("MUX_Channel", 1);
 				$this->GetOnboardI2CHandle(1, 104);
 				
 				// MUX einrichten
-				$this->SetBuffer("MUX_Channel", 1);
 				$this->GetOnboardI2CHandle(1, 112);
 				
 				$this->Get_PinUpdate();
@@ -181,9 +182,9 @@ class GeCoS_IO extends IPSModule
 		   case "set_used_i2c":		   	
 		   	// die genutzten Device Adressen anlegen
 		   	$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
-		   	// Bei Bus 1 Addition von 128
+		   	// DeviceIdent bilden
 			$I2C_DeviceHandle[($data->DeviceBus << 7) + $data->DeviceAddress] = -1;
-			// genutzte Device-Ident noch ohne Handle sichern
+			// genutzte DeviceIdent noch ohne Handle sichern
 		   	SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 		   	// Messages einrichten
 			$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
