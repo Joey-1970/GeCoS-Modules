@@ -630,7 +630,7 @@ class GeCoS_IO extends IPSModule
 				break;
 			case "57":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO I2C Read Byte Handle","Handle: ".$response[2]." Value: ".$response[4]);
+           				IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Value: ".$response[4]);
 		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Value" => $response[4])));
            			}
            			else {
