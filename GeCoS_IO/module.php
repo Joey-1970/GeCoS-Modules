@@ -121,15 +121,13 @@ class GeCoS_IO extends IPSModule
 				// I²C Bus 3 und 4
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
-				
-				// MUX setzen
-				$this->SetMUX(1);
-				
+								
 				// RTC einrichten
 				$this->GetOnboardI2CHandle(104);
-				
 				// MUX einrichten
 				$this->GetOnboardI2CHandle(112);
+				// MUX setzen
+				$this->SetMUX(1);
 				
 				$this->Get_PinUpdate();
 				$this->SetStatus(102);	
