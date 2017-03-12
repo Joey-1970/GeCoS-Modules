@@ -1,5 +1,5 @@
 <?
-class GeCoS_IO extends IPSModule
+class GeCoS extends IPSModule
 {
  	public function __construct($InstanceID) {
             	// Diese Zeile nicht löschen
@@ -38,7 +38,7 @@ class GeCoS_IO extends IPSModule
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
-			$arrayActions[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoS_IO_PIGPIOD_Restart($id);');
+			$arrayActions[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoS_PIGPIOD_Restart($id);');
 		}
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
