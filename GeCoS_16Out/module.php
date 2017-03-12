@@ -177,7 +177,7 @@
 	// Führt eine Messung aus
 	public function SetPinOutput(Int $Output, Bool $Value)
 	{
-		$Bitmask = 0
+		$Bitmask = 0;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			If ($Output <= 7) {
 				for ($i = 0; $i <= 7; $i++) {
