@@ -80,7 +80,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("SerialNotify", "false");
 			$this->SetBuffer("Default_I2C_Bus", 1);
 			$this->SetBuffer("Default_Serial_Bus", 0);
-			$this->SetBuffer("MUX_Channel", 0);
+			$this->SetBuffer("MUX_Channel", 1);
 			
 			$ParentID = $this->GetParentID();
 		        // Änderung an den untergeordneten Instanzen
