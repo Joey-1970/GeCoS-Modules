@@ -133,7 +133,7 @@ class GeCoS_IO extends IPSModule
 				// MUX einrichten
 				$this->GetOnboardI2CHandle(112);
 				// MUX setzen
-				$this->SetMUX(1);
+				//$this->SetMUX(1);
 				
 				$this->Get_PinUpdate();
 				$this->SetStatus(102);	
