@@ -118,7 +118,7 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
-  		
+  		SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 		switch($Ident) {
 		case "Output_X0":
 	            $this->SetPinOutput(0, $Value);
