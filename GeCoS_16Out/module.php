@@ -109,10 +109,7 @@
 			   	break;
 			  case "set_i2c_data":
 			  	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
-			  		// Daten der Messung
-			  		If ($data->Register == $this->ReadPropertyInteger("DeviceAddress"))  {
-			  			
-			  		}
+			  		
 			  		
 			  	}
 			  	break;
