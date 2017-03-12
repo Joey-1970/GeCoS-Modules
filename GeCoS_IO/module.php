@@ -389,7 +389,7 @@ class GeCoS_IO extends IPSModule
 		// Ermitteln ob der I2C-Bus genutzt wird und welcher Device Adressen
 		// Bisherige I2C-Handle löschen
 		$I2C_DeviceHandle = array_values(unserialize(GetValueString($this->GetIDForIdent("I2C_Handle"))));
-		for ($i = 0; $i < Count($I2C_DeviceHandle); $i++) {
+		for ($i = 2; $i < Count($I2C_DeviceHandle); $i++) {
 			$this->CommandClientSocket(pack("L*", 55, $I2C_DeviceHandle[$i], 0, 0), 16);
 		}
 		// Pins ermitteln die genutzt werden
