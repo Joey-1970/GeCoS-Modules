@@ -121,10 +121,7 @@ class GeCoS_IO extends IPSModule
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));
 				
-				//
-				//$this->I2C_Possible();
 				// I²C Bus 1 für RTC, Serielle Schnittstelle,
-				// I²C Bus 3 und 4
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
 				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 								
@@ -453,7 +450,7 @@ class GeCoS_IO extends IPSModule
 	private function ClientSocket(String $message)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message))));  
+			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Buffer" => utf8_encode($message))));  
 		}
 	}
 	
@@ -607,7 +604,7 @@ class GeCoS_IO extends IPSModule
  					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO I2C Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4]))." Handle für Device ".$response[3]." nicht vergeben!");
+           				IPS_LogMessage("GeCoS_IO I2C Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4]))." Handle für Device ".$response[3]." nicht vergeben!");
            			}
            			
 		        	break;
@@ -643,10 +640,10 @@ class GeCoS_IO extends IPSModule
 		        case "60":
            			If ($response[4] >= 0) {
            				IPS_LogMessage("GeCoS_IO","Handle: ".$response[2]." Value: ".$response[4]);
-		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Register" => $response[3], "Value" => $response[4])));
+		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Register" => $response[3], "Value" => $response[4])));
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO I2C Write Byte Handle","Handle: ".$response[2]." Value: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO I2C Write Byte Handle","Handle: ".$response[2]." Value: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
 		            	break;
 		        case "61":
