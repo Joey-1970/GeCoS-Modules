@@ -14,6 +14,8 @@ class GeCoS_IO extends IPSModule
 	    	// Modul-Eigenschaftserstellung
 	    	$this->RegisterPropertyBoolean("Open", false);
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
+		$this->RegisterPropertyString("User", "User");
+	    	$this->RegisterPropertyString("Password", "Passwort");
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
@@ -28,6 +30,10 @@ class GeCoS_IO extends IPSModule
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		$arrayElements[] = array("name" => "IPAddress", "type" => "ValidationTextBox",  "caption" => "IP");
+		$arrayElements[] = array("type" => "Label", "label" => "Zugriffsdaten des Raspberry Pi SSH:");
+		$arrayElements[] = array("name" => "User", "type" => "ValidationTextBox",  "caption" => "User");
+		$arrayElements[] = array("name" => "Password", "type" => "PasswordTextBox",  "caption" => "Password");
+
 		
 		
 		$arrayActions = array();
