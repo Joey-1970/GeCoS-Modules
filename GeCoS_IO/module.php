@@ -233,7 +233,7 @@ class GeCoS_IO extends IPSModule
 				$ByteArray = unserialize($data->ByteArray);
 				//$Command = $data->Command;
 				//IPS_LogMessage("GeCoS_IO","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value.", Bus: ".$data->DeviceIdent >> 7); 
-				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, count($ByteArray)).pack("C*", $ByteArray), 16);
+				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, count($ByteArray)).pack("C*", $ByteArray[0], $ByteArray[1]), 16);
 		   	}
 		   	break;	
 		case "i2c_read_byte_onhandle":
