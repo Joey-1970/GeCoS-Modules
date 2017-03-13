@@ -388,7 +388,7 @@ class GeCoS_IO extends IPSModule
 		
 		// Notify zurücksetzen	
 		If (GetValueInteger($this->GetIDForIdent("Handle")) >= 0) {
-	           	$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 16);
+	           	$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 		}
 		// Ermitteln ob der I2C-Bus genutzt wird und welcher Device Adressen
 		// Bisherige I2C-Handle löschen
