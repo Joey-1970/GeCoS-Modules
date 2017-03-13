@@ -115,19 +115,27 @@
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
 					    	If ($Bitvalue == true) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == false) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
+							}
 					    	}
 					    	else {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
+							}
 					    	}
 					}
 					for ($i = 8; $i <= 15; $i++) {
 						$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
 					    	If ($Bitvalue == true) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == false) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
+							}
 					    	}
 					    	else {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
+							}
 					    	}
 					}
 			   	}
