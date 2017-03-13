@@ -110,8 +110,8 @@
 			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
-					IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[0]);
-					IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[1]);
+					IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[1]);
+					IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
 			   	}
 			  	break;
 	 	}
