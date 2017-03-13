@@ -195,7 +195,7 @@
 				for ($i = 8; $i <= 15; $i++) {
 				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
 					// wenn true dann Eingang		
-					$Bitmask = $Bitmask + pow(2, $i);
+					$Bitmask = $Bitmask + pow(2, ($i - 8));
 					}		
 				}
 				$ByteArray = array();
