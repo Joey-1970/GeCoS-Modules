@@ -91,7 +91,6 @@
 	 	switch ($data->Function) {
 			   case "get_used_i2c":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 					$this->ApplyChanges();
 				}
 				break;
@@ -107,11 +106,13 @@
 				   	}
 				}
 			   	break;
-			  case "set_i2c_data":
-			  	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
-			  		
-			  		
-			  	}
+			  case "set_i2c_byte_block":
+			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+			   		$ByteArray = array();
+					$ByteArray = unserialize($data->ByteArray);
+					IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[0]);
+					IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[1]);
+			   	}
 			  	break;
 	 	}
  	}
