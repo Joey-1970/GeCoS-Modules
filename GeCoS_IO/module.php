@@ -110,12 +110,6 @@ class GeCoS_IO extends IPSModule
 				$I2C_DeviceHandle = array();
 				SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 				
-				// Notify Handle zurücksetzen falls gesetzt
-				If (GetValueInteger($this->GetIDForIdent("Handle")) >= 0) {
-					// Handle löschen
-					// Alle Handle bis GetValueInteger($this->GetIDForIdent("Handle") löschen!
-					//$this->ClientSocket(pack("LLLL", 21, GetValueInteger($this->GetIDForIdent("Handle")), 0, 0));
-				}
 				// Notify Starten
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
@@ -468,7 +462,7 @@ class GeCoS_IO extends IPSModule
 				if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0))) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
 					return;
 				}
 				// Timeout setzen
@@ -477,7 +471,7 @@ class GeCoS_IO extends IPSModule
 				if(!(socket_connect($sock, $this->ReadPropertyString("IPAddress"), 8888))) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
 					return;
 				}
 				// Message senden
@@ -485,14 +479,14 @@ class GeCoS_IO extends IPSModule
 				{
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
 					return;
 				}
 				//Now receive reply from server
 				if(socket_recv ($sock, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
 					return;
 				}
 				// Anfragen mit variabler Rückgabelänge
@@ -512,7 +506,7 @@ class GeCoS_IO extends IPSModule
 					}
 				}
 				else {
-					IPS_LogMessage("GeCoS ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
+					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
 				}
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
