@@ -213,19 +213,15 @@ class GeCoS_IO extends IPSModule
 		case "i2c_read_bytes":
 		   	//IPS_LogMessage("IPS2GPIO I2C Read Bytes",$this->GetI2C_DeviceHandle($data->DeviceAddress)." , ".$data->Register." , ".$data->Count);  	
 		   	If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
-		   		$this->CommandClientSocket(pack("L*", 56, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Count, 0), 16 + ($data->Count));
+		   		$this->SetMUX($data->DeviceIdent >> 7);
+				$this->CommandClientSocket(pack("L*", 56, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Count, 0), 16 + ($data->Count));
 		   	}
 			break;  
 		case "i2c_write_bytes":
-		   	//IPS_LogMessage("IPS2GPIO I2C Write Byte Handle: ","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value);  	
-		   	//IPS_LogMessage("GeCoS_IO","DeviceIdent: ".$data->DeviceIdent); 
-			If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
-		   		IPS_LogMessage("GeCoS_IO Write Bytes","ByteArray: ".$data->ByteArray);
+		   	If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 				$this->SetMUX($data->DeviceIdent >> 7);
 				$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
-				//$Command = $data->Command;
-				//IPS_LogMessage("GeCoS_IO","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value.", Bus: ".$data->DeviceIdent >> 7); 
 				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, count($ByteArray)).pack("C*", $ByteArray[0], $ByteArray[1]), 16);
 		   	}
 		   	break;	
