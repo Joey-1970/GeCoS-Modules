@@ -760,7 +760,7 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "99":
            			If ($response[4] >= 0 ) {
-           				IPS_LogMessage("IPS2GPIO Handle",$response[4]);
+           				IPS_LogMessage("GeCoS Handle",$response[4]);
            				SetValueInteger($this->GetIDForIdent("Handle"), $response[4]);
            				
            				$this->ClientSocket(pack("LLLL", 19, $response[4], 134381568, 0));
@@ -769,24 +769,6 @@ class GeCoS_IO extends IPSModule
            				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));		
            			}
            			break;
-			case "115":
-           			If ($response[4] >= 0) {
-           				IPS_LogMessage("IPS2GPIO Set Event Monitor","gesetzt");
-           			}
-           			else {
-           				IPS_LogMessage("IPS2GPIO Set Event Monitor","Fehler beim Setzen: ".$this->GetErrorText(abs($response[4])));
-           			}
-         
-		            	break;
-			case "116":
-           			If ($response[4] >= 0) {
-           				IPS_LogMessage("IPS2GPIO Trigger Event","gemeldet");
-           			}
-           			else {
-           				IPS_LogMessage("IPS2GPIO Trigger Event","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
-           			}
-         
-		            	break;
 		    }
 	}
 	
@@ -817,7 +799,7 @@ class GeCoS_IO extends IPSModule
 			$login = @$ssh->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
 			if ($login == false)
 			{
-			    	IPS_LogMessage("IPS2GPIO SSH-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			    	IPS_LogMessage("GeCoS SSH-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			    	$Result = "";
 				return false;
 			}
@@ -841,7 +823,7 @@ class GeCoS_IO extends IPSModule
 			
 			if ($login == false)
 			{
-			    	IPS_LogMessage("IPS2GPIO SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			    	IPS_LogMessage("GeCoS SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			    	$Result = "";
 				return false;
 			}
@@ -850,7 +832,7 @@ class GeCoS_IO extends IPSModule
 			$Path = "/sys/bus/w1/devices";
 			// Prüfen, ob der 1-Wire Server die Verzeichnisse angelegt hat
 			if (!$sftp->file_exists($Path)) {
-				IPS_LogMessage("IPS2GPIO SFTP-Connect",$Path." nicht gefunden! Ist 1-Wire aktiviert?");
+				IPS_LogMessage("GeCoS SFTP-Connect",$Path." nicht gefunden! Ist 1-Wire aktiviert?");
 				return;
 			}
 			
@@ -881,31 +863,31 @@ class GeCoS_IO extends IPSModule
 			IPS_LogMessage("IPS2GPIO Netzanbindung","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert");
 			$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
 				if (!$status) {
-					IPS_LogMessage("IPS2GPIO Netzanbindung: ","Port ist geschlossen!");
+					IPS_LogMessage("GeCoS Netzanbindung","Port ist geschlossen!");
 					// Versuchen PIGPIO zu starten
-					IPS_LogMessage("IPS2GPIO Netzanbindung: ","Versuche PIGPIO per SSH zu starten...");
+					IPS_LogMessage("GeCoS Netzanbindung","Versuche PIGPIO per SSH zu starten...");
 					$this->SSH_Connect("sudo pigpiod");
 					$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
 					if (!$status) {
-						IPS_LogMessage("IPS2GPIO Netzanbindung: ","Port ist geschlossen!");
+						IPS_LogMessage("GeCoS Netzanbindung","Port ist geschlossen!");
 						$this->SetStatus(104);
 					}
 					else {
 						fclose($status);
-						IPS_LogMessage("IPS2GPIO Netzanbindung: ","Port ist geöffnet");
+						IPS_LogMessage("GeCoS Netzanbindung","Port ist geöffnet");
 						$result = true;
 						$this->SetStatus(102);
 					}
 	   			}
 	   			else {
 	   				fclose($status);
-					IPS_LogMessage("IPS2GPIO Netzanbindung: ","Port ist geöffnet");
+					IPS_LogMessage("GeCoS Netzanbindung","Port ist geöffnet");
 					$result = true;
 					$this->SetStatus(102);
 	   			}
 		}
 		else {
-			IPS_LogMessage("GPIO Netzanbindung: ","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			IPS_LogMessage("GeCoS Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SetStatus(104);
 		}
 	return $result;
