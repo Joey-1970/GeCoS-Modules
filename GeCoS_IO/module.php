@@ -145,7 +145,7 @@ class GeCoS_IO extends IPSModule
 	
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
-        IPS_LogMessage("IPS2GPIO MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
+        IPS_LogMessage("GeCoS MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
 		switch ($Message) {
 			case 10100:
 				If ($Data[0] == 10103) {
@@ -153,10 +153,10 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case 11101:
-				IPS_LogMessage("IPS2GPIO MessageSink", "Instanz ".$SenderID." wurde verbunden");
+				IPS_LogMessage("GeCoS MessageSink", "Instanz ".$SenderID." wurde verbunden");
 				break;
 			case 11102:
-				IPS_LogMessage("IPS2GPIO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
+				IPS_LogMessage("GeCoS MessageSink", "Instanz  ".$SenderID." wurde getrennt");
 				break;	
 			case 10505:
 				If ($Data[0] == 102) {
@@ -190,7 +190,7 @@ class GeCoS_IO extends IPSModule
 			$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 		   	// Handle ermitteln
-			IPS_LogMessage("GeCoS_IO","DeviceBus: ".$data->DeviceBus." DeviceAddress: ".$data->DeviceAddress); 
+			//IPS_LogMessage("GeCoS_IO","DeviceBus: ".$data->DeviceBus." DeviceAddress: ".$data->DeviceAddress); 
 		   	$this->SetMUX($data->DeviceBus);
 			$this->CommandClientSocket(pack("LLLLL", 54, 1, $data->DeviceAddress, 4, 0), 16);	
 		   	
@@ -766,7 +766,8 @@ class GeCoS_IO extends IPSModule
            				$this->ClientSocket(pack("LLLL", 19, $response[4], 134381568, 0));
            			}
            			else {
-           				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));		
+           				IPS_LogMessage("GeCoS Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+					$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));		
            			}
            			break;
 		    }
