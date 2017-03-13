@@ -186,10 +186,22 @@
 					$Bitmask = $Bitmask + pow(2, $i);
 					}		
 				}
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => (hexdec("02") << 8) + $Bitmask )));
+				$ByteArray = array();
+				$ByteArray[0] = hexdec("02");
+				$ByteArray[1] = $Bitmask;
+				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
 			}
 			else {
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Command" => hexdec("03".dechex($Output)) )));
+				for ($i = 8; $i <= 15; $i++) {
+				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
+					// wenn true dann Eingang		
+					$Bitmask = $Bitmask + pow(2, $i);
+					}		
+				}
+				$ByteArray = array();
+				$ByteArray[0] = hexdec("02");
+				$ByteArray[1] = $Bitmask;
+				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
 			}
 		}
 	}	
