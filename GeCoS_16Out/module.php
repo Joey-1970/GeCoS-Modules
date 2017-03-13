@@ -110,8 +110,26 @@
 			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
-					IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[1]);
-					IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
+					//IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[1]);
+					//IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
+					for ($i = 0; $i <= 7; $i++) {
+						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
+					    	If ($Bitvalue == true) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
+					    	}
+					    	else {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
+					    	}
+					}
+					for ($i = 8; $i <= 15; $i++) {
+						$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
+					    	If ($Bitvalue == true) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
+					    	}
+					    	else {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
+					    	}
+					}
 			   	}
 			  	break;
 	 	}
@@ -119,7 +137,7 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
-  		SetValueBoolean($this->GetIDForIdent($Ident), $Value);
+  		//SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 		switch($Ident) {
 		case "Output_X0":
 	            $this->SetPinOutput(0, $Value);
