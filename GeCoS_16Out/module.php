@@ -75,7 +75,7 @@
 				
 				// Setup
 				$this->Setup();
-				
+				$this->GetPinOutput();
 				$this->SetStatus(102);
 			}
 			else {
@@ -204,6 +204,7 @@
 				$ByteArray[1] = $Bitmask;
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
 			}
+			$this->GetPinOutput();
 		}
 	}	
 	
