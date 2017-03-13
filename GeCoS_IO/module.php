@@ -118,11 +118,11 @@ class GeCoS_IO extends IPSModule
 				}
 				// Notify Starten
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
-				$this->ClientSocket(pack("LLLL", 99, 0, 0, 0));
+				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				
 				// I²C Bus 1 für RTC, Serielle Schnittstelle,
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
-				$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
+				$this->CommandClientSocket(pack("L*", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 								
 				// RTC einrichten
 				$this->GetOnboardI2CHandle(104);
@@ -226,7 +226,7 @@ class GeCoS_IO extends IPSModule
 		   	//IPS_LogMessage("IPS2GPIO I2C Write Byte Handle: ","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value);  	
 		   	//IPS_LogMessage("GeCoS_IO","DeviceIdent: ".$data->DeviceIdent); 
 			If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
-		   		IPS_LogMessage("GeCoS_IO","ByteArray: ".$data->ByteArray);
+		   		//IPS_LogMessage("GeCoS_IO","ByteArray: ".$data->ByteArray);
 				$this->SetMUX($data->DeviceIdent >> 7);
 				$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
@@ -570,32 +570,32 @@ class GeCoS_IO extends IPSModule
 				SetValueString($this->GetIDForIdent("Hardware"), $this->GetHardware($response[4]));
            			
            			if (in_array($response[4], $Model[0])) {
-    					 IPS_LogMessage("IPS2GPIO Hardwareermittlung: ","Raspberry Pi Typ 0");
+    					 IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 0");
 				}
 				else if (in_array($response[4], $Model[1])) {
-					IPS_LogMessage("IPS2GPIO Hardwareermittlung: ","Raspberry Pi Typ 1");
+					IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 1");
 				}
 				else if ($response[4] >= 16) {
-					IPS_LogMessage("IPS2GPIO Hardwareermittlung: ","Raspberry Pi Typ 2");
+					IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 2");
 				}
 				else
-					IPS_LogMessage("IPS2GPIO Hardwareermittlung","nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])));
+					IPS_LogMessage("GeCoS_IO Hardwareermittlung","nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])));
 				break;
            		case "19":
-           			IPS_LogMessage("IPS2GPIO Notify","gestartet");
+           			IPS_LogMessage("GeCoS_IO Notify","gestartet");
 		            	break;
            		case "21":
-           			IPS_LogMessage("IPS2GPIO Notify","gestoppt");
+           			IPS_LogMessage("GeCoS_IO Notify","gestoppt");
 		            	break;
 			case "26":
            			If ($response[4] >= 0 ) {
 					SetValueInteger($this->GetIDForIdent("SoftwareVersion"), $response[4]);
 					If ($response[4] < 60 ) {
-						IPS_LogMessage("IPS2GPIO PIGPIO Software Version","Bitte neuste PIGPIO-Software installieren!");
+						IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Bitte neuste PIGPIO-Software installieren!");
 					}
 				}
            			else {
-           				IPS_LogMessage("IPS2GPIO PIGPIO Software Version","Fehler: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Fehler: ".$this->GetErrorText(abs($response[4])));
            			}
 		            	break;
 		        case "54":
