@@ -220,7 +220,7 @@ class GeCoS_IO extends IPSModule
 		   	//IPS_LogMessage("IPS2GPIO I2C Write Byte Handle: ","DeviceAdresse: ".$data->DeviceAddress.", Handle: ".$this->GetI2C_DeviceHandle($data->DeviceAddress).", Wert: ".$data->Value);  	
 		   	//IPS_LogMessage("GeCoS_IO","DeviceIdent: ".$data->DeviceIdent); 
 			If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
-		   		//IPS_LogMessage("GeCoS_IO","ByteArray: ".$data->ByteArray);
+		   		IPS_LogMessage("GeCoS_IO Write Bytes","ByteArray: ".$data->ByteArray);
 				$this->SetMUX($data->DeviceIdent >> 7);
 				$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
@@ -339,13 +339,13 @@ class GeCoS_IO extends IPSModule
 				
 				// Wert von Pin 17
 				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
-				IPS_LogMessage("GeCoS", "Bit 17: ".$Bitvalue_17);
+				IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
 				// Wert von Pin 27
 				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
-				IPS_LogMessage("GeCoS", "Bit 27: ".$Bitvalue_27);
+				IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
 				// Wert von Pin 15
 				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
-				IPS_LogMessage("GeCoS", "Bit 15: ".$Bitvalue_15);
+				IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
 			}
 		}
 	 	else {
