@@ -450,7 +450,7 @@ class GeCoS_IO extends IPSModule
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 			IPS_LogMessage("GeCoS_IO Socket", "Message: ".$message);
-			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Buffer" => utf8_encode($message)))); 
+			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message)))); 
 			IPS_LogMessage("GeCoS_IO Socket", "Result: ".$res);
 		}
 	}
