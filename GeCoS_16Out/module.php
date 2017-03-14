@@ -83,7 +83,7 @@
 				
 				// Setup
 				$this->Setup();
-				$this->GetPinOutput();
+				$this->GetOutput();
 				$this->SetStatus(102);
 			}
 			else {
@@ -158,52 +158,52 @@
   		//SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 		switch($Ident) {
 		case "Output_X0":
-	            $this->SetPinOutput(0, $Value);
+	            $this->SetOutputPin(0, $Value);
 	            break;
 	        case "Output_X1":
-	            $this->SetPinOutput(1, $Value);
+	            $this->SetOutputPin(1, $Value);
 	            break;
 	        case "Output_X2":
-	            $this->SetPinOutput(2, $Value);
+	            $this->SetOutputPin(2, $Value);
 	            break;
 	        case "Output_X3":
-	            $this->SetPinOutput(3, $Value);
+	            $this->SetOutputPin(3, $Value);
 	            break;
 	        case "Output_X4":
-	            $this->SetPinOutput(4, $Value);
+	            $this->SetOutputPin(4, $Value);
 	            break;
 	        case "Output_X5":
-	            $this->SetPinOutput(5, $Value);
+	            $this->SetOutputPin(5, $Value);
 	            break;    
 	        case "Output_X6":
-	            $this->SetPinOutput(6, $Value);
+	            $this->SetOutputPin(6, $Value);
 	            break;
 	        case "Output_X7":
-	            $this->SetPinOutput(7, $Value);
+	            $this->SetOutputPin(7, $Value);
 	            break;
 	        case "Output_X8":
-	            $this->SetPinOutput(8, $Value);
+	            $this->SetOutputPin(8, $Value);
 	            break;
 	        case "Output_X9":
-	            $this->SetPinOutput(9, $Value);
+	            $this->SetOutputPin(9, $Value);
 	            break;
 	        case "Output_X10":
-	            $this->SetPinOutput(10, $Value);
+	            $this->SetOutputPin(10, $Value);
 	            break;
 	        case "Output_X11":
-	            $this->SetPinOutput(11, $Value);
+	            $this->SetOutputPin(11, $Value);
 	            break;
 	        case "Output_X12":
-	            $this->SetPinOutput(12, $Value);
+	            $this->SetOutputPin(12, $Value);
 	            break;
 	        case "Output_X13":
-	            $this->SetPinOutput(13, $Value);
+	            $this->SetOutputPin(13, $Value);
 	            break;    
 	        case "Output_X14":
-	            $this->SetPinOutput(14, $Value);
+	            $this->SetOutputPin(14, $Value);
 	            break;
 	        case "Output_X15":
-	            $this->SetPinOutput(15, $Value);
+	            $this->SetOutputPin(15, $Value);
 	            break;
 	        default:
 	            throw new Exception("Invalid Ident");
@@ -212,9 +212,8 @@
 	    
 	// Beginn der Funktionen
 	// Führt eine Messung aus
-	public function SetPinOutput(Int $Output, Bool $Value)
+	public function SetOutputPin(Int $Output, Bool $Value)
 	{
-		$Bitmask = 0;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			If ($Output <= 7) {
 				$Bitmask = GetValueInteger($this->GetIDForIdent("OutputBank0"));
@@ -242,11 +241,11 @@
 				$ByteArray[1] = $Bitmask;
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
 			}
-			$this->GetPinOutput();
+			$this->GetOutput();
 		}
 	}	
 	
-	private function GetPinOutput()
+	private function GetOutput()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
@@ -268,7 +267,7 @@
 			$ByteArray[1] = $Value;
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
 		}
-		$this->GetPinOutput();
+		$this->GetOutput();
 	}
 	    
 	private function Setup()
