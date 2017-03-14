@@ -77,7 +77,7 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("I2C_Handle");
 			IPS_SetHidden($this->GetIDForIdent("I2C_Handle"), true);
 			
-			$this->SetBuffer("SerialNotify", "false");
+			$this->SetBuffer("HardwareRev", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Channel", 1);
 			
