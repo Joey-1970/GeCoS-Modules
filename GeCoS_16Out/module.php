@@ -118,6 +118,8 @@
 			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
+					SetValueInteger($this->GetIDForIdent("OutputBank0"), $ByteArray[1]);
+					SetValueInteger($this->GetIDForIdent("OutputBank1"), $ByteArray[2]);
 					//IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[1]);
 					//IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
 					for ($i = 0; $i <= 7; $i++) {
