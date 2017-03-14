@@ -217,6 +217,7 @@
 		$Bitmask = 0;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			If ($Output <= 7) {
+				
 				for ($i = 0; $i <= 7; $i++) {
 				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
 					// wenn true dann Eingang		
