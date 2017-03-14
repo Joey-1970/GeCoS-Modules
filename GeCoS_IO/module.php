@@ -60,10 +60,6 @@ class GeCoS_IO extends IPSModule
 			$this->RegisterVariableInteger("Handle", "Handle", "", 100);
 			$this->DisableAction("Handle");
 			IPS_SetHidden($this->GetIDForIdent("Handle"), true);
-			
-			$this->RegisterVariableInteger("HardwareRev", "HardwareRev", "", 105);
-			$this->DisableAction("HardwareRev");
-			IPS_SetHidden($this->GetIDForIdent("HardwareRev"), true);
 		
 			$this->RegisterVariableString("Hardware", "Hardware", "", 107);
 			$this->DisableAction("Hardware");
@@ -188,8 +184,7 @@ class GeCoS_IO extends IPSModule
 		   	$this->SetMUX($data->DeviceBus);
 			$this->CommandClientSocket(pack("LLLLL", 54, 1, $data->DeviceAddress, 4, 0), 16);	
 		   	
-			//IPS_LogMessage("IPS2GPIO I2C Handle: ","Device Adresse: ".$data->DeviceAddress.", Hardware Rev:: ".GetValueInteger($this->GetIDForIdent("HardwareRev"))); 
-		   	break;
+			break;
 		   case "i2c_destroy":
 		   	//IPS_LogMessage("IPS2GPIO I2C Destroy: ",$data->DeviceAddress." , ".$data->Register); 
 		   	If ($this->GetI2C_DeviceHandle($data->DeviceAddress) >= 0) {
@@ -557,7 +552,7 @@ class GeCoS_IO extends IPSModule
            			$Typ[1] = array(2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22, 23, 24, 25, 27);
            			$Typ[2] = array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27);
            			
-           			SetValueInteger($this->GetIDForIdent("HardwareRev"), $response[4]);
+           			$this->SetBuffer("HardwareRev", $response[4]);
 				SetValueString($this->GetIDForIdent("Hardware"), $this->GetHardware($response[4]));
            			
            			if (in_array($response[4], $Model[0])) {
@@ -1016,12 +1011,6 @@ class GeCoS_IO extends IPSModule
 			$HardwareText = "Unbekannte Revisions Nummer!";
 		}
 		// Einige Besonderheiten setzen
-		If ($RevNumber <= 3) {
-			$this->SetBuffer("Default_I2C_Bus", 0);
-		}
-		else {
-			$this->SetBuffer("Default_I2C_Bus", 1);
-		}
 		If (($RevNumber == 10494082) OR ($RevNumber == 10625154)) {
 			$this->SetBuffer("Default_Serial_Bus", 1);
 		}
