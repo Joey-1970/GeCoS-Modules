@@ -60,6 +60,14 @@
 			$this->EnableAction("Output_X".$i);	
 		}
 		
+		$this->RegisterVariableInteger("OutputBank0", "Output Bank 0", "", 170);
+          	$this->DisableAction("OutputBank0");
+		IPS_SetHidden($this->GetIDForIdent("OutputBank0"), false);
+		
+		$this->RegisterVariableInteger("OutputBank1", "Output Bank 1", "", 180);
+          	$this->DisableAction("OutputBank1");
+		IPS_SetHidden($this->GetIDForIdent("OutputBank1"), false);
+		
 		If (IPS_GetKernelRunlevel() == 10103) {
 			// Logging setzen
 			
@@ -239,6 +247,26 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 		}
+	}
+	    
+	public function SetOutputBank0(int $Value) 
+	{
+		$Value = min(255, max(0, $Value));
+		$ByteArray = array();
+		$ByteArray[0] = hexdec("02");
+		$ByteArray[1] = $Value;
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
+		$this->GetPinOutput();
+	}
+	
+	public function SetOutputBank1(int $Value) 
+	{
+		$Value = min(255, max(0, $Value));
+		$ByteArray = array();
+		$ByteArray[0] = hexdec("03");
+		$ByteArray[1] = $Value;
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
+		$this->GetPinOutput();
 	}
 	    
 	private function Setup()
