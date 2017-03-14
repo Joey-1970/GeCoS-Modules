@@ -124,29 +124,15 @@
 					//IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
-					    	If ($Bitvalue == true) {
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == false) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
-							}
-					    	}
-					    	else {
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
-							}
-					    	}
+					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+						}
 					}
 					for ($i = 8; $i <= 15; $i++) {
 						$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
-					    	If ($Bitvalue == true) {
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == false) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), true);
-							}
-					    	}
-					    	else {
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == true) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), false);
-							}
-					    	}
+					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+						}
 					}
 			   	}
 			  	break;
