@@ -197,9 +197,10 @@
 	}
 	    
 	// Beginn der Funktionen
-	// Führt eine Messung aus
 	public function SetOutputPin(Int $Output, Bool $Value)
 	{
+		$Output = min(15, max(0, $Output));
+		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			If ($Output <= 7) {
 				$Bitmask = GetValueInteger($this->GetIDForIdent("OutputBank0"));
