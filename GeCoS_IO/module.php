@@ -222,7 +222,8 @@ class GeCoS_IO extends IPSModule
 				$this->SetMUX($data->DeviceIdent >> 7);
 				$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
-				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, count($ByteArray)).pack("C*", $ByteArray[0], $ByteArray[1]), 16);
+				//$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, count($ByteArray)).pack("C*", $ByteArray[0], $ByteArray[1]), 16);
+				$this->CommandClientSocket(pack("L*", 57, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 		   	}
 		   	break;	
 		case "i2c_read_byte_onhandle":
