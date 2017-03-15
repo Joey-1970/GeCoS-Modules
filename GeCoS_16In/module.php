@@ -73,6 +73,7 @@
 			//ReceiveData-Filter setzen
 			$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|.*"Function":"status".*)';
+			$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 			$this->SetReceiveDataFilter($Filter);
 		
 			
@@ -95,12 +96,12 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
-			   case "get_used_i2c":
+			case "get_used_i2c":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
 				}
 				break;
-			   case "status":
+			case "status":
 			   	If ($data->HardwareRev <= 3) {
 				   	If (($data->Pin == 0) OR ($data->Pin == 1)) {
 				   		$this->SetStatus($data->Status);		
@@ -112,7 +113,12 @@
 				   	}
 				}
 			   	break;
-			  case "set_i2c_byte_block":
+			case "interrupt":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->GetInput();
+				}
+				break;				
+			case "set_i2c_byte_block":
 			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
