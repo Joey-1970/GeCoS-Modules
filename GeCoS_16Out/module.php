@@ -114,8 +114,6 @@
 					$ByteArray = unserialize($data->ByteArray);
 					SetValueInteger($this->GetIDForIdent("OutputBank0"), $ByteArray[1]);
 					SetValueInteger($this->GetIDForIdent("OutputBank1"), $ByteArray[2]);
-					//IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[1]);
-					//IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
@@ -135,7 +133,6 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
-  		//SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 		switch($Ident) {
 		case "Output_X0":
 	            $this->SetOutputPin(0, $Value);
