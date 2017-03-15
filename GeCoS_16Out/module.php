@@ -19,6 +19,7 @@
 		$arrayStatus[] = array("code" => 101, "icon" => "inactive", "caption" => "Instanz wird erstellt"); 
 		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
+		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
 				
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
@@ -103,16 +104,9 @@
 				}
 				break;
 			   case "status":
-			   	If ($data->HardwareRev <= 3) {
-				   	If (($data->Pin == 0) OR ($data->Pin == 1)) {
-				   		$this->SetStatus($data->Status);		
-				   	}
+			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+				   	$this->SetStatus($data->Status);
 			   	}
-				else if ($data->HardwareRev > 3) {
-					If (($data->Pin == 2) OR ($data->Pin == 3)) {
-				   		$this->SetStatus($data->Status);
-				   	}
-				}
 			   	break;
 			  case "set_i2c_byte_block":
 			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
