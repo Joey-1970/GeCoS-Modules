@@ -178,8 +178,8 @@ class GeCoS_IO extends IPSModule
 				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
 					// Fehlermeldung in den Instanzen erzeugen
 					IPS_LogMessage("GeCoS_IO","Ein Device mit der Adresse ".$data->DeviceAddress." auf dem Bus ".$data->DeviceBus." ist bereits vorhanden!"); 
-					// Status der betroffenen Instanzen auf "fehlerhaft" setzen
-
+					// Status der betroffenen Instanzen auf "fehlerhaft" setzen					$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"status", "Pin"=>$data->Pin, "Status"=>102, "HardwareRev"=>GetValueInteger($this->GetIDForIdent("HardwareRev")))));
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "DeviceIdent"=> $DeviceIdent,"Status"=>200)));
 				}
 				else {
 					$I2C_DeviceHandle[$DeviceIdent] = -1;
