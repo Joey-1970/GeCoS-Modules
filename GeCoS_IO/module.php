@@ -377,15 +377,6 @@ class GeCoS_IO extends IPSModule
 	// Aktualisierung der genutzten Pins und der Notifikation
 	private function Get_PinUpdate()
 	{
-		// Pins ermitteln für die ein Notify erforderlich ist
-		
-		// Notify zurücksetzen	
-		/*
-		If (GetValueInteger($this->GetIDForIdent("Handle")) >= 0) {
-	           	$this->CommandClientSocket(pack("LLLL", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
-		}
-		*/
-		// Ermitteln ob der I2C-Bus genutzt wird und welcher Device Adressen
 		// Bisherige I2C-Handle löschen
 		$I2C_DeviceHandle = array_values(unserialize(GetValueString($this->GetIDForIdent("I2C_Handle"))));
 		for ($i = 2; $i < Count($I2C_DeviceHandle); $i++) {
