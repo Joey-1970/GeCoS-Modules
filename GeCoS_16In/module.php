@@ -73,7 +73,6 @@
 			
 			//ReceiveData-Filter setzen
 			$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
-			//$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|.*"Function":"status".*)';
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 			$this->SetReceiveDataFilter($Filter);
 		
@@ -108,7 +107,6 @@
 			   	}
 			   	break;
 			case "interrupt":
-			   	IPS_LogMessage("GeCoS_16In", "Interrupt");
 				If ($this->ReadPropertyBoolean("Open") == true) {
 					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
 						$this->GetInput();
@@ -121,8 +119,6 @@
 					$ByteArray = unserialize($data->ByteArray);
 					SetValueInteger($this->GetIDForIdent("InputBank0"), $ByteArray[1]);
 					SetValueInteger($this->GetIDForIdent("InputBank1"), $ByteArray[2]);
-					//IPS_LogMessage("GeCoS_16Out", "Bank 0: ".$ByteArray[1]);
-					//IPS_LogMessage("GeCoS_16Out", "Bank 1: ".$ByteArray[2]);
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
@@ -139,16 +135,6 @@
 			  	break;
 	 	}
  	}
-	
-	public function RequestAction($Ident, $Value) 
-	{
-  		//SetValueBoolean($this->GetIDForIdent($Ident), $Value);
-		switch($Ident) {
-		
-	        default:
-	            throw new Exception("Invalid Ident");
-	    	}
-	}
 	    
 	// Beginn der Funktionen
 	private function GetInput()
