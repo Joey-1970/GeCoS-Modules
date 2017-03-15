@@ -102,16 +102,9 @@
 				}
 				break;
 			case "status":
-			   	If ($data->HardwareRev <= 3) {
-				   	If (($data->Pin == 0) OR ($data->Pin == 1)) {
-				   		$this->SetStatus($data->Status);		
-				   	}
+			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+				   	$this->SetStatus($data->Status);
 			   	}
-				else if ($data->HardwareRev > 3) {
-					If (($data->Pin == 2) OR ($data->Pin == 3)) {
-				   		$this->SetStatus($data->Status);
-				   	}
-				}
 			   	break;
 			case "interrupt":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
