@@ -72,7 +72,7 @@
 			
 			//ReceiveData-Filter setzen
 			$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
-			$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|.*"Function":"status".*)';
+			//$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|.*"Function":"status".*)';
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 			$this->SetReceiveDataFilter($Filter);
 		
@@ -115,7 +115,9 @@
 			   	break;
 			case "interrupt":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$this->GetInput();
+					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
+						$this->GetInput();
+					}
 				}
 				break;				
 			case "set_i2c_byte_block":
