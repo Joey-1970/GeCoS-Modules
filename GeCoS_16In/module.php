@@ -108,7 +108,8 @@
 			   	}
 			   	break;
 			case "interrupt":
-			   	If ($this->ReadPropertyBoolean("Open") == true) {
+			   	IPS_LogMessage("GeCoS_16In", "Interrupt");
+				If ($this->ReadPropertyBoolean("Open") == true) {
 					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
 						$this->GetInput();
 					}
