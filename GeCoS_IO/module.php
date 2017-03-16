@@ -119,7 +119,9 @@ class GeCoS_IO extends IPSModule
 				// I²C Bus 1 für RTC, Serielle Schnittstelle,
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
 				$this->CommandClientSocket(pack("L*", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
-								
+				// GlitchFilter setzen
+				$this->CommandClientSocket(pack("L*", 97, 17, $this->ReadPropertyInteger('GlitchFilter'), 0).pack("L*", 97, 27, $this->ReadPropertyInteger('GlitchFilter'), 0) , 32);
+				
 				// RTC einrichten
 				$this->GetOnboardI2CHandle(104);
 				// MUX einrichten
