@@ -37,7 +37,7 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "User", "caption" => "User");
 		$arrayElements[] = array("type" => "PasswordTextBox", "name" => "Password", "caption" => "Password");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-300000ms):");
+		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 
@@ -120,7 +120,8 @@ class GeCoS_IO extends IPSModule
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
 				$this->CommandClientSocket(pack("L*", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
 				// GlitchFilter setzen
-				$this->CommandClientSocket(pack("L*", 97, 17, $this->ReadPropertyInteger('GlitchFilter'), 0).pack("L*", 97, 27, $this->ReadPropertyInteger('GlitchFilter'), 0) , 32);
+				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
+				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
 				// RTC einrichten
 				$this->GetOnboardI2CHandle(104);
