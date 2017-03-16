@@ -159,7 +159,7 @@
 	}
 	    
 	// Beginn der Funktionen
-	public function SetOutputPin(Int $Output, Bool $Value)
+	public function SetOutputPin(Int $Output, Int $Value)
 	{ 
 		$Output = min(15, max(0, $Output));
 		$Value = min(255, max(0, $Value));
@@ -167,10 +167,10 @@
 			If ($Output <= 7) {
 				$Bitmask = GetValueInteger($this->GetIDForIdent("OutputBank0"));
 				If ($Value == true) {
-					$Bitmask = $this->setBit($Bitmask, $Output);
+					//$Bitmask = $this->setBit($Bitmask, $Output);
 				}
 				else {
-					$Bitmask = $this->unsetBit($Bitmask, $Output);
+					//$Bitmask = $this->unsetBit($Bitmask, $Output);
 				}
 				$ByteArray = array();
 				$ByteArray[0] = hexdec("02");
@@ -180,10 +180,10 @@
 			else {
 				$Bitmask = GetValueInteger($this->GetIDForIdent("OutputBank1"));
 				If ($Value == true) {
-					$Bitmask = $this->setBit($Bitmask, $Output - 8);
+					//$Bitmask = $this->setBit($Bitmask, $Output - 8);
 				}
 				else {
-					$Bitmask = $this->unsetBit($Bitmask, $Output - 8);
+					//$Bitmask = $this->unsetBit($Bitmask, $Output - 8);
 				}
 				$ByteArray = array();
 				$ByteArray[0] = hexdec("03");
