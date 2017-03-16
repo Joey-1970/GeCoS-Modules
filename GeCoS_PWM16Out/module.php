@@ -30,8 +30,8 @@
 		
 		$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "Device Bus", "options" => $arrayOptions );
 				
@@ -68,12 +68,11 @@
 		
 			
 			If ($this->ReadPropertyBoolean("Open") == true) {
-				//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
+				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 				
 				// Setup
-				//$this->Setup();
-				// Erste Messdaten einlesen
-				//$this->Measurement();
+				$this->Setup();
+				$this->GetOutput();
 				$this->SetStatus(102);
 			}
 			else {
@@ -89,46 +88,88 @@
 	 	switch ($data->Function) {
 			   case "get_used_i2c":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 					$this->ApplyChanges();
 				}
 				break;
 			   case "status":
-			   	If ($data->HardwareRev <= 3) {
-				   	If (($data->Pin == 0) OR ($data->Pin == 1)) {
-				   		$this->SetStatus($data->Status);		
-				   	}
+			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+				   	$this->SetStatus($data->Status);
 			   	}
-				else if ($data->HardwareRev > 3) {
-					If (($data->Pin == 2) OR ($data->Pin == 3)) {
-				   		$this->SetStatus($data->Status);
-				   	}
-				}
 			   	break;
 			  case "set_i2c_data":
-			  	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
-			  		// Daten der Messung
-			  		If ($data->Register == $this->ReadPropertyInteger("DeviceAddress"))  {
-			  			
-			  		}
-			  		
-			  	}
+			  	
 			  	break;
 	 	}
  	}
-	// Beginn der Funktionen
-	// Führt eine Messung aus
-	public function Measurement()
-	{
-		If ($this->ReadPropertyBoolean("Open") == true) {
-		
-		}
-	}	
 	
+		public function RequestAction($Ident, $Value) 
+	{
+		switch($Ident) {
+		case "Output_X0":
+	            $this->SetOutputPin(0, $Value);
+	            break;
+	        case "Output_X1":
+	            $this->SetOutputPin(1, $Value);
+	            break;
+	        case "Output_X2":
+	            $this->SetOutputPin(2, $Value);
+	            break;
+	        case "Output_X3":
+	            $this->SetOutputPin(3, $Value);
+	            break;
+	        case "Output_X4":
+	            $this->SetOutputPin(4, $Value);
+	            break;
+	        case "Output_X5":
+	            $this->SetOutputPin(5, $Value);
+	            break;    
+	        case "Output_X6":
+	            $this->SetOutputPin(6, $Value);
+	            break;
+	        case "Output_X7":
+	            $this->SetOutputPin(7, $Value);
+	            break;
+	        case "Output_X8":
+	            $this->SetOutputPin(8, $Value);
+	            break;
+	        case "Output_X9":
+	            $this->SetOutputPin(9, $Value);
+	            break;
+	        case "Output_X10":
+	            $this->SetOutputPin(10, $Value);
+	            break;
+	        case "Output_X11":
+	            $this->SetOutputPin(11, $Value);
+	            break;
+	        case "Output_X12":
+	            $this->SetOutputPin(12, $Value);
+	            break;
+	        case "Output_X13":
+	            $this->SetOutputPin(13, $Value);
+	            break;    
+	        case "Output_X14":
+	            $this->SetOutputPin(14, $Value);
+	            break;
+	        case "Output_X15":
+	            $this->SetOutputPin(15, $Value);
+	            break;
+	        default:
+	            throw new Exception("Invalid Ident");
+	    	}
+	}
+	    
+	// Beginn der Funktionen
 	private function Setup()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
-		
+			$ByteArray = array();
+			$ByteArray[0] = hexdec("06");
+			$ByteArray[1] = hexdec("00");
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
+			$ByteArray = array();
+			$ByteArray[0] = hexdec("07");
+			$ByteArray[1] = hexdec("00");
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "ByteArray" => serialize($ByteArray) )));
 		}
 	}
 }
