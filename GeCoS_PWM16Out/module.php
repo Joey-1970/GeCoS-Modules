@@ -72,7 +72,7 @@
 				
 				// Setup
 				$this->Setup();
-				$this->GetOutput();
+				//$this->GetOutput();
 				$this->SetStatus(102);
 			}
 			else {
@@ -159,6 +159,11 @@
 	}
 	    
 	// Beginn der Funktionen
+	public function SetOutputPin(Int $Output, Bool $Value)
+	{ 
+		
+	}
+	    
 	private function Setup()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
