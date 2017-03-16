@@ -16,6 +16,7 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
+		$this->RegisterPropertyInteger("GlitchFilter", 0);
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
@@ -28,13 +29,18 @@ class GeCoS_IO extends IPSModule
 		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
 		
 		$arrayElements = array(); 
-		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
- 		$arrayElements[] = array("name" => "IPAddress", "type" => "ValidationTextBox",  "caption" => "IP");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "Open", "caption" => "Aktiv");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+ 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Zugriffsdaten des Raspberry Pi SSH:");
-		$arrayElements[] = array("name" => "User", "type" => "ValidationTextBox",  "caption" => "User");
-		$arrayElements[] = array("name" => "Password", "type" => "PasswordTextBox",  "caption" => "Password");
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "User", "caption" => "User");
+		$arrayElements[] = array("type" => "PasswordTextBox", "name" => "Password", "caption" => "Password");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-300000ms):");
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 
-		
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
