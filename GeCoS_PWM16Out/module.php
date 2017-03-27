@@ -9,7 +9,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 64);
+ 	    	$this->RegisterPropertyInteger("DeviceAddress", 80);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
         }
  	
@@ -25,8 +25,9 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "64 dez. / 0x40h", "value" => 64);
-		$arrayOptions[] = array("label" => "65 dez. / 0x41h", "value" => 65);
+		for ($i = 80; $i <= 87; $i = $i++) {
+		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
+		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
 		$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
