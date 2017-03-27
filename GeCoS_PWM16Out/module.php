@@ -53,7 +53,7 @@
 	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
 	    	
 	    	// Profil anlegen
-		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4096, 1);
+		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", "%", 0, 4096, 1);
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
