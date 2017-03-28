@@ -231,7 +231,7 @@ class GeCoS_IO extends IPSModule
 				}
 				break;  
 			case "i2c_write_bytes":
-				
+				// I2CWD h bvs - i2c Write data
 				If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 					$this->SetMUX($data->DeviceIdent >> 7);
 					$ByteArray = array();
