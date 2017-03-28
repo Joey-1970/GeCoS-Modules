@@ -224,13 +224,14 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case "i2c_read_bytes":
-				//IPS_LogMessage("IPS2GPIO I2C Read Bytes",$this->GetI2C_DeviceHandle($data->DeviceAddress)." , ".$data->Register." , ".$data->Count);  	
+				// I2CRD h num - i2c Read bytes
 				If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 					$this->SetMUX($data->DeviceIdent >> 7);
 					$this->CommandClientSocket(pack("L*", 56, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Count, 0), 16 + ($data->Count));
 				}
 				break;  
 			case "i2c_write_bytes":
+				
 				If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 					$this->SetMUX($data->DeviceIdent >> 7);
 					$ByteArray = array();
