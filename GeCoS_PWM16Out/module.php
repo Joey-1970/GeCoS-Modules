@@ -110,52 +110,68 @@
 		public function RequestAction($Ident, $Value) 
 	{
 		switch($Ident) {
+		case "Output_Bln_X0":
 		case "Output_Flt_X0":
 	            $this->SetOutputPin(0, $Value);
 	            break;
-	        case "Output_Flt_X1":
+	        case "Output_Bln_X1":
+		case "Output_Flt_X1":
 	            $this->SetOutputPin(1, $Value);
 	            break;
-	        case "Output_Flt_X2":
+	        case "Output_Bln_X2":
+		case "Output_Flt_X2":
 	            $this->SetOutputPin(2, $Value);
 	            break;
-	        case "Output_Flt_X3":
+	        case "Output_Bln_X3":
+		case "Output_Flt_X3":
 	            $this->SetOutputPin(3, $Value);
 	            break;
-	        case "Output_Flt_X4":
+	        case "Output_Bln_X4":
+		case "Output_Flt_X4":
 	            $this->SetOutputPin(4, $Value);
 	            break;
-	        case "Output_Flt_X5":
+	        case "Output_Bln_X5":
+		case "Output_Flt_X5":
 	            $this->SetOutputPin(5, $Value);
 	            break;    
-	        case "Output_Flt_X6":
+	        case "Output_Bln_X6":
+		case "Output_Flt_X6":
 	            $this->SetOutputPin(6, $Value);
 	            break;
-	        case "Output_Flt_X7":
+	        case "Output_Bln_X7":
+		case "Output_Flt_X7":
 	            $this->SetOutputPin(7, $Value);
 	            break;
-	        case "Output_Flt_X8":
+	        case "Output_Bln_X8":
+		case "Output_Flt_X8":
 	            $this->SetOutputPin(8, $Value);
 	            break;
-	        case "Output_Flt_X9":
+	        case "Output_Bln_X9":
+		case "Output_Flt_X9":
 	            $this->SetOutputPin(9, $Value);
 	            break;
-	        case "Output_Flt_X10":
+	        case "Output_Bln_X10":
+		case "Output_Flt_X10":
 	            $this->SetOutputPin(10, $Value);
 	            break;
-	        case "Output_Flt_X11":
+	        case "Output_Bln_X11":
+		case "Output_Flt_X11":
 	            $this->SetOutputPin(11, $Value);
 	            break;
-	        case "Output_Flt_X12":
+	        case "Output_Bln_X12":
+		case "Output_Flt_X12":
 	            $this->SetOutputPin(12, $Value);
 	            break;
-	        case "Output_Flt_X13":
+	        case "Output_Bln_X13":
+		case "Output_Flt_X13":
 	            $this->SetOutputPin(13, $Value);
 	            break;    
-	        case "Output_Flt_X14":
+	        case "Output_Bln_X14":
+		case "Output_Flt_X14":
 	            $this->SetOutputPin(14, $Value);
 	            break;
-	        case "Output_Flt_X15":
+	        case "Output_Bln_X15":
+		case "Output_Flt_X15":
 	            $this->SetOutputPin(15, $Value);
 	            break;
 	        default:
@@ -166,6 +182,7 @@
 	// Beginn der Funktionen
 	public function SetOutputPin(Int $Output, Int $Value)
 	{ 
+		$StartAddress = ($Output * 4) + 6;
 		$Output = min(15, max(0, $Output));
 		$Value = min(255, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
