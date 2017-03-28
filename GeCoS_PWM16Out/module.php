@@ -228,7 +228,10 @@
 		
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			
+			$ByteArray[0] = 0;
+			$ByteArray[1] = 0;
+			$ByteArray[2] = 15;
+			$ByteArray[3] = 255;
 			$this->GetOutput();
 		}
 	}
