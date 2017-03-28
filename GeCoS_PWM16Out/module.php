@@ -117,62 +117,92 @@
 	            	$this->SetOutputPinValue(0, $Value);
 	            	break;
 	        case "Output_Bln_X1":
+			$this->SetOutputPinStatus(1, $Value);
+	            	break;
 		case "Output_Flt_X1":
 	            	$this->SetOutputPinValue(1, $Value);
 	            	break;
 	        case "Output_Bln_X2":
+			$this->SetOutputPinStatus(2, $Value);
+	            	break;
 		case "Output_Flt_X2":
 	            	$this->SetOutputPinValue(2, $Value);
 	            	break;
 	        case "Output_Bln_X3":
+			$this->SetOutputPinStatus(3, $Value);
+	            	break;
 		case "Output_Flt_X3":
 	            	$this->SetOutputPinValue(3, $Value);
 	            	break;
 	        case "Output_Bln_X4":
+			$this->SetOutputPinStatus(4, $Value);
+	            	break;
 		case "Output_Flt_X4":
 	            	$this->SetOutputPinValue(4, $Value);
 	            	break;
 	        case "Output_Bln_X5":
+			$this->SetOutputPinStatus(5, $Value);
+	            	break;
 		case "Output_Flt_X5":
 	            	$this->SetOutputPinValue(5, $Value);
 	            	break;    
 	        case "Output_Bln_X6":
+			$this->SetOutputPinStatus(6, $Value);
+	            	break;
 		case "Output_Flt_X6":
 	            	$this->SetOutputPinValue(6, $Value);
 	            	break;
 	        case "Output_Bln_X7":
+			$this->SetOutputPinStatus(7, $Value);
+	            	break;
 		case "Output_Flt_X7":
 	            	$this->SetOutputPinValue(7, $Value);
 	            	break;
 	        case "Output_Bln_X8":
+			$this->SetOutputPinStatus(8, $Value);
+	            	break;
 		case "Output_Flt_X8":
 	            	$this->SetOutputPinValue(8, $Value);
 	            	break;
 	        case "Output_Bln_X9":
+			$this->SetOutputPinStatus(9, $Value);
+	            	break;
 		case "Output_Flt_X9":
 	            	$this->SetOutputPinValue(9, $Value);
 	            	break;
 	        case "Output_Bln_X10":
+			$this->SetOutputPinStatus(10, $Value);
+	            	break;
 		case "Output_Flt_X10":
 	            	$this->SetOutputPinValue(10, $Value);
 	            	break;
 	        case "Output_Bln_X11":
+			$this->SetOutputPinStatus(11, $Value);
+	            	break;
 		case "Output_Flt_X11":
 	            	$this->SetOutputPinValue(11, $Value);
 	            	break;
 	        case "Output_Bln_X12":
+			$this->SetOutputPinStatus(12, $Value);
+	            	break;
 		case "Output_Flt_X12":
 	            	$this->SetOutputPinValue(12, $Value);
 	            	break;
 	        case "Output_Bln_X13":
+			$this->SetOutputPinStatus(13, $Value);
+	            	break;
 		case "Output_Flt_X13":
 	            	$this->SetOutputPinValue(13, $Value);
 	            	break;    
 	        case "Output_Bln_X14":
+			$this->SetOutputPinStatus(14, $Value);
+	            	break;
 		case "Output_Flt_X14":
 	            	$this->SetOutputPinValue(14, $Value);
 	            	break;
 	        case "Output_Bln_X15":
+			$this->SetOutputPinStatus(15, $Value);
+	            	break;
 		case "Output_Flt_X15":
 	            	$this->SetOutputPinValue(15, $Value);
 	            	break;
