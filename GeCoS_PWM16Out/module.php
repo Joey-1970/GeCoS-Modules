@@ -101,7 +101,7 @@
 				   	$this->SetStatus($data->Status);
 			   	}
 			   	break;
-			  case "set_i2c_data":
+			  case "set_i2c_byte_block":
 			  	$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
 				IPS_LogMessage("GeCoS_PWM16Out", "Anzahl Daten: ".count($ByteArray));
