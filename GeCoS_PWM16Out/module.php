@@ -59,7 +59,7 @@
 		for ($i = 0; $i <= 15; $i++) {
 			$this->RegisterVariableBoolean("Output_Bln_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
 			$this->EnableAction("Output_Bln_X".$i);	
-			$this->RegisterVariableInteger("Output_Flt_X".$i, "Ausgang X".$i, "Intensity.4096", (($i + 1) * 10) + 5);
+			$this->RegisterVariableInteger("Output_Int_X".$i, "Ausgang X".$i, "Intensity.4096", (($i + 1) * 10) + 5);
 			$this->EnableAction("Output_Flt_X".$i);	
 		}
 		
@@ -123,7 +123,7 @@
 		case "Bln":
 			$this->SetOutputPinStatus($Number, $Value);
 	            	break;
-		case "Flt":
+		case "Int":
 	            	$this->SetOutputPinValue($Number, $Value);
 	            	break;
 	        default:
@@ -139,8 +139,17 @@
 		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
+		$Status = GetValueString($this->GetIDForIdent("Output_Bln_X".$Output));
 		$L_Bit = $Value >> 8;
 		$H_Bit = $Value & 255;
+		
+		
+		If ($Status == true) {
+			$L_Bit = $this->unsetBit($L_Bit, 4);
+		}
+		else {
+			$L_Bit = $this->setBit($L_Bit, 4);
+		}
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$ByteArray[0] = 0;
@@ -159,10 +168,23 @@
 		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
+		$Value = GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
+		$L_Bit = $Value >> 8;
+		$H_Bit = $Value & 255;
 		
+		If ($Status == true) {
+			$L_Bit = $this->unsetBit($L_Bit, 4);
+		}
+		else {
+			$L_Bit = $this->setBit($L_Bit, 4);
+		}
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			
+			$ByteArray[0] = 0;
+			$ByteArray[1] = 0;
+			$ByteArray[2] = $L_Bit;
+			$ByteArray[3] = $H_Bit;
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes_register", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" -> $StartAddress, "ByteArray" => serialize($ByteArray) )));
 			$this->GetOutput();
 		}
 	}    
