@@ -240,14 +240,14 @@ class GeCoS_IO extends IPSModule
 					$this->SetMUX($data->DeviceIdent >> 7);
 					$this->CommandClientSocket(pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register, 0), 16);
 				}
-		   	break;
+		   		break;
 			case "i2c_write_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
 					$this->SetMUX($data->DeviceIdent >> 7);
 					$this->CommandClientSocket(pack("L*", 62, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register, 4, $data->Value), 16);
 				}
-		   	break;
+		   		break;
 				
 			case "i2c_write_bytes_register":
 				// I2CWI h r bvs - smb Write I2C Block Data
@@ -257,7 +257,7 @@ class GeCoS_IO extends IPSModule
 					$ByteArray = unserialize($data->ByteArray);
 					$this->CommandClientSocket(pack("L*", 68, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), $data->Register, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 				}
-				break;	
+				break
 		   
 		   
 		   
