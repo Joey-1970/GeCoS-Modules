@@ -108,7 +108,7 @@
 				for ($i = 6; $i < 70; $i = $i + 4) {
 				   	$Number = ($i - 6) / 4;
 					$Value = ($ByteArray[$i + 2] << 8) | $ByteArray[$i + 3]; 
-					$Status = boolval($ByteArray[$i + 2] & 4);
+					$Status = boolval($ByteArray[$i + 2] & 16);
 					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 2).": ".$ByteArray[$i + 2]);
 					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 3).": ".$ByteArray[$i + 3]);
 				}
@@ -117,7 +117,7 @@
 	 	}
  	}
 	
-		public function RequestAction($Ident, $Value) 
+	public function RequestAction($Ident, $Value) 
 	{
 		$Source = substr($Ident, 7, 3);  
 		$Number = intval(substr($Ident, 12, 2));
@@ -145,8 +145,7 @@
 		$Status = GetValueString($this->GetIDForIdent("Output_Bln_X".$Output));
 		$L_Bit = $Value >> 8;
 		$H_Bit = $Value & 255;
-		
-		
+			
 		If ($Status == true) {
 			$L_Bit = $this->unsetBit($L_Bit, 4);
 		}
