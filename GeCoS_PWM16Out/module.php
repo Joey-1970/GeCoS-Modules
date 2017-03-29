@@ -53,14 +53,14 @@
 	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
 	    	
 	    	// Profil anlegen
-		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", "%", 0, 4095, 1);
+		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
 			$this->RegisterVariableBoolean("Output_Bln_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
 			$this->EnableAction("Output_Bln_X".$i);	
 			$this->RegisterVariableInteger("Output_Int_X".$i, "Ausgang X".$i, "Intensity.4096", (($i + 1) * 10) + 5);
-			$this->EnableAction("Output_Flt_X".$i);	
+			$this->EnableAction("Output_Int_X".$i);	
 		}
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
