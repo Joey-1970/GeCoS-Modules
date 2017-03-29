@@ -139,7 +139,8 @@
 		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
-		
+		$L_Bit = $Value >> 8;
+		$H_Bit = $Value & 255;
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$ByteArray[0] = 0;
