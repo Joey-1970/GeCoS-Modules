@@ -109,8 +109,15 @@
 				   	$Number = ($i - 6) / 4;
 					$Value = ($ByteArray[$i + 2] << 8) | $ByteArray[$i + 3]; 
 					$Status = boolval($ByteArray[$i + 2] & 16);
+					
 					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 2).": ".$ByteArray[$i + 2]);
 					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 3).": ".$ByteArray[$i + 3]);
+					IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number);
+					IPS_LogMessage("GeCoS_PWM16Out", "Wert: ".$Value);
+					IPS_LogMessage("GeCoS_PWM16Out", "Status: ".$Status);
+					
+					SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
+					SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), $Status);
 				}
 				
 			  	break;
