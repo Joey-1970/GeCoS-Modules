@@ -209,5 +209,15 @@
 	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
 	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);    
 	}
+	
+	private function setBit($byte, $significance) { 
+ 		// ein bestimmtes Bit auf 1 setzen
+ 		return $byte | 1<<$significance;   
+ 	} 
+	
+	private function unsetBit($byte, $significance) {
+	    // ein bestimmtes Bit auf 0 setzen
+	    return $byte & ~(1<<$significance);
+	}
 }
 ?>
