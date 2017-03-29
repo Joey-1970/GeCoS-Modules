@@ -149,7 +149,7 @@
 		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
-		$Status = GetValueString($this->GetIDForIdent("Output_Bln_X".$Output));
+		$Status = GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
 		$L_Bit = $Value >> 8;
 		$H_Bit = $Value & 255;
 			
