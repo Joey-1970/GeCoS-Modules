@@ -96,12 +96,20 @@
 					$this->ApplyChanges();
 				}
 				break;
-			   case "status":
+			case "status":
 			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
 				   	$this->SetStatus($data->Status);
 			   	}
 			   	break;
-			  case "set_i2c_byte_block":
+			case "set_i2c_data":
+			  	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+			  		// Daten zur Kalibrierung
+			  		If (($data->Register >= 6) AND ($data->Register < 64)) {
+			  			IPS_LogMessage("GeCoS_PWM16Out", "Register: ".$data->Register." Wert: ".$data->Value);
+			  		}
+			  	}
+			  	break; 
+			case "set_i2c_byte_block":
 			  	$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
 				IPS_LogMessage("GeCoS_PWM16Out", "Anzahl Daten: ".count($ByteArray));
