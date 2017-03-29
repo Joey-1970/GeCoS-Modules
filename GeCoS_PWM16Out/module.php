@@ -117,7 +117,7 @@
 					IPS_LogMessage("GeCoS_PWM16Out", "Status: ".$Status);
 					
 					SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
-					SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), $Status);
+					SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
 				}
 				
 			  	break;
