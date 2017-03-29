@@ -105,10 +105,11 @@
 			  	$ByteArray = array();
 				$ByteArray = unserialize($data->ByteArray);
 				IPS_LogMessage("GeCoS_PWM16Out", "Anzahl Daten: ".count($ByteArray));
-				IPS_LogMessage("GeCoS_PWM16Out", "Daten 6: ".$ByteArray[6]);
-				IPS_LogMessage("GeCoS_PWM16Out", "Daten 7: ".$ByteArray[7]);
-				IPS_LogMessage("GeCoS_PWM16Out", "Daten 8: ".$ByteArray[8]);
-				IPS_LogMessage("GeCoS_PWM16Out", "Daten 9: ".$ByteArray[9]);
+				for ($i = 6; $i < 70; $i = $i + 4) {
+				   	IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 2).": ".$ByteArray[$i + 2]);
+					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 3).": ".$ByteArray[$i + 3]);
+				}
+				
 			  	break;
 	 	}
  	}
