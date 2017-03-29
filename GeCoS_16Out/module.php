@@ -133,58 +133,8 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
-		switch($Ident) {
-		case "Output_X0":
-	            $this->SetOutputPin(0, $Value);
-	            break;
-	        case "Output_X1":
-	            $this->SetOutputPin(1, $Value);
-	            break;
-	        case "Output_X2":
-	            $this->SetOutputPin(2, $Value);
-	            break;
-	        case "Output_X3":
-	            $this->SetOutputPin(3, $Value);
-	            break;
-	        case "Output_X4":
-	            $this->SetOutputPin(4, $Value);
-	            break;
-	        case "Output_X5":
-	            $this->SetOutputPin(5, $Value);
-	            break;    
-	        case "Output_X6":
-	            $this->SetOutputPin(6, $Value);
-	            break;
-	        case "Output_X7":
-	            $this->SetOutputPin(7, $Value);
-	            break;
-	        case "Output_X8":
-	            $this->SetOutputPin(8, $Value);
-	            break;
-	        case "Output_X9":
-	            $this->SetOutputPin(9, $Value);
-	            break;
-	        case "Output_X10":
-	            $this->SetOutputPin(10, $Value);
-	            break;
-	        case "Output_X11":
-	            $this->SetOutputPin(11, $Value);
-	            break;
-	        case "Output_X12":
-	            $this->SetOutputPin(12, $Value);
-	            break;
-	        case "Output_X13":
-	            $this->SetOutputPin(13, $Value);
-	            break;    
-	        case "Output_X14":
-	            $this->SetOutputPin(14, $Value);
-	            break;
-	        case "Output_X15":
-	            $this->SetOutputPin(15, $Value);
-	            break;
-	        default:
-	            throw new Exception("Invalid Ident");
-	    	}
+		$Number = intval(substr($Ident, 8, 2));
+		$this->SetOutputPin($Number, $Value);
 	}
 	    
 	// Beginn der Funktionen
