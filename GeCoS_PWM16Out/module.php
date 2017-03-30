@@ -190,10 +190,10 @@
 		$H_Bit = $Value >> 8;
 		
 		If ($Status == true) {
-			$L_Bit = $this->unsetBit($L_Bit, 4);
+			$H_Bit = $this->unsetBit($L_Bit, 4);
 		}
 		else {
-			$L_Bit = $this->setBit($L_Bit, 4);
+			$H_Bit = $this->setBit($L_Bit, 4);
 		}
 		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($this->ReadPropertyBoolean("Open") == true) {
@@ -217,10 +217,10 @@
 		$H_Bit = $Value >> 8;
 		
 		If ($Status == true) {
-			$L_Bit = $this->unsetBit($L_Bit, 4);
+			$H_Bit = $this->unsetBit($L_Bit, 4);
 		}
 		else {
-			$L_Bit = $this->setBit($L_Bit, 4);
+			$H_Bit = $this->setBit($L_Bit, 4);
 		}
 		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($this->ReadPropertyBoolean("Open") == true) {
