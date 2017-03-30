@@ -55,6 +55,9 @@
 	    	// Profil anlegen
 		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
 		
+		$Output = array(); 
+		$this->SetBuffer("Output", serialize($Output));
+		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
 			$this->RegisterVariableBoolean("Output_Bln_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
@@ -103,9 +106,13 @@
 			   	break;
 			case "set_i2c_data":
 			  	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
-			  		// Daten zur Kalibrierung
+			  		$Output = array(); 
+					$Output = unserialize($this->GetBuffer("Output"));
+					// Daten zur Kalibrierung
 			  		If (($data->Register >= 6) AND ($data->Register < 64)) {
-			  			IPS_LogMessage("GeCoS_PWM16Out", "Register: ".$data->Register." Wert: ".$data->Value);
+			  			$Output[$data->Register] = $data->Value;
+						
+						IPS_LogMessage("GeCoS_PWM16Out", "Register: ".$data->Register." Wert: ".$data->Value);
 			  		}
 			  	}
 			  	break; 
