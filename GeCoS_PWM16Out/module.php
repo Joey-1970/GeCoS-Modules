@@ -116,7 +116,7 @@
 					If ($data->Register == 69) {
 						for ($i = 6; $i < 70; $i = $i + 4) {
 						$Number = ($i - 6) / 4;
-						$Value = ($Output[$i + 2] << 8) | $Output[$i + 3]; 
+						$Value = ($Output[$i + 3] << 8) | $Output[$i + 2]; 
 						$Status = boolval($Output[$i + 2] & 16);
 
 						IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number);
@@ -137,7 +137,7 @@
 				IPS_LogMessage("GeCoS_PWM16Out", "Anzahl Daten: ".count($ByteArray));
 				for ($i = 6; $i < 70; $i = $i + 4) {
 				   	$Number = ($i - 6) / 4;
-					$Value = ($ByteArray[$i + 2] << 8) | $ByteArray[$i + 3]; 
+					$Value = ($ByteArray[$i + 3] << 8) | $ByteArray[$i + 2]; 
 					$Status = boolval($ByteArray[$i + 2] & 16);
 					
 					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 2).": ".$ByteArray[$i + 2]);
