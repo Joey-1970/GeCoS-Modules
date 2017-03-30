@@ -115,14 +115,18 @@
 			  		}
 					If ($data->Register == 69) {
 						for ($i = 6; $i < 70; $i = $i + 4) {
-						$Number = ($i - 6) / 4;
-						$Value = (($Output[$i + 3] & 15) << 8)  | $Output[$i + 2]; 
-						$Status = boolval($Output[$i + 3] & 16);
+							$Number = ($i - 6) / 4;
+							$Value = (($Output[$i + 3] & 15) << 8)  | $Output[$i + 2]; 
+							$Status = boolval($Output[$i + 3] & 16);
 
-						IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number." Wert: ".$Value." Status: ".$Status);
+							IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number." Wert: ".$Value." Status: ".$Status);
 
-						SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
-						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
+							If ($Value <> GetValueInteger($this->GetIDForIdent("Output_Int_X".$Number))) {
+								SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
+							}
+							If ($Status <> !GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number))) {
+								SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
+							}						
 						}
 					}
 					
