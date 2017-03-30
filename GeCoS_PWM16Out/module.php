@@ -181,7 +181,7 @@
 	public function SetOutputPinValue(Int $Output, Int $Value)
 	{ 
 		$Output = min(15, max(0, $Output));
-		$Value = min(255, max(0, $Value));
+		$Value = min(4095, max(0, $Value));
 		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
