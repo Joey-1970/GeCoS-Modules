@@ -109,12 +109,27 @@
 			  		$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
 					// Daten zur Kalibrierung
-			  		If (($data->Register >= 6) AND ($data->Register < 64)) {
+			  		If (($data->Register >= 6) AND ($data->Register < 70)) {
 			  			$Output[$data->Register] = $data->Value;
-						
 						IPS_LogMessage("GeCoS_PWM16Out", "Register: ".$data->Register." Wert: ".$data->Value);
 			  		}
-			  	}
+					If ($data->Register == 69) {
+						for ($i = 6; $i < 70; $i = $i + 4) {
+						$Number = ($i - 6) / 4;
+						$Value = ($Output[$i + 2] << 8) | $Output[$i + 3]; 
+						$Status = boolval($Output[$i + 2] & 16);
+
+						IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number);
+						IPS_LogMessage("GeCoS_PWM16Out", "Wert: ".$Value);
+						IPS_LogMessage("GeCoS_PWM16Out", "Status: ".$Status);
+
+						SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
+						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
+						}
+					}
+					
+				}
+				$this->SetBuffer("Output", serialize($Output));
 			  	break; 
 			case "set_i2c_byte_block":
 			  	$ByteArray = array();
