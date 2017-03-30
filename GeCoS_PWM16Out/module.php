@@ -118,7 +118,7 @@
 					If ($data->Register == 69) {
 						for ($i = 6; $i < 70; $i = $i + 4) {
 							$Number = ($i - 6) / 4;
-							$Value = (($Output[$i + 3]) << 8)  | $Output[$i + 2]; 
+							$Value = (($Output[$i + 3] & 15) << 8)  | $Output[$i + 2]; 
 							$Status = boolval($Output[$i + 3] & 16);
 							If ($Number == 0) {
 								IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number." Wert: ".$Value." Status: ".$Status);
