@@ -257,7 +257,7 @@ class GeCoS_IO extends IPSModule
 					$ByteArray = unserialize($data->ByteArray);
 					$this->CommandClientSocket(pack("L*", 68, intval($this->GetI2C_DeviceHandle($data->DeviceIdent)), $data->Register, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 				}
-				break
+				break;
 		   
 		   
 		   
