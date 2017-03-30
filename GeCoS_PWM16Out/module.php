@@ -189,14 +189,13 @@
 		$L_Bit = $Value & 255;
 		$H_Bit = $Value >> 8;
 		
-		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($Status == true) {
 			$L_Bit = $this->unsetBit($L_Bit, 4);
 		}
 		else {
 			$L_Bit = $this->setBit($L_Bit, 4);
 		}
-		
+		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value" => 0)));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 1, "Value" => 0)));
@@ -216,14 +215,14 @@
 		$Value = GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
 		$L_Bit = $Value & 255;
 		$H_Bit = $Value >> 8;
-		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
+		
 		If ($Status == true) {
 			$L_Bit = $this->unsetBit($L_Bit, 4);
 		}
 		else {
 			$L_Bit = $this->setBit($L_Bit, 4);
 		}
-		
+		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value" => 0)));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 1, "Value" => 0)));
