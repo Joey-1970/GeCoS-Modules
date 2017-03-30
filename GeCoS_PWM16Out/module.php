@@ -186,8 +186,9 @@
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
 		$Status = GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
-		$L_Bit = $Value >> 8;
-		$H_Bit = $Value & 255;
+		$L_Bit = $Value & 255;
+		$H_Bit = $Value >> 8;
+		
 		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($Status == true) {
 			$L_Bit = $this->unsetBit($L_Bit, 4);
@@ -213,8 +214,8 @@
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
 		$Value = GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
-		$L_Bit = $Value >> 8;
-		$H_Bit = $Value & 255;
+		$L_Bit = $Value & 255;
+		$H_Bit = $Value >> 8;
 		IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($Status == true) {
 			$L_Bit = $this->unsetBit($L_Bit, 4);
