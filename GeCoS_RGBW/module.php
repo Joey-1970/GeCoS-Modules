@@ -120,12 +120,7 @@
 						$Number = ($data->Register - 9) / 4;
 						$Value = (($Output[$data->Register] & 15) << 8)  | $Output[$data->Register - 1]; 
 						$Status = boolval($Output[$data->Register] & 16);
-						If ($Value <> GetValueInteger($this->GetIDForIdent("Output_Int_X".$Number))) {
-							SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
-						}
-						If ($Status <> !GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number))) {
-							SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
-						}	
+							
 					}
 					
 				}
@@ -136,19 +131,8 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
-		$Source = substr($Ident, 7, 3);  
-		$Number = intval(substr($Ident, 12, 2));
 		
-		switch($Source) {
-		case "Bln":
-			$this->SetOutputPinStatus($Number, $Value);
-	            	break;
-		case "Int":
-	            	$this->SetOutputPinValue($Number, $Value);
-	            	break;
-	        default:
-	            throw new Exception("Invalid Ident");
-	    	}
+		
 	}
 	    
 	// Beginn der Funktionen
