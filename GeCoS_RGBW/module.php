@@ -58,13 +58,17 @@
 		$this->SetBuffer("Output", serialize($Output));
 		
 		//Status-Variablen anlegen
-		for ($i = 0; $i <= 15; $i++) {
-			/*
-			$this->RegisterVariableBoolean("Output_Bln_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
-			$this->EnableAction("Output_Bln_X".$i);	
-			$this->RegisterVariableInteger("Output_Int_X".$i, "Ausgang X".$i, "Intensity.4096", (($i + 1) * 10) + 5);
-			$this->EnableAction("Output_Int_X".$i);
-			*/
+		for ($i = 0; $i <= 4; $i++) {
+			$this->RegisterVariableBoolean("Status_".($i + 1), "Status ".($i + 1), "~Switch", 10 * $i);
+			$this->EnableAction("Status_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096",20 );
+			$this->EnableAction("Intensity_R_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 30);
+			$this->EnableAction("Intensity_G_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 40);
+			$this->EnableAction("Intensity_B_".($i + 1));
+			$this->RegisterVariableInteger("Color_".($i + 1), "Farbe ".($i + 1), "~HexColor", 50);
+			$this->EnableAction("Color_".($i + 1));
 		}
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
