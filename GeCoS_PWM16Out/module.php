@@ -44,7 +44,6 @@
  		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
  	}           
 	  
-        // Überschreibt die intere IPS_ApplyChanges($id) Funktion
         public function ApplyChanges() 
         {
             	// Diese Zeile nicht löschen
@@ -67,8 +66,6 @@
 		}
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
-			// Logging setzen
-			
 			//ReceiveData-Filter setzen
 			$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"DeviceIdent":'.$this->GetBuffer("DeviceIdent").'.*)|.*"Function":"status".*)';
@@ -111,9 +108,6 @@
 					// Daten zur Kalibrierung
 			  		If (($data->Register >= 6) AND ($data->Register < 70)) {
 			  			$Output[$data->Register] = $data->Value;
-						If ($data->Register < 10) {
-							//IPS_LogMessage("GeCoS_PWM16Out", "Register: ".$data->Register." Wert: ".$data->Value);
-						}
 			  		}
 					
 					If ($data->Register % 2 !=0) {
@@ -127,50 +121,10 @@
 							SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
 						}	
 					}
-					/*
-					If ($data->Register == 69) {
-						for ($i = 6; $i < 70; $i = $i + 4) {
-							$Number = ($i - 6) / 4;
-							$Value = (($Output[$i + 3] & 15) << 8)  | $Output[$i + 2]; 
-							$Status = boolval($Output[$i + 3] & 16);
-							If ($Number == 0) {
-								//IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number." Wert: ".$Value." Status: ".$Status);
-							}
-							If ($Value <> GetValueInteger($this->GetIDForIdent("Output_Int_X".$Number))) {
-								SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
-							}
-							If ($Status <> !GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number))) {
-								SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
-							}						
-						}
-					}
-					*/
 					
 				}
 				$this->SetBuffer("Output", serialize($Output));
 			  	break; 
-			/*
-			case "set_i2c_byte_block":
-			  	$ByteArray = array();
-				$ByteArray = unserialize($data->ByteArray);
-				IPS_LogMessage("GeCoS_PWM16Out", "Anzahl Daten: ".count($ByteArray));
-				for ($i = 6; $i < 70; $i = $i + 4) {
-				   	$Number = ($i - 6) / 4;
-					$Value = ($ByteArray[$i + 3] << 8) | $ByteArray[$i + 2]; 
-					$Status = boolval($ByteArray[$i + 2] & 16);
-					
-					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 2).": ".$ByteArray[$i + 2]);
-					IPS_LogMessage("GeCoS_PWM16Out", "Daten ".($i + 3).": ".$ByteArray[$i + 3]);
-					IPS_LogMessage("GeCoS_PWM16Out", "Nummer: ".$Number);
-					IPS_LogMessage("GeCoS_PWM16Out", "Wert: ".$Value);
-					IPS_LogMessage("GeCoS_PWM16Out", "Status: ".$Status);
-					
-					SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
-					SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
-				}
-				
-			  	break;
-			*/
 	 	}
  	}
 	
@@ -209,7 +163,6 @@
 		else {
 			$H_Bit = $this->setBit($H_Bit, 4);
 		}
-		//IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			/*
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value" => 0)));
@@ -218,7 +171,7 @@
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 3, "Value" => $H_Bit)));
 			*/
 			
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_3" => $H_Bit)));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
 			
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 2)));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 3)));
@@ -244,20 +197,12 @@
 		else {
 			$H_Bit = $this->setBit($H_Bit, 4);
 		}
-		//IPS_LogMessage("GeCoS_PWM16Out", "Value: ".$Value." HBit: ".$H_Bit." LBit: ".$L_Bit);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			/*
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value" => 0)));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 1, "Value" => 0)));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 2, "Value" => $L_Bit)));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 3, "Value" => $H_Bit)));
-			*/
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_3" => $H_Bit)));
-			
+			// Ausgang setzen
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
+			// Ausgang abfragen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 2)));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 3)));
-
-			//$this->GetOutput();
 		}
 	}    
 	    
