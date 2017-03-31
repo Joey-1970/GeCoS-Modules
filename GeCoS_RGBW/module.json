@@ -1,0 +1,14 @@
+{
+  "id": "{8A40AFDC-979B-4688-A014-3BA2B70550E8}",
+  "name": "GeCoS_RGBW",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_RGBW"
+  ],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "childRequirements": [],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "prefix": "GeCoSRGBW"
+}
