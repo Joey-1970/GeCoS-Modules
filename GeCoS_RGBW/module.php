@@ -262,5 +262,19 @@
 	    // ein bestimmtes Bit auf 0 setzen
 	    return $byte & ~(1<<$significance);
 	}
+	    
+	private function Hex2RGB($Hex)
+	{
+		$r = (($Hex >> 16) & 0xFF);
+		$g = (($Hex >> 8) & 0xFF);
+		$b = (($Hex >> 0) & 0xFF);	
+	return array($r, $g, $b);
+	}
+	
+	private function RGB2Hex($r, $g, $b)
+	{
+		$Hex = hexdec(str_pad(dechex($r), 2,'0', STR_PAD_LEFT).str_pad(dechex($g), 2,'0', STR_PAD_LEFT).str_pad(dechex($b), 2,'0', STR_PAD_LEFT));
+	return $Hex;
+	}
 }
 ?>
