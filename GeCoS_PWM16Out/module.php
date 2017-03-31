@@ -117,9 +117,17 @@
 			  		}
 					
 					If ($data->Register % 2 !=0) {
-						
+						$Number = ($data->Register - 9) / 4;
+						$Value = (($Output[$data->Register] & 15) << 8)  | $Output[$data->Register - 1]; 
+						$Status = boolval($Output[$data->Register] & 16);
+						If ($Value <> GetValueInteger($this->GetIDForIdent("Output_Int_X".$Number))) {
+							SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Value);
+						}
+						If ($Status <> !GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number))) {
+							SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), !$Status);
+						}	
 					}
-					
+					/*
 					If ($data->Register == 69) {
 						for ($i = 6; $i < 70; $i = $i + 4) {
 							$Number = ($i - 6) / 4;
@@ -136,6 +144,7 @@
 							}						
 						}
 					}
+					*/
 					
 				}
 				$this->SetBuffer("Output", serialize($Output));
