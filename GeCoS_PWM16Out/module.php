@@ -11,6 +11,7 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 80);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterPropertyInteger("Frequency", 100);
         }
  	
 	public function GetConfigurationForm() 
@@ -34,9 +35,14 @@
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
-		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "Device Bus", "options" => $arrayOptions );
+		
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "100", "value" => 100);
+		$arrayOptions[] = array("label" => "200", "value" => 200);
+		$arrayElements[] = array("type" => "Select", "name" => "Frequency", "caption" => "Frequenz", "options" => $arrayOptions );
 				
+		
 		$arrayActions = array();
 		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
 		
