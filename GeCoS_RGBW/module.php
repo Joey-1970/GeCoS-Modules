@@ -67,6 +67,8 @@
 			$this->EnableAction("Intensity_G_".($i + 1));
 			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 40 + ($i * 50));
 			$this->EnableAction("Intensity_B_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensity Weiß ".($i + 1), "Intensity.4096", 40 + ($i * 50));
+			$this->EnableAction("Intensity_W_".($i + 1));
 			$this->RegisterVariableInteger("Color_".($i + 1), "Farbe ".($i + 1), "~HexColor", 50 + ($i * 50));
 			$this->EnableAction("Color_".($i + 1));
 		}
