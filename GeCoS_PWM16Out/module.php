@@ -40,7 +40,7 @@
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "100", "value" => 100);
 		$arrayOptions[] = array("label" => "200", "value" => 200);
-		$arrayElements[] = array("type" => "Select", "name" => "Frequency", "caption" => "Frequenz", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Select", "name" => "Frequency", "caption" => "Frequenz (Hz)", "options" => $arrayOptions );
 				
 		
 		$arrayActions = array();
