@@ -59,17 +59,19 @@
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 4; $i++) {
-			$this->RegisterVariableBoolean("Status_".($i + 1), "Status ".($i + 1), "~Switch", 10 + ($i * 60));
-			$this->EnableAction("Status_".($i + 1));
-			$this->RegisterVariableInteger("Color_".($i + 1), "Farbe ".($i + 1), "~HexColor", 20 + ($i * 60));
+			$this->RegisterVariableBoolean("Status_RGB_".($i + 1), "Status RGB ".($i + 1), "~Switch", 10 + ($i * 70));
+			$this->EnableAction("Status_RGB_".($i + 1));
+			$this->RegisterVariableInteger("Color_".($i + 1), "Farbe ".($i + 1), "~HexColor", 20 + ($i * 70));
 			$this->EnableAction("Color_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096", 30 + ($i * 60) );
+			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096", 30 + ($i * 70) );
 			$this->EnableAction("Intensity_R_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 40 + ($i * 60));
+			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 40 + ($i * 70));
 			$this->EnableAction("Intensity_G_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 50 + ($i * 60));
+			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 50 + ($i * 70));
 			$this->EnableAction("Intensity_B_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensity Weiß ".($i + 1), "Intensity.4096", 60 + ($i * 60));
+			$this->RegisterVariableBoolean("Status_W_".($i + 1), "Status Weiß ".($i + 1), "~Switch", 60 + ($i * 70));
+			$this->EnableAction("Status_W_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensity Weiß ".($i + 1), "Intensity.4096", 70 + ($i * 70));
 			$this->EnableAction("Intensity_W_".($i + 1));			
 		}
 		
