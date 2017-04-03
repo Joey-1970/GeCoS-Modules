@@ -139,6 +139,19 @@
 		$Channel = $Parts[1];
 		$Number = $Parts[2];
 		
+		switch($Source) {
+		case "Status":
+			//$this->SetOutputPinStatus($Number, $Value);
+	            	break;
+		case "Color":
+	            	//$this->SetOutputPinValue($Number, $Value);
+	            	break;
+		case "Intensity":
+	            	//$this->SetOutputPinValue($Number, $Value);
+	            	break;
+	        default:
+	            throw new Exception("Invalid Ident");
+	    	}
 		
 	}
 	    
