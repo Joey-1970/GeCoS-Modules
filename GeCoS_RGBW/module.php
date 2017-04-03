@@ -166,7 +166,7 @@
 		
 		switch($Source) {
 		case "Status":
-			//$this->SetOutputPinStatus($Number, $Value);
+			$this->SetOutputPinStatus($Group, $Channel, $Value);
 	            	break;
 		case "Color":
 	            	//$this->SetOutputPinValue($Number, $Value);
@@ -220,7 +220,7 @@
 		}
 	}
 	
-	public function SetOutputPinStatus(Int $Output, Bool $Status)
+	public function SetOutputPinStatus(Int $Group, String $Channel, Int $Value)
 	{ 
 		$Output = min(15, max(0, $Output));
 		$Status = min(1, max(0, $Status));
