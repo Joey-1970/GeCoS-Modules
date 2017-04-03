@@ -194,7 +194,7 @@
 		];
 		
 		$ByteArray = array();
-		$StartAddress = = (($Group - 1) * 16) + $ChannelArray[$Channel] + 6;
+		$StartAddress = (($Group - 1) * 16) + $ChannelArray[$Channel] + 6;
 		
 		If ($Channel == "W") {
 			$Status = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
