@@ -187,7 +187,9 @@
 		$Value = min(4095, max(0, $Value));
 		
 		$ChannelArray = [
-		    "RGB" => 0,
+		    "R" => 0,
+		    "G" => 4,
+		    "B" => 8,
 		    "W" => 12,
 		];
 		
@@ -223,9 +225,7 @@
 		$Status = min(1, max(0, $Status));
 				
 		$ChannelArray = [
-		    "R" => 0,
-		    "G" => 4,
-		    "B" => 8,
+		    "RGB" => 0,
 		    "W" => 12,
 		];
 		
