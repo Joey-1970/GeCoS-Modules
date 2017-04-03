@@ -223,6 +223,13 @@
 	{ 
 		$Group = min(4, max(1, $Group));
 		$Status = min(1, max(0, $Status));
+				
+		$ChannelArray = [
+		    "R" => 0,
+		    "G" => 4,
+		    "B" => 8,
+		    "W" => 12,
+		];
 		
 		$StartAddress = (($Group - 1) * 16) + $ChannelArray[$Channel] + 6;
 
