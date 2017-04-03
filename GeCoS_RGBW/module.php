@@ -138,6 +138,17 @@
 						If ($Value <> GetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group))) {
 							SetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group), $Value);
 						}
+						If ($ChannelArray[$Channel] == "W") {
+							If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_W_".$Group))) {
+								SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), !$Status);
+							}
+						}
+						else {
+							If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group))) {
+								SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), !$Status);
+							}
+						}
+
 					}
 					
 				}
