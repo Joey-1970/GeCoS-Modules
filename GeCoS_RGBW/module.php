@@ -136,7 +136,6 @@
 		$Parts = explode("_", $Ident);
 		$Source = $Parts[0];
 		$Channel = $Parts[1];
-		//$ChannelAddress = $ChannelArray[$Parts[1]];
 		$Group = $Parts[2];
 		
 		
