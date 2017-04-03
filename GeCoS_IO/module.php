@@ -255,8 +255,10 @@ class GeCoS_IO extends IPSModule
 					$this->SetMUX($data->DeviceIdent >> 7);
 					$this->CommandClientSocket(pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register, 0).
 								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 1, 0).
-								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 2, 0).
-								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 3, 0), 64);
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 4, 0).
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 5, 0).
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 8, 0).
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 9, 0), 96);
 				}
 		   		break;
 			case "i2c_write_byte":
