@@ -115,11 +115,15 @@
 			  		$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
 					// Daten zur Kalibrierung
-			  		If (($data->Register >= 6) AND ($data->Register < 70)) {
+			  		
+					
+					If (($data->Register >= 6) AND ($data->Register < 70)) {
 			  			$Output[$data->Register] = $data->Value;
 			  		}
 					
 					If ($data->Register % 2 !=0) {
+						$Group = intval(($data->Register - 9) / 16) + 1;
+						
 						$Number = ($data->Register - 9) / 4;
 						$Value = (($Output[$data->Register] & 15) << 8)  | $Output[$data->Register - 1]; 
 						$Status = boolval($Output[$data->Register] & 16);		
