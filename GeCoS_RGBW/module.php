@@ -122,11 +122,22 @@
 			  		}
 					
 					If ($data->Register % 2 !=0) {
-						$Group = intval(($data->Register - 9) / 16) + 1;
+						$ChannelArray = [
+						    0 => "R",
+						    4 => "G",
+						    8 => "B",
+						    12=> "W",
+
+						];
 						
-						$Number = ($data->Register - 9) / 4;
+						$Group = intval(($data->Register - 9) / 16) + 1;
+						$Channel = ($data->Register - 9) - (($Group - 1) * 16);
 						$Value = (($Output[$data->Register] & 15) << 8)  | $Output[$data->Register - 1]; 
-						$Status = boolval($Output[$data->Register] & 16);		
+						$Status = boolval($Output[$data->Register] & 16);
+						
+						If ($Value <> GetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group))) {
+							SetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group), $Value);
+						}
 					}
 					
 				}
