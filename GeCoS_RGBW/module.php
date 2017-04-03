@@ -122,8 +122,7 @@
 					If ($data->Register % 2 !=0) {
 						$Number = ($data->Register - 9) / 4;
 						$Value = (($Output[$data->Register] & 15) << 8)  | $Output[$data->Register - 1]; 
-						$Status = boolval($Output[$data->Register] & 16);
-							
+						$Status = boolval($Output[$data->Register] & 16);		
 					}
 					
 				}
@@ -134,16 +133,11 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
-		$ChannelArray = [
-		    "R" => 0,
-		    "G" => 4,
-		    "B" => 8,
-		    "W" => 12,
-		];
 		$Parts = explode("_", $Ident);
 		$Source = $Parts[0];
-		$ChannelAddress = $ChannelArray[$Parts[1]];
-		$Number = $Parts[2];
+		$Channel = $Parts[1];
+		//$ChannelAddress = $ChannelArray[$Parts[1]];
+		$Group = $Parts[2];
 		
 		
 		switch($Source) {
@@ -154,7 +148,7 @@
 	            	//$this->SetOutputPinValue($Number, $Value);
 	            	break;
 		case "Intensity":
-	            	//$this->SetOutputPinValue($Number, $Value);
+	            	$this->SetOutputPinValue($Group, $Channel, $Value);
 	            	break;
 	        default:
 	            throw new Exception("Invalid Ident");
@@ -163,14 +157,28 @@
 	}
 	    
 	// Beginn der Funktionen
-	public function SetOutputPinValue(Int $Output, Int $Value)
+	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
 	{ 
-		$Output = min(15, max(0, $Output));
+		$Group = min(4, max(1, $Output));
 		$Value = min(4095, max(0, $Value));
 		
+		$ChannelArray = [
+		    "R" => 0,
+		    "G" => 4,
+		    "B" => 8,
+		    "W" => 12,
+		];
+		
 		$ByteArray = array();
-		$StartAddress = ($Output * 4) + 6;
-		$Status = GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
+		$StartAddress = = (($Group - 1) * 16) + $ChannelArray[$Channel] + 6;
+		
+		If ($Channel == "W") {
+			$Status = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		}
+		else {
+			$Status = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		}
+		
 		$L_Bit = $Value & 255;
 		$H_Bit = $Value >> 8;
 		
@@ -181,18 +189,11 @@
 			$H_Bit = $this->setBit($H_Bit, 4);
 		}
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			/*
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value" => 0)));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 1, "Value" => 0)));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 2, "Value" => $L_Bit)));
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 3, "Value" => $H_Bit)));
-			*/
-			
+			// Ausgang setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
-			
+			// Ausgang abfragen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 2)));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_byte", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $StartAddress + 3)));
-			//$this->GetOutput();
 		}
 	}
 	
