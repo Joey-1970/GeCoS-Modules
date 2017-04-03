@@ -62,7 +62,7 @@
 			$this->RegisterVariableBoolean("Status_RGB_".($i + 1), "Status RGB ".($i + 1), "~Switch", 10 + ($i * 70));
 			$this->EnableAction("Status_RGB_".($i + 1));
 			$this->RegisterVariableInteger("Color_RGB_".($i + 1), "Farbe ".($i + 1), "~HexColor", 20 + ($i * 70));
-			$this->EnableAction("Color_".($i + 1));
+			$this->EnableAction("Color_RGB_".($i + 1));
 			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096", 30 + ($i * 70) );
 			$this->EnableAction("Intensity_R_".($i + 1));
 			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 40 + ($i * 70));
