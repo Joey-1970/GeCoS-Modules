@@ -249,6 +249,16 @@ class GeCoS_IO extends IPSModule
 								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 1, 0), 32);
 				}
 		   		break;
+			case "i2c_read_6_byte":
+		   		// I2CRB h r - smb Read Byte Data: read byte from register
+				If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
+					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->CommandClientSocket(pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register, 0).
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 1, 0).
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 2, 0).
+								   pack("L*", 61, $this->GetI2C_DeviceHandle($data->DeviceIdent), $data->Register + 3, 0), 64);
+				}
+		   		break;
 			case "i2c_write_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($this->GetI2C_DeviceHandle($data->DeviceIdent) >= 0) {
