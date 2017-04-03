@@ -134,10 +134,17 @@
 	
 	public function RequestAction($Ident, $Value) 
 	{
+		$ChannelArray = [
+		    "R" => 0,
+		    "G" => 4,
+		    "B" => 8,
+		    "W" => 12,
+		];
 		$Parts = explode("_", $Ident);
 		$Source = $Parts[0];
-		$Channel = $Parts[1];
+		$ChannelAddress = $ChannelArray[$Parts[1]];
 		$Number = $Parts[2];
+		
 		
 		switch($Source) {
 		case "Status":
