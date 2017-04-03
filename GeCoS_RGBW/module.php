@@ -183,7 +183,7 @@
 	// Beginn der Funktionen
 	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
 	{ 
-		$Group = min(4, max(1, $Output));
+		$Group = min(4, max(1, $Group));
 		$Value = min(4095, max(0, $Value));
 		
 		$ChannelArray = [
