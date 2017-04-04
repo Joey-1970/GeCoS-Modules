@@ -149,9 +149,9 @@
 							}
 						}
 						// Farbrad setzen
-						$Value_R = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
-						$Value_G = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
-						$Value_B = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+						$Value_R = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group)));
+						$Value_G = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group)));
+						$Value_B = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group)));
 						SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
 					}
 					
