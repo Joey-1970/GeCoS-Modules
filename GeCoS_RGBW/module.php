@@ -152,7 +152,7 @@
 						$Value_R = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
 						$Value_G = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
 						$Value_B = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
-						SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), 0);
+						SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
 					}
 					
 				}
