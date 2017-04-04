@@ -174,7 +174,7 @@
 			$this->SetOutputPinStatus($Group, $Channel, $Value);
 	            	break;
 		case "Color":
-	            	$this->SetOutputPinColor($Group, $Color);
+	            	$this->SetOutputPinColor($Group, $Value);
 	            	break;
 		case "Intensity":
 	            	$this->SetOutputPinValue($Group, $Channel, $Value);
@@ -286,7 +286,7 @@
 	private function SetOutputPinColor(Int $Group, Int $Color)
 	{
 		// Farbwerte aufsplitten
-		list($Value_R, $Value_G, $Value_B) = $this->Hex2RGB($Value);
+		list($Value_R, $Value_G, $Value_B) = $this->Hex2RGB($Color);
 		
 		$StartAddress = (($Group - 1) * 16) + 6;
 		$Status = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
