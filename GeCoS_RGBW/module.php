@@ -288,6 +288,7 @@
 		// Farbwerte aufsplitten
 		list($Value_R, $Value_G, $Value_B) = $this->Hex2RGB($Value);
 		
+		$StartAddress = (($Group - 1) * 16) + 6;
 		$Status = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
 		// Werte skalieren
 		$Value_R = 4095 / 255 * $Value_R;
