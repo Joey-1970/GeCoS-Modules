@@ -174,7 +174,7 @@
 			$this->SetOutputPinStatus($Group, $Channel, $Value);
 	            	break;
 		case "Color":
-	            	//$this->SetOutputPinValue($Number, $Value);
+	            	$this->SetOutputPinColor($Group, $Color);
 	            	break;
 		case "Intensity":
 	            	$this->SetOutputPinValue($Group, $Channel, $Value);
@@ -282,6 +282,35 @@
 			}
 		}		
 	}    	    
+	    
+	private function SetOutputPinColor(Int $Group, Int $Color)
+	{
+		// Farbwerte aufsplitten
+		list($Value_R, $Value_G, $Value_B) = $this->Hex2RGB($Value);
+		
+		$Status = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		// Werte skalieren
+		$Value_R = 4095 / 255 * $Value_R;
+		$Value_G = 4095 / 255 * $Value_G;
+		$Value_B = 4095 / 255 * $Value_B;
+		
+		$L_Bit_R = $Value_R & 255;
+		$H_Bit_R = $Value_R >> 8;
+		$L_Bit_G = $Value_G & 255;
+		$H_Bit_G = $Value_G >> 8;
+		$L_Bit_B = $Value_B & 255;
+		$H_Bit_B = $Value_B >> 8;
+		If ($Status == true) {
+			$H_Bit_R = $this->unsetBit($H_Bit_R, 4);
+			$H_Bit_G = $this->unsetBit($H_Bit_G, 4);
+			$H_Bit_B = $this->unsetBit($H_Bit_B, 4);
+		}
+		else {
+			$H_Bit_R = $this->setBit($H_Bit_R, 4);
+			$H_Bit_G = $this->setBit($H_Bit_G, 4);
+			$H_Bit_B = $this->setBit($H_Bit_B, 4);
+		}
+	}
 	    
 	private function Setup()
 	{
