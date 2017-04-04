@@ -148,10 +148,15 @@
 								SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), !$Status);
 							}
 						}
-
+						// Farbrad setzen
+						$Value_R = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+						$Value_G = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+						$Value_B = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+						SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), 0);
 					}
 					
 				}
+				
 				$this->SetBuffer("Output", serialize($Output));
 			  	break; 
 	 	}
