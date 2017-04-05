@@ -992,8 +992,13 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 		}
 		
-		for ($i = 0; $i < count($SearchArray); $i++) {
-			//Echo $SearchArray[$i]." - ";
+					
+		for ($j = 4; $j <= 5; $j++) {
+			$this->SetMUX($j);
+			for ($i = 0; $i < count($SearchArray); $i++) {
+				// Handle ermitteln
+				$this->CommandClientSocket(pack("L*", 54, 1, $i, 4, 0), 16);	
+			}
 		}
 	}
 	
