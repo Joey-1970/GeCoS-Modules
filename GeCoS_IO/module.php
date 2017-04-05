@@ -1014,7 +1014,7 @@ class GeCoS_IO extends IPSModule
 				$DeviceIdent = ($j << 7) + $SearchArray[$i];
 				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
 					// Das Gerät ist bereits registriert
-					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." existiert bereits!");
+					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." existiert bereits!");
 				}
 				else {
 					//$I2C_DeviceHandle[$DeviceIdent] = -1;
@@ -1027,9 +1027,10 @@ class GeCoS_IO extends IPSModule
 					//$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
 					// Testweise lesen
-					$Result = $this->CommandClientSocket(pack("L*", 59, $SearchArray[$i], 0, 0), 16);
+					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+					IPS_LogMessage("GeCoS_IO I2C-Suche","Result: ".$Result);
 					If ($Result >= 0) {
-						IPS_LogMessage("GeCoS_IO I2C-Suche","Lese-Result ".$Result." DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+						IPS_LogMessage("GeCoS_IO I2C-Suche","Lese-Result ".$Result." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
 					}
 					// Handle löschen
 					$this->CommandClientSocket(pack("LLLL", 55, $Handle, 0, 0), 16);
