@@ -998,7 +998,7 @@ class GeCoS_IO extends IPSModule
 		}
 		// 16PWMOut
 		for ($i = 80; $i <= 87; $i++) {
-			//$SearchArray[] = $i;
+			$SearchArray[] = $i;
 		}
 		// 4RGBW
 		for ($i = 88; $i <= 95; $i++) {
@@ -1017,24 +1017,26 @@ class GeCoS_IO extends IPSModule
 					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." existiert bereits!");
 				}
 				else {
-					$I2C_DeviceHandle[$DeviceIdent] = -1;
+					//$I2C_DeviceHandle[$DeviceIdent] = -1;
 					// genutzte DeviceIdent noch ohne Handle sichern
-					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+					//SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 					// Handle ermitteln
-					$Result = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 					IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
 					// Prüfen, ob ein Handle vergeben wurde
-					$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
+					//$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $SearchArray[$i], 0, 0), 16);
-					IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
+					If ($Result >= 0) {
+						IPS_LogMessage("GeCoS_IO I2C-Suche","Lese-Result ".$Result." DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+					}
 					// Handle löschen
 					$this->CommandClientSocket(pack("LLLL", 55, $Handle, 0, 0), 16);
-					$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
+					//$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 					// Device aus dem Array entfernen
-					$I2C_DeviceHandle = array_splice($I2C_DeviceHandle, $DeviceIdent, 1);
-					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+					//$I2C_DeviceHandle = array_splice($I2C_DeviceHandle, $DeviceIdent, 1);
+					//SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 				}	
 			}
 		}
