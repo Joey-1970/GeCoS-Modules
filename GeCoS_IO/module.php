@@ -1003,7 +1003,7 @@ class GeCoS_IO extends IPSModule
 		// 16PWMOut
 		for ($i = 80; $i <= 87; $i++) {
 			$SearchArray[] = $i;
-			$DeviceName[] = "16 PWM output";
+			$DeviceName[] = "16 PWM Output";
 		}
 		// 4RGBW
 		for ($i = 88; $i <= 95; $i++) {
@@ -1031,7 +1031,7 @@ class GeCoS_IO extends IPSModule
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					
 					If ($Result >= 0) {
-						IPS_LogMessage("GeCoS_IO I2C-Suche","Ergbnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
+						IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 					}
 					// Handle löschen
 					$this->CommandClientSocket(pack("LLLL", 55, $Handle, 0, 0), 16);
