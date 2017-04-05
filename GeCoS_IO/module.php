@@ -670,7 +670,7 @@ class GeCoS_IO extends IPSModule
 		            		//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Value" => $response[4])));
            			}
            			else {
-           				IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				//IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
 		            	break;
 		        case "59":
@@ -1025,7 +1025,7 @@ class GeCoS_IO extends IPSModule
 					//IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
 					// Prüfen, ob ein Handle vergeben wurde
 					//$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
-					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $SearchArray[$i], 0, 0), 16);
 					If ($Result >= 0) {
