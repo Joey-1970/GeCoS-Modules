@@ -1015,6 +1015,9 @@ class GeCoS_IO extends IPSModule
 					// Prüfen, ob ein Handle vergeben wurde
 					$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+					// Testweise lesen
+					$Result = $this->CommandClientSocket(pack("L*", 61, $SearchArray[$i], 0, 0), 16);
+					IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
 					// Handle löschen
 					$this->CommandClientSocket(pack("LLLL", 55, $Handle, 0, 0), 16);
 					$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
