@@ -210,7 +210,7 @@ class GeCoS_IO extends IPSModule
 					// Handle für das Device löschen
 					$this->CommandClientSocket(pack("L*", 55, GetI2C_DeviceHandle($data->DeviceAddress), 0, 0), 16);
 					// Device aus dem Array löschen
-					array_splice($I2C_DeviceHandle, $data->DeviceAddress, 1); 
+					$I2C_DeviceHandle = array_splice($I2C_DeviceHandle, $data->DeviceAddress, 1); 
 					If (Count($I2C_DeviceHandle) == 0) {
 						SetValueBoolean($this->GetIDForIdent("I2C_Used"), false);
 					}
@@ -544,6 +544,7 @@ class GeCoS_IO extends IPSModule
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
 		}	
+	return;
 	}
 	
 	private function ClientResponse(String $Message)
@@ -770,6 +771,7 @@ class GeCoS_IO extends IPSModule
            			}
            			break;
 		    }
+	return;
 	}
 	
 	public function PIGPIOD_Restart()
@@ -972,7 +974,7 @@ class GeCoS_IO extends IPSModule
 		$this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);		
 	}
 	
-  	private function SearchI2CDevices()
+  	public function SearchI2CDevices()
 	{
 		$SearchArray = Array();
 		// 16In
@@ -992,12 +994,33 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 		}
 		
-					
+		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
+		
 		for ($j = 4; $j <= 5; $j++) {
 			$this->SetMUX($j);
 			for ($i = 0; $i < count($SearchArray); $i++) {
-				// Handle ermitteln
-				$this->CommandClientSocket(pack("L*", 54, 1, $i, 4, 0), 16);	
+				// Prüfen ob diese Device Addresse schon registriert wurde
+				$DeviceIdent = ($j << 7) + $SearchArray[$i];
+				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
+					// Das Gerät ist bereits registriert
+					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." existiert bereits!");
+				}
+				else {
+					$I2C_DeviceHandle[$DeviceIdent] = -1;
+					// genutzte DeviceIdent noch ohne Handle sichern
+					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+					// Handle ermitteln
+					$this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+					// Prüfen, ob ein Handle vergeben wurde
+					$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
+					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+					// Handle löschen
+					$this->CommandClientSocket(pack("LLLL", 55, $Handle, 0, 0), 16);
+					$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
+					// Device aus dem Array entfernen
+					$I2C_DeviceHandle = array_splice($I2C_DeviceHandle, $DeviceIdent, 1);
+					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+				}	
 			}
 		}
 	}
