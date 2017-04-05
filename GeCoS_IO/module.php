@@ -990,11 +990,11 @@ class GeCoS_IO extends IPSModule
 		$SearchArray = Array();
 		// 16In
 		for ($i = 16; $i <= 23; $i++) {
-			//$SearchArray[] = $i;
+			$SearchArray[] = $i;
 		}
 		// 16Out
 		for ($i = 24; $i <= 31; $i++) {
-			//$SearchArray[] = $i;
+			$SearchArray[] = $i;
 		}
 		// 16PWMOut
 		for ($i = 80; $i <= 87; $i++) {
@@ -1025,7 +1025,7 @@ class GeCoS_IO extends IPSModule
 					//IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
 					// Prüfen, ob ein Handle vergeben wurde
 					//$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
-					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $SearchArray[$i], 0, 0), 16);
 					If ($Result >= 0) {
