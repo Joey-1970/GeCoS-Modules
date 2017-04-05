@@ -1027,7 +1027,7 @@ class GeCoS_IO extends IPSModule
 					//$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
 					// Testweise lesen
-					$Result = $this->CommandClientSocket(pack("L*", 61, $Handle, 0, 0), 16);
+					$Result = $this->CommandClientSocket(pack("L*", 61, $Handle, 1, 0), 16);
 					IPS_LogMessage("GeCoS_IO I2C-Suche","Result: ".$Result);
 					If ($Result >= 0) {
 						IPS_LogMessage("GeCoS_IO I2C-Suche","Lese-Result ".$Result." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
