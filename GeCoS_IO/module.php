@@ -527,7 +527,7 @@ class GeCoS_IO extends IPSModule
 				$MessageArray = unpack("L*", $buf);
 				$Command = $MessageArray[1];
 				If (in_array($Command, $CmdVarLen)) {
-					$this->ClientResponse($buf);
+					$Result = $this->ClientResponse($buf);
 					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
 				}
 				// Standardantworten
@@ -535,7 +535,7 @@ class GeCoS_IO extends IPSModule
 					$DataArray = str_split($buf, 16);
 					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
 					for ($i = 0; $i < Count($DataArray); $i++) {
-						$this->ClientResponse($DataArray[$i]);
+						$Result = $this->ClientResponse($DataArray[$i]);
 					}
 				}
 				else {
@@ -544,7 +544,7 @@ class GeCoS_IO extends IPSModule
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
 		}	
-	return;
+	return $Result;
 	}
 	
 	private function ClientResponse(String $Message)
@@ -771,7 +771,7 @@ class GeCoS_IO extends IPSModule
            			}
            			break;
 		    }
-	return;
+	return $response[4];
 	}
 	
 	public function PIGPIOD_Restart()
@@ -1010,7 +1010,8 @@ class GeCoS_IO extends IPSModule
 					// genutzte DeviceIdent noch ohne Handle sichern
 					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 					// Handle ermitteln
-					$this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+					$Result = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+					IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
 					// Prüfen, ob ein Handle vergeben wurde
 					$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$i." an Bus: ".($j - 4)." hat Handle: ".$Handle);
