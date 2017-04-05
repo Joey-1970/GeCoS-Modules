@@ -979,15 +979,15 @@ class GeCoS_IO extends IPSModule
 		$SearchArray = Array();
 		// 16In
 		for ($i = 16; $i <= 23; $i++) {
-			$SearchArray[] = $i;
+			//$SearchArray[] = $i;
 		}
 		// 16Out
 		for ($i = 24; $i <= 31; $i++) {
-			$SearchArray[] = $i;
+			//$SearchArray[] = $i;
 		}
 		// 16PWMOut
 		for ($i = 80; $i <= 87; $i++) {
-			$SearchArray[] = $i;
+			//$SearchArray[] = $i;
 		}
 		// 4RGBW
 		for ($i = 88; $i <= 95; $i++) {
