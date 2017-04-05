@@ -689,7 +689,7 @@ class GeCoS_IO extends IPSModule
 		            		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Register" => $response[3], "Value" => $response[4])));
 		            	}
 		            	else {
-		            		//IPS_LogMessage("GeCoS_IO I2C Read Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));	
+		            		IPS_LogMessage("GeCoS_IO I2C Read Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));	
 		            	}
 		            	break;
 			case "62":
@@ -1018,17 +1018,12 @@ class GeCoS_IO extends IPSModule
 					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." existiert bereits!");
 				}
 				else {
-					//$I2C_DeviceHandle[$DeviceIdent] = -1;
-					// genutzte DeviceIdent noch ohne Handle sichern
-					//SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 					// Handle ermitteln
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 					//IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
-					// Prüfen, ob ein Handle vergeben wurde
-					//$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
-					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
+					
 					// Testweise lesen
-					$Result = $this->CommandClientSocket(pack("L*", 61, $Handle, 1, 0), 16);
+					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					IPS_LogMessage("GeCoS_IO I2C-Suche","Result: ".$Result);
 					If ($Result >= 0) {
 						IPS_LogMessage("GeCoS_IO I2C-Suche","Lese-Result ".$Result." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." hat Handle: ".$Handle);
