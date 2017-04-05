@@ -631,10 +631,12 @@ class GeCoS_IO extends IPSModule
            				//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
            				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
  					// Hier wird der ermittelte Handle der DiviceAdresse/Bus hinzugefügt
-					$I2C_DeviceHandle[($this->GetBuffer("MUX_Channel") << 7) + $response[3]] = $response[4];
+					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
 					
-					//$I2C_DeviceHandle[$response[3]] = $response[4];
- 					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+					if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
+						$I2C_DeviceHandle[$DeviceIdent] = $response[4];
+						SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
+					}
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO I2C Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4]))." Handle für Device ".$response[3]." nicht vergeben!");
