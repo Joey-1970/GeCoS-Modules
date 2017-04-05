@@ -992,6 +992,9 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 		}
 		
+		for ($i = 0; $i < count($SearchArray); $i++) {
+			//Echo $SearchArray[$i]." - ";
+		}
 	}
 	
 	private function GetErrorText(Int $ErrorNumber)
