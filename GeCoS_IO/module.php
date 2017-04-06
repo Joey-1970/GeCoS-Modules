@@ -40,7 +40,18 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false);
+		
+		$arraySort = array();
+		$arraySort[] = array("column" => "Typ", "direction" => "ascending");
+		
+		$arrayColumns = array();
+		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "auto", "add" => "");
+		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "auto", "add" => "");
+		$arrayColumns[] = array("label" => "Bus", "name" => "DeviceBus", "width" => "auto", "add" => "");
+		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "auto", "add" => "");
+		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
+		
+		$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns);
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
