@@ -49,8 +49,8 @@ class GeCoS_IO extends IPSModule
 		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "100px", "add" => "");
 		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "60px", "add" => "");
 		$arrayColumns[] = array("label" => "Bus", "name" => "DeviceBus", "width" => "40px", "add" => "");
-		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "60px", "add" => "");
-		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "40px", "add" => "");
+		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "100px", "add" => "");
+		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "60px", "add" => "");
 		
 		$arrayValues = array();
 		$arrayValues[] = array("DeviceTyp" => "Typ", "DeviceAddress" => "Adresse", "DeviceBus" => "Bus", "InstanceID" => "ID", "DeviceStatus" => "Status", "rowColor" => "#ff0000");
