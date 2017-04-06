@@ -55,6 +55,7 @@ class GeCoS_IO extends IPSModule
 				
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Devices einlesen und in das Values-Array kopieren
+			$DeviceArray = array();
 			$DeviceArray = unserialize($this->SearchI2CDevices());
 			$arrayValues = array();
 			for ($i = 0; $i < Count($DeviceArray); $i++) {
