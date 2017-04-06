@@ -55,7 +55,7 @@ class GeCoS_IO extends IPSModule
 				
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Devices einlesen und in das Values-Array kopieren
-			$DeviceArray = $this->SearchI2CDevices();
+			$DeviceArray = unserialize($this->SearchI2CDevices());
 			$arrayValues = array();
 			for ($i = 0; $i < Count($DeviceArray); $i++) {
 				$arrayValues[] = array("DeviceTyp" => $DeviceArray[$i][0], "DeviceAddress" => $DeviceArray[$i][1], "DeviceBus" => $DeviceArray[$i][2], "InstanceID" => $DeviceArray[$i][3], "DeviceStatus" => $DeviceArray[$i][4], "rowColor" => $DeviceArray[$i][5]);
@@ -1067,7 +1067,7 @@ class GeCoS_IO extends IPSModule
 				}	
 			}
 		}
-	return $DeviceArray;
+	return serialize($DeviceArray);
 	}
 	
 	private function GetErrorText(Int $ErrorNumber)
