@@ -55,10 +55,11 @@ class GeCoS_IO extends IPSModule
 				
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Devices einlesen und in das Values-Array kopieren
-			
+			$DeviceArray = $this->SearchI2CDevices();
 			$arrayValues = array();
-			$arrayValues[] = array("DeviceTyp" => "Typ", "DeviceAddress" => "Adresse", "DeviceBus" => "Bus", "InstanceID" => "ID", "DeviceStatus" => "Status", "rowColor" => "#ff0000");
-
+			for ($i = 0; $i < Count($DeviceArray); $i++) {
+				$arrayValues[] = array("DeviceTyp" => $DeviceArray[$i][0], "DeviceAddress" => $DeviceArray[$i][1], "DeviceBus" => $DeviceArray[$i][2], "InstanceID" => $DeviceArray[$i][3], "DeviceStatus" => $DeviceArray[$i][4], "rowColor" => $DeviceArray[$i][5]);
+			}
 			$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 			$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
 		}
@@ -1009,6 +1010,7 @@ class GeCoS_IO extends IPSModule
 	
   	public function SearchI2CDevices()
 	{
+		$DeviceArray = Array();
 		$DeviceName = Array();
 		$SearchArray = Array();
 		// 16In
@@ -1052,6 +1054,12 @@ class GeCoS_IO extends IPSModule
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					
 					If ($Result >= 0) {
+						$DeviceArray[][0] = $DeviceName[$i];
+						$DeviceArray[][1] = $SearchArray[$i];
+						$DeviceArray[][2] = $j - 4;
+						$DeviceArray[][3] = 12345;
+						$DeviceArray[][4] = "OK";
+						$DeviceArray[][5] = "#FFFFFF";
 						IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 					}
 					// Handle löschen
@@ -1059,6 +1067,7 @@ class GeCoS_IO extends IPSModule
 				}	
 			}
 		}
+	return $DeviceArray;
 	}
 	
 	private function GetErrorText(Int $ErrorNumber)
