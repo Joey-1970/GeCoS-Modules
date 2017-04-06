@@ -1037,6 +1037,8 @@ class GeCoS_IO extends IPSModule
 		
 		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 		
+		$k = 0;
+		
 		for ($j = 4; $j <= 5; $j++) {
 			$this->SetMUX($j);
 			for ($i = 0; $i < count($SearchArray); $i++) {
@@ -1055,12 +1057,13 @@ class GeCoS_IO extends IPSModule
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					
 					If ($Result >= 0) {
-						$DeviceArray[][0] = $DeviceName[$i];
-						$DeviceArray[][1] = $SearchArray[$i];
-						$DeviceArray[][2] = $j - 4;
-						$DeviceArray[][3] = 12345;
-						$DeviceArray[][4] = "OK";
-						$DeviceArray[][5] = "#FFFFFF";
+						$DeviceArray[$k][0] = $DeviceName[$i];
+						$DeviceArray[$k][1] = $SearchArray[$i];
+						$DeviceArray[$k][2] = $j - 4;
+						$DeviceArray[$k][3] = 12345;
+						$DeviceArray[$k][4] = "OK";
+						$DeviceArray[$k][5] = "#FFFFFF";
+						$k = $k + 1;
 						IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 					}
 					// Handle löschen
@@ -1068,7 +1071,7 @@ class GeCoS_IO extends IPSModule
 				}	
 			}
 		}
-		IPS_LogMessage("GeCoS_IO I2C-Suche", print_r($DeviceArray));
+		//IPS_LogMessage("GeCoS_IO I2C-Suche", print_r($DeviceArray));
 	return serialize($DeviceArray);
 	}
 	
