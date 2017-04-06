@@ -40,7 +40,7 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-
+		$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false);
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
