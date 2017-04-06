@@ -1068,6 +1068,7 @@ class GeCoS_IO extends IPSModule
 				}	
 			}
 		}
+		IPS_LogMessage("GeCoS_IO I2C-Suche", print_r($DeviceArray));
 	return serialize($DeviceArray);
 	}
 	
