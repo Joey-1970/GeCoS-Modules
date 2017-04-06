@@ -51,7 +51,10 @@ class GeCoS_IO extends IPSModule
 		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "auto", "add" => "");
 		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
 		
-		$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns);
+		$arrayValues = array();
+		$arrayValues[] = array("DeviceTyp" => "Typ", "DeviceAddress" => "Adresse", "DeviceBus" => "Bus", "InstanceID" => "ID", "DeviceStatus" => "Status", "rowColor" => "#ff0000");
+		
+		$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
