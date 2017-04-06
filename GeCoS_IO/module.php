@@ -57,11 +57,11 @@ class GeCoS_IO extends IPSModule
 		$arrayValues[] = array("DeviceTyp" => "Typ", "DeviceAddress" => "Adresse", "DeviceBus" => "Bus", "InstanceID" => "ID", "DeviceStatus" => "Status", "rowColor" => "#ff0000");
 		
 		$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
-		$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
+		$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
-			$arrayActions[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
+			$arrayActions[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
 		}
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
