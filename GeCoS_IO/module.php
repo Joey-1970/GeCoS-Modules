@@ -1055,7 +1055,7 @@ class GeCoS_IO extends IPSModule
 				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
 					// Das Gerät ist bereits registriert
 					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." existiert bereits!");
-					$Handle = GetI2C_DeviceHandle($DeviceIdent);
+					$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					
