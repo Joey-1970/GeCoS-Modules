@@ -209,7 +209,7 @@ class GeCoS_IO extends IPSModule
 				// Prüfen ob schon ein Device mit dieser Ident vorhanden ist	
 				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
 					// Fehlermeldung in den Instanzen erzeugen
-					IPS_LogMessage("GeCoS_IO","Ein Device mit der Adresse ".$data->DeviceAddress." auf dem Bus ".$data->DeviceBus." ist bereits vorhanden!"); 
+					//IPS_LogMessage("GeCoS_IO","Ein Device mit der Adresse ".$data->DeviceAddress." auf dem Bus ".$data->DeviceBus." ist bereits vorhanden!"); 
 					// Status der betroffenen Instanzen auf "fehlerhaft" setzen
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "DeviceIdent"=> $DeviceIdent,"Status"=>200)));
 				}
@@ -1046,7 +1046,20 @@ class GeCoS_IO extends IPSModule
 				$DeviceIdent = ($j << 7) + $SearchArray[$i];
 				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
 					// Das Gerät ist bereits registriert
-					IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." existiert bereits!");
+					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." existiert bereits!");
+					$Handle = GetI2C_DeviceHandle($DeviceIdent);
+					// Testweise lesen
+					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+					
+					If ($Result >= 0) {
+						$DeviceArray[$k][0] = $DeviceName[$i];
+						$DeviceArray[$k][1] = $SearchArray[$i];
+						$DeviceArray[$k][2] = $j - 4;
+						$DeviceArray[$k][3] = 12345;
+						$DeviceArray[$k][4] = "OK";
+						$DeviceArray[$k][5] = "#FFFFFF";
+						$k = $k + 1;
+					}
 				}
 				else {
 					// Handle ermitteln
