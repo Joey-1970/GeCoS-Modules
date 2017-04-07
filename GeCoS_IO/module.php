@@ -1079,7 +1079,7 @@ class GeCoS_IO extends IPSModule
 						$DeviceArray[$k][0] = $DeviceName[$i];
 						$DeviceArray[$k][1] = $SearchArray[$i];
 						$DeviceArray[$k][2] = $j - 4;
-						$DeviceArray[$k][3] = 12345;
+						$DeviceArray[$k][3] = 0;
 						$DeviceArray[$k][4] = "OK";
 						// Farbe gelb für erreichbare aber nicht registrierte Instanzen
 						$DeviceArray[$k][5] = "#FFFF00";
