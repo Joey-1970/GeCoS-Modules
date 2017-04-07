@@ -112,7 +112,10 @@ class GeCoS_IO extends IPSModule
 		        $this->RegisterMessage($this->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 		        // INSTANCEMESSAGE
 		        $this->RegisterMessage($ParentID, 10505); // Status hat sich geändert
-	
+			
+			$this->GetConfigurationForParent();
+
+			/*
 			If ($ParentID > 0) {
 				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
 		                	IPS_SetProperty($ParentID, 'Host', $this->ReadPropertyString('IPAddress'));
@@ -124,7 +127,8 @@ class GeCoS_IO extends IPSModule
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
 			}
-	
+			*/
+			
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 				// Hardware und Softwareversion feststellen
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
@@ -163,6 +167,10 @@ class GeCoS_IO extends IPSModule
 		else {
 			return;
 		}
+	}
+	
+	public function GetConfigurationForParent() {
+		return "{\"Host\": $this->ReadPropertyString('IPAddress'), \"Port\": \"8888\"}";
 	}
 	
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
