@@ -113,9 +113,8 @@ class GeCoS_IO extends IPSModule
 		        // INSTANCEMESSAGE
 		        $this->RegisterMessage($ParentID, 10505); // Status hat sich geändert
 			
-			$this->GetConfigurationForParent();
-
-			/*
+			//$this->GetConfigurationForParent();
+			
 			If ($ParentID > 0) {
 				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
 		                	IPS_SetProperty($ParentID, 'Host', $this->ReadPropertyString('IPAddress'));
@@ -127,7 +126,7 @@ class GeCoS_IO extends IPSModule
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
 			}
-			*/
+			
 			
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 				// Hardware und Softwareversion feststellen
@@ -170,7 +169,7 @@ class GeCoS_IO extends IPSModule
 	}
 	
 	public function GetConfigurationForParent() {
-		return "{\"Host\": $this->ReadPropertyString('IPAddress'), \"Port\": \"8888\"}";
+		return "{\"Host\": $this->ReadPropertyString('IPAddress'), \"Port\": \"8888\", \"Open\": \"true\"}";
 	}
 	
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
