@@ -1051,15 +1051,20 @@ class GeCoS_IO extends IPSModule
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					
+					$DeviceArray[$k][0] = $DeviceName[$i];
+					$DeviceArray[$k][1] = $SearchArray[$i];
+					$DeviceArray[$k][2] = $j - 4;
+					$DeviceArray[$k][3] = 12345;
+					$DeviceArray[$k][4] = "OK";
+					
 					If ($Result >= 0) {
-						$DeviceArray[$k][0] = $DeviceName[$i];
-						$DeviceArray[$k][1] = $SearchArray[$i];
-						$DeviceArray[$k][2] = $j - 4;
-						$DeviceArray[$k][3] = 12345;
-						$DeviceArray[$k][4] = "OK";
-						$DeviceArray[$k][5] = "#FFFFFF";
-						$k = $k + 1;
+						$DeviceArray[$k][5] = "#00FF00";
+						
 					}
+					else {
+						$DeviceArray[$k][5] = "#FF0000";
+					}
+					$k = $k + 1;
 				}
 				else {
 					// Handle ermitteln
@@ -1075,7 +1080,7 @@ class GeCoS_IO extends IPSModule
 						$DeviceArray[$k][2] = $j - 4;
 						$DeviceArray[$k][3] = 12345;
 						$DeviceArray[$k][4] = "OK";
-						$DeviceArray[$k][5] = "#FFFFFF";
+						$DeviceArray[$k][5] = "#FFFF00";
 						$k = $k + 1;
 						IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 					}
