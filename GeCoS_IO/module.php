@@ -1058,10 +1058,11 @@ class GeCoS_IO extends IPSModule
 					$DeviceArray[$k][4] = "OK";
 					
 					If ($Result >= 0) {
-						$DeviceArray[$k][5] = "#00FF00";
-						
+						// Farbe grün für erreichbare und registrierte Instanzen
+						$DeviceArray[$k][5] = "#00FF00";						
 					}
 					else {
+						// Farbe rot für nicht erreichbare aber registrierte Instanzen
 						$DeviceArray[$k][5] = "#FF0000";
 					}
 					$k = $k + 1;
@@ -1080,6 +1081,7 @@ class GeCoS_IO extends IPSModule
 						$DeviceArray[$k][2] = $j - 4;
 						$DeviceArray[$k][3] = 12345;
 						$DeviceArray[$k][4] = "OK";
+						// Farbe gelb für erreichbare aber nicht registrierte Instanzen
 						$DeviceArray[$k][5] = "#FFFF00";
 						$k = $k + 1;
 						IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
