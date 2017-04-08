@@ -685,7 +685,19 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "54":
 		        	If ($response[4] >= 0 ) {
-           				//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
+           				$InstanceArray = Array();
+					$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+					// DeviceIdent aus den Daten ermitteln
+					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
+					// Die InstanzID aus dem Array ermitteln
+					$InstanceID = $this->InstanceArraySearch("DeviceIdent", $DeviceIdent);
+					// den ermittelte Handle ins Array schreiben
+					$InstanceArray[$InstanceID]["Handle"] = $response[4];
+					// Daten sichern
+					$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+					SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+					
+					//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
            				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
  					// Hier wird der ermittelte Handle der DiviceAdresse/Bus hinzugefügt
 					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
