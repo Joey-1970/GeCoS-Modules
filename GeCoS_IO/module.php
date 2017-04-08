@@ -233,6 +233,8 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray[$data->InstanceID]["DeviceIdent"] = ($data->DeviceBus << 7) + $data->DeviceAddress;
 				$InstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 				$InstanceArray[$data->InstanceID]["Handle"] = -1;
+				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				
 				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 				// DeviceIdent bilden
@@ -256,8 +258,7 @@ class GeCoS_IO extends IPSModule
 					// Handle ermitteln
 					$this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);	
 				}
-				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+				
 				break;
 		   	case "i2c_destroy":
 				//IPS_LogMessage("IPS2GPIO I2C Destroy: ",$data->DeviceAddress." , ".$data->Register); 
@@ -693,7 +694,9 @@ class GeCoS_IO extends IPSModule
 					$Instance = intval($this->InstanceArraySearch("DeviceIdent", intval($DeviceIdent)));
 					IPS_LogMessage("GeCoS_IO I2C Handle", "InstanceID: ".$Instance." DeviceIdent: ".$DeviceIdent);
 					// den ermittelte Handle ins Array schreiben
-					$InstanceArray[$Instance]["Handle"] = $response[4];
+					If ($Instance > 0) {
+						$InstanceArray[$Instance]["Handle"] = $response[4];
+					}
 					// Daten sichern
 					$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 					SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
