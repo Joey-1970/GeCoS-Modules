@@ -1004,6 +1004,7 @@ class GeCoS_IO extends IPSModule
 	
 	private function InstanceArraySearch($SearchKey, $SearchValue)
 	{
+		$Result = "";
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 		foreach ($InstanceArray as $Type => $Properties) {
