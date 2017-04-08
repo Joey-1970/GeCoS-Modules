@@ -102,6 +102,12 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("I2C_Handle");
 			IPS_SetHidden($this->GetIDForIdent("I2C_Handle"), true);
 			
+			$this->RegisterVariableString("Test", "Test", "", 180);
+			$this->DisableAction("Test");
+			IPS_SetHidden($this->GetIDForIdent("Test"), true);
+			
+			$InstanceArray = Array();
+			$this->SetBuffer("InstanceArray", $InstanceArray);
 			$this->SetBuffer("HardwareRev", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Channel", 1);
@@ -179,6 +185,9 @@ class GeCoS_IO extends IPSModule
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
         IPS_LogMessage("GeCoS MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
+		$InstanceArray = Array();
+		$InstanceArray = unserialize($this->SetBuffer("InstanceArray"));
+			
 		switch ($Message) {
 			case 10100:
 				If ($Data[0] == 10103) {
@@ -187,6 +196,7 @@ class GeCoS_IO extends IPSModule
 				break;
 			case 11101:
 				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz ".$SenderID." wurde verbunden");
+				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				break;
 			case 11102:
 				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
@@ -197,6 +207,8 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 		}
+		$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+		SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
     	}
 	  
 	 public function ForwardData($JSONString) 
