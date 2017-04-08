@@ -989,6 +989,20 @@ class GeCoS_IO extends IPSModule
 	return $I2C_Device;
 	}
 	
+	private function InstanceArraySearch($SearchKey, $SearchValue)
+	{
+		$InstanceArray = Array();
+		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		foreach ($InstanceArray as $Type => $Properties) {
+			foreach ($Properties as $Property => $Value) {
+		    		If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+					$Result = $Type;
+				}
+		  	}
+		}
+	return $Result;
+	}
+
 	private function ResetI2CHandle()
 	{
 		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
