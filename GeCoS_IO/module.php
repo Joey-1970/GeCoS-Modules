@@ -690,8 +690,8 @@ class GeCoS_IO extends IPSModule
 					// DeviceIdent aus den Daten ermitteln
 					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
 					// Die InstanzID aus dem Array ermitteln
-					$Instance = intval($this->InstanceArraySearch("DeviceIdent", $DeviceIdent));
-					IPS_LogMessage("GeCoS_IO I2C Handle", "InstanceID: ".$Instance);
+					$Instance = intval($this->InstanceArraySearch("DeviceIdent", intval($DeviceIdent)));
+					IPS_LogMessage("GeCoS_IO I2C Handle", "InstanceID: ".$Instance." DeviceIdent: ".$DeviceIdent);
 					// den ermittelte Handle ins Array schreiben
 					$InstanceArray[$Instance]["Handle"] = $response[4];
 					// Daten sichern
