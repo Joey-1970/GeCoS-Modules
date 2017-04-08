@@ -186,7 +186,7 @@ class GeCoS_IO extends IPSModule
     	{
         IPS_LogMessage("GeCoS MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
 		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->SetBuffer("InstanceArray"));
+		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 			
 		switch ($Message) {
 			case 10100:
@@ -226,6 +226,14 @@ class GeCoS_IO extends IPSModule
 		   	// I2C Kommunikation
 		   	case "set_used_i2c":		   	
 				// die genutzten Device Adressen anlegen
+				$InstanceArray = Array();
+				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+				$InstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
+				$InstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
+				$InstanceArray[$data->InstanceID]["DeviceIdent"] = ($data->DeviceBus << 7) + $data->DeviceAddress;
+				$InstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+				$InstanceArray[$data->InstanceID]["Handle"] = -1;
+				
 				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 				// DeviceIdent bilden
 				$DeviceIdent = ($data->DeviceBus << 7) + $data->DeviceAddress;
@@ -247,7 +255,9 @@ class GeCoS_IO extends IPSModule
 					$this->SetMUX($data->DeviceBus);
 					// Handle ermitteln
 					$this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);	
-				}		   	
+				}
+				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				break;
 		   	case "i2c_destroy":
 				//IPS_LogMessage("IPS2GPIO I2C Destroy: ",$data->DeviceAddress." , ".$data->Register); 
