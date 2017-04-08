@@ -107,7 +107,7 @@ class GeCoS_IO extends IPSModule
 			IPS_SetHidden($this->GetIDForIdent("Test"), true);
 			
 			$InstanceArray = Array();
-			$this->SetBuffer("InstanceArray", $InstanceArray);
+			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 			$this->SetBuffer("HardwareRev", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Channel", 1);
