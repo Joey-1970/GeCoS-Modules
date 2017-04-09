@@ -1082,7 +1082,9 @@ class GeCoS_IO extends IPSModule
 		// genutzte Device-Ident noch ohne Handle sichern
 		SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 		// Handle ermitteln
-		$this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);		
+		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);
+		
+	return $Handle;
 	}
 	
   	public function SearchI2CDevices()
