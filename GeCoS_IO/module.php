@@ -274,14 +274,14 @@ class GeCoS_IO extends IPSModule
 			case "i2c_read_bytes":
 				// I2CRD h num - i2c Read bytes
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 56, $InstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 				}
 				break;  
 			case "i2c_write_bytes":
 				// I2CWD h bvs - i2c Write data
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
 					$this->CommandClientSocket(pack("L*", 57, $InstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
@@ -290,14 +290,14 @@ class GeCoS_IO extends IPSModule
 			case "i2c_read_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
 				}
 		   		break;
 			case "i2c_read_2_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
 								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0), 32);
 				}
@@ -305,7 +305,7 @@ class GeCoS_IO extends IPSModule
 			case "i2c_read_6_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
 								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0).
 								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0).
@@ -317,14 +317,14 @@ class GeCoS_IO extends IPSModule
 			case "i2c_write_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
 				}
 		   		break;
 			case "i2c_write_4_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
 								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
 								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
@@ -334,7 +334,7 @@ class GeCoS_IO extends IPSModule
 			case "i2c_write_12_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($data->DeviceIdent >> 7);
+					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
 								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
 								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
