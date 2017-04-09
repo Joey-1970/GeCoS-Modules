@@ -101,12 +101,12 @@
 				}
 				break;
 			case "status":
-			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+			   	If ($data->InstanceID == $this->InstanceID) {
 				   	$this->SetStatus($data->Status);
 			   	}
 			   	break;
 			case "set_i2c_data":
-			  	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+			  	If ($data->InstanceID == $this->InstanceID) {
 			  		$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
 					// Daten zur Kalibrierung
