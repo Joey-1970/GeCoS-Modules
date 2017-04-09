@@ -232,10 +232,16 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
 				$InstanceArray[$data->InstanceID]["DeviceIdent"] = ($data->DeviceBus << 7) + $data->DeviceAddress;
 				$InstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
-				$InstanceArray[$data->InstanceID]["Handle"] = -1;
+				// MUX auf den erforderlichen Channel stellen
+				$this->SetMUX($data->DeviceBus);
+				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
+				$InstanceArray[$data->InstanceID]["Handle"] = $Handle;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
-				
+				// Messages einrichten
+				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
+				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
+
 				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 				// DeviceIdent bilden
 				$DeviceIdent = ($data->DeviceBus << 7) + $data->DeviceAddress;
@@ -247,16 +253,16 @@ class GeCoS_IO extends IPSModule
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "DeviceIdent"=> $DeviceIdent,"Status"=>200)));
 				}
 				else {
-					$I2C_DeviceHandle[$DeviceIdent] = -1;
+					$I2C_DeviceHandle[$DeviceIdent] = $Handle;
 					// genutzte DeviceIdent noch ohne Handle sichern
 					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 					// Messages einrichten
-					$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
-					$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
+					//$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
+					//$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 					// MUX auf den erforderlichen Channel stellen
-					$this->SetMUX($data->DeviceBus);
+					//$this->SetMUX($data->DeviceBus);
 					// Handle ermitteln
-					$this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);	
+					//$this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);	
 				}
 				
 				break;
@@ -686,7 +692,8 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "54":
 		        	If ($response[4] >= 0 ) {
-           				$InstanceArray = Array();
+           				/*
+					$InstanceArray = Array();
 					$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 					// DeviceIdent aus den Daten ermitteln
 					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
@@ -709,6 +716,7 @@ class GeCoS_IO extends IPSModule
 						$I2C_DeviceHandle[$DeviceIdent] = $response[4];
 						SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 					}
+					*/
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO I2C Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4]))." Handle für Device ".$response[3]." nicht vergeben!");
