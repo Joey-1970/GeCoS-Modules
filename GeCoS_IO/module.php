@@ -110,7 +110,9 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 			$this->SetBuffer("HardwareRev", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
+			$this->SetBuffer("MUX_Handle", -1);
 			$this->SetBuffer("MUX_Channel", 1);
+			$this->SetBuffer("RTC_Handle", -1);
 			
 			$ParentID = $this->GetParentID();
 		        // Änderung an den untergeordneten Instanzen
@@ -157,9 +159,11 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
 				// RTC einrichten
-				$this->GetOnboardI2CHandle(104);
+				$RTC_Handle = $this->GetOnboardI2CHandle(104);
+				$this->SetBuffer("RTC_Handle", $RTC_Handle);
 				// MUX einrichten
-				$this->GetOnboardI2CHandle(112);
+				$MUX_Handle = $this->GetOnboardI2CHandle(112);
+				$this->SetBuffer("MUX_Handle", $MUX_Handle);
 				// MUX setzen
 				$this->SetMUX(1);
 				
@@ -1059,11 +1063,12 @@ class GeCoS_IO extends IPSModule
 		// 4 = Channel 0
 		// 5 = Channel 1
 		$this->SetBuffer("MUX_Channel", $Port);
+		$MUX_Handle = $this->GetBuffer("MUX_Handle");
 		If ($Port == 1) {
-			$this->CommandClientSocket(pack("L*", 60, intval($this->GetI2C_DeviceHandle(240)), 0, 0), 16);
+			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
 		}
 		else {
-			$this->CommandClientSocket(pack("L*", 60, intval($this->GetI2C_DeviceHandle(240)), $Port, 0), 16);
+			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
 		}
 	return;
 	}
