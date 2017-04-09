@@ -123,20 +123,6 @@ class GeCoS_IO extends IPSModule
 			
 			$this->GetConfigurationForParent();
 			
-			/*
-			If ($ParentID > 0) {
-				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
-		                	IPS_SetProperty($ParentID, 'Host', $this->ReadPropertyString('IPAddress'));
-				}
-				If (IPS_GetProperty($ParentID, 'Port') <> 8888) {
-		                	IPS_SetProperty($ParentID, 'Port', 8888);
-				}
-				If (IPS_GetName($ParentID) == "Client Socket") {
-		                	IPS_SetName($ParentID, "GeCoS");
-				}
-			}
-			*/
-			
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 				// Hardware und Softwareversion feststellen
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
@@ -199,7 +185,6 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case 11101:
-				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz ".$SenderID." wurde verbunden");
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				break;
 			case 11102:
