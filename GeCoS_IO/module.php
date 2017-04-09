@@ -682,31 +682,7 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "54":
 		        	If ($response[4] >= 0 ) {
-           				/*
-					$InstanceArray = Array();
-					$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-					// DeviceIdent aus den Daten ermitteln
-					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
-					// Die InstanzID aus dem Array ermitteln
-					$Instance = intval($this->InstanceArraySearch("DeviceIdent", intval($DeviceIdent)));
-					// den ermittelte Handle ins Array schreiben
-					If ($Instance > 0) {
-						$InstanceArray[$Instance]["Handle"] = $response[4];
-					}
-					// Daten sichern
-					$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-					SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
-					
-					//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
-           				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
- 					// Hier wird der ermittelte Handle der DiviceAdresse/Bus hinzugefügt
-					$DeviceIdent = ($this->GetBuffer("MUX_Channel") << 7) + $response[3];
-					
-					if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
-						$I2C_DeviceHandle[$DeviceIdent] = $response[4];
-						SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
-					}
-					*/
+ 					//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO I2C Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4]))." Handle für Device ".$response[3]." nicht vergeben!");
