@@ -102,12 +102,12 @@
 				}
 				break;
 			   case "status":
-			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+			   	If ($data->InstanceID == $this->InstanceID) {
 				   	$this->SetStatus($data->Status);
 			   	}
 			   	break;
 			  case "set_i2c_byte_block":
-			   	If ($data->DeviceIdent == $this->GetBuffer("DeviceIdent")) {
+			   	If ($data->InstanceID == $this->InstanceID) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
 					SetValueInteger($this->GetIDForIdent("OutputBank0"), $ByteArray[1]);
