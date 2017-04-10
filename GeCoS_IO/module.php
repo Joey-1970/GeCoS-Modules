@@ -229,7 +229,8 @@ class GeCoS_IO extends IPSModule
 				// Messages einrichten
 				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
-
+				
+				/*
 				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
 				// DeviceIdent bilden
 				$DeviceIdent = ($data->DeviceBus << 7) + $data->DeviceAddress;
@@ -252,7 +253,7 @@ class GeCoS_IO extends IPSModule
 					// Handle ermitteln
 					//$this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);	
 				}
-				
+				*/
 				break;
 		
 			case "i2c_read_bytes":
@@ -1093,14 +1094,17 @@ class GeCoS_IO extends IPSModule
 					$DeviceArray[$k][0] = $DeviceName[$i];
 					$DeviceArray[$k][1] = $SearchArray[$i];
 					$DeviceArray[$k][2] = $j - 4;
-					$DeviceArray[$k][3] = 12345;
-					$DeviceArray[$k][4] = "OK";
+					
 					
 					If ($Result >= 0) {
+						$DeviceArray[$k][3] = $this->InstanceArraySearch("Handle", $Handle);
+						$DeviceArray[$k][4] = "OK";
 						// Farbe grün für erreichbare und registrierte Instanzen
 						$DeviceArray[$k][5] = "#00FF00";						
 					}
 					else {
+						$DeviceArray[$k][3] = 0;
+						$DeviceArray[$k][4] = "Inaktiv";
 						// Farbe rot für nicht erreichbare aber registrierte Instanzen
 						$DeviceArray[$k][5] = "#FF0000";
 					}
