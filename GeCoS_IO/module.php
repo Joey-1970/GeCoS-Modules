@@ -219,7 +219,6 @@ class GeCoS_IO extends IPSModule
 				// die genutzten Device Adressen anlegen
 				$InstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
 				$InstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
-				$InstanceArray[$data->InstanceID]["DeviceIdent"] = ($data->DeviceBus << 7) + $data->DeviceAddress;
 				$InstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 				// MUX auf den erforderlichen Channel stellen
 				$this->SetMUX($data->DeviceBus);
@@ -979,7 +978,20 @@ class GeCoS_IO extends IPSModule
 		}
 	return $Result;
 	}
-
+	
+	private function InstanceArrayHandleSearch(String $DeviceBus, Int $DeviceAddress)
+	{
+		$Result = -1;
+		$InstanceArray = Array();
+		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		foreach ($InstanceArray as $Type => $Properties) {
+			If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
+			    $Result = $InstanceArray[$Type]["Handle"];
+			}
+		}
+	return $Result;
+	}
+	
 	private function ResetI2CHandle()
 	{
 		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
@@ -1070,11 +1082,11 @@ class GeCoS_IO extends IPSModule
 			$this->SetMUX($j);
 			for ($i = 0; $i < count($SearchArray); $i++) {
 				// Prüfen ob diese Device Addresse schon registriert wurde
-				$DeviceIdent = ($j << 7) + $SearchArray[$i];
-				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
+				//$DeviceIdent = ($j << 7) + $SearchArray[$i];
+				//if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
+				$Handle = $this->InstanceArrayHandleSearch($j, $SearchArray[$i]);
+				if ($Handle >= 0) {
 					// Das Gerät ist bereits registriert
-					//IPS_LogMessage("GeCoS_IO I2C-Suche","DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4)." existiert bereits!");
-					$Handle = $this->GetI2C_DeviceHandle($DeviceIdent);
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					
@@ -1097,7 +1109,6 @@ class GeCoS_IO extends IPSModule
 				else {
 					// Handle ermitteln
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
-					//IPS_LogMessage("GeCoS_IO I2C-Suche","Result ".$Result);
 					
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
@@ -1118,7 +1129,6 @@ class GeCoS_IO extends IPSModule
 				}	
 			}
 		}
-		//IPS_LogMessage("GeCoS_IO I2C-Suche", print_r($DeviceArray));
 	return serialize($DeviceArray);
 	}
 	
