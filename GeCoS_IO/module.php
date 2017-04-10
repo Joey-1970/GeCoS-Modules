@@ -83,7 +83,7 @@ class GeCoS_IO extends IPSModule
 		
 		// Nachrichten abonnieren
 		// Kernel
-	        $this->RegisterMessage($this->InstanceID, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
+	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
 			$this->RegisterVariableInteger("Handle", "Handle", "", 100);
