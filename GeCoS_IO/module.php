@@ -126,9 +126,6 @@ class GeCoS_IO extends IPSModule
 				// I2C-Handle zurücksetzen
 				$this->ResetI2CHandle(0);
 
-				$I2C_DeviceHandle = array();
-				SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
-				
 				// Notify Starten
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
@@ -981,15 +978,8 @@ class GeCoS_IO extends IPSModule
 	
 	private function GetOnboardI2CHandle($DeviceAddress)
 	{
-		// die genutzten Device Adressen anlegen
-		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
-		// Bei Bus 1 Addition von 128
-		$I2C_DeviceHandle[(1 << 7) + $DeviceAddress] = -1;
-		// genutzte Device-Ident noch ohne Handle sichern
-		SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
 		// Handle ermitteln
-		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);
-		
+		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);	
 	return $Handle;
 	}
 	
