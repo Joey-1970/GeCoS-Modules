@@ -128,7 +128,7 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
 				
 				// I2C-Handle zurücksetzen
-				$this->ResetI2CHandle();
+				$this->ResetI2CHandle(0);
 
 				$I2C_DeviceHandle = array();
 				SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
@@ -432,11 +432,9 @@ class GeCoS_IO extends IPSModule
 	// Aktualisierung der genutzten Pins und der Notifikation
 	private function Get_PinUpdate()
 	{
-		// Bisherige I2C-Handle löschen
-		$I2C_DeviceHandle = array_values(unserialize(GetValueString($this->GetIDForIdent("I2C_Handle"))));
-		for ($i = 2; $i < Count($I2C_DeviceHandle); $i++) {
-			$this->CommandClientSocket(pack("L*", 55, $I2C_DeviceHandle[$i], 0, 0), 16);
-		}
+		// I2C-Handle zurücksetzen
+		$this->ResetI2CHandle(2);
+		
 		// Pins ermitteln die genutzt werden
 		$PinUsed = array();
 		// Reservieren der Schnittstellen GPIO
@@ -967,12 +965,12 @@ class GeCoS_IO extends IPSModule
 	return $Result;
 	}
 	
-	private function ResetI2CHandle()
+	private function ResetI2CHandle($MinHandle)
 	{
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 		foreach ($InstanceArray as $Type => $Properties) {
-			If ($InstanceArray[$Type]["Handle"] >= 0)  {
+			If ($InstanceArray[$Type]["Handle"] >= $MinHandle)  {
 			    	// Handle löschen
 				$this->CommandClientSocket(pack("L*", 55, $InstanceArray[$Type]["Handle"], 0, 0), 16);
 				$InstanceArray[$Type]["Handle"] = -1;
