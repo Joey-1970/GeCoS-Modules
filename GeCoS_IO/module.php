@@ -227,33 +227,8 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				// Messages einrichten
-				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
-				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
-				
-				/*
-				$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
-				// DeviceIdent bilden
-				$DeviceIdent = ($data->DeviceBus << 7) + $data->DeviceAddress;
-				// Prüfen ob schon ein Device mit dieser Ident vorhanden ist	
-				if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
-					// Fehlermeldung in den Instanzen erzeugen
-					//IPS_LogMessage("GeCoS_IO","Ein Device mit der Adresse ".$data->DeviceAddress." auf dem Bus ".$data->DeviceBus." ist bereits vorhanden!"); 
-					// Status der betroffenen Instanzen auf "fehlerhaft" setzen
-					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID"=> $data->InstanceID,"Status"=>200)));
-				}
-				else {
-					$I2C_DeviceHandle[$DeviceIdent] = $Handle;
-					// genutzte DeviceIdent noch ohne Handle sichern
-					SetValueString($this->GetIDForIdent("I2C_Handle"), serialize($I2C_DeviceHandle));
-					// Messages einrichten
-					//$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
-					//$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
-					// MUX auf den erforderlichen Channel stellen
-					//$this->SetMUX($data->DeviceBus);
-					// Handle ermitteln
-					//$this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);	
-				}
-				*/
+				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
+				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				break;
 		
 			case "i2c_read_bytes":
@@ -717,7 +692,6 @@ class GeCoS_IO extends IPSModule
 			case "61":
 		            	If ($response[4] >= 0) {
 		            		//IPS_LogMessage("GeCoS_IO I2C Read Byte","Handle: ".$response[2]." Register: ".$response[3]." Value: ".$response[4]." DeviceSign: ".$this->GetI2C_HandleDevice($response[2]));
-		            		
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Value" => $response[4])));
 		            	}
 		            	else {
@@ -1083,8 +1057,6 @@ class GeCoS_IO extends IPSModule
 			$this->SetMUX($j);
 			for ($i = 0; $i < count($SearchArray); $i++) {
 				// Prüfen ob diese Device Addresse schon registriert wurde
-				//$DeviceIdent = ($j << 7) + $SearchArray[$i];
-				//if (array_key_exists($DeviceIdent, $I2C_DeviceHandle)) {
 				$Handle = $this->InstanceArrayHandleSearch($j, $SearchArray[$i]);
 				if ($Handle >= 0) {
 					// Das Gerät ist bereits registriert
@@ -1094,7 +1066,6 @@ class GeCoS_IO extends IPSModule
 					$DeviceArray[$k][0] = $DeviceName[$i];
 					$DeviceArray[$k][1] = $SearchArray[$i];
 					$DeviceArray[$k][2] = $j - 4;
-					
 					
 					If ($Result >= 0) {
 						$DeviceArray[$k][3] = $this->InstanceArraySearch("Handle", $Handle);
