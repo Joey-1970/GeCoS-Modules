@@ -1008,9 +1008,7 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 			$DeviceName[] = "4 RGBW Output";
 		}
-		
-		$I2C_DeviceHandle = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
-		
+				
 		$k = 0;
 		
 		for ($j = 4; $j <= 5; $j++) {
