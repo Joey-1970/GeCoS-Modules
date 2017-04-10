@@ -97,11 +97,7 @@ class GeCoS_IO extends IPSModule
 			$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 108);
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
-			
-			$this->RegisterVariableString("I2C_Handle", "I2C_Handle", "", 160);
-			$this->DisableAction("I2C_Handle");
-			IPS_SetHidden($this->GetIDForIdent("I2C_Handle"), true);
-			
+
 			$this->RegisterVariableString("Test", "Test", "", 180);
 			$this->DisableAction("Test");
 			IPS_SetHidden($this->GetIDForIdent("Test"), true);
@@ -909,32 +905,6 @@ class GeCoS_IO extends IPSModule
 			$this->SetStatus(104);
 		}
 	return $result;
-	}
-	
-	private function GetI2C_DeviceHandle(Int $DeviceAddress)
-	{
-		// Gibt für ein Device den verknüpften Handle aus
-		$I2C_HandleData = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
- 		If (array_key_exists($DeviceAddress, $I2C_HandleData)) {
- 			$I2C_Handle = $I2C_HandleData[$DeviceAddress];
- 		}
- 		else {
- 			$I2C_Handle = -1;	
- 		}			  
-	return $I2C_Handle;
-	}
-	
-	private function GetI2C_HandleDevice(Int $I2C_Handle)
-	{
-		// Gibt für ein I2C-Device die Adresse aus
-		$I2C_HandleData = unserialize(GetValueString($this->GetIDForIdent("I2C_Handle")));
- 		If (array_search($I2C_Handle, $I2C_HandleData) == false) {
- 			$I2C_Device = -1;
- 		}
- 		else {
- 			$I2C_Device = array_search($I2C_Handle, $I2C_HandleData);	
- 		}			  
-	return $I2C_Device;
 	}
 	
 	private function InstanceArraySearch(String $SearchKey, Int $SearchValue)
