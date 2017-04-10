@@ -102,7 +102,6 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("Test");
 			IPS_SetHidden($this->GetIDForIdent("Test"), true);
 			
-			$this->SetBuffer("HardwareRev", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
 			$this->SetBuffer("MUX_Channel", 1);
@@ -122,8 +121,12 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
 				
 				// I2C-Handle zurücksetzen
-				$this->ResetI2CHandle(0);
-
+				$InstanceArray = Array();
+				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+				If (count($InstanceArray) > 0) {
+					$this->ResetI2CHandle(0);
+				}
+				
 				// Notify Starten
 				SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
@@ -600,7 +603,6 @@ class GeCoS_IO extends IPSModule
            			$Typ[1] = array(2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22, 23, 24, 25, 27);
            			$Typ[2] = array(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27);
            			
-           			$this->SetBuffer("HardwareRev", $response[4]);
 				SetValueString($this->GetIDForIdent("Hardware"), $this->GetHardware($response[4]));
            			
            			if (in_array($response[4], $Model[0])) {
