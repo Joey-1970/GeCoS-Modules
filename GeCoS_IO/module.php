@@ -102,8 +102,6 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("Test");
 			IPS_SetHidden($this->GetIDForIdent("Test"), true);
 			
-			$InstanceArray = Array();
-			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 			$this->SetBuffer("HardwareRev", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
@@ -427,6 +425,9 @@ class GeCoS_IO extends IPSModule
 	{
 		// I2C-Handle zurücksetzen
 		$this->ResetI2CHandle(2);
+		
+		$InstanceArray = Array();
+		$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 		
 		// Pins ermitteln die genutzt werden
 		$PinUsed = array();
