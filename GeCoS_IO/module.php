@@ -179,8 +179,8 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case 11101:
-				$InstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
-				$InstanceArray[$SenderID]["DeviceAddress"] = IPS_GetProperty($SenderID, "DeviceAddress");
+				$InstanceArray[$SenderID]["DeviceBus"] = 0; //IPS_GetProperty($SenderID, "DeviceBus");
+				$InstanceArray[$SenderID]["DeviceAddress"] = 0; //IPS_GetProperty($SenderID, "DeviceAddress");
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
 				break;
