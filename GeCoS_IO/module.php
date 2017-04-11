@@ -867,12 +867,14 @@ class GeCoS_IO extends IPSModule
 		$Result = 0;
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		foreach ($InstanceArray as $Type => $Properties) {
-			foreach ($Properties as $Property => $Value) {
-		    		If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
-					$Result = $Type;
+		If (count($InstanceArray) > 0) {
+			foreach ($InstanceArray as $Type => $Properties) {
+				foreach ($Properties as $Property => $Value) {
+					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+						$Result = $Type;
+					}
 				}
-		  	}
+			}
 		}
 	return $Result;
 	}
@@ -882,9 +884,11 @@ class GeCoS_IO extends IPSModule
 		$Result = -1;
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		foreach ($InstanceArray as $Type => $Properties) {
-			If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
-			    $Result = $InstanceArray[$Type]["Handle"];
+		If (count($InstanceArray) > 0) {
+			foreach ($InstanceArray as $Type => $Properties) {
+				If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
+				    $Result = $InstanceArray[$Type]["Handle"];
+				}
 			}
 		}
 	return $Result;
@@ -894,15 +898,17 @@ class GeCoS_IO extends IPSModule
 	{
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		foreach ($InstanceArray as $Type => $Properties) {
-			If ($InstanceArray[$Type]["Handle"] >= $MinHandle)  {
-			    	// Handle löschen
-				$this->CommandClientSocket(pack("L*", 55, $InstanceArray[$Type]["Handle"], 0, 0), 16);
-				$InstanceArray[$Type]["Handle"] = -1;
+		If (count($InstanceArray) > 0) {
+			foreach ($InstanceArray as $Type => $Properties) {
+				If ($InstanceArray[$Type]["Handle"] >= $MinHandle)  {
+					// Handle löschen
+					$this->CommandClientSocket(pack("L*", 55, $InstanceArray[$Type]["Handle"], 0, 0), 16);
+					$InstanceArray[$Type]["Handle"] = -1;
+				}
 			}
+			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+			SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 		}
-		$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-		SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 	}
 	
 	private function GetParentID()
