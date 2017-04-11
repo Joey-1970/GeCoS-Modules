@@ -194,7 +194,7 @@ class GeCoS_IO extends IPSModule
 				break;
 		}
 		$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-		SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+		SetValueString($this->GetIDForIdent("Test"), "MessageSink".serialize($InstanceArray));
     	}
 	  
 	 public function ForwardData($JSONString) 
