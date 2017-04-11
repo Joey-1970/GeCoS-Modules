@@ -1046,22 +1046,24 @@ class GeCoS_IO extends IPSModule
 					// Handle ermitteln
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 					
-					// Testweise lesen
-					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
-					
-					If ($Result >= 0) {
-						$DeviceArray[$k][0] = $DeviceName[$i];
-						$DeviceArray[$k][1] = $SearchArray[$i];
-						$DeviceArray[$k][2] = $j - 4;
-						$DeviceArray[$k][3] = 0;
-						$DeviceArray[$k][4] = "OK";
-						// Farbe gelb für erreichbare aber nicht registrierte Instanzen
-						$DeviceArray[$k][5] = "#FFFF00";
-						$k = $k + 1;
-						//IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
+					if ($Handle >= 0) {
+						// Testweise lesen
+						$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+
+						If ($Result >= 0) {
+							$DeviceArray[$k][0] = $DeviceName[$i];
+							$DeviceArray[$k][1] = $SearchArray[$i];
+							$DeviceArray[$k][2] = $j - 4;
+							$DeviceArray[$k][3] = 0;
+							$DeviceArray[$k][4] = "OK";
+							// Farbe gelb für erreichbare aber nicht registrierte Instanzen
+							$DeviceArray[$k][5] = "#FFFF00";
+							$k = $k + 1;
+							//IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
+						}
+						// Handle löschen
+						$this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
 					}
-					// Handle löschen
-					$this->CommandClientSocket(pack("LLLL", 55, $Handle, 0, 0), 16);
 				}	
 			}
 		}
