@@ -896,19 +896,26 @@ class GeCoS_IO extends IPSModule
 	
 	private function ResetI2CHandle($MinHandle)
 	{
+		$MaxHandle = 0;
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 		If (count($InstanceArray) > 0) {
 			foreach ($InstanceArray as $Type => $Properties) {
 				If ($InstanceArray[$Type]["Handle"] >= $MinHandle)  {
 					// Handle löschen
-					$this->CommandClientSocket(pack("L*", 55, $InstanceArray[$Type]["Handle"], 0, 0), 16);
+					$MaxHandle = max($InstanceArray[$Type]["Handle"], $MaxHandle);					
 					$InstanceArray[$Type]["Handle"] = -1;
 				}
 			}
 			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 			SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+			
+			for ($i = 0; $i < $MaxHandle; $i++) {
+				$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
+			}
 		}
+		
+		
 	}
 	
 	private function GetParentID()
@@ -983,7 +990,7 @@ class GeCoS_IO extends IPSModule
 				if ($Handle >= 0) {
 					// Das Gerät ist bereits registriert
 					// Testweise lesen
-					$this->SendDebug("SearchI2CDevices", "Device bekannt - Handle: ".$Handle, 0);
+					$this->SendDebug("SearchI2CDevices", "Device bekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
 					
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
@@ -1010,7 +1017,7 @@ class GeCoS_IO extends IPSModule
 					// Handle ermitteln
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 					
-					$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle, 0);
+					$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
 					
 					if ($Handle >= 0) {
 						// Testweise lesen
@@ -1030,7 +1037,7 @@ class GeCoS_IO extends IPSModule
 						}
 						// Handle löschen
 						$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
-						$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Löschen: ".$Result, 0);
+						$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Loeschen: ".$Result, 0);
 					}
 				}	
 			}
