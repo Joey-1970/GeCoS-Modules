@@ -151,11 +151,10 @@
 						$Value_G = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group)));
 						$Value_B = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group)));
 						SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
+							
 					}
-					
+					$this->SetBuffer("Output", serialize($Output));
 				}
-				
-				$this->SetBuffer("Output", serialize($Output));
 			  	break; 
 	 	}
  	}
