@@ -169,8 +169,7 @@ class GeCoS_IO extends IPSModule
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
         IPS_LogMessage("GeCoS MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data, true));
-		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		
 			
 		switch ($Message) {
 			case 10100:
@@ -179,10 +178,14 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case 11101:
+				$InstanceArray = Array();
+				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 				$InstanceArray[$SenderID]["DeviceBus"] = 0; //IPS_GetProperty($SenderID, "DeviceBus");
 				$InstanceArray[$SenderID]["DeviceAddress"] = 0; //IPS_GetProperty($SenderID, "DeviceAddress");
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
+				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), "MessageSink ".$SenderID."-".serialize($InstanceArray));
 				break;
 			case 11102:
 				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
@@ -193,8 +196,7 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 		}
-		$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-		SetValueString($this->GetIDForIdent("Test"), "MessageSink".serialize($InstanceArray));
+		
     	}
 	  
 	 public function ForwardData($JSONString) 
