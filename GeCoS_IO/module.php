@@ -1025,7 +1025,10 @@ class GeCoS_IO extends IPSModule
 				if ($Handle >= 0) {
 					// Das Gerät ist bereits registriert
 					// Testweise lesen
+					$this->SendDebug("SearchI2CDevices", "Device bekannt - Handle: ".$Handle, 0);
+					
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+					$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
 					
 					$DeviceArray[$k][0] = $DeviceName[$i];
 					$DeviceArray[$k][1] = $SearchArray[$i];
@@ -1049,10 +1052,12 @@ class GeCoS_IO extends IPSModule
 					// Handle ermitteln
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 					
+					$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle, 0);
+					
 					if ($Handle >= 0) {
 						// Testweise lesen
 						$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
-
+						$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
 						If ($Result >= 0) {
 							$DeviceArray[$k][0] = $DeviceName[$i];
 							$DeviceArray[$k][1] = $SearchArray[$i];
@@ -1062,10 +1067,12 @@ class GeCoS_IO extends IPSModule
 							// Farbe gelb für erreichbare aber nicht registrierte Instanzen
 							$DeviceArray[$k][5] = "#FFFF00";
 							$k = $k + 1;
+							$this->SendDebug("SearchI2CDevices", "Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4), 0);
 							//IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 						}
 						// Handle löschen
-						$this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+						$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+						$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Löschen: ".$Result, 0);
 					}
 				}	
 			}
