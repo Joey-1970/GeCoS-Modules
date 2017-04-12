@@ -185,7 +185,7 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-				SetValueString($this->GetIDForIdent("Test"), "MessageSink ".$SenderID."-".serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				break;
 			case 11102:
 				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
@@ -389,17 +389,20 @@ class GeCoS_IO extends IPSModule
 				
 				// Wert von Pin 17
 				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
-				IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
+				$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);
+				//IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 				
 				// Wert von Pin 27
 				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
-				IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
+				$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
+				//IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 				
 				// Wert von Pin 15
 				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
-				IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
+				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
+				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
 			}
 		}
 	 	else {
@@ -563,22 +566,28 @@ class GeCoS_IO extends IPSModule
 				SetValueString($this->GetIDForIdent("Hardware"), $this->GetHardware($response[4]));
            			
            			if (in_array($response[4], $Model[0])) {
-    					 IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 0");
+    					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 0");
+					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 0", 0);
 				}
 				else if (in_array($response[4], $Model[1])) {
-					IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 1");
+					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 1");
+					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 1", 0);
 				}
 				else if ($response[4] >= 16) {
-					IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 2");
+					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 2");
+					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 2", 0);
 				}
 				else
 					IPS_LogMessage("GeCoS_IO Hardwareermittlung","nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])));
+					$this->SendDebug("Hardwareermittlung", "nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])), 0);
 				break;
            		case "19":
-           			IPS_LogMessage("GeCoS_IO Notify","gestartet");
+           			//IPS_LogMessage("GeCoS_IO Notify","gestartet");
+				$this->SendDebug("Notify", "gestartet", 0);
 		            	break;
            		case "21":
-           			IPS_LogMessage("GeCoS_IO Notify","gestoppt");
+           			//IPS_LogMessage("GeCoS_IO Notify","gestoppt");
+				$this->SendDebug("Notify", "gestoppt", 0);
 		            	break;
 			case "26":
            			If ($response[4] >= 0 ) {
@@ -771,7 +780,8 @@ class GeCoS_IO extends IPSModule
 			if ($login == false)
 			{
 			    	IPS_LogMessage("GeCoS_IO SSH-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
-			    	$Result = "";
+			    	$this->SendDebug("SSH-Connect", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
+				$Result = "";
 				return false;
 			}
 			$Result = $ssh->exec($Command);
@@ -795,7 +805,8 @@ class GeCoS_IO extends IPSModule
 			if ($login == false)
 			{
 			    	IPS_LogMessage("GeCoS_IO SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
-			    	$Result = "";
+			    	$this->SendDebug("SFTP-Connect", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
+				$Result = "";
 				return false;
 			}
 			//IPS_LogMessage("IPS2GPIO SFTP-Connect","Verbindung hergestellt");
@@ -804,6 +815,7 @@ class GeCoS_IO extends IPSModule
 			// Prüfen, ob der 1-Wire Server die Verzeichnisse angelegt hat
 			if (!$sftp->file_exists($Path)) {
 				IPS_LogMessage("GeCoS_IO SFTP-Connect",$Path." nicht gefunden! Ist 1-Wire aktiviert?");
+				$this->SendDebug("SFTP-Connect", $Path." nicht gefunden! Ist 1-Wire aktiviert?", 0);
 				return;
 			}
 			
@@ -835,7 +847,9 @@ class GeCoS_IO extends IPSModule
 			$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
 				if (!$status) {
 					IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
+					$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
 					// Versuchen PIGPIO zu starten
+					$this->SendDebug("Netzanbindung", "Versuche PIGPIO per SSH zu starten...", 0);
 					IPS_LogMessage("GeCoS_IO Netzanbindung","Versuche PIGPIO per SSH zu starten...");
 					$this->SSH_Connect("sudo pigpiod");
 					$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
@@ -845,20 +859,23 @@ class GeCoS_IO extends IPSModule
 					}
 					else {
 						fclose($status);
-						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+						//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+						$this->SendDebug("Netzanbindung", "Port ist geöffnet", 0);
 						$result = true;
 						$this->SetStatus(102);
 					}
 	   			}
 	   			else {
 	   				fclose($status);
-					IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+					//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+					$this->SendDebug("Netzanbindung", "Port ist geöffnet", 0);
 					$result = true;
 					$this->SetStatus(102);
 	   			}
 		}
 		else {
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
 			$this->SetStatus(104);
 		}
 	return $result;
