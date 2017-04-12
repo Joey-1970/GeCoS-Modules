@@ -389,17 +389,20 @@ class GeCoS_IO extends IPSModule
 				
 				// Wert von Pin 17
 				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
-				IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
+				//IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
+				$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 				
 				// Wert von Pin 27
 				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
-				IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
+				//IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
+				$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 				
 				// Wert von Pin 15
 				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
 				IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
+				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
 			}
 		}
 	 	else {
@@ -488,6 +491,7 @@ class GeCoS_IO extends IPSModule
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim Erstellen ".$errorcode." ".$errormsg, 0);
 					return;
 				}
 				// Timeout setzen
@@ -497,6 +501,7 @@ class GeCoS_IO extends IPSModule
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg, 0);
 					return;
 				}
 				// Message senden
@@ -505,6 +510,7 @@ class GeCoS_IO extends IPSModule
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim beim Senden ".$errorcode." ".$errormsg, 0);
 					return;
 				}
 				//Now receive reply from server
@@ -512,6 +518,7 @@ class GeCoS_IO extends IPSModule
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg, 0);
 					return;
 				}
 				// Anfragen mit variabler Rückgabelänge
@@ -532,6 +539,7 @@ class GeCoS_IO extends IPSModule
 				}
 				else {
 					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
+					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 				}
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
@@ -563,22 +571,28 @@ class GeCoS_IO extends IPSModule
 				SetValueString($this->GetIDForIdent("Hardware"), $this->GetHardware($response[4]));
            			
            			if (in_array($response[4], $Model[0])) {
-    					 IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 0");
+    					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 0");
+					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 0", 0);
 				}
 				else if (in_array($response[4], $Model[1])) {
-					IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 1");
+					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 1");
+					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 1", 0);
 				}
 				else if ($response[4] >= 16) {
-					IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 2");
+					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 2");
+					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 2", 0);
 				}
 				else
 					IPS_LogMessage("GeCoS_IO Hardwareermittlung","nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])));
+					$this->SendDebug("Hardwareermittlung", "nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])), 0);
 				break;
            		case "19":
-           			IPS_LogMessage("GeCoS_IO Notify","gestartet");
+           			//IPS_LogMessage("GeCoS_IO Notify","gestartet");
+				$this->SendDebug("Notify", "gestartet", 0);
 		            	break;
            		case "21":
-           			IPS_LogMessage("GeCoS_IO Notify","gestoppt");
+           			//IPS_LogMessage("GeCoS_IO Notify","gestoppt");
+				$this->SendDebug("Notify", "gestoppt", 0);
 		            	break;
 			case "26":
            			If ($response[4] >= 0 ) {
