@@ -185,7 +185,7 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-				SetValueString($this->GetIDForIdent("Test"), "MessageSink ".$SenderID."-".serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				break;
 			case 11102:
 				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
@@ -224,7 +224,7 @@ class GeCoS_IO extends IPSModule
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
 				$InstanceArray[$data->InstanceID]["Handle"] = $Handle;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-				SetValueString($this->GetIDForIdent("Test"), "set_used_i2c".serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				// Messages einrichten
 				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
@@ -910,7 +910,7 @@ class GeCoS_IO extends IPSModule
 				}
 			}
 			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-			SetValueString($this->GetIDForIdent("Test"), "ResetI2CHandle".serialize($InstanceArray));
+			SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 			
 			for ($i = $MinHandle; $i < max($MaxHandle, 24) ; $i++) {
 				$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
