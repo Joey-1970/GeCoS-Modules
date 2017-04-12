@@ -599,6 +599,7 @@ class GeCoS_IO extends IPSModule
 					SetValueInteger($this->GetIDForIdent("SoftwareVersion"), $response[4]);
 					If ($response[4] < 60 ) {
 						IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Bitte neuste PIGPIO-Software installieren!");
+						$this->SendDebug("Software Version", "Bitte neuste PIGPIO-Software installieren!", 0);
 					}
 				}
            			else {
@@ -785,6 +786,7 @@ class GeCoS_IO extends IPSModule
 			if ($login == false)
 			{
 			    	IPS_LogMessage("GeCoS_IO SSH-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+				$this->SendDebug("SSH-Connect", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
 			    	$Result = "";
 				return false;
 			}
@@ -849,30 +851,36 @@ class GeCoS_IO extends IPSModule
 			$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
 				if (!$status) {
 					IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
+					$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
 					// Versuchen PIGPIO zu starten
 					IPS_LogMessage("GeCoS_IO Netzanbindung","Versuche PIGPIO per SSH zu starten...");
+					$this->SendDebug("Netzanbindung", "Versuche PIGPIO per SSH zu starten...", 0);
 					$this->SSH_Connect("sudo pigpiod");
 					$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
 					if (!$status) {
 						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
+						$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
 						$this->SetStatus(104);
 					}
 					else {
 						fclose($status);
-						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+						//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+						$this->SendDebug("Netzanbindung", "Port ist geöffnet", 0);
 						$result = true;
 						$this->SetStatus(102);
 					}
 	   			}
 	   			else {
 	   				fclose($status);
-					IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+					//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
+					$this->SendDebug("Netzanbindung", "Port ist geöffnet", 0);
 					$result = true;
 					$this->SetStatus(102);
 	   			}
 		}
 		else {
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
 			$this->SetStatus(104);
 		}
 	return $result;
