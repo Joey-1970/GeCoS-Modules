@@ -224,7 +224,7 @@ class GeCoS_IO extends IPSModule
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
 				$InstanceArray[$data->InstanceID]["Handle"] = $Handle;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-				SetValueString($this->GetIDForIdent("Test"), "set_used_i2c".serialize($InstanceArray));
+				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				// Messages einrichten
 				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
@@ -927,7 +927,7 @@ class GeCoS_IO extends IPSModule
 				}
 			}
 			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-			SetValueString($this->GetIDForIdent("Test"), "ResetI2CHandle".serialize($InstanceArray));
+			SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 			
 			for ($i = $MinHandle; $i < $MaxHandle; $i++) {
 				$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
