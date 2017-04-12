@@ -582,9 +582,10 @@ class GeCoS_IO extends IPSModule
 					//IPS_LogMessage("GeCoS_IO Hardwareermittlung","Raspberry Pi Typ 2");
 					$this->SendDebug("Hardwareermittlung", "Raspberry Pi Typ 2", 0);
 				}
-				else
+				else {
 					IPS_LogMessage("GeCoS_IO Hardwareermittlung","nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])));
 					$this->SendDebug("Hardwareermittlung", "nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])), 0);
+				}
 				break;
            		case "19":
            			//IPS_LogMessage("GeCoS_IO Notify","gestartet");
@@ -865,7 +866,7 @@ class GeCoS_IO extends IPSModule
 					else {
 						fclose($status);
 						//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
-						$this->SendDebug("Netzanbindung", "Port ist geöffnet", 0);
+						$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 						$result = true;
 						$this->SetStatus(102);
 					}
@@ -873,7 +874,7 @@ class GeCoS_IO extends IPSModule
 	   			else {
 	   				fclose($status);
 					//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
-					$this->SendDebug("Netzanbindung", "Port ist geöffnet", 0);
+					$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 					$result = true;
 					$this->SetStatus(102);
 	   			}
