@@ -401,7 +401,7 @@ class GeCoS_IO extends IPSModule
 				
 				// Wert von Pin 15
 				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
-				IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
+				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
 				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
 			}
 		}
