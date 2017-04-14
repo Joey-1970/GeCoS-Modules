@@ -98,7 +98,7 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
 			
-			$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "", 110);
+			$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 110);
 			$this->DisableAction("RTC_Temperature");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Temperature"), false);
 			
@@ -787,9 +787,19 @@ class GeCoS_IO extends IPSModule
 	{
 		// Temperaturdaten
 		$this->SetMUX(0);
-		$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], 17, 0).
-				pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], 18, 0), 32);
-			
+		$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
+		$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
+		$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
+		IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
+		$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
+		$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
+		$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
+		$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
+		IPS_LogMessage("GeCoS_IO getRTC_Data", $Date.".".$Month.".".$Year);
+		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
+		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
+		IPS_LogMessage("GeCoS_IO getRTC_Data", $MSBofTemp." - ".$LSBofTemp);
+		
 	}
 		
 	private function SSH_Connect(String $Command)
