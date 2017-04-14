@@ -788,9 +788,9 @@ class GeCoS_IO extends IPSModule
 		// Temperaturdaten
 		$this->SetMUX(0);
 		$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
-		$Sec = dechex($Sec & 127);
+		$Sec = str_pad(dechex($Sec & 127), 2 ,'0', STR_PAD_LEFT);
 		$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
-		$Min = dechex($Min & 127);
+		$Min = str_pad(dechex($Min & 127), 2 ,'0', STR_PAD_LEFT);
 		$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
 		If(($Hour & 64) > 0) {
 			// 12 Stunden Anzeige
@@ -800,20 +800,21 @@ class GeCoS_IO extends IPSModule
 			else {
 				$AMPM = "AM";
 			}
-			$Hour = $AMPM." ".dechex($Hour & 31);
+			$Hour = $AMPM." ".str_pad(dechex($Hour & 31), 2 ,'0', STR_PAD_LEFT);
 		}
 		else {
 			// 24 Stunden Anzeige
-			$Hour = dechex($Hour & 63);
+			$Hour = str_pad(dechex($Hour & 63), 2 ,'0', STR_PAD_LEFT);
 		}
+		
 		IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
 		$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
 		$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
-		$Date = dechex($Date & 63);
+		$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
 		$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
-		$Month = dechex($Month & 31);
+		$Month = str_pad(dechex($Month & 31), 2 ,'0', STR_PAD_LEFT);
 		$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
-		$Year = dechex($Year & 255);
+		$Year = str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT);
 		IPS_LogMessage("GeCoS_IO getRTC_Data", $Date.".".$Month.".".$Year);
 		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
 		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
