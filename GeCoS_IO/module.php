@@ -798,11 +798,11 @@ class GeCoS_IO extends IPSModule
 			else {
 				$AMPM = "AM";
 			}
-			$Hour = $AMPM." ".$Hour & 31;
+			$Hour = $AMPM." ".dechex($Hour & 31);
 		}
 		else {
 			// 24 Stunden Anzeige
-			$Hour = $Hour & 63;
+			$Hour = dechex($Hour & 63);
 		}
 		IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
 		$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
