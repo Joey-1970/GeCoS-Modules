@@ -97,6 +97,11 @@ class GeCoS_IO extends IPSModule
 			$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 108);
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
+			
+			$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "", 110);
+			$this->DisableAction("RTC_Temperature");
+			IPS_SetHidden($this->GetIDForIdent("RTC_Temperature"), false);
+			
 
 			$this->RegisterVariableString("Test", "Test", "", 180);
 			$this->DisableAction("Test");
@@ -777,6 +782,16 @@ class GeCoS_IO extends IPSModule
 		}
 	}
 	
+	
+	public function getRTC_Data()
+	{
+		// Temperaturdaten
+		$this->SetMUX(0);
+		$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], 17, 0).
+				pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], 18, 0), 32);
+			
+	}
+		
 	private function SSH_Connect(String $Command)
 	{
 	        If (($this->ReadPropertyBoolean("Open") == true) ) {
