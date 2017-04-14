@@ -18,6 +18,7 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("Password", "Passwort");
 		$this->RegisterPropertyInteger("GlitchFilter", 0);
 		$this->RegisterPropertyString("I2C_Devices", "");
+		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_getRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
@@ -161,9 +162,11 @@ class GeCoS_IO extends IPSModule
 				$this->SetMUX(1);
 				
 				$this->Get_PinUpdate();
-				$this->SetStatus(102);	
+				$this->SetStatus(102);
+				$this->SetTimerInterval("RTC_Data", 15 * 1000));
 			}
 			else {
+				$this->SetTimerInterval("RTC_Data", 0));
 				$this->SetStatus(104);
 			}
 		}
@@ -815,7 +818,8 @@ class GeCoS_IO extends IPSModule
 			$Hour = str_pad(dechex($Hour & 63), 2 ,'0', STR_PAD_LEFT);
 		}
 		
-		IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
+		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
+		SetValueString($this->GetIDForIdent("RTC_Time"), $Hour.":".$Min.":".$Sec);
 		$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
 		$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
 		$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
@@ -823,10 +827,12 @@ class GeCoS_IO extends IPSModule
 		$Month = str_pad(dechex($Month & 31), 2 ,'0', STR_PAD_LEFT);
 		$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
 		$Year = str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT);
-		IPS_LogMessage("GeCoS_IO getRTC_Data", $Date.".".$Month.".".$Year);
+		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Date.".".$Month.".".$Year);
+		SetValueString($this->GetIDForIdent("RTC_Date"), $Date.".".$Month.".".$Year);
 		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
 		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
-		IPS_LogMessage("GeCoS_IO getRTC_Data", $MSBofTemp." - ".$LSBofTemp);
+		$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
+		IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
 		
 	}
 		
