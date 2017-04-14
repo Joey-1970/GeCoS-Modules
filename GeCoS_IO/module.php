@@ -163,10 +163,10 @@ class GeCoS_IO extends IPSModule
 				
 				$this->Get_PinUpdate();
 				$this->SetStatus(102);
-				$this->SetTimerInterval("RTC_Data", 15 * 1000));
+				$this->SetTimerInterval("RTC_Data", 15 * 1000);
 			}
 			else {
-				$this->SetTimerInterval("RTC_Data", 0));
+				$this->SetTimerInterval("RTC_Data", 0);
 				$this->SetStatus(104);
 			}
 		}
