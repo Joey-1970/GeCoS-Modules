@@ -788,7 +788,9 @@ class GeCoS_IO extends IPSModule
 		// Temperaturdaten
 		$this->SetMUX(0);
 		$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
+		$Sec = dechex($Sec & 127);
 		$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
+		$Min = dechex($Min & 127);
 		$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
 		If(($Hour & 64) > 0) {
 			// 12 Stunden Anzeige
