@@ -102,6 +102,14 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("RTC_Temperature");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Temperature"), false);
 			
+			$this->RegisterVariableString("RTC_Time", "RTC Uhrzeit", "", 120);
+			$this->DisableAction("RTC_Time");
+			IPS_SetHidden($this->GetIDForIdent("RTC_Time"), false);
+			
+			$this->RegisterVariableString("RTC_Date", "RTC Datum", "", 130);
+			$this->DisableAction("RTC_Date");
+			IPS_SetHidden($this->GetIDForIdent("RTC_Date"), false);
+			
 
 			$this->RegisterVariableString("Test", "Test", "", 180);
 			$this->DisableAction("Test");
