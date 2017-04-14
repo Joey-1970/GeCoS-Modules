@@ -637,7 +637,7 @@ class GeCoS_IO extends IPSModule
            				//IPS_LogMessage("IPS2GPIO I2C Close Handle","Handle: ".$response[2]." Value: ".$response[4]);
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO I2C Close Handle","Handle: ".$response[2]." Value: ".$this->GetErrorText(abs($response[4])));
+           				//IPS_LogMessage("IPS2GPIO I2C Close Handle","Handle: ".$response[2]." Value: ".$this->GetErrorText(abs($response[4])));
            			}
 		            	break;
 		        
@@ -833,8 +833,8 @@ class GeCoS_IO extends IPSModule
 		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
 		$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
 		$Temp = $this->bitflip($Temp);
-		IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
-		
+		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
+		SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
 	}
 	
 	private function bitflip($Value)
