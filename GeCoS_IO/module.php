@@ -832,10 +832,26 @@ class GeCoS_IO extends IPSModule
 		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
 		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
 		$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
+		$Temp = $this->bitflip($Temp);
 		IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
 		
 	}
-		
+	
+	private function bitflip($Value)
+	{
+	   	// Umwandlung in einen Binär-String
+		$bin = decbin($Value);
+	   	$not = "";
+	   	// Umstellung der Binär-Strings
+		for ($i = 0; $i < strlen($bin); $i++)
+	   		{
+	      		if($bin[$i] == 0) { $not .= '1'; }
+	      		if($bin[$i] == 1) { $not .= '0'; }
+	   	}
+		// Rückgabe als Integer
+	return bindec($not);
+	}
+	
 	private function SSH_Connect(String $Command)
 	{
 	        If (($this->ReadPropertyBoolean("Open") == true) ) {
