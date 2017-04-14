@@ -790,6 +790,20 @@ class GeCoS_IO extends IPSModule
 		$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
 		$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
 		$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
+		If(($Hour & 64) > 0) {
+			// 12 Stunden Anzeige
+			If (($Hour & 32) > 0) {
+				$AMPM = "PM";
+			}
+			else {
+				$AMPM = "AM";
+			}
+			$Hour = $AMPM." ".$Hour & 31;
+		}
+		else {
+			// 24 Stunden Anzeige
+			$Hour = $Hour & 63;
+		}
 		IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
 		$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
 		$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
