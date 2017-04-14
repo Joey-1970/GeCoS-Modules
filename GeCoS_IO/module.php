@@ -831,8 +831,9 @@ class GeCoS_IO extends IPSModule
 		SetValueString($this->GetIDForIdent("RTC_Date"), $Date.".".$Month.".".$Year);
 		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
 		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
-		$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
-		$Temp = $this->bitflip($Temp);
+		//$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
+		$fractional = $this->bitflip($LSBofTemp >> 6) * 0.25;
+		$Temp = $this->bitflip($MSBofTemp) + $fractional;
 		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
 		SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
 	}
