@@ -851,6 +851,9 @@ class GeCoS_IO extends IPSModule
 	
 	public function SetRTC_Data()
 	{
+		$this->SetMUX(0);
+		// Sekunden
+		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, 0), 16);
 		$this->GetRTC_Data()
 	}
 	
