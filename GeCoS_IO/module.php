@@ -853,7 +853,11 @@ class GeCoS_IO extends IPSModule
 	{
 		$this->SetMUX(0);
 		// Sekunden
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, 0), 16);
+		$Sec = date("s");
+		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
+		$Min = date("i");
+		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 1, 4, hexdec($Min)), 16);
+		
 		$this->GetRTC_Data();
 	}
 	
