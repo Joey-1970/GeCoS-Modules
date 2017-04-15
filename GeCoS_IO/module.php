@@ -821,7 +821,7 @@ class GeCoS_IO extends IPSModule
 		
 		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Hour.":".$Min.":".$Sec);
 		SetValueString($this->GetIDForIdent("RTC_Time"), $Hour.":".$Min.":".$Sec);
-		$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
+		//$Day = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 3, 0), 16);
 		$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
 		$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
 		$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
@@ -857,7 +857,10 @@ class GeCoS_IO extends IPSModule
 		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
 		$Min = date("i");
 		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 1, 4, hexdec($Min)), 16);
-		
+		$Hour = date("H");
+		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 2, 4, hexdec($Hour)), 16);
+		$Date = date("d");
+		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 4, 4, hexdec($Date)), 16);
 		$this->GetRTC_Data();
 	}
 	
