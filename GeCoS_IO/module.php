@@ -854,7 +854,7 @@ class GeCoS_IO extends IPSModule
 		$this->SetMUX(0);
 		// Sekunden
 		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, 0), 16);
-		$this->GetRTC_Data()
+		$this->GetRTC_Data();
 	}
 	
 	private function bitflip($Value)
