@@ -18,7 +18,7 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("Password", "Passwort");
 		$this->RegisterPropertyInteger("GlitchFilter", 0);
 		$this->RegisterPropertyString("I2C_Devices", "");
-		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_getRTC_Data($_IPS["TARGET"]);');
+		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
@@ -69,6 +69,7 @@ class GeCoS_IO extends IPSModule
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
 			$arrayActions[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
+			$arrayActions[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIO_SetRTC_Data($id);');
 		}
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
@@ -794,7 +795,7 @@ class GeCoS_IO extends IPSModule
 	}
 	
 	
-	public function getRTC_Data()
+	public function GetRTC_Data()
 	{
 		// Temperaturdaten
 		$this->SetMUX(0);
@@ -846,6 +847,11 @@ class GeCoS_IO extends IPSModule
 		$Temp = $MSBofTemp + $LSBofTemp;
 		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
 		SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
+	}
+	
+	public function SetRTC_Data()
+	{
+		$this->GetRTC_Data()
 	}
 	
 	private function bitflip($Value)
