@@ -112,6 +112,9 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("RTC_Date");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Date"), false);
 			
+			$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 140);
+			$this->DisableAction("RTC_Timestamp");
+			IPS_SetHidden($this->GetIDForIdent("RTC_Timestamp"), false);
 
 			$this->RegisterVariableString("Test", "Test", "", 180);
 			$this->DisableAction("Test");
@@ -838,6 +841,8 @@ class GeCoS_IO extends IPSModule
 		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Date.".".$Month.".".$Year);
 			
 		SetValueString($this->GetIDForIdent("RTC_Date"), $Date.".".$Month.".".$Year);
+		$Timestamp = mktime($Hour, $Min, $Sec, $Month, $Date, $Year);
+		SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
 		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
 		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
 		
