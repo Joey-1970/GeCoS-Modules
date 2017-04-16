@@ -721,9 +721,7 @@ class GeCoS_IO extends IPSModule
 			
 			case "76":
            			If ($response[4] >= 0) {
-           				IPS_LogMessage("GeCoS_IO Serial Handle","Serial Handle: ".$response[4]);
-           				//SetValueInteger($this->GetIDForIdent("Serial_Handle"), $response[4]);
-           				//SetValueBoolean($this->GetIDForIdent("Serial_Used"), true);
+           				//IPS_LogMessage("GeCoS_IO Serial Handle","Serial Handle: ".$response[4]);
 				}
 				else {
 					IPS_LogMessage("GeCoS_IO Serial Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
