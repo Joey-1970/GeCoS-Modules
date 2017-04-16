@@ -66,8 +66,11 @@ class GeCoS_IO extends IPSModule
 			}
 			$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 			//$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
-			
+			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+			$arrayElements[] = array("type" => "Label", "label" => "Führt einen Restart des PIGPIO aus:");
 			$arrayElements[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
+			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+			$arrayElements[] = array("type" => "Label", "label" => "Setzen der Real-Time-Clock auf IPS-Zeit:");
 			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIO_SetRTC_Data($id);');		
 		}
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
