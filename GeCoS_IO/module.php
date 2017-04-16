@@ -792,72 +792,75 @@ class GeCoS_IO extends IPSModule
 	
 	public function GetRTC_Data()
 	{
-		// Temperaturdaten
-		$this->SetMUX(0);
-		$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
-		$Sec = str_pad(dechex($Sec & 127), 2 ,'0', STR_PAD_LEFT);
-		$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
-		$Min = str_pad(dechex($Min & 127), 2 ,'0', STR_PAD_LEFT);
-		$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
-		If(($Hour & 64) > 0) {
-			// 12 Stunden Anzeige
-			If (($Hour & 32) > 0) {
-				$AMPM = "PM";
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			$this->SetMUX(0);
+			$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
+			$Sec = str_pad(dechex($Sec & 127), 2 ,'0', STR_PAD_LEFT);
+			$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
+			$Min = str_pad(dechex($Min & 127), 2 ,'0', STR_PAD_LEFT);
+			$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
+			If(($Hour & 64) > 0) {
+				// 12 Stunden Anzeige
+				If (($Hour & 32) > 0) {
+					$AMPM = "PM";
+				}
+				else {
+					$AMPM = "AM";
+				}
+				$Hour = $AMPM." ".str_pad(dechex($Hour & 31), 2 ,'0', STR_PAD_LEFT);
 			}
 			else {
-				$AMPM = "AM";
+				// 24 Stunden Anzeige
+				$Hour = str_pad(dechex($Hour & 63), 2 ,'0', STR_PAD_LEFT);
 			}
-			$Hour = $AMPM." ".str_pad(dechex($Hour & 31), 2 ,'0', STR_PAD_LEFT);
+			$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
+			$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
+			$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
+			$Century = ($Month >> 7) & 1;
+			$Month = str_pad(dechex($Month & 31), 2 ,'0', STR_PAD_LEFT);
+			$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
+			$Year = str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT);
+			If ($Century == 1) {
+				$Year = $Year + 2000;
+			}
+			else {
+				$Year = $Year + 1900;	
+			}
+			$Timestamp = mktime($Hour, $Min, $Sec, $Month, $Date, $Year);
+			SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
+
+			$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
+			$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
+
+			$MSBofTemp = ($MSBofTemp & 127);
+			//$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
+			$LSBofTemp = ($LSBofTemp >> 6) * 0.25;
+			$Temp = $MSBofTemp + $LSBofTemp;
+			//IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
+			SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
 		}
-		else {
-			// 24 Stunden Anzeige
-			$Hour = str_pad(dechex($Hour & 63), 2 ,'0', STR_PAD_LEFT);
-		}
-		$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
-		$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
-		$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
-		$Century = ($Month >> 7) & 1;
-		$Month = str_pad(dechex($Month & 31), 2 ,'0', STR_PAD_LEFT);
-		$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
-		$Year = str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT);
-		If ($Century == 1) {
-			$Year = $Year + 2000;
-		}
-		else {
-			$Year = $Year + 1900;	
-		}
-		$Timestamp = mktime($Hour, $Min, $Sec, $Month, $Date, $Year);
-		SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
-		
-		$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
-		$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
-		
-		$MSBofTemp = ($MSBofTemp & 127);
-		//$Temp = ($MSBofTemp << 2) | ($LSBofTemp >> 6);
-		$LSBofTemp = ($LSBofTemp >> 6) * 0.25;
-		$Temp = $MSBofTemp + $LSBofTemp;
-		//IPS_LogMessage("GeCoS_IO getRTC_Data", $Temp);
-		SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
 	}
 	
 	public function SetRTC_Data()
 	{
-		$this->SetMUX(0);
-		// Sekunden
-		$Sec = date("s");
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
-		$Min = date("i");
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 1, 4, hexdec($Min)), 16);
-		$Hour = date("H");
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 2, 4, hexdec($Hour)), 16);
-		$Date = date("d");
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 4, 4, hexdec($Date)), 16);
-		$Month = date("m");
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 5, 4, (hexdec($Month) | 128) ), 16);
-		$Year = date("y");
-		$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 6, 4, hexdec($Year)), 16);
-		
-		$this->GetRTC_Data();
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			$this->SetMUX(0);
+			// Sekunden
+			$Sec = date("s");
+			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
+			$Min = date("i");
+			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 1, 4, hexdec($Min)), 16);
+			$Hour = date("H");
+			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 2, 4, hexdec($Hour)), 16);
+			$Date = date("d");
+			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 4, 4, hexdec($Date)), 16);
+			$Month = date("m");
+			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 5, 4, (hexdec($Month) | 128) ), 16);
+			$Year = date("y");
+			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 6, 4, hexdec($Year)), 16);
+
+			$this->GetRTC_Data();
+		}
 	}
 	
 	private function bitflip($Value)
