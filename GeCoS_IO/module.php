@@ -66,13 +66,14 @@ class GeCoS_IO extends IPSModule
 			//$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
 			
 			$arrayElements[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
-			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIO_SetRTC_Data($id);');
-		
+			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIO_SetRTC_Data($id);');		
 		}
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
-			$arrayElements[] = array("type" => "Label", "label" => "Aktuell sind keine Testfunktionen definiert");
+			$arrayActions[] = array("type" => "Label", "label" => "Aktuell sind keine Testfunktionen definiert");
 		}
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
