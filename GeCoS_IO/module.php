@@ -18,8 +18,8 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("Password", "Passwort");
 		$this->RegisterPropertyInteger("GlitchFilter", 0);
 		$this->RegisterPropertyString("I2C_Devices", "");
-		$this->RegisterPropertyInteger("Baud", 3);
-            	$this->RegisterPropertyString("ConnectionString", "/dev/ttyAMA0");
+		$this->RegisterPropertyInteger("Baud", 9600);
+            	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
@@ -73,13 +73,13 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Definition der seriellen Schnittstelle (RS232):");
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "2400", "value" => 1);
-		$arrayOptions[] = array("label" => "4880", "value" => 2);
-		$arrayOptions[] = array("label" => "9600", "value" => 3);
-		$arrayOptions[] = array("label" => "19200", "value" => 4);
-		$arrayOptions[] = array("label" => "38400", "value" => 5);
-		$arrayOptions[] = array("label" => "57600", "value" => 6);
-		$arrayOptions[] = array("label" => "115200", "value" => 7);
+		$arrayOptions[] = array("label" => "2400", "value" => 2400);
+		$arrayOptions[] = array("label" => "4800", "value" => 4800);
+		$arrayOptions[] = array("label" => "9600", "value" => 9600);
+		$arrayOptions[] = array("label" => "19200", "value" => 19200);
+		$arrayOptions[] = array("label" => "38400", "value" => 38400);
+		$arrayOptions[] = array("label" => "57600", "value" => 57600);
+		$arrayOptions[] = array("label" => "115200", "value" => 115200);
 		$arrayElements[] = array("type" => "Select", "name" => "Baud", "caption" => "Baud", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "Connection String der seriellen Schnittstelle (z.B. /dev/tty...):");
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "ConnectionString", "caption" => "Connection String");
@@ -134,6 +134,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("MUX_Handle", -1);
 			$this->SetBuffer("MUX_Channel", 1);
 			$this->SetBuffer("RTC_Handle", -1);
+			$this->SetBuffer("Serial_Handle", -1);
 			
 			$ParentID = $this->GetParentID();
 		        // Änderung an den untergeordneten Instanzen
@@ -174,6 +175,9 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("MUX_Handle", $MUX_Handle);
 				// MUX setzen
 				$this->SetMUX(1);
+				
+				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
+				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				
 				$this->Get_PinUpdate();
 				$this->SetStatus(102);
@@ -716,12 +720,12 @@ class GeCoS_IO extends IPSModule
 			
 			case "76":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO Serial Handle","Serial Handle: ".$response[4]);
-           				SetValueInteger($this->GetIDForIdent("Serial_Handle"), $response[4]);
-           				SetValueBoolean($this->GetIDForIdent("Serial_Used"), true);
+           				IPS_LogMessage("GeCoS_IO Serial Handle","Serial Handle: ".$response[4]);
+           				//SetValueInteger($this->GetIDForIdent("Serial_Handle"), $response[4]);
+           				//SetValueBoolean($this->GetIDForIdent("Serial_Used"), true);
 				}
 				else {
-					IPS_LogMessage("IPS2GPIO I2C Get Serial Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+					IPS_LogMessage("GeCoS_IO Serial Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
 				}
 		            	break;
 		        case "77":
