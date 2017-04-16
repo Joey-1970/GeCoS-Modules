@@ -69,7 +69,19 @@ class GeCoS_IO extends IPSModule
 			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIO_SetRTC_Data($id);');		
 		}
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		
+		$arrayElements[] = array("type" => "Label", "label" => "Definition der seriellen Schnittstelle (RS232):");
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "2400", "value" => 1);
+		$arrayOptions[] = array("label" => "4880", "value" => 2);
+		$arrayOptions[] = array("label" => "9600", "value" => 3);
+		$arrayOptions[] = array("label" => "19200", "value" => 4);
+		$arrayOptions[] = array("label" => "38400", "value" => 5);
+		$arrayOptions[] = array("label" => "57600", "value" => 6);
+		$arrayOptions[] = array("label" => "115200", "value" => 7);
+		$arrayElements[] = array("type" => "Select", "name" => "Baud", "caption" => "Baud", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Label", "label" => "Connection String der Seriellen Schnittstelle (z.B. /dev/tty...):");
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "ConnectionString", "caption" => "Connection String");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		
 		$arrayActions = array();
 		If ($this->ReadPropertyBoolean("Open") == true) {   
