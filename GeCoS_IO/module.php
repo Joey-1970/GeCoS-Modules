@@ -18,6 +18,8 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("Password", "Passwort");
 		$this->RegisterPropertyInteger("GlitchFilter", 0);
 		$this->RegisterPropertyString("I2C_Devices", "");
+		$this->RegisterPropertyInteger("Baud", 3);
+            	$this->RegisterPropertyString("ConnectionString", "/dev/ttyAMA0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
