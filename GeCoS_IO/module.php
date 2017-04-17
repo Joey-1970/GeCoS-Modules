@@ -346,24 +346,6 @@ class GeCoS_IO extends IPSModule
 				}
 		   		break;
 			
-		   
-		   
-		   
-		  
-		   	
-		   
-			   // Serielle Kommunikation
-			
-			case "write_bytes_serial":
-				$Command = utf8_decode($data->Command);
-				//IPS_LogMessage("IPS2GPIO Write Bytes Serial", "Handle: ".GetValueInteger($this->GetIDForIdent("Serial_Handle"))." Command: ".$Command);
-				$this->CommandClientSocket(pack("L*", 81, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, strlen($Command)).$Command, 16);
-				break;
-			case "check_bytes_serial":
-				//IPS_LogMessage("IPS2GPIO Check Bytes Serial", "Handle: ".GetValueInteger($this->GetIDForIdent("Serial_Handle")));
-				$this->CommandClientSocket(pack("L*", 83, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, 0), 16);
-				break;
-		    
 		    // Raspberry Pi Kommunikation
 		    case "get_RPi_connect":
 		   	// SSH Connection
@@ -867,6 +849,11 @@ class GeCoS_IO extends IPSModule
 			$Command = utf8_decode($Command);
 			$this->CommandClientSocket(pack("L*", 81, $this->GetBuffer("Serial_Handle"), 0, strlen($Command)).$Command, 16);
 		}
+	}
+	
+	private function CheckSerial()
+	{
+		$Result = $this->CommandClientSocket(pack("L*", 83, $this->GetBuffer("Serial_Handle"), 0, 0), 16);
 	}
 	
 	private function SSH_Connect(String $Command)
