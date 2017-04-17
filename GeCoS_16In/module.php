@@ -155,5 +155,17 @@
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
 		}
 	}
+	    
+	protected function HasActiveParent()
+    	{
+        $instance = @IPS_GetInstance($this->InstanceID);
+        if ($instance['ConnectionID'] > 0)
+        {
+            	$parent = IPS_GetInstance($instance['ConnectionID']);
+            	if ($parent['InstanceStatus'] == 102)
+                return true;
+        }
+        return false;
+    }  
 }
 ?>
