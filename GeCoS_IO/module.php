@@ -397,7 +397,7 @@ class GeCoS_IO extends IPSModule
 	    		// wenn es sich um mehrere Notifikationen handelt
 	    		$DataArray = str_split($Message, 12);
 	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Notify-Datensätze");
-	    		for ($i = 0; $i < min(5, Count($DataArray)); $i++) {
+	    		for ($i = 0; $i < min(2, Count($DataArray)); $i++) {
 				$MessageParts = unpack("L*", $DataArray[$i]);
 				
 				// Wert von Pin 17
@@ -416,6 +416,9 @@ class GeCoS_IO extends IPSModule
 				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
 				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
 				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
+				IPS_Sleep(75);
+				$this->CheckSerial();
+				
 			}
 		}
 	 	else {
@@ -682,13 +685,13 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "80":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO Serial Read","Serial Handle: ".$response[2]." Value: ".substr($Message, -($response[4])));
+           				IPS_LogMessage("GeCoS_IO Serial Read","Serial Handle: ".$response[2]." Value: ".substr($Message, -($response[4])));
            				If ($response[4] > 0) {
-	           				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_serial_data", "Value"=>utf8_encode(substr($Message, -($response[4]))) )));
+	           				//$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_serial_data", "Value"=>utf8_encode(substr($Message, -($response[4]))) )));
            				}
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO Serial Read","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO Serial Read","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
   		            	break;
 		        case "81":
@@ -708,7 +711,7 @@ class GeCoS_IO extends IPSModule
            				}
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO Check Bytes Serial","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO Check Bytes Serial","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
           			}
   		            	break;
 		        case "97":
@@ -853,7 +856,8 @@ class GeCoS_IO extends IPSModule
 	
 	private function CheckSerial()
 	{
-		$Result = $this->CommandClientSocket(pack("L*", 83, $this->GetBuffer("Serial_Handle"), 0, 0), 16);
+		$Result = $this->CommandClientSocket(pack("L*", 82, $this->GetBuffer("Serial_Handle"), 0, 0), 16);
+		IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
 	}
 	
 	private function SSH_Connect(String $Command)
