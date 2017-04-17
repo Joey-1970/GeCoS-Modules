@@ -69,7 +69,7 @@
           	$this->DisableAction("OutputBank1");
 		IPS_SetHidden($this->GetIDForIdent("OutputBank1"), false);
 		
-		If (IPS_GetKernelRunlevel() == 10103) {
+		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			// Logging setzen
 			
 			//ReceiveData-Filter setzen
