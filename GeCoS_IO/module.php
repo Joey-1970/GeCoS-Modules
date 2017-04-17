@@ -711,10 +711,10 @@ class GeCoS_IO extends IPSModule
   		            	break;
 		        case "81":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO Serial Write","Serial Handle: ".$response[2]." Value: ".$response[4]);
+           				IPS_LogMessage("GeCoS_IO Serial Write","Serial Handle: ".$response[2]." Value: ".$response[4]);
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO Serial Write","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO Serial Write","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
   		            	break;
   		        case "82":
@@ -859,6 +859,14 @@ class GeCoS_IO extends IPSModule
 	   	}
 		// Rückgabe als Integer
 	return bindec($not);
+	}
+	
+	public function WriteSerial(String $Command)
+	{
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			$Command = utf8_decode($Command);
+			$this->CommandClientSocket(pack("L*", 81, $this->GetBuffer("Serial_Handle"), 0, strlen($Command)).$Command, 16);
+		}
 	}
 	
 	private function SSH_Connect(String $Command)
