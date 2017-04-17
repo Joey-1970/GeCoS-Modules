@@ -353,13 +353,7 @@ class GeCoS_IO extends IPSModule
 		   	
 		   
 			   // Serielle Kommunikation
-			case "get_handle_serial":
-				//IPS_LogMessage("IPS2GPIO Get Handle Serial", "Handle anfordern");
-				$this->CommandClientSocket(pack("L*", 76, $data->Baud, 0, strlen($data->Device)).$data->Device.pack("L*", 19, GetValueInteger($this->GetIDForIdent("Handle")), $this->CalcBitmask(), 0), 32);
-				// Messages einrichten
-				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
-				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
-				break;
+			
 			case "write_bytes_serial":
 				$Command = utf8_decode($data->Command);
 				//IPS_LogMessage("IPS2GPIO Write Bytes Serial", "Handle: ".GetValueInteger($this->GetIDForIdent("Serial_Handle"))." Command: ".$Command);
@@ -455,57 +449,22 @@ class GeCoS_IO extends IPSModule
 		// I2C-Handle zurücksetzen
 		$this->ResetI2CHandle(2);
 				
-		// Pins ermitteln die genutzt werden
-		$PinUsed = array();
-		// Reservieren der Schnittstellen GPIO
-		$PinUsed[2] = 99999; 
-		$PinUsed[3] = 99999;
+		// Konfiguration der I²C-Pin
 		$this->CommandClientSocket(pack("LLLL", 0, 2, 4, 0).pack("LLLL", 0, 3, 4, 0), 32);
 		
-		/*
-		SetValueBoolean($this->GetIDForIdent("Serial_Used"), false);
-		If ($this->ReadPropertyBoolean("Serial_Used") == true)  {
-			$PinUsed[14] = 99999; 
-			$PinUsed[15] = 99999;
-			// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
-			// Alle anderen = Alt0(Rxd0/TxD0) => 4
-			If ($this->GetBuffer("Default_Serial_Bus") == 0) {
-				$this->CommandClientSocket(pack("LLLL", 0, 14, 4, 0).pack("LLLL", 0, 15, 4, 0), 32);
-			}
-			elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
-				// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
-				$this->CommandClientSocket(pack("LLLL", 0, 14, 2, 0).pack("LLLL", 0, 15, 2, 0), 32);
-			}
-			If (GetValueInteger($this->GetIDForIdent("Serial_Handle")) >= 0) {
-				$this->CommandClientSocket(pack("L*", 77, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, 0), 16);
-			}
-			SetValueInteger($this->GetIDForIdent("Serial_Handle"), -1);
-			SetValueBoolean($this->GetIDForIdent("Serial_Used"), false);
-			// den Notify für den TxD-Pin einschalten
+		// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
+		// Alle anderen = Alt0(Rxd0/TxD0) => 4
+		If ($this->GetBuffer("Default_Serial_Bus") == 0) {
+			$this->CommandClientSocket(pack("LLLL", 0, 14, 4, 0).pack("LLLL", 0, 15, 4, 0), 32);
 		}
-		else {
-			// wird Serial nicht benötigt die Pin auf in Input setzen
-			$this->CommandClientSocket(pack("LLLL", 0, 14, 0, 0).pack("LLLL", 0, 15, 0, 0), 16);
+		elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
+			// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
+			$this->CommandClientSocket(pack("LLLL", 0, 14, 2, 0).pack("LLLL", 0, 15, 2, 0), 32);
 		}
-		If ($this->ReadPropertyBoolean("SPI_Used") == true)  {
-			for ($i = 7; $i < 11; $i++) {
-    				$PinUsed[$i] = 99999;
-			}
-		}
-		else {
-			// wird SPI nicht benötigt die Pin auf Input setzen
-		}
-		// Reseervierung des 1-Wire-Pins
-		If ($this->ReadPropertyBoolean("1Wire_Used") == true)  {
-			$PinUsed[4] = 99999;
-			$this->CommandClientSocket(pack("LLLL", 0, 4, 1, 0), 16);
-		}
-		else {
-			// wird 1-Wire nicht benötigt die Pin auf Input setzen
-			$this->CommandClientSocket(pack("LLLL", 0, 4, 0, 0), 16);
-		}
-		*/
-		// Sichern der Voreinstellungen
+		
+		// Reservierung des 1-Wire-Pins
+		$this->CommandClientSocket(pack("L*", 0, 4, 1, 0), 16);
+
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 	}
