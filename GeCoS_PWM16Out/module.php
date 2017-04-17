@@ -246,7 +246,7 @@
 	    return $byte & ~(1<<$significance);
 	}
 	    
-	protected function HasActiveParent()
+	private function HasActiveParent()
     	{
 		$Instance = @IPS_GetInstance($this->InstanceID);
 		if ($Instance['ConnectionID'] > 0)
