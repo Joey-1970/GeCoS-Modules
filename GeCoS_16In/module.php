@@ -158,14 +158,14 @@
 	    
 	protected function HasActiveParent()
     	{
-        $instance = @IPS_GetInstance($this->InstanceID);
-        if ($instance['ConnectionID'] > 0)
-        {
-            	$parent = IPS_GetInstance($instance['ConnectionID']);
-            	if ($parent['InstanceStatus'] == 102)
-                return true;
-        }
+		$Instance = @IPS_GetInstance($this->InstanceID);
+		if ($Instance['ConnectionID'] > 0)
+		{
+			$Parent = IPS_GetInstance($Instance['ConnectionID']);
+			if ($Parent['InstanceStatus'] == 102)
+			return true;
+		}
         return false;
-    }  
+    	}  
 }
 ?>
