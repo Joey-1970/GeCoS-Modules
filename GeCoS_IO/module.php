@@ -719,7 +719,7 @@ class GeCoS_IO extends IPSModule
            				//IPS_LogMessage("IPS2GPIO GlitchFilter","gesetzt");
            			}
            			else {
-           				IPS_LogMessage("IPS2GPIO GlitchFilter","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO GlitchFilter","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
          
 		            	break;
