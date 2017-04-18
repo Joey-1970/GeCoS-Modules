@@ -708,7 +708,7 @@ class GeCoS_IO extends IPSModule
            				//IPS_LogMessage("IPS2GPIO Check Bytes Serial","Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4]);
            				If ($response[4] > 0) {
            					// Einlesen der vorliegenden Daten
-           					$this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $response[4], 0), 16 + $response[4]);
+           					//$this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $response[4], 0), 16 + $response[4]);
            				}
            			}
            			else {
@@ -859,6 +859,11 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = $this->CommandClientSocket(pack("L*", 82, $this->GetBuffer("Serial_Handle"), 0, 0), 16);
 		IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
+		If ($Result > 0) {
+			$Data = $this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $Result, 0), 16 + $Result);
+			IPS_LogMessage("GeCoS_IO CheckSerial", $Data);
+		}
+		
 	}
 	
 	private function SSH_Connect(String $Command)
