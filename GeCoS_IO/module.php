@@ -858,7 +858,7 @@ class GeCoS_IO extends IPSModule
 	private function CheckSerial()
 	{
 		$Result = $this->CommandClientSocket(pack("L*", 82, $this->GetBuffer("Serial_Handle"), 0, 0), 16);
-		IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
+		//IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
 		If ($Result > 0) {
 			$Data = $this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $Result, 0), 16 + $Result);
 			IPS_LogMessage("GeCoS_IO CheckSerial", $Data);
