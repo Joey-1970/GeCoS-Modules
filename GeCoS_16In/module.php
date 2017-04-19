@@ -157,56 +157,56 @@
 	}
 	    
 	/**
-     * Check if a parent is active
-     * @param $id integer InstanceID
-     * @return bool
-     */
-    protected function HasActiveParent($id = 0)
-    {
-        if ($id == 0) $id = $this->InstanceID;
-        $parent = $this->GetParent($id);
-        if ($parent > 0) {
-            $status = $this->GetInstanceStatus($parent);
-            if ($status == self::ST_AKTIV) {
-                return true;
-            } else {
-                //IPS_SetInstanceStatus($id, self::ST_NOPARENT);
-                $this->debug(__FUNCTION__, "Parent not active for Instance #" . $id);
-                return false;
-            }
-        }
-        $this->debug(__FUNCTION__, "No Parent for Instance #" . $id);
+	* Check if a parent is active
+	* @param $id integer InstanceID
+	* @return bool
+     	*/
+    	protected function HasActiveParent($id = 0)
+    	{
+        	if ($id == 0) $id = $this->InstanceID;
+        	$parent = $this->GetParent($id);
+        	if ($parent > 0) {
+            		$status = $this->GetInstanceStatus($parent);
+            		if ($status == self::ST_AKTIV) {
+                		return true;
+            		} else {
+                		//IPS_SetInstanceStatus($id, self::ST_NOPARENT);
+                		$this->debug(__FUNCTION__, "Parent not active for Instance #" . $id);
+                		return false;
+			}
+        	}
+        	$this->debug(__FUNCTION__, "No Parent for Instance #" . $id);
         return false;
-    }
- //------------------------------------------------------------------------------
-    /**
-     * Check if a parent for Instance $id exists
-     * @param $id integer InstanceID
-     * @return integer
-     */
-    protected function GetParent($id = 0)
-    {
-        $parent = 0;
-        if ($id == 0) $id = $this->InstanceID;
-        if (IPS_InstanceExists($id)) {
-            $instance = IPS_GetInstance($id);
-            $parent = $instance['ConnectionID'];
-        } else {
-            $this->debug(__FUNCTION__, "Instance #$id doesn't exists");
-        }
+    	}
+ 	//------------------------------------------------------------------------------
+    	/**
+     	* Check if a parent for Instance $id exists
+     	* @param $id integer InstanceID
+     	* @return integer
+     	*/
+    	protected function GetParent($id = 0)
+    	{
+        	$parent = 0;
+        	if ($id == 0) $id = $this->InstanceID;
+        	if (IPS_InstanceExists($id)) {
+            		$instance = IPS_GetInstance($id);
+            		$parent = $instance['ConnectionID'];
+        	} else {
+            		$this->debug(__FUNCTION__, "Instance #$id doesn't exists");
+        	}
         return $parent;
-    }
-//------------------------------------------------------------------------------
-    /**
-     * Retrieve instance status
-     * @param int $id
-     * @return mixed
-     */
-    protected function GetInstanceStatus($id = 0)
-    {
-        if ($id == 0) $id = $this->InstanceID;
-        $inst = IPS_GetInstance($id);
-        return $inst['InstanceStatus'];
-    }  
+    	}
+	//------------------------------------------------------------------------------
+    	/**
+     	* Retrieve instance status
+     	* @param int $id
+     	* @return mixed
+     	*/
+    	protected function GetInstanceStatus($id = 0)
+    	{
+        	if ($id == 0) $id = $this->InstanceID;
+        	$inst = IPS_GetInstance($id);
+        	return $inst['InstanceStatus'];
+    	}	  
 }
 ?>
