@@ -167,7 +167,7 @@
         	$parent = $this->GetParent($id);
         	if ($parent > 0) {
             		$status = $this->GetInstanceStatus($parent);
-            		if ($status == self::ST_AKTIV) {
+            		if ($status == 102) {
                 		return true;
             		} else {
                 		//IPS_SetInstanceStatus($id, self::ST_NOPARENT);
