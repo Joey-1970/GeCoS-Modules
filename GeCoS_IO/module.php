@@ -22,6 +22,7 @@ class GeCoS_IO extends IPSModule
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
+		$this->RequireParent("{F3855B3C-7CD6-47CA-97AB-E66D346C037F}");	
 	}
   
 	public function GetConfigurationForm() 
