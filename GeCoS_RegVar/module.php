@@ -36,7 +36,7 @@
 	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
 	    	
 		
-		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
+		If (IPS_GetKernelRunlevel() == 10103) {
 			// Logging setzen
 			
 			//ReceiveData-Filter setzen
