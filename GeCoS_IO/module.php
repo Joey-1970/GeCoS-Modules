@@ -706,10 +706,6 @@ class GeCoS_IO extends IPSModule
   		        case "82":
            			If ($response[4] >= 0) {
            				//IPS_LogMessage("IPS2GPIO Check Bytes Serial","Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4]);
-           				If ($response[4] > 0) {
-           					// Einlesen der vorliegenden Daten
-           					//$this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $response[4], 0), 16 + $response[4]);
-           				}
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO Check Bytes Serial","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
@@ -861,7 +857,8 @@ class GeCoS_IO extends IPSModule
 		//IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
 		If ($Result > 0) {
 			$Data = $this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $Result, 0), 16 + $Result);
-			IPS_LogMessage("GeCoS_IO CheckSerial", $Data);
+			$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_serial_data", "Buffer" => $Data)));
+			//IPS_LogMessage("GeCoS_IO CheckSerial", $Data);
 		}
 		
 	}
