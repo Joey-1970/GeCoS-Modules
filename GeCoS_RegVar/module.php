@@ -7,10 +7,9 @@
         {
             	// Diese Zeile nicht löschen.
             	parent::Create();
- 	    	$this->RegisterPropertyBoolean("Open", false);
+		$this->RegisterPropertyInteger("SelectScript", 0);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 16);
-		$this->RegisterPropertyInteger("DeviceBus", 4);
+ 	    	
         }
  	
 	public function GetConfigurationForm() 
