@@ -40,18 +40,10 @@
 			// Logging setzen
 			
 			//ReceiveData-Filter setzen
-			//$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
-			$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
+			$Filter = '((.*"Function":"set_serial_data".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*))';
 			$this->SetReceiveDataFilter($Filter);
 			
-			/*
-			If ($this->ReadPropertyBoolean("Open") == true) {				
-				$this->SetStatus(102);
-			}
-			else {
-				$this->SetStatus(104);
-			}
-			*/
+			$this->SetStatus(102);
 		}
 	}
 	
@@ -66,8 +58,10 @@
 			   	}
 			   	break;
 						
-			case "set_i2c_byte_block":
-			   	
+			case "set_serial_data":
+			   	If ($this->ReadPropertyInteger("SelectScript") > 0) {   
+					IPS_RunScriptEx($this->ReadPropertyInteger("SelectScript"), Array("RegVar_GetBuffer" => $data->Buffer));
+				}
 			  	break;
 	 	}
  	}
