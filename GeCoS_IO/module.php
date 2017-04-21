@@ -685,9 +685,9 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "80":
            			If ($response[4] >= 0) {
-           				IPS_LogMessage("GeCoS_IO Serial Read","Serial Handle: ".$response[2]." Value: ".substr($Message, -($response[4])));
+           				//IPS_LogMessage("GeCoS_IO Serial Read","Serial Handle: ".$response[2]." Value: ".substr($Message, -($response[4])));
            				If ($response[4] > 0) {
-						
+						$response[4] = substr($Message, -($response[4]);
 	           				//$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_serial_data", "Value"=>utf8_encode(substr($Message, -($response[4]))) )));
            				}
            			}
@@ -697,7 +697,7 @@ class GeCoS_IO extends IPSModule
   		            	break;
 		        case "81":
            			If ($response[4] >= 0) {
-           				IPS_LogMessage("GeCoS_IO Serial Write","Serial Handle: ".$response[2]." Value: ".$response[4]);
+           				//IPS_LogMessage("GeCoS_IO Serial Write","Serial Handle: ".$response[2]." Value: ".$response[4]);
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO Serial Write","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
