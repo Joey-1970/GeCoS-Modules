@@ -345,6 +345,11 @@ class GeCoS_IO extends IPSModule
 								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 11, 4, $data->Value_12), 192);
 				}
 		   		break;
+			// Serielle Kommunikation
+			case "serial_write":
+				//$Result = $this->GetOneWireDevices();
+				//$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_1wire_devices", "InstanceID" => $data->InstanceID, "Result"=>utf8_encode($Result) )));
+			break;
 			
 		    // Raspberry Pi Kommunikation
 		    case "get_RPi_connect":
