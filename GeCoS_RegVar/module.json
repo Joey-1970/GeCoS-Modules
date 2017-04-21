@@ -1,0 +1,14 @@
+{
+  "id": "{0EE04F9F-2C9B-4144-B923-82B0BF2514BD}",
+  "name": "GeCoS_RegVar",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_RegVar"
+  ],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "childRequirements": [],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "prefix": "GeCoSRegVar"
+}
