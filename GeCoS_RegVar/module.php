@@ -53,9 +53,11 @@
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
 			case "status":
-			   	If ($data->InstanceID == $this->InstanceID) {
+			   	/*
+				If ($data->InstanceID == $this->InstanceID) {
 				   	$this->SetStatus($data->Status);
 			   	}
+				*/
 			   	break;
 						
 			case "set_serial_data":
