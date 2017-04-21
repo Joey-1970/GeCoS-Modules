@@ -61,8 +61,9 @@
 			   	break;
 						
 			case "set_serial_data":
-			   	If ($this->ReadPropertyInteger("SelectScript") > 0) {   
-					IPS_RunScriptEx($this->ReadPropertyInteger("SelectScript"), Array("RegVar_GetBuffer" => $data->Buffer));
+			   	If ($this->ReadPropertyInteger("SelectScript") > 0) { 
+					$Message = utf8_decode($data->Buffer);
+					IPS_RunScriptEx($this->ReadPropertyInteger("SelectScript"), Array("RegVar_GetBuffer" => $Message));
 				}
 			  	break;
 	 	}
