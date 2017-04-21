@@ -68,8 +68,9 @@
 	 	}
  	}
 	    
- 	public function RegVar_SendText($Message)
+ 	public function SendText(String $Message)
 	{
+		$Message = utf8_encode($Message);
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "serial_write", "Message" => $Message)));
 	}
 }
