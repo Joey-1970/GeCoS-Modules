@@ -347,9 +347,9 @@ class GeCoS_IO extends IPSModule
 		   		break;
 			// Serielle Kommunikation
 			case "serial_write":
-				//$Result = $this->GetOneWireDevices();
-				//$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_1wire_devices", "InstanceID" => $data->InstanceID, "Result"=>utf8_encode($Result) )));
-			break;
+				 $Message = utf8_decode($data->Message);
+				 $this->WriteSerial($Message);
+				break;
 			
 		    // Raspberry Pi Kommunikation
 		    case "get_RPi_connect":
@@ -848,11 +848,11 @@ class GeCoS_IO extends IPSModule
 	return bindec($not);
 	}
 	
-	public function WriteSerial(String $Command)
+	public function WriteSerial(String $Message)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$Command = utf8_decode($Command);
-			$this->CommandClientSocket(pack("L*", 81, $this->GetBuffer("Serial_Handle"), 0, strlen($Command)).$Command, 16);
+			$Message = utf8_decode($Message);
+			$this->CommandClientSocket(pack("L*", 81, $this->GetBuffer("Serial_Handle"), 0, strlen($Message)).$Message, 16);
 		}
 	}
 	
@@ -862,7 +862,8 @@ class GeCoS_IO extends IPSModule
 		//IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
 		If ($Result > 0) {
 			$Data = $this->CommandClientSocket(pack("L*", 80, $this->GetBuffer("Serial_Handle"), $Result, 0), 16 + $Result);
-			$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_serial_data", "Buffer" => $Data)));
+			$Message = utf8_encode($Data);
+			$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_serial_data", "Buffer" => $Message)));
 			//IPS_LogMessage("GeCoS_IO CheckSerial", $Data);
 		}
 		
