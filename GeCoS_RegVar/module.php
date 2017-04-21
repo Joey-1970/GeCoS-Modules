@@ -40,16 +40,18 @@
 			// Logging setzen
 			
 			//ReceiveData-Filter setzen
-			$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
+			//$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 			$this->SetReceiveDataFilter($Filter);
 			
+			/*
 			If ($this->ReadPropertyBoolean("Open") == true) {				
 				$this->SetStatus(102);
 			}
 			else {
 				$this->SetStatus(104);
-			}	
+			}
+			*/
 		}
 	}
 	
