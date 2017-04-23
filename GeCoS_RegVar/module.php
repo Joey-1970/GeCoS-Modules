@@ -37,8 +37,6 @@
 	    	
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
-			// Logging setzen
-			
 			//ReceiveData-Filter setzen
 			$Filter = '((.*"Function":"set_serial_data".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*))';
 			$this->SetReceiveDataFilter($Filter);
