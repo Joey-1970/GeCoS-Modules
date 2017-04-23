@@ -727,9 +727,11 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "99":
            			If ($response[4] >= 0 ) {
-           				IPS_LogMessage("GeCoS_IO Handle",$response[4]);
-           				SetValueInteger($this->GetIDForIdent("Handle"), $response[4]);
-           				
+           				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
+           				$this->SendDebug("GeCoS_IO Handle", $response[4], 0);
+					
+					SetValueInteger($this->GetIDForIdent("Handle"), $response[4]);
+
            				$this->ClientSocket(pack("LLLL", 19, $response[4], 134381568, 0));
            			}
            			else {
@@ -940,7 +942,9 @@ class GeCoS_IO extends IPSModule
 	{
 	      $result = false;
 	      If (Sys_Ping($this->ReadPropertyString("IPAddress"), 2000)) {
-			IPS_LogMessage("GeCoS_IO Netzanbindung","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert");
+			//IPS_LogMessage("GeCoS_IO Netzanbindung","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert");
+		      	$this->SendDebug("Netzanbindung", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert", 0);
+		      
 			$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8888, $errno, $errstr, 10);
 				if (!$status) {
 					IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
