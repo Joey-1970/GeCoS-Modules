@@ -16,7 +16,7 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
-		$this->RegisterPropertyInteger("GlitchFilter", 0);
+		$this->RegisterPropertyInteger("GlitchFilter", 100);
 		$this->RegisterPropertyString("I2C_Devices", "");
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
