@@ -158,9 +158,7 @@ class GeCoS_IO extends IPSModule
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
 			}
-			
-			//$this->GetConfigurationForParent();
-			
+						
 		        // Änderung an den untergeordneten Instanzen
 		        $this->RegisterMessage($this->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        $this->RegisterMessage($this->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
