@@ -1020,7 +1020,7 @@ class GeCoS_IO extends IPSModule
 		$MaxHandle = 0;
 		$InstanceArray = Array();
 		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		If (count($InstanceArray) > 0) {
+		If (strlen($this->GetBuffer("InstanceArray")) > 10) {
 			foreach ($InstanceArray as $Type => $Properties) {
 				If ($InstanceArray[$Type]["Handle"] >= $MinHandle)  {
 					// Handle löschen
