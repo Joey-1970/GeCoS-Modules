@@ -56,7 +56,7 @@ class GeCoS_IO extends IPSModule
 		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "60px", "add" => "");
 		
 				
-		If ($this->ReadPropertyBoolean("Open") == true) {
+		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 			// Devices einlesen und in das Values-Array kopieren
 			$DeviceArray = array();
 			$DeviceArray = unserialize($this->SearchI2CDevices());
@@ -1137,10 +1137,9 @@ class GeCoS_IO extends IPSModule
 				else {
 					// Handle ermitteln
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
-					
-					$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
-					
+									
 					if ($Handle >= 0) {
+						$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
 						// Testweise lesen
 						$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 						$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
