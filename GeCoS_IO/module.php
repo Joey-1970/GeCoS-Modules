@@ -143,7 +143,7 @@ class GeCoS_IO extends IPSModule
 			
 			
 			$ParentID = $this->GetParentID();
-			/*
+			
 			If ($ParentID > 0) {
 				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
 		                	IPS_SetProperty($ParentID, 'Host', $this->ReadPropertyString('IPAddress'));
@@ -151,12 +151,15 @@ class GeCoS_IO extends IPSModule
 				If (IPS_GetProperty($ParentID, 'Port') <> 8888) {
 		                	IPS_SetProperty($ParentID, 'Port', 8888);
 				}
+				If (IPS_GetProperty($ParentID, 'Open') <> $this->ReadPropertyBoolean("Open")) {
+		                	IPS_SetProperty($ParentID, 'Open', $this->ReadPropertyBoolean("Open"));
+				}
 				If (IPS_GetName($ParentID) == "Client Socket") {
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
 			}
-			*/
-			$this->GetConfigurationForParent();
+			
+			//$this->GetConfigurationForParent();
 			
 		        // Änderung an den untergeordneten Instanzen
 		        $this->RegisterMessage($this->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
