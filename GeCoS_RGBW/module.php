@@ -48,10 +48,8 @@
         {
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
-            	//Connect to available splitter or create a new one
-	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
-	    	
-	    	// Profil anlegen
+
+		// Profil anlegen
 		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
 		
 		$Output = array(); 
