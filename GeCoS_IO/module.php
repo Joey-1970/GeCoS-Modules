@@ -983,12 +983,14 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = 0;
 		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		If (count($InstanceArray) > 0) {
-			foreach ($InstanceArray as $Type => $Properties) {
-				foreach ($Properties as $Property => $Value) {
-					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
-						$Result = $Type;
+		If (Len($this->GetBuffer("InstanceArray")) > 10) {
+			$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+			If (count($InstanceArray) > 0) {
+				foreach ($InstanceArray as $Type => $Properties) {
+					foreach ($Properties as $Property => $Value) {
+						If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+							$Result = $Type;
+						}
 					}
 				}
 			}
@@ -1000,11 +1002,13 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -1;
 		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		If (count($InstanceArray) > 0) {
-			foreach ($InstanceArray as $Type => $Properties) {
-				If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
-				    $Result = $InstanceArray[$Type]["Handle"];
+		If (Len($this->GetBuffer("InstanceArray")) > 10) {
+			$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+			If (count($InstanceArray) > 0) {
+				foreach ($InstanceArray as $Type => $Properties) {
+					If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
+					    $Result = $InstanceArray[$Type]["Handle"];
+					}
 				}
 			}
 		}
