@@ -51,9 +51,7 @@
             	parent::ApplyChanges();
             	//Connect to available splitter or create a new one
 	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
-	    	
-	    	// Profil anlegen
-		
+
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
 			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
@@ -62,15 +60,13 @@
 		
 		$this->RegisterVariableInteger("InputBank0", "Input Bank 0", "", 170);
           	$this->DisableAction("InputBank0");
-		IPS_SetHidden($this->GetIDForIdent("InputBank0"), false);
+		IPS_SetHidden($this->GetIDForIdent("InputBank0"), true);
 		
 		$this->RegisterVariableInteger("InputBank1", "Input Bank 1", "", 180);
           	$this->DisableAction("InputBank1");
-		IPS_SetHidden($this->GetIDForIdent("InputBank1"), false);
+		IPS_SetHidden($this->GetIDForIdent("InputBank1"), true);
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
-			// Logging setzen
-			
 			//ReceiveData-Filter setzen
 			$this->SetBuffer("DeviceIdent", (($this->ReadPropertyInteger("DeviceBus") << 7) + $this->ReadPropertyInteger("DeviceAddress")));
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
