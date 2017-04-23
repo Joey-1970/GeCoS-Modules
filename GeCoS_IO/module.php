@@ -110,7 +110,7 @@ class GeCoS_IO extends IPSModule
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
 			
-			$this->GetConfigurationForParent();
+			
 			
 			$this->RegisterVariableInteger("Handle", "Handle", "", 100);
 			$this->DisableAction("Handle");
@@ -142,6 +142,8 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("RTC_Handle", -1);
 			$this->SetBuffer("Serial_Handle", -1);
 			
+			
+			
 			$ParentID = $this->GetParentID();
 			If ($ParentID > 0) {
 				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
@@ -154,6 +156,9 @@ class GeCoS_IO extends IPSModule
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
 			}
+			
+			$this->GetConfigurationForParent();
+			
 		        // Änderung an den untergeordneten Instanzen
 		        $this->RegisterMessage($this->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        $this->RegisterMessage($this->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
