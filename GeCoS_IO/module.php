@@ -140,6 +140,11 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("Serial_Handle", -1);
 			
 			$ParentID = $this->GetParentID();
+			If ($ParentID > 0) {
+				If (IPS_GetName($ParentID) == "Client Socket") {
+		                	IPS_SetName($ParentID, "GeCoS");
+				}
+			}
 		        // Änderung an den untergeordneten Instanzen
 		        $this->RegisterMessage($this->InstanceID, 11101); // Instanz wurde verbunden (InstanceID vom Parent)
 		        $this->RegisterMessage($this->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
