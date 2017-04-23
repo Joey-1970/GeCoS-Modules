@@ -983,7 +983,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = 0;
 		$InstanceArray = Array();
-		If (Len($this->GetBuffer("InstanceArray")) > 10) {
+		If (strlen($this->GetBuffer("InstanceArray")) > 10) {
 			$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 			If (count($InstanceArray) > 0) {
 				foreach ($InstanceArray as $Type => $Properties) {
@@ -1002,7 +1002,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -1;
 		$InstanceArray = Array();
-		If (Len($this->GetBuffer("InstanceArray")) > 10) {
+		If (strlen($this->GetBuffer("InstanceArray")) > 10) {
 			$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 			If (count($InstanceArray) > 0) {
 				foreach ($InstanceArray as $Type => $Properties) {
