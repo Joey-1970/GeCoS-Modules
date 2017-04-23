@@ -144,6 +144,12 @@ class GeCoS_IO extends IPSModule
 			
 			$ParentID = $this->GetParentID();
 			If ($ParentID > 0) {
+				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
+		                	IPS_SetProperty($ParentID, 'Host', $this->ReadPropertyString('IPAddress'));
+				}
+				If (IPS_GetProperty($ParentID, 'Port') <> 8888) {
+		                	IPS_SetProperty($ParentID, 'Port', 8888);
+				}
 				If (IPS_GetName($ParentID) == "Client Socket") {
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
