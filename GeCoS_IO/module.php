@@ -109,6 +109,9 @@ class GeCoS_IO extends IPSModule
 	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
 		
 		If (IPS_GetKernelRunlevel() == 10103) {
+			
+			$this->GetConfigurationForParent();
+			
 			$this->RegisterVariableInteger("Handle", "Handle", "", 100);
 			$this->DisableAction("Handle");
 			IPS_SetHidden($this->GetIDForIdent("Handle"), true);
@@ -151,7 +154,6 @@ class GeCoS_IO extends IPSModule
 		        // INSTANCEMESSAGE
 		        $this->RegisterMessage($ParentID, 10505); // Status hat sich geändert
 			
-			$this->GetConfigurationForParent();
 			
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 				// Hardware und Softwareversion feststellen
