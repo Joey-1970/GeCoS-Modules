@@ -49,9 +49,7 @@
         {
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
-            	//Connect to available splitter or create a new one
-	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
-
+            	
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
 			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
