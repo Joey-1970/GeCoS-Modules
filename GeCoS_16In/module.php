@@ -64,7 +64,14 @@
           	$this->DisableAction("InputBank1");
 		IPS_SetHidden($this->GetIDForIdent("InputBank1"), true);
 		
+		IPS_LogMessage("GeCoS 16In", "IPS-RunLevel: ".IPS_GetKernelRunlevel() );
+		IPS_LogMessage("GeCoS 16In", "HasActiveParent: ".$this->HasActiveParent() );
+		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
+			
+			IPS_LogMessage("GeCoS 16In", "IPS-RunLevel: ".IPS_GetKernelRunlevel() );
+			IPS_LogMessage("GeCoS 16In", "HasActiveParent: ".$this->HasActiveParent() );
+			
 			//ReceiveData-Filter setzen
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 			$this->SetReceiveDataFilter($Filter);
