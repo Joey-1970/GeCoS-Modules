@@ -708,14 +708,16 @@ class GeCoS_IO extends IPSModule
 		            	break;
 		        case "80":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("GeCoS_IO Serial Read","Serial Handle: ".$response[2]." Value: ".substr($Message, -($response[4])));
+           				$this->SendDebug("Read Serial Data", "Value: ".substr($Message, -($response[4])), 0);
+					//IPS_LogMessage("GeCoS_IO Serial Read","Serial Handle: ".$response[2]." Value: ".substr($Message, -($response[4])));
            				If ($response[4] > 0) {
 						$response[4] = substr($Message, -($response[4]));
 	           				//$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_serial_data", "Value"=>utf8_encode(substr($Message, -($response[4]))) )));
            				}
            			}
            			else {
-           				IPS_LogMessage("GeCoS_IO Serial Read","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				$this->SendDebug("Read Serial Data", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+					IPS_LogMessage("GeCoS_IO Serial Read","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
   		            	break;
 		        case "81":
@@ -728,10 +730,12 @@ class GeCoS_IO extends IPSModule
   		            	break;
   		        case "82":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO Check Bytes Serial","Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4]);
+           				$this->SendDebug("Check Serial Data", "Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4], 0);
+					//IPS_LogMessage("IPS2GPIO Check Bytes Serial","Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4]);
            			}
            			else {
-           				IPS_LogMessage("GeCoS_IO Check Bytes Serial","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				$this->SendDebug("Check Serial Data", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+					IPS_LogMessage("GeCoS_IO Check Bytes Serial","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
           			}
   		            	break;
 		        case "97":
