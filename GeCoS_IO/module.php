@@ -730,7 +730,7 @@ class GeCoS_IO extends IPSModule
   		            	break;
   		        case "82":
            			If ($response[4] >= 0) {
-           				$this->SendDebug("Check Serial Data", "Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4], 0);
+           				$this->SendDebug("Check Serial Data", "Serial Handle: ".$response[2]." - Bytes zum Lesen: ".$response[4], 0);
 					//IPS_LogMessage("IPS2GPIO Check Bytes Serial","Serial Handle: ".$response[2]." Bytes zum Lesen: ".$response[4]);
            			}
            			else {
