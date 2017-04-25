@@ -82,7 +82,6 @@
 				// Setup
 				$this->Setup();
 				$this->GetInput();
-				$this->SetStatus(102);
 			}
 			else {
 				$this->SetStatus(104);
@@ -102,7 +101,12 @@
 				break;
 			case "status":
 			   	If ($data->InstanceID == $this->InstanceID) {
-				   	$this->SetStatus($data->Status);
+				   	If ($this->ReadPropertyBoolean("Open") == true) {				
+						$this->SetStatus($data->Status);
+					}
+					else {
+						$this->SetStatus(104);
+					}	
 			   	}
 			   	break;
 			case "interrupt":
