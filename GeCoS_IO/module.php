@@ -235,8 +235,8 @@ class GeCoS_IO extends IPSModule
 			case 11101:
 				$InstanceArray = Array();
 				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-				$InstanceArray[$SenderID]["DeviceBus"] = 0; //IPS_GetProperty($SenderID, "DeviceBus");
-				$InstanceArray[$SenderID]["DeviceAddress"] = 0; //IPS_GetProperty($SenderID, "DeviceAddress");
+				$InstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
+				$InstanceArray[$SenderID]["DeviceAddress"] = IPS_GetProperty($SenderID, "DeviceAddress");
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
@@ -279,6 +279,17 @@ class GeCoS_IO extends IPSModule
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
 				$InstanceArray[$data->InstanceID]["Handle"] = $Handle;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				// Testweise lesen
+				If ($Handle >= 0) {
+					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+					If ($Result >= 0) {
+						$this->SendDebug("set_used_i2c", "Test-Lesen erfolgreich!", 0);
+					}
+					else {
+						$this->SendDebug("set_used_i2c", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".$data->DeviceBus." nicht erfolgreich!", 0);
+						IPS_LogMessage("GeCoS_IO", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".$data->DeviceBus." nicht erfolgreich!");
+					}		
+				}
 				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				// Messages einrichten
 				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
