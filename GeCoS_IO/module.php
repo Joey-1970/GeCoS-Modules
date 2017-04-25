@@ -930,6 +930,34 @@ class GeCoS_IO extends IPSModule
         return $Result;
 	}
 	
+	private function CheckConfig()
+	{
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			set_include_path(__DIR__);
+			require_once (__DIR__ . '/Net/SFTP.php');
+			$sftp = new Net_SFTP($this->ReadPropertyString("IPAddress"));
+			$login = @$sftp->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
+			
+			if ($login == false)
+			{
+			    	IPS_LogMessage("GeCoS_IO SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			    	$Result = "";
+				return false;
+			}
+			//IPS_LogMessage("IPS2GPIO SFTP-Connect","Verbindung hergestellt");
+			
+			$Path = "/boot/config.txt";
+			// Prüfen, ob die Datei 
+			if (!$sftp->file_exists($Path)) {
+				IPS_LogMessage("GeCoS_IO SFTP-Connect",$Path." nicht gefunden!");
+				return;
+			}
+			
+			
+	return;
+	}
+	
+	
 	private function GetOneWireDevices()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
