@@ -957,6 +957,7 @@ class GeCoS_IO extends IPSModule
 			$FileContent = file_get_contents($Path);
 			
 			IPS_LogMessage("GeCoS_IO Config.txt", $FileContent);
+		}
 			
 	return;
 	}
