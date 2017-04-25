@@ -167,6 +167,7 @@ class GeCoS_IO extends IPSModule
 			
 			
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
+				$this->CheckConfig();
 				// Hardware und Softwareversion feststellen
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
 				
@@ -953,6 +954,9 @@ class GeCoS_IO extends IPSModule
 				return;
 			}
 			
+			$FileContent = file_get_contents($Path);
+			
+			IPS_LogMessage("GeCoS_IO Config.txt", $FileContent);
 			
 	return;
 	}
