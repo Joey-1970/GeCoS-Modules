@@ -283,11 +283,11 @@ class GeCoS_IO extends IPSModule
 				If ($Handle >= 0) {
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					If ($Result >= 0) {
-						$this->SendDebug("set_used_i2c", "Test-Lesen erfolgreich!", 0);
+						$this->SendDebug("Set Used I2C", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".($data->DeviceBus - 4)." erfolgreich!", 0);
 					}
 					else {
-						$this->SendDebug("set_used_i2c", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".$data->DeviceBus." nicht erfolgreich!", 0);
-						IPS_LogMessage("GeCoS_IO", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".$data->DeviceBus." nicht erfolgreich!");
+						$this->SendDebug("Set Used I2C", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".($data->DeviceBus - 4)." nicht erfolgreich!", 0);
+						IPS_LogMessage("GeCoS_IO", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".($data->DeviceBus - 4)." nicht erfolgreich!");
 					}		
 				}
 				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
