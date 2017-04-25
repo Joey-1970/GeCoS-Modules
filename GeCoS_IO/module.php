@@ -954,7 +954,7 @@ class GeCoS_IO extends IPSModule
 				return;
 			}
 			
-			$FileContent = file_get_contents($Path);
+			$FileContent = $sftp->file_get_contents($Path);
 			
 			IPS_LogMessage("GeCoS_IO Config.txt", $FileContent);
 		}
