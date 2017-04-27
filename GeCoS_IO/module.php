@@ -241,7 +241,7 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+				//SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				break;
 			case 11102:
 				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
@@ -293,7 +293,7 @@ class GeCoS_IO extends IPSModule
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}		
 				}
-				SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+				//SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 				// Messages einrichten
 				$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 				$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
@@ -959,6 +959,7 @@ class GeCoS_IO extends IPSModule
 			$FileContentConfig = $sftp->get($PathConfig);
 			
 			IPS_LogMessage("GeCoS_IO Config.txt", $FileContentConfig);
+			SetValueString($this->GetIDForIdent("Test"), $FileContentConfig);
 			
 			// Prüfen ob I2C aktiviert ist
 			$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
