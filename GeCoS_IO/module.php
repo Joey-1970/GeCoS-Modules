@@ -1135,7 +1135,7 @@ class GeCoS_IO extends IPSModule
 				}
 			}
 			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-			SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
+			//SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
 			
 			for ($i = $MinHandle; $i < max($MaxHandle, 32) ; $i++) {
 				$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
