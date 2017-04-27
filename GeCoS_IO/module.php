@@ -946,37 +946,50 @@ class GeCoS_IO extends IPSModule
 			    	$Result = "";
 				return false;
 			}
-			//IPS_LogMessage("IPS2GPIO SFTP-Connect","Verbindung hergestellt");
 			
-			$Path = "/boot/config.txt";
-			// Prüfen, ob die Datei 
-			if (!$sftp->file_exists($Path)) {
-				$this->SendDebug("CheckConfig", $Path." nicht gefunden!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", $Path." nicht gefunden!");
+			// I²C Schnittstelle
+			$PathConfig = "/boot/config.txt";
+			// Prüfen, ob die Datei existiert
+			if (!$sftp->file_exists($PathConfig)) {
+				$this->SendDebug("CheckConfig", $PathConfig." nicht gefunden!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", $PathConfig." nicht gefunden!");
 				return;
 			}
 			
-			$FileContent = $sftp->get($Path);
+			$FileContentConfig = $sftp->get($PathConfig);
 			
-			IPS_LogMessage("GeCoS_IO Config.txt", $FileContent);
+			IPS_LogMessage("GeCoS_IO Config.txt", $FileContentConfig);
 			
 			// Prüfen ob I2C aktiviert ist
 			$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
-			if (preg_match($Pattern, $FileContent)) {
+			if (preg_match($Pattern, $FileContentConfig)) {
 				$this->SendDebug("CheckConfig", "I²C ist aktiviert", 0);
 			} else {
 			   	$this->SendDebug("CheckConfig", "I²C ist nicht aktiviert!", 0);
 				IPS_LogMessage("GeCoS_IO CheckConfig", "I²C ist nicht aktiviert!");
 			}
 			
-			// Prüfen ob I2C aktiviert ist
-			$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
-			if (preg_match($Pattern, $FileContent)) {
-				$this->SendDebug("CheckConfig", "I²C ist aktiviert", 0);
-			} else {
-			   	$this->SendDebug("CheckConfig", "I²C ist nicht aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "I²C ist nicht aktiviert!");
+			//Serielle Schnittstelle
+			$PathCmdline = "/boot/cmdline.txt";
+			// Prüfen, ob die Datei existiert
+			if (!$sftp->file_exists($PathCmdline)) {
+				$this->SendDebug("CheckConfig", $PathCmdline." nicht gefunden!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", $PathCmdline." nicht gefunden!");
+				return;
 			}
+			
+			$FileContentCmdline = $sftp->get($PathCmdline);
+			
+			// Prüfen ob die serielle SChnittstelle aktiviert ist
+			$Pattern = "/console=(serial0|ttyAMA0|ttyS0)/";
+			if (preg_match($Pattern, $FileContentCmdline)) {
+				$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
+			} else {
+			   	$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!");
+			}
+			
+			
 		}
 			
 	return;
