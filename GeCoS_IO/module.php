@@ -965,10 +965,10 @@ class GeCoS_IO extends IPSModule
 			//$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
 			$Pattern = "/(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))/";
 			if (preg_match($Pattern, $FileContentConfig)) {
-				$this->SendDebug("CheckConfig", "I²C ist aktiviert", 0);
+				$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
 			} else {
-			   	$this->SendDebug("CheckConfig", "I²C ist nicht aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "I²C ist nicht aktiviert!");
+			   	$this->SendDebug("CheckConfig", "I2C ist nicht aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist nicht aktiviert!");
 			}
 			
 			//Serielle Schnittstelle
