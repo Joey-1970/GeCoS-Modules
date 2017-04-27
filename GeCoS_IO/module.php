@@ -941,7 +941,8 @@ class GeCoS_IO extends IPSModule
 			
 			if ($login == false)
 			{
-			    	IPS_LogMessage("GeCoS_IO SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+			    	$this->SendDebug("CheckConfig", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			    	$Result = "";
 				return false;
 			}
@@ -950,13 +951,32 @@ class GeCoS_IO extends IPSModule
 			$Path = "/boot/config.txt";
 			// Prüfen, ob die Datei 
 			if (!$sftp->file_exists($Path)) {
-				IPS_LogMessage("GeCoS_IO SFTP-Connect",$Path." nicht gefunden!");
+				$this->SendDebug("CheckConfig", $Path." nicht gefunden!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", $Path." nicht gefunden!");
 				return;
 			}
 			
 			$FileContent = $sftp->get($Path);
 			
 			IPS_LogMessage("GeCoS_IO Config.txt", $FileContent);
+			
+			// Prüfen ob I2C aktiviert ist
+			$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
+			if (preg_match($Pattern, $FileContent)) {
+				$this->SendDebug("CheckConfig", "I²C ist aktiviert", 0);
+			} else {
+			   	$this->SendDebug("CheckConfig", "I²C ist nicht aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "I²C ist nicht aktiviert!");
+			}
+			
+			// Prüfen ob I2C aktiviert ist
+			$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
+			if (preg_match($Pattern, $FileContent)) {
+				$this->SendDebug("CheckConfig", "I²C ist aktiviert", 0);
+			} else {
+			   	$this->SendDebug("CheckConfig", "I²C ist nicht aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "I²C ist nicht aktiviert!");
+			}
 		}
 			
 	return;
