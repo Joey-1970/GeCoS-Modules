@@ -958,9 +958,6 @@ class GeCoS_IO extends IPSModule
 			
 			$FileContentConfig = $sftp->get($PathConfig);
 			
-			IPS_LogMessage("GeCoS_IO Config.txt", $FileContentConfig);
-			SetValueString($this->GetIDForIdent("Test"), $FileContentConfig);
-			
 			// Prüfen ob I2C aktiviert ist
 			$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 			if (preg_match($Pattern, $FileContentConfig)) {
@@ -989,7 +986,7 @@ class GeCoS_IO extends IPSModule
 			}
 			
 			$FileContentCmdline = $sftp->get($PathCmdline);
-			
+			SetValueString($this->GetIDForIdent("Test"), $FileContentCmdline);
 			// Prüfen ob die serielle SChnittstelle aktiviert ist
 			$Pattern = "/console=(serial0|ttyAMA(0|1)|ttyS(0|1))/";
 			if (preg_match($Pattern, $FileContentCmdline)) {
