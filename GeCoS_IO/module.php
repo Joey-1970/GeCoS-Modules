@@ -987,8 +987,8 @@ class GeCoS_IO extends IPSModule
 			
 			$FileContentCmdline = $sftp->get($PathCmdline);
 			SetValueString($this->GetIDForIdent("Test"), $FileContentCmdline);
-			// Prüfen ob die serielle SChnittstelle aktiviert ist
-			$Pattern = "/console=(serial0|ttyAMA(0|1)|ttyS(0|1))/";
+			// Prüfen ob die Shell der serielle Schnittstelle aktiviert ist
+			$Pattern = "/console=(serial0|ttyAMA(0|1)|tty(0|1))/";
 			if (preg_match($Pattern, $FileContentCmdline)) {
 				$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist nicht aktiviert", 0);
 			} else {
