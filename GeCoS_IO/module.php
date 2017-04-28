@@ -961,16 +961,16 @@ class GeCoS_IO extends IPSModule
 				if (preg_match($Pattern, $FileContentConfig)) {
 					$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
 				} else {
-					$this->SendDebug("CheckConfig", "I2C ist nicht aktiviert!", 0);
-					IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist nicht aktiviert!");
+					$this->SendDebug("CheckConfig", "I2C ist deaktiviert!", 0);
+					IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist deaktiviert!");
 				}
 				// Prüfen ob die serielle Schnittstelle aktiviert ist
 				$Pattern = "/(?:\r\n|\n|\r)(\s*)(enable_uart)(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 				if (preg_match($Pattern, $FileContentConfig)) {
 					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
 				} else {
-					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!", 0);
-					IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!");
+					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist deaktiviert!", 0);
+					IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist deaktiviert!");
 				}
 			}
 			
@@ -986,10 +986,10 @@ class GeCoS_IO extends IPSModule
 				// Prüfen ob die Shell der serielle Schnittstelle aktiviert ist
 				$Pattern = "/console=(serial0|ttyAMA(0|1)|tty(0|1))/";
 				if (preg_match($Pattern, $FileContentCmdline)) {
-					$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist nicht aktiviert", 0);
+					$this->SendDebug("CheckConfig", "Shell-Zugriff auf serieller Schnittstelle ist deaktiviert", 0);
 				} else {
-					$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!", 0);
-					IPS_LogMessage("GeCoS_IO CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!");
+					$this->SendDebug("CheckConfig", "Shell-Zugriff auf serieller Schnittstelle ist aktiviert!", 0);
+					IPS_LogMessage("GeCoS_IO CheckConfig", "Shell-Zugriff auf serieller Schnittstelle ist aktiviert!");
 				}
 			}
 			
@@ -1000,8 +1000,8 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("CheckConfig", "PIGPIO-Server ist aktiviert", 0);
 			}
 			else {
-				$this->SendDebug("CheckConfig", "PIGPIO-Server ist nicht aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "PIGPIO-Server ist nicht aktiviert!");
+				$this->SendDebug("CheckConfig", "PIGPIO-Server ist deaktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "PIGPIO-Server ist deaktiviert!");
 			}
 			
 		}
