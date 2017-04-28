@@ -962,15 +962,21 @@ class GeCoS_IO extends IPSModule
 			SetValueString($this->GetIDForIdent("Test"), $FileContentConfig);
 			
 			// Prüfen ob I2C aktiviert ist
-			//$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
-			//$Pattern = "/(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))/";
-			//$Pattern = "/(?:\r\n|\n|\r)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))($:\r\n|\n|\r)/";
 			$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 			if (preg_match($Pattern, $FileContentConfig)) {
 				$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
 			} else {
 			   	$this->SendDebug("CheckConfig", "I2C ist nicht aktiviert!", 0);
 				IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist nicht aktiviert!");
+			}
+			
+			// Prüfen ob die serielle Schnittstelle aktiviert ist
+			$Pattern = "/(?:\r\n|\n|\r)(\s*)(enable_uart)(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
+			if (preg_match($Pattern, $FileContentConfig)) {
+				$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
+			} else {
+			   	$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!");
 			}
 			
 			//Serielle Schnittstelle
@@ -985,12 +991,12 @@ class GeCoS_IO extends IPSModule
 			$FileContentCmdline = $sftp->get($PathCmdline);
 			
 			// Prüfen ob die serielle SChnittstelle aktiviert ist
-			$Pattern = "/console=(serial0|ttyAMA0|ttyS0)/";
+			$Pattern = "/console=(serial0|ttyAMA(0|1)|ttyS(0|1))/";
 			if (preg_match($Pattern, $FileContentCmdline)) {
-				$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
+				$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist nicht aktiviert", 0);
 			} else {
-			   	$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!");
+			   	$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!");
 			}
 			
 			
