@@ -964,7 +964,8 @@ class GeCoS_IO extends IPSModule
 			// Prüfen ob I2C aktiviert ist
 			//$Pattern = "/^(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))?(,.*)?$/";
 			//$Pattern = "/(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))/";
-			$Pattern = "/(?:\r\n|\n|\r)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))($:\r\n|\n|\r)/";
+			//$Pattern = "/(?:\r\n|\n|\r)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))($:\r\n|\n|\r)/";
+			$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 			if (preg_match($Pattern, $FileContentConfig)) {
 				$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
 			} else {
