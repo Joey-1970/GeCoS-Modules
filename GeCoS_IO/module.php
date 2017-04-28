@@ -953,27 +953,25 @@ class GeCoS_IO extends IPSModule
 			if (!$sftp->file_exists($PathConfig)) {
 				$this->SendDebug("CheckConfig", $PathConfig." nicht gefunden!", 0);
 				IPS_LogMessage("GeCoS_IO CheckConfig", $PathConfig." nicht gefunden!");
-				return;
 			}
-			
-			$FileContentConfig = $sftp->get($PathConfig);
-			
-			// Prüfen ob I2C aktiviert ist
-			$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
-			if (preg_match($Pattern, $FileContentConfig)) {
-				$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
-			} else {
-			   	$this->SendDebug("CheckConfig", "I2C ist nicht aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist nicht aktiviert!");
-			}
-			
-			// Prüfen ob die serielle Schnittstelle aktiviert ist
-			$Pattern = "/(?:\r\n|\n|\r)(\s*)(enable_uart)(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
-			if (preg_match($Pattern, $FileContentConfig)) {
-				$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
-			} else {
-			   	$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!");
+			else {
+				$FileContentConfig = $sftp->get($PathConfig);
+				// Prüfen ob I2C aktiviert ist
+				$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
+				if (preg_match($Pattern, $FileContentConfig)) {
+					$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
+				} else {
+					$this->SendDebug("CheckConfig", "I2C ist nicht aktiviert!", 0);
+					IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist nicht aktiviert!");
+				}
+				// Prüfen ob die serielle Schnittstelle aktiviert ist
+				$Pattern = "/(?:\r\n|\n|\r)(\s*)(enable_uart)(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
+				if (preg_match($Pattern, $FileContentConfig)) {
+					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
+				} else {
+					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!", 0);
+					IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist nicht aktiviert!");
+				}
 			}
 			
 			//Serielle Schnittstelle
@@ -982,20 +980,29 @@ class GeCoS_IO extends IPSModule
 			if (!$sftp->file_exists($PathCmdline)) {
 				$this->SendDebug("CheckConfig", $PathCmdline." nicht gefunden!", 0);
 				IPS_LogMessage("GeCoS_IO CheckConfig", $PathCmdline." nicht gefunden!");
-				return;
+			}
+			else {
+				$FileContentCmdline = $sftp->get($PathCmdline);
+				// Prüfen ob die Shell der serielle Schnittstelle aktiviert ist
+				$Pattern = "/console=(serial0|ttyAMA(0|1)|tty(0|1))/";
+				if (preg_match($Pattern, $FileContentCmdline)) {
+					$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist nicht aktiviert", 0);
+				} else {
+					$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!", 0);
+					IPS_LogMessage("GeCoS_IO CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!");
+				}
 			}
 			
-			$FileContentCmdline = $sftp->get($PathCmdline);
-			SetValueString($this->GetIDForIdent("Test"), $FileContentCmdline);
-			// Prüfen ob die Shell der serielle Schnittstelle aktiviert ist
-			$Pattern = "/console=(serial0|ttyAMA(0|1)|tty(0|1))/";
-			if (preg_match($Pattern, $FileContentCmdline)) {
-				$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist nicht aktiviert", 0);
-			} else {
-			   	$this->SendDebug("CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!", 0);
-				IPS_LogMessage("GeCoS_IO CheckConfig", "Shell auf Serieller Schnittstelle ist aktiviert!");
+			//PIGPIOD
+			$PathPIGPIOD = "/etc/systemd/system/pigpiod.service.d/public.conf";
+			// Prüfen, ob die Datei existiert
+			if ($sftp->file_exists($PathPIGPIOD)) {
+				$this->SendDebug("CheckConfig", "PIGPIO-Server ist aktiviert", 0);
 			}
-			
+			else {
+				$this->SendDebug("CheckConfig", "PIGPIO-Server ist nicht aktiviert!", 0);
+				IPS_LogMessage("GeCoS_IO CheckConfig", "PIGPIO-Server ist nicht aktiviert!");
+			}
 			
 		}
 			
