@@ -1148,14 +1148,12 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = 0;
 		$InstanceArray = Array();
-		If (strlen($this->GetBuffer("InstanceArray")) > 10) {
-			$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-			If (count($InstanceArray) > 0) {
-				foreach ($InstanceArray as $Type => $Properties) {
-					foreach ($Properties as $Property => $Value) {
-						If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
-							$Result = $Type;
-						}
+		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		If (count($InstanceArray, COUNT_RECURSIVE) >= 5) {
+			foreach ($InstanceArray as $Type => $Properties) {
+				foreach ($Properties as $Property => $Value) {
+					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+						$Result = $Type;
 					}
 				}
 			}
@@ -1167,13 +1165,11 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -1;
 		$InstanceArray = Array();
-		If (strlen($this->GetBuffer("InstanceArray")) > 10) {
-			$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-			If (count($InstanceArray) > 0) {
-				foreach ($InstanceArray as $Type => $Properties) {
-					If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
-					    $Result = $InstanceArray[$Type]["Handle"];
-					}
+		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		If (count($InstanceArray, COUNT_RECURSIVE) >= 5) {
+			foreach ($InstanceArray as $Type => $Properties) {
+				If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
+				    $Result = $InstanceArray[$Type]["Handle"];
 				}
 			}
 		}
@@ -1185,25 +1181,6 @@ class GeCoS_IO extends IPSModule
 		for ($i = $MinHandle; $i < 64 ; $i++) {
 			$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
 		}
-		/*
-		$MaxHandle = 0;
-		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-		If (strlen($this->GetBuffer("InstanceArray")) > 10) {
-			foreach ($InstanceArray as $Type => $Properties) {
-				If ($InstanceArray[$Type]["Handle"] >= $MinHandle)  {
-					// Handle löschen
-					$MaxHandle = max($InstanceArray[$Type]["Handle"], $MaxHandle);					
-					$InstanceArray[$Type]["Handle"] = -1;
-				}
-			}
-			$this->SetBuffer("InstanceArray", serialize($InstanceArray));
-			//SetValueString($this->GetIDForIdent("Test"), serialize($InstanceArray));
-			
-			
-		}
-		*/
-		
 	}
 	
 	private function GetParentID()
