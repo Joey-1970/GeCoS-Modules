@@ -935,13 +935,13 @@ class GeCoS_IO extends IPSModule
 	{
 		$arrayCheckConfig = array();
 		$arrayCheckConfig["I²C"]["Status"] = "unbekannt";
-		$arrayCheckConfig["I²C"]["Color"] = "FFFF00";
+		$arrayCheckConfig["I²C"]["Color"] = "#FFFF00";
 		$arrayCheckConfig["Serielle Schnittstelle"]["Status"] = "unbekannt";
-		$arrayCheckConfig["Serielle Schnittstelle"]["Color"] = "FFFF00";
+		$arrayCheckConfig["Serielle Schnittstelle"]["Color"] = "#FFFF00";
 		$arrayCheckConfig["Shell Zugriff"]["Status"] = "unbekannt";
-		$arrayCheckConfig["Shell Zugriff"]["Color"] = "FFFF00";
+		$arrayCheckConfig["Shell Zugriff"]["Color"] = "#FFFF00";
 		$arrayCheckConfig["PIGPIO Server"]["Status"] = "unbekannt";
-		$arrayCheckConfig["PIGPIO Server"]["Color"] = "FFFF00";
+		$arrayCheckConfig["PIGPIO Server"]["Color"] = "#FFFF00";
 		
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 			
@@ -972,17 +972,25 @@ class GeCoS_IO extends IPSModule
 				$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 				if (preg_match($Pattern, $FileContentConfig)) {
 					$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
+					$arrayCheckConfig["I²C"]["Status"] = "aktiviert";
+					$arrayCheckConfig["I²C"]["Color"] = "#00FF00";
 				} else {
 					$this->SendDebug("CheckConfig", "I2C ist deaktiviert!", 0);
 					IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist deaktiviert!");
+					$arrayCheckConfig["I²C"]["Status"] = "deaktiviert";
+					$arrayCheckConfig["I²C"]["Color"] = "#FF0000";
 				}
 				// Prüfen ob die serielle Schnittstelle aktiviert ist
 				$Pattern = "/(?:\r\n|\n|\r)(\s*)(enable_uart)(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 				if (preg_match($Pattern, $FileContentConfig)) {
 					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist aktiviert", 0);
+					$arrayCheckConfig["Serielle Schnittstelle"]["Status"] = "aktiviert";
+					$arrayCheckConfig["Serielle Schnittstelle"]["Color"] = "#00FF00";			
 				} else {
 					$this->SendDebug("CheckConfig", "Serielle Schnittstelle ist deaktiviert!", 0);
 					IPS_LogMessage("GeCoS_IO CheckConfig", "Serielle Schnittstelle ist deaktiviert!");
+					$arrayCheckConfig["Serielle Schnittstelle"]["Status"] = "deaktiviert";
+					$arrayCheckConfig["Serielle Schnittstelle"]["Color"] = "#FF0000";
 				}
 			}
 			
@@ -999,9 +1007,13 @@ class GeCoS_IO extends IPSModule
 				$Pattern = "/console=(serial0|ttyAMA(0|1)|tty(0|1))/";
 				if (preg_match($Pattern, $FileContentCmdline)) {
 					$this->SendDebug("CheckConfig", "Shell-Zugriff auf serieller Schnittstelle ist deaktiviert", 0);
+					$arrayCheckConfig["Shell Zugriff"]["Status"] = "deaktiviert";
+					$arrayCheckConfig["Shell Zugriff"]["Color"] = "#00FF00";
 				} else {
 					$this->SendDebug("CheckConfig", "Shell-Zugriff auf serieller Schnittstelle ist aktiviert!", 0);
 					IPS_LogMessage("GeCoS_IO CheckConfig", "Shell-Zugriff auf serieller Schnittstelle ist aktiviert!");
+					$arrayCheckConfig["Shell Zugriff"]["Status"] = "aktiviert";
+					$arrayCheckConfig["Shell Zugriff"]["Color"] = "#FF0000";
 				}
 			}
 			
@@ -1010,10 +1022,14 @@ class GeCoS_IO extends IPSModule
 			// Prüfen, ob die Datei existiert
 			if ($sftp->file_exists($PathPIGPIOD)) {
 				$this->SendDebug("CheckConfig", "PIGPIO-Server ist aktiviert", 0);
+				$arrayCheckConfig["PIGPIO Server"]["Status"] = "aktiviert";
+				$arrayCheckConfig["PIGPIO Server"]["Color"] = "#00FF00";
 			}
 			else {
 				$this->SendDebug("CheckConfig", "PIGPIO-Server ist deaktiviert!", 0);
 				IPS_LogMessage("GeCoS_IO CheckConfig", "PIGPIO-Server ist deaktiviert!");
+				$arrayCheckConfig["PIGPIO Server"]["Status"] = "deaktiviert";
+				$arrayCheckConfig["PIGPIO Server"]["Color"] = "#FF0000";
 			}
 			
 		}
