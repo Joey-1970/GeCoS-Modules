@@ -255,7 +255,10 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				break;
 			case 11102:
-				IPS_LogMessage("GeCoS_IO MessageSink", "Instanz  ".$SenderID." wurde getrennt");
+				$InstanceArray = Array();
+				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+				unset ($InstanceArray[$SenderID]);
+				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				break;	
 			case 10505:
 				If ($Data[0] == 102) {
