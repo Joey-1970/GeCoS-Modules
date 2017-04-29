@@ -773,7 +773,7 @@ class GeCoS_IO extends IPSModule
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("GeCoS_IO Handle", $response[4], 0);
-					$this->SetBuffer("Handle", $response[4])
+					$this->SetBuffer("Handle", $response[4]);
 
            				$this->ClientSocket(pack("LLLL", 19, $response[4], 134381568, 0));
            			}
