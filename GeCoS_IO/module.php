@@ -191,12 +191,13 @@ class GeCoS_IO extends IPSModule
 				}
 				
 				// Notify Starten
-				SetValueInteger($this->GetIDForIdent("Handle"), -1);
+				//SetValueInteger($this->GetIDForIdent("Handle"), -1);
+				$this->SetBuffer("Handle", -1);
 				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				
 				// I²C Bus 1 für RTC, Serielle Schnittstelle,
 				//Notify Pin 17 + 27 + 15= Bitmask 134381568
-				$this->CommandClientSocket(pack("L*", 19, GetValueInteger($this->GetIDForIdent("Handle")), 134381568, 0), 16);
+				$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568, 0), 16);
 				// GlitchFilter setzen
 				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
 				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
@@ -778,8 +779,7 @@ class GeCoS_IO extends IPSModule
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("GeCoS_IO Handle", $response[4], 0);
-					
-					SetValueInteger($this->GetIDForIdent("Handle"), $response[4]);
+					$this->SetBuffer("Handle", $response[4])
 
            				$this->ClientSocket(pack("LLLL", 19, $response[4], 134381568, 0));
            			}
