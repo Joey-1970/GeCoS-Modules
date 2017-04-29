@@ -933,7 +933,19 @@ class GeCoS_IO extends IPSModule
 	
 	private function CheckConfig()
 	{
+		$arrayCheckConfig = array();
+		$arrayCheckConfig["I²C"]["Status"] = "unbekannt";
+		$arrayCheckConfig["I²C"]["Color"] = "FFFF00";
+		$arrayCheckConfig["Serielle Schnittstelle"]["Status"] = "unbekannt";
+		$arrayCheckConfig["Serielle Schnittstelle"]["Color"] = "FFFF00";
+		$arrayCheckConfig["Shell Zugriff"]["Status"] = "unbekannt";
+		$arrayCheckConfig["Shell Zugriff"]["Color"] = "FFFF00";
+		$arrayCheckConfig["PIGPIO Server"]["Status"] = "unbekannt";
+		$arrayCheckConfig["PIGPIO Server"]["Color"] = "FFFF00";
+		
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			
+			
 			set_include_path(__DIR__);
 			require_once (__DIR__ . '/Net/SFTP.php');
 			$sftp = new Net_SFTP($this->ReadPropertyString("IPAddress"));
@@ -944,7 +956,7 @@ class GeCoS_IO extends IPSModule
 			    	$this->SendDebug("CheckConfig", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
 				IPS_LogMessage("GeCoS_IO CheckConfig","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			    	$Result = "";
-				return false;
+				return serialize($arrayCheckConfig);
 			}
 			
 			// I²C Schnittstelle
@@ -1006,7 +1018,7 @@ class GeCoS_IO extends IPSModule
 			
 		}
 			
-	return;
+	return serialize($arrayCheckConfig);
 	}
 	
 	
