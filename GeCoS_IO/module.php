@@ -42,7 +42,21 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "User", "caption" => "User");
 		$arrayElements[] = array("type" => "PasswordTextBox", "name" => "Password", "caption" => "Password");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Analyse der Raspberry Pi Konfiguration:");
+		$arraySort = array();
+		$arraySort[] = array("column" => "Typ", "direction" => "ascending");
+		$arrayColumns = array();
+		$arrayColumns[] = array("label" => "Service", "name" => "ServiceTyp", "width" => "200px", "add" => "");
+		$arrayColumns[] = array("label" => "Status", "name" => "ServiceStatus", "width" => "100px", "add" => "");
+		$ServiceArray = array();
+		$ServiceArray = unserialize($this->CheckConfig());
+		$arrayValues[] = array("ServiceTyp" => "I²C", "ServiceStatus" => $ServiceArray["I2C"]["Status"], "rowColor" => $ServiceArray["I2C"]["Color"]);
+		$arrayValues[] = array("ServiceTyp" => "Serielle Schnittstelle", "ServiceStatus" => $ServiceArray["Serielle Schnittstelle"]["Status"], "rowColor" => $ServiceArray["Serielle Schnittstelle"]["Color"]);
+		$arrayValues[] = array("ServiceTyp" => "Shell Zugriff", "ServiceStatus" => $ServiceArray["Shell Zugriff"]["Status"], "rowColor" => $ServiceArray["Shell Zugriff"]["Color"]);
+		$arrayValues[] = array("ServiceTyp" => "PIGPIO Server", "ServiceStatus" => $ServiceArray["PIGPIO Server"]["Status"], "rowColor" => $ServiceArray["PIGPIO Server"]["Color"]);
 		
+		$arrayElements[] = array("type" => "List", "name" => "Raspi_Config", "caption" => "Raspberry Pi Konfiguration", "rowCount" => 4, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
+	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
@@ -937,8 +951,8 @@ class GeCoS_IO extends IPSModule
 	private function CheckConfig()
 	{
 		$arrayCheckConfig = array();
-		$arrayCheckConfig["I²C"]["Status"] = "unbekannt";
-		$arrayCheckConfig["I²C"]["Color"] = "#FFFF00";
+		$arrayCheckConfig["I2C"]["Status"] = "unbekannt";
+		$arrayCheckConfig["I2C"]["Color"] = "#FFFF00";
 		$arrayCheckConfig["Serielle Schnittstelle"]["Status"] = "unbekannt";
 		$arrayCheckConfig["Serielle Schnittstelle"]["Color"] = "#FFFF00";
 		$arrayCheckConfig["Shell Zugriff"]["Status"] = "unbekannt";
