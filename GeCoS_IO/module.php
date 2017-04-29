@@ -126,12 +126,7 @@ class GeCoS_IO extends IPSModule
 		// Kernel
 	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
 		
-		If (IPS_GetKernelRunlevel() == 10103) {
-		
-			$this->RegisterVariableInteger("Handle", "Handle", "", 100);
-			$this->DisableAction("Handle");
-			IPS_SetHidden($this->GetIDForIdent("Handle"), true);
-		
+		If (IPS_GetKernelRunlevel() == 10103) {		
 			$this->RegisterVariableString("Hardware", "Hardware", "", 107);
 			$this->DisableAction("Hardware");
 			IPS_SetHidden($this->GetIDForIdent("Hardware"), true);
@@ -191,7 +186,6 @@ class GeCoS_IO extends IPSModule
 				}
 				
 				// Notify Starten
-				//SetValueInteger($this->GetIDForIdent("Handle"), -1);
 				$this->SetBuffer("Handle", -1);
 				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				
