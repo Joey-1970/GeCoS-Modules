@@ -47,7 +47,7 @@ class GeCoS_IO extends IPSModule
 		$arraySort[] = array("column" => "Typ", "direction" => "ascending");
 		$arrayColumns = array();
 		$arrayColumns[] = array("label" => "Service", "name" => "ServiceTyp", "width" => "200px", "add" => "");
-		$arrayColumns[] = array("label" => "Status", "name" => "ServiceStatus", "width" => "100px", "add" => "");
+		$arrayColumns[] = array("label" => "Status", "name" => "ServiceStatus", "width" => "auto", "add" => "");
 		$ServiceArray = array();
 		$ServiceArray = unserialize($this->CheckConfig());
 		$arrayValues[] = array("ServiceTyp" => "I²C", "ServiceStatus" => $ServiceArray["I2C"]["Status"], "rowColor" => $ServiceArray["I2C"]["Color"]);
@@ -70,7 +70,7 @@ class GeCoS_IO extends IPSModule
 		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "60px", "add" => "");
 		$arrayColumns[] = array("label" => "Bus", "name" => "DeviceBus", "width" => "40px", "add" => "");
 		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "80px", "add" => "");
-		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "60px", "add" => "");
+		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
 		
 				
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
