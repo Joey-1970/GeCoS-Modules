@@ -178,7 +178,7 @@
                 		return true;
             		} else {
                 		//IPS_SetInstanceStatus($id, self::ST_NOPARENT);
-                		$this->debug(__FUNCTION__, "Parent not active for Instance #" . $id);
+                		//$this->debug(__FUNCTION__, "Parent not active for Instance #" . $id);
                 		return false;
 			}
         	}
@@ -199,7 +199,7 @@
             		$instance = IPS_GetInstance($id);
             		$parent = $instance['ConnectionID'];
         	} else {
-            		$this->debug(__FUNCTION__, "Instance #$id doesn't exists");
+            		//$this->debug(__FUNCTION__, "Instance #$id doesn't exists");
         	}
         return $parent;
     	}
