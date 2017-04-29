@@ -55,7 +55,7 @@ class GeCoS_IO extends IPSModule
 		$arrayValues[] = array("ServiceTyp" => "Shell Zugriff", "ServiceStatus" => $ServiceArray["Shell Zugriff"]["Status"], "rowColor" => $ServiceArray["Shell Zugriff"]["Color"]);
 		$arrayValues[] = array("ServiceTyp" => "PIGPIO Server", "ServiceStatus" => $ServiceArray["PIGPIO Server"]["Status"], "rowColor" => $ServiceArray["PIGPIO Server"]["Color"]);
 		
-		$arrayElements[] = array("type" => "List", "name" => "Raspi_Config", "caption" => "Raspberry Pi Konfiguration", "rowCount" => 4, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
+		$arrayElements[] = array("type" => "List", "name" => "Raspi_Config", "caption" => "Konfiguration", "rowCount" => 4, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
@@ -989,13 +989,13 @@ class GeCoS_IO extends IPSModule
 				$Pattern = "/(?:\r\n|\n|\r)(\s*)(device_tree_param|dtparam)=([^,]*,)*i2c(_arm)?(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
 				if (preg_match($Pattern, $FileContentConfig)) {
 					$this->SendDebug("CheckConfig", "I2C ist aktiviert", 0);
-					$arrayCheckConfig["I²C"]["Status"] = "aktiviert";
-					$arrayCheckConfig["I²C"]["Color"] = "#00FF00";
+					$arrayCheckConfig["I2C"]["Status"] = "aktiviert";
+					$arrayCheckConfig["I2C"]["Color"] = "#00FF00";
 				} else {
 					$this->SendDebug("CheckConfig", "I2C ist deaktiviert!", 0);
 					IPS_LogMessage("GeCoS_IO CheckConfig", "I2C ist deaktiviert!");
-					$arrayCheckConfig["I²C"]["Status"] = "deaktiviert";
-					$arrayCheckConfig["I²C"]["Color"] = "#FF0000";
+					$arrayCheckConfig["I2C"]["Status"] = "deaktiviert";
+					$arrayCheckConfig["I2C"]["Color"] = "#FF0000";
 				}
 				// Prüfen ob die serielle Schnittstelle aktiviert ist
 				$Pattern = "/(?:\r\n|\n|\r)(\s*)(enable_uart)(=(on|true|yes|1))(\s*)($:\r\n|\n|\r)/";
