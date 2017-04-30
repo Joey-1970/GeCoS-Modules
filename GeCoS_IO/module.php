@@ -202,14 +202,17 @@ class GeCoS_IO extends IPSModule
 				// RTC einrichten
 				$RTC_Handle = $this->GetOnboardI2CHandle(104);
 				$this->SetBuffer("RTC_Handle", $RTC_Handle);
+				$this->SendDebug("RTC Handle", $RTC_Handle, 0);
 				// MUX einrichten
 				$MUX_Handle = $this->GetOnboardI2CHandle(112);
 				$this->SetBuffer("MUX_Handle", $MUX_Handle);
+				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
 				// MUX setzen
 				$this->SetMUX(1);
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
+				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				
 				$this->Get_PinUpdate();
 				$this->SetStatus(102);
