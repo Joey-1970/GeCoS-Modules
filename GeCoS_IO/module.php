@@ -262,6 +262,8 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 				unset ($InstanceArray[$SenderID]);
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				$this->UnregisterMessage($SenderID, 11101);
+				$this->UnregisterMessage($SenderID, 11102);
 				break;	
 			case 10505:
 				$this->SendDebug("MessageSink", "Uebergeordnete Instanz ".$SenderID." meldet Status ".$Data[0], 0);
