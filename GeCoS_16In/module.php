@@ -140,7 +140,7 @@
 	// Beginn der Funktionen
 	private function GetInput()
 	{
-		$this->SendDebug("GetInput", "Ausführung", 0);
+		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 		}
@@ -148,7 +148,7 @@
 	        
 	private function Setup()
 	{
-		$this->SendDebug("Setup", "Ausführung", 0);
+		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$ByteArray = array();
 			$ByteArray[0] = hexdec("06");
@@ -163,7 +163,7 @@
 	    
 	private function HasActiveParent()
     	{
-		$this->SendDebug("HasActiveParent", "Ausführung", 0);
+		$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
 		$Instance = @IPS_GetInstance($this->InstanceID);
 		if ($Instance['ConnectionID'] > 0)
 		{
