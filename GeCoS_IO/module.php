@@ -247,6 +247,7 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case 11101:
+				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde verbunden", 0);
 				$InstanceArray = Array();
 				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 				$InstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
@@ -256,12 +257,14 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				break;
 			case 11102:
+				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde getrennt", 0);
 				$InstanceArray = Array();
 				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 				unset ($InstanceArray[$SenderID]);
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				break;	
 			case 10505:
+				$this->SendDebug("MessageSink", "Uebergeordnete Instanz ".$SenderID." meldet Status ".$Data[0], 0);
 				If ($Data[0] == 102) {
 					$this->ApplyChanges();
 				}
