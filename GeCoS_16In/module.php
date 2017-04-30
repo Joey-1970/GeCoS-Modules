@@ -67,14 +67,7 @@
           	$this->DisableAction("InputBank1");
 		IPS_SetHidden($this->GetIDForIdent("InputBank1"), true);
 		
-		//IPS_LogMessage("GeCoS 16In", "IPS-RunLevel: ".IPS_GetKernelRunlevel() );
-		//IPS_LogMessage("GeCoS 16In", "HasActiveParent: ".$this->HasActiveParent() );
-		
-		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
-			
-			//IPS_LogMessage("GeCoS 16In", "IPS-RunLevel: ".IPS_GetKernelRunlevel() );
-			//IPS_LogMessage("GeCoS 16In", "HasActiveParent: ".$this->HasActiveParent() );
-			
+		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			//ReceiveData-Filter setzen
 			$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 			$this->SetReceiveDataFilter($Filter);
@@ -89,6 +82,9 @@
 				$this->SetStatus(104);
 			}	
 		}
+		else {
+			$this->SendDebug("ApplyChanges", "Startrestriktionen nicht erfuellt!", 0);
+		}	
 	}
 	
 	public function ReceiveData($JSONString) 
@@ -144,6 +140,7 @@
 	// Beginn der Funktionen
 	private function GetInput()
 	{
+		$this->SendDebug("GetInput", "Ausführung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 		}
@@ -151,6 +148,7 @@
 	        
 	private function Setup()
 	{
+		$this->SendDebug("Setup", "Ausführung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$ByteArray = array();
 			$ByteArray[0] = hexdec("06");
@@ -165,6 +163,7 @@
 	    
 	private function HasActiveParent()
     	{
+		$this->SendDebug("HasActiveParent", "Ausführung", 0);
 		$Instance = @IPS_GetInstance($this->InstanceID);
 		if ($Instance['ConnectionID'] > 0)
 		{
