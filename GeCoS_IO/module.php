@@ -148,7 +148,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("MUX_Channel", 1);
 			$this->SetBuffer("RTC_Handle", -1);
 			$this->SetBuffer("Serial_Handle", -1);
-			$this->SetBuffer("1W_Handle", -1);
+			$this->SetBuffer("OW_Handle", -1);
 			
 			$ParentID = $this->GetParentID();
 			
@@ -206,9 +206,9 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("RTC Handle", $RTC_Handle, 0);
 				
 				// 1-Wire einrichten
-				$1W_Handle = -1; //$this->GetOnboardI2CHandle(24);
-				$this->SetBuffer("$1W_Handle", $1W_Handle);
-				$this->SendDebug("$1W_Handle", $1W_Handle, 0);
+				$OW_Handle = -1; //$this->GetOnboardI2CHandle(24);
+				$this->SetBuffer("$OW_Handle", $OW_Handle);
+				$this->SendDebug("$OW_Handle", $OW_Handle, 0);
 				
 				// MUX einrichten
 				$MUX_Handle = $this->GetOnboardI2CHandle(112);
