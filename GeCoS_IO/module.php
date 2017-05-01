@@ -148,6 +148,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("MUX_Channel", 1);
 			$this->SetBuffer("RTC_Handle", -1);
 			$this->SetBuffer("Serial_Handle", -1);
+			$this->SetBuffer("1W_Handle", -1);
 			
 			$ParentID = $this->GetParentID();
 			
@@ -203,10 +204,17 @@ class GeCoS_IO extends IPSModule
 				$RTC_Handle = $this->GetOnboardI2CHandle(104);
 				$this->SetBuffer("RTC_Handle", $RTC_Handle);
 				$this->SendDebug("RTC Handle", $RTC_Handle, 0);
+				
+				// 1-Wire einrichten
+				$1W_Handle = $this->GetOnboardI2CHandle(112);
+				$this->SetBuffer("$1W_Handle", $1W_Handle);
+				$this->SendDebug("$1W_Handle", $1W_Handle, 0);
+				
 				// MUX einrichten
 				$MUX_Handle = $this->GetOnboardI2CHandle(112);
 				$this->SetBuffer("MUX_Handle", $MUX_Handle);
 				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
+				
 				// MUX setzen
 				$this->SetMUX(1);
 				
@@ -487,7 +495,8 @@ class GeCoS_IO extends IPSModule
 	private function Get_PinUpdate()
 	{
 		// I2C-Handle zurücksetzen
-		$this->ResetI2CHandle(2);
+		$MUX_Handle = $this->GetBuffer("MUX_Handle");
+		$this->ResetI2CHandle($MUX_Handle + 1);
 				
 		// Konfiguration der I²C-Pin
 		$this->CommandClientSocket(pack("LLLL", 0, 2, 4, 0).pack("LLLL", 0, 3, 4, 0), 32);
