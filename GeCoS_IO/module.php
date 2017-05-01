@@ -206,7 +206,7 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("RTC Handle", $RTC_Handle, 0);
 				
 				// 1-Wire einrichten
-				$1W_Handle = $this->GetOnboardI2CHandle(112);
+				$1W_Handle = $this->GetOnboardI2CHandle(24);
 				$this->SetBuffer("$1W_Handle", $1W_Handle);
 				$this->SendDebug("$1W_Handle", $1W_Handle, 0);
 				
