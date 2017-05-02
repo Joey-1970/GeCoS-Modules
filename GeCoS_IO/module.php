@@ -644,9 +644,9 @@ class GeCoS_IO extends IPSModule
 			case "26":
            			If ($response[4] >= 0 ) {
 					SetValueInteger($this->GetIDForIdent("SoftwareVersion"), $response[4]);
-					If ($response[4] < 60 ) {
+					If ($response[4] < 62 ) {
 						IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Bitte neuste PIGPIO-Software installieren!");
-						$this->SendDebug("Software Version", "Bitte neuste PIGPIO-Software installieren!", 0);
+						$this->SendDebug("PIGPIO Version", "Bitte neuste PIGPIO-Software installieren!", 0);
 					}
 				}
            			else {
