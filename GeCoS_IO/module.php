@@ -648,6 +648,9 @@ class GeCoS_IO extends IPSModule
 						IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Bitte neuste PIGPIO-Software installieren!");
 						$this->SendDebug("PIGPIO Version", "Bitte neuste PIGPIO-Software installieren!", 0);
 					}
+					else {
+						$this->SendDebug("PIGPIO Version", "PIGPIO-Software ist aktuell", 0);
+					}
 				}
            			else {
            				IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Fehler: ".$this->GetErrorText(abs($response[4])));
