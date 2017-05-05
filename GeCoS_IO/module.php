@@ -206,7 +206,7 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("RTC Handle", $RTC_Handle, 0);
 				
 				// 1-Wire einrichten
-				$OW_Handle = -1; //$this->GetOnboardI2CHandle(24);
+				$OW_Handle = $this->GetOnboardI2CHandle(24);
 				$this->SetBuffer("$OW_Handle", $OW_Handle);
 				$this->SendDebug("$OW_Handle", $OW_Handle, 0);
 				
@@ -1238,7 +1238,7 @@ class GeCoS_IO extends IPSModule
 			$DeviceName[] = "16 Input";
 		}
 		// 16Out
-		for ($i = 24; $i <= 31; $i++) {
+		for ($i = 25; $i <= 31; $i++) {
 			$SearchArray[] = $i;
 			$DeviceName[] = "16 Output";
 		}
