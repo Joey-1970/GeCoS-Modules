@@ -209,6 +209,7 @@ class GeCoS_IO extends IPSModule
 				$OW_Handle = $this->GetOnboardI2CHandle(24);
 				$this->SetBuffer("$OW_Handle", $OW_Handle);
 				$this->SendDebug("$OW_Handle", $OW_Handle, 0);
+				// https://pastebin.com/0d93ZuRb
 				
 				// MUX einrichten
 				$MUX_Handle = $this->GetOnboardI2CHandle(112);
