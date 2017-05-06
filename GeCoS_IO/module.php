@@ -1407,105 +1407,91 @@ class GeCoS_IO extends IPSModule
 			}
 			$this->OWWriteByte(240); //Issue the Search ROM command
 			do { // loop to do the search
-			if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
-                		if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
-                    			$this->SetBuffer("owTripletDirection", 1);
-                		} 
+				if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
+					if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
+						$this->SetBuffer("owTripletDirection", 1);
+					} 
+					else {
+						$this->SetBuffer("owTripletDirection", 0);
+					}
+				} 
+				else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
+					$this->SetBuffer("owTripletDirection", 1);
+				} 
 				else {
 					$this->SetBuffer("owTripletDirection", 0);
-                		}
-            		} 
-			else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
-                		$this->SetBuffer("owTripletDirection", 1);
-            		} 
-			else {
-                		$this->SetBuffer("owTripletDirection", 0);
-            		}
-			
-			if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
-                		if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
-                    			$this->SetBuffer("owTripletDirection", 1);
-                		} 
+				}
+
+				if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
+					if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
+						$this->SetBuffer("owTripletDirection", 1);
+					} 
+					else {
+						$this->SetBuffer("owTripletDirection", 0);
+					}
+				} 
+				else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
+					$this->SetBuffer("owTripletDirection", 1);
+				} 
 				else {
-                    			$this->SetBuffer("owTripletDirection", 0);
-                		}
-            		} 
-			else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
-                		$this->SetBuffer("owTripletDirection", 1);
-            		} 
-			else {
-                		$this->SetBuffer("owTripletDirection", 0);
-            		}	
+					$this->SetBuffer("owTripletDirection", 0);
+				}	
+
+				if (!$this->OWTriplet()) return 0;
+
+				//if 0 was picked then record its position in lastZero
+				if ($this->GetBuffer("owTripletFirstBit")==0 && $this->GetBuffer("owTripletSecondBit")==0 && $this->GetBuffer("owTripletDirection")==0) {
+					$lastZero = $bitNumber;
+				}
+
+				 //check for no devices on 1-wire
+				if ($this->GetBuffer("owTripletFirstBit")==1 && $this->GetBuffer("owTripletSecondBit")==1) {
+					break;
+				}
+
+				//set or clear the bit in the SerialNum byte serial_byte_number with mask
+				if ($this->GetBuffer("owTripletDirection")==1) {
+					$owDeviceAddress[$deviceAddress4ByteIndex] = $owDeviceAddress[$deviceAddress4ByteIndex] | $deviceAddress4ByteMask;
+				} 
+				else {
+					$owDeviceAddress[$deviceAddress4ByteIndex] = $owDeviceAddress[$deviceAddress4ByteIndex] & ~($deviceAddress4ByteMask);
+				}
+				$bitNumber++; //increment the byte counter bit number
+				$deviceAddress4ByteMask = $deviceAddress4ByteMask << 1; //shift the bit mask left
+
+				if ($deviceAddress4ByteMask == 0) { //if the mask is 0 then go to other address block and reset mask to first bit
+					$deviceAddress4ByteIndex--;
+					$deviceAddress4ByteMask = 1;
+            			}
+        		} while ($deviceAddress4ByteIndex > -1);
 			
-			if (!$this->OWTriplet()) return 0;
-				
-			//if 0 was picked then record its position in lastZero
-            		if ($this->GetBuffer("owTripletFirstBit")==0 && $this->GetBuffer("owTripletSecondBit")==0 && $this->GetBuffer("owTripletDirection")==0) {
-				$lastZero = $bitNumber;
-			}
+			if ($bitNumber == 65) { //if the search was successful then
+            			$this->SetBuffer("owLastDiscrepancy", $lastZero);
+            			if ($this->GetBuffer("owLastDiscrepancy")==0) {
+                			$this->SetBuffer("owLastDevice", 1);
+            			} 
+				else {
+                			$this->SetBuffer("owLastDevice", 0);
+            			}
+			    	
+				//server.log(format("OneWire Device Address = %.8X%.8X", owDeviceAddress[0], owDeviceAddress[1]));
+			    	$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$owDeviceAddress[0]." ".$owDeviceAddress[1], 0);
+				if ($this->OWCheckCRC()) {
+					return 1;
+			    	} 
+				else {
+					$this->SendDebug("SearchOWDevices", "OneWire device address CRC check failed", 0);
+					return 1;
+			    	}   
+        		}
 			
-			 //check for no devices on 1-wire
-            		if ($this->GetBuffer("owTripletFirstBit")==1 && $this->GetBuffer("owTripletSecondBit")==1) {
-				break;
-			}
-				
+   		}
+ 		$this->SendDebug("SearchOWDevices", "No One-Wire Devices Found, Resetting Search", 0);
+   		$this->SetBuffer("owLastDiscrepancy", 0);
+  		$this->SetBuffer("owLastDevice", 0);
+    	return 0;
+	}			
 			
-				
-				//$this->SetMUX(1);
-			//$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 24, 4, 240), 16);
-        		/*
-			
-       
-        
-            
-           
-            
-           
-            
-           
-           
-           
-            //set or clear the bit in the SerialNum byte serial_byte_number with mask
-            if (owTripletDirection==1) {
-                owDeviceAddress[deviceAddress4ByteIndex] = owDeviceAddress[deviceAddress4ByteIndex] | deviceAddress4ByteMask;
-            } else {
-                owDeviceAddress[deviceAddress4ByteIndex] = owDeviceAddress[deviceAddress4ByteIndex] & ~deviceAddress4ByteMask;
-            }
-           
-            bitNumber++; //increment the byte counter bit number
-            deviceAddress4ByteMask = deviceAddress4ByteMask << 1; //shift the bit mask left
-           
-            if (deviceAddress4ByteMask == 0) { //if the mask is 0 then go to other address block and reset mask to first bit
-                deviceAddress4ByteIndex--;
-                deviceAddress4ByteMask = 1;
-            }
-        } while (deviceAddress4ByteIndex > -1);
- 
-        if (bitNumber == 65) { //if the search was successful then
-            owLastDiscrepancy = lastZero;
-            if (owLastDiscrepancy==0) {
-                owLastDevice = 1;
-            } else {
-                owLastDevice = 0;
-            }
-            //server.log(format("OneWire Device Address = %.8X%.8X", owDeviceAddress[0], owDeviceAddress[1]));
-            if (OWCheckCRC()) {
-                return 1;
-            } else {
-                server.log("OneWire device address CRC check failed");
-                return 1;
-            }
-           
-        }
-    }
- 
-    server.log("No One-Wire Devices Found, Resetting Search");
-    owLastDiscrepancy = 0;
-    owLastDevice = 0;
-    return 0;
-}
-*/
-	}
-	
+
 }
 ?>
