@@ -152,8 +152,10 @@ class GeCoS_IO extends IPSModule
 			
 			$this->SetBuffer("owLastDevice", 0);
 			$this->SetBuffer("owLastDiscrepancy", 0);
+			$this->SetBuffer("owTripletDirection", 1);
+			$this->SetBuffer("owTripletFirstBit", 0);
+			$this->SetBuffer("owTripletSecondBit", 0);
 
-			
 			$ParentID = $this->GetParentID();
 			
 			If ($ParentID > 0) {
@@ -1404,23 +1406,44 @@ class GeCoS_IO extends IPSModule
 			return 0;
 			}
 			$this->OWWriteByte(240); //Issue the Search ROM command
+			do { // loop to do the search
+			if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
+                		if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
+                    			$this->SetBuffer("owTripletDirection", 1);
+                		} 
+				else {
+					$this->SetBuffer("owTripletDirection", 0);
+                		}
+            		} 
+			else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
+                		$this->SetBuffer("owTripletDirection", 1);
+            		} 
+			else {
+                		$this->SetBuffer("owTripletDirection", 0);
+            		}
+			
+			if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
+                		if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
+                    			$this->SetBuffer("owTripletDirection", 1);
+                		} 
+				else {
+                    			$this->SetBuffer("owTripletDirection", 0);
+                		}
+            		} 
+			else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
+                		$this->SetBuffer("owTripletDirection", 1);
+            		} 
+			else {
+                		$this->SetBuffer("owTripletDirection", 0);
+            		}	
+			
 			//$this->SetMUX(1);
 			//$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 24, 4, 240), 16);
         		/*
 			
        
-        do { // loop to do the search
-            if (bitNumber < owLastDiscrepancy) {
-                if (owDeviceAddress[deviceAddress4ByteIndex] & deviceAddress4ByteMask) {
-                    owTripletDirection = 1;
-                } else {
-                    owTripletDirection = 0;
-                }
-            } else if (bitNumber == owLastDiscrepancy) { //if equal to last pick 1, if not pick 0
-                owTripletDirection = 1;
-            } else {
-                owTripletDirection = 0;
-            }
+        
+            
            
             if (!OWTriplet()) return 0;
            
