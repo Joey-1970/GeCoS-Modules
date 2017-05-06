@@ -1377,5 +1377,93 @@ class GeCoS_IO extends IPSModule
 		}
 	return $HardwareText;
 	}
+	
+	private function OWSearch()
+	{
+		$this->SendDebug("SearchOWDevices", "Suche gestartet", 0);
+	
+    		$bitNumber = 1;
+    		$lastZero = 0;
+  		$deviceAddress4ByteIndex = 1; //Fill last 4 bytes first, data from onewire comes LSB first.
+     		$deviceAddress4ByteMask = 1;
+ 
+		if ($owLastDevice == true) {
+			$this->SendDebug("SearchOWDevices", "OW Suche beendet", 0);
+			server.log("OneWire Search Complete");
+			owLastDevice = 0;
+			owLastDiscrepancy = 0;
+			owDeviceAddress[0] = 0xFFFFFFFF;
+			owDeviceAddress[1] = 0xFFFFFFFF;
+		    }
+ 
+    if (!owLastDevice) { //if the last call was not the last one
+        if (!OWReset()) { //if there are no parts on 1-wire, return false
+            owLastDiscrepancy = 0;
+            return 0;
+        }
+        OWWriteByte(0xF0); //Issue the Search ROM command
+       
+        do { // loop to do the search
+            if (bitNumber < owLastDiscrepancy) {
+                if (owDeviceAddress[deviceAddress4ByteIndex] & deviceAddress4ByteMask) {
+                    owTripletDirection = 1;
+                } else {
+                    owTripletDirection = 0;
+                }
+            } else if (bitNumber == owLastDiscrepancy) { //if equal to last pick 1, if not pick 0
+                owTripletDirection = 1;
+            } else {
+                owTripletDirection = 0;
+            }
+           
+            if (!OWTriplet()) return 0;
+           
+            //if 0 was picked then record its position in lastZero
+            if (owTripletFirstBit==0 && owTripletSecondBit==0 && owTripletDirection==0) lastZero = bitNumber;
+           
+            //check for no devices on 1-wire
+            if (owTripletFirstBit==1 && owTripletSecondBit==1) break;
+           
+            //set or clear the bit in the SerialNum byte serial_byte_number with mask
+            if (owTripletDirection==1) {
+                owDeviceAddress[deviceAddress4ByteIndex] = owDeviceAddress[deviceAddress4ByteIndex] | deviceAddress4ByteMask;
+            } else {
+                owDeviceAddress[deviceAddress4ByteIndex] = owDeviceAddress[deviceAddress4ByteIndex] & ~deviceAddress4ByteMask;
+            }
+           
+            bitNumber++; //increment the byte counter bit number
+            deviceAddress4ByteMask = deviceAddress4ByteMask << 1; //shift the bit mask left
+           
+            if (deviceAddress4ByteMask == 0) { //if the mask is 0 then go to other address block and reset mask to first bit
+                deviceAddress4ByteIndex--;
+                deviceAddress4ByteMask = 1;
+            }
+        } while (deviceAddress4ByteIndex > -1);
+ 
+        if (bitNumber == 65) { //if the search was successful then
+            owLastDiscrepancy = lastZero;
+            if (owLastDiscrepancy==0) {
+                owLastDevice = 1;
+            } else {
+                owLastDevice = 0;
+            }
+            //server.log(format("OneWire Device Address = %.8X%.8X", owDeviceAddress[0], owDeviceAddress[1]));
+            if (OWCheckCRC()) {
+                return 1;
+            } else {
+                server.log("OneWire device address CRC check failed");
+                return 1;
+            }
+           
+        }
+    }
+ 
+    server.log("No One-Wire Devices Found, Resetting Search");
+    owLastDiscrepancy = 0;
+    owLastDevice = 0;
+    return 0;
+}
+	}
+	
 }
 ?>
