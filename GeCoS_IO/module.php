@@ -150,6 +150,10 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("Serial_Handle", -1);
 			$this->SetBuffer("OW_Handle", -1);
 			
+			$this->SetBuffer("owLastDevice", 0);
+			$this->SetBuffer("owLastDiscrepancy", 0);
+
+			
 			$ParentID = $this->GetParentID();
 			
 			If ($ParentID > 0) {
@@ -1386,21 +1390,24 @@ class GeCoS_IO extends IPSModule
     		$lastZero = 0;
   		$deviceAddress4ByteIndex = 1; //Fill last 4 bytes first, data from onewire comes LSB first.
      		$deviceAddress4ByteMask = 1;
- 
-		if ($owLastDevice == true) {
+ 		
+		if ($this->GetBuffer("owLastDevice")) {
 			$this->SendDebug("SearchOWDevices", "OW Suche beendet", 0);
-			$owLastDevice = 0;
-			$owLastDiscrepancy = 0;
+			$this->SetBuffer("owLastDevice", 0);
+			$this->SetBuffer("owLastDiscrepancy", 0);
 			$owDeviceAddress[0] = 0xFFFFFFFF;
 			$owDeviceAddress[1] = 0xFFFFFFFF;
 		}
 		else {
 			if (!$this->OWReset()) { //if there are no parts on 1-wire, return false
-			    $owLastDiscrepancy = 0;
-			    return 0;
+			    	$this->SetBuffer("owLastDiscrepancy", 0);
+			return 0;
 			}
-        	/*
-		OWWriteByte(0xF0); //Issue the Search ROM command
+			$this->OWWriteByte(240); //Issue the Search ROM command
+			//$this->SetMUX(1);
+			//$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 24, 4, 240), 16);
+        		/*
+			
        
         do { // loop to do the search
             if (bitNumber < owLastDiscrepancy) {
