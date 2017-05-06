@@ -1389,19 +1389,18 @@ class GeCoS_IO extends IPSModule
  
 		if ($owLastDevice == true) {
 			$this->SendDebug("SearchOWDevices", "OW Suche beendet", 0);
-			server.log("OneWire Search Complete");
-			owLastDevice = 0;
-			owLastDiscrepancy = 0;
-			owDeviceAddress[0] = 0xFFFFFFFF;
-			owDeviceAddress[1] = 0xFFFFFFFF;
-		    }
- 
-    if (!owLastDevice) { //if the last call was not the last one
-        if (!OWReset()) { //if there are no parts on 1-wire, return false
-            owLastDiscrepancy = 0;
-            return 0;
-        }
-        OWWriteByte(0xF0); //Issue the Search ROM command
+			$owLastDevice = 0;
+			$owLastDiscrepancy = 0;
+			$owDeviceAddress[0] = 0xFFFFFFFF;
+			$owDeviceAddress[1] = 0xFFFFFFFF;
+		}
+		else {
+			if (!$this->OWReset()) { //if there are no parts on 1-wire, return false
+			    $owLastDiscrepancy = 0;
+			    return 0;
+			}
+        	/*
+		OWWriteByte(0xF0); //Issue the Search ROM command
        
         do { // loop to do the search
             if (bitNumber < owLastDiscrepancy) {
@@ -1463,6 +1462,7 @@ class GeCoS_IO extends IPSModule
     owLastDevice = 0;
     return 0;
 }
+*/
 	}
 	
 }
