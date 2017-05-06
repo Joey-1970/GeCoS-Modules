@@ -1519,16 +1519,19 @@ class GeCoS_IO extends IPSModule
 	return 0; //bad CRC
 	}
 	
-	private function AddCRC(inbyte, crc) {
-    local j;
-    for(j=0; j<8; j++) {
-        local mix = (crc ^ inbyte) & 0x01;
-        crc = crc >> 1;
-        if (mix) crc = crc ^ 0x8C;
-        inbyte = inbyte >> 1;
-    }
-    return crc;
-}
+	private function AddCRC($inbyte, $crc) 
+	{
+	    	$j = 0;
+    		for(j=0; j<8; j++) {
+        		$mix = ($crc ^ $inbyte) & 0x01;
+        		$crc = $crc >> 1;
+        		if ($mix) {
+				$crc = $crc ^ 0x8C;
+			}
+        		$inbyte = $inbyte >> 1;
+    		}
+    	return $crc;
+	}
 	
 }
 ?>
