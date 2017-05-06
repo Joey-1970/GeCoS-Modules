@@ -1437,7 +1437,21 @@ class GeCoS_IO extends IPSModule
                 		$this->SetBuffer("owTripletDirection", 0);
             		}	
 			
-			//$this->SetMUX(1);
+			if (!$this->OWTriplet()) return 0;
+				
+			//if 0 was picked then record its position in lastZero
+            		if ($this->GetBuffer("owTripletFirstBit")==0 && $this->GetBuffer("owTripletSecondBit")==0 && $this->GetBuffer("owTripletDirection")==0) {
+				$lastZero = $bitNumber;
+			}
+			
+			 //check for no devices on 1-wire
+            		if ($this->GetBuffer("owTripletFirstBit")==1 && $this->GetBuffer("owTripletSecondBit")==1) {
+				break;
+			}
+				
+			
+				
+				//$this->SetMUX(1);
 			//$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 24, 4, 240), 16);
         		/*
 			
@@ -1445,13 +1459,11 @@ class GeCoS_IO extends IPSModule
         
             
            
-            if (!OWTriplet()) return 0;
+            
            
-            //if 0 was picked then record its position in lastZero
-            if (owTripletFirstBit==0 && owTripletSecondBit==0 && owTripletDirection==0) lastZero = bitNumber;
+            
            
-            //check for no devices on 1-wire
-            if (owTripletFirstBit==1 && owTripletSecondBit==1) break;
+           
            
             //set or clear the bit in the SerialNum byte serial_byte_number with mask
             if (owTripletDirection==1) {
