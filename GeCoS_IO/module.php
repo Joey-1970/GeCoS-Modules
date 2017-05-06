@@ -155,6 +155,8 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("owTripletDirection", 1);
 			$this->SetBuffer("owTripletFirstBit", 0);
 			$this->SetBuffer("owTripletSecondBit", 0);
+			$this->SetBuffer("owDeviceAddress_0", 0);
+			$this->SetBuffer("owDeviceAddress_1", 0);
 
 			$ParentID = $this->GetParentID();
 			
@@ -1397,8 +1399,8 @@ class GeCoS_IO extends IPSModule
 			$this->SendDebug("SearchOWDevices", "OW Suche beendet", 0);
 			$this->SetBuffer("owLastDevice", 0);
 			$this->SetBuffer("owLastDiscrepancy", 0);
-			$owDeviceAddress[0] = 0xFFFFFFFF;
-			$owDeviceAddress[1] = 0xFFFFFFFF;
+			$this->SetBuffer("owDeviceAddress_0", 0xFFFFFFFF);
+			$this->SetBuffer("owDeviceAddress_1", 0xFFFFFFFF);
 		}
 		else {
 			if (!$this->OWReset()) { //if there are no parts on 1-wire, return false
@@ -1408,7 +1410,7 @@ class GeCoS_IO extends IPSModule
 			$this->OWWriteByte(240); //Issue the Search ROM command
 			do { // loop to do the search
 				if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
-					if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
+					if ($this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & $deviceAddress4ByteMask) {
 						$this->SetBuffer("owTripletDirection", 1);
 					} 
 					else {
@@ -1423,7 +1425,7 @@ class GeCoS_IO extends IPSModule
 				}
 
 				if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
-					if ($owDeviceAddress[$deviceAddress4ByteIndex] & $deviceAddress4ByteMask) {
+					if ($this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & $deviceAddress4ByteMask) {
 						$this->SetBuffer("owTripletDirection", 1);
 					} 
 					else {
@@ -1451,10 +1453,10 @@ class GeCoS_IO extends IPSModule
 
 				//set or clear the bit in the SerialNum byte serial_byte_number with mask
 				if ($this->GetBuffer("owTripletDirection")==1) {
-					$owDeviceAddress[$deviceAddress4ByteIndex] = $owDeviceAddress[$deviceAddress4ByteIndex] | $deviceAddress4ByteMask;
+					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) | $deviceAddress4ByteMask);
 				} 
 				else {
-					$owDeviceAddress[$deviceAddress4ByteIndex] = $owDeviceAddress[$deviceAddress4ByteIndex] & ~($deviceAddress4ByteMask);
+					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & ~($deviceAddress4ByteMask));
 				}
 				$bitNumber++; //increment the byte counter bit number
 				$deviceAddress4ByteMask = $deviceAddress4ByteMask << 1; //shift the bit mask left
@@ -1475,7 +1477,7 @@ class GeCoS_IO extends IPSModule
             			}
 			    	
 				//server.log(format("OneWire Device Address = %.8X%.8X", owDeviceAddress[0], owDeviceAddress[1]));
-			    	$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$owDeviceAddress[0]." ".$owDeviceAddress[1], 0);
+			    	$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$this->GetBuffer("owDeviceAddress_0")." ".$this->GetBuffer("owDeviceAddress_1"), 0);
 				if ($this->OWCheckCRC()) {
 					return 1;
 			    	} 
@@ -1492,6 +1494,41 @@ class GeCoS_IO extends IPSModule
     	return 0;
 	}			
 			
-
+	private function OWCheckCRC() 
+	{
+    		$crc = 0;
+     		$j = 0;
+     		$da32bit = $this->GetBuffer("owDeviceAddress_1");
+    		for(j=0; j<4; j++) { //All four bytes
+			$crc = $this->AddCRC($da32bit & 0xFF, $crc);
+			//server.log(format("CRC = %.2X", crc));
+        		$da32bit = $da32bit >> 8; //Shift right 8 bits
+		}	
+		$da32bit = $this->GetBuffer("owDeviceAddress_0");
+		for(j=0; j<3; j++) { //only three bytes
+        		$crc = $this->AddCRC($da32bit & 0xFF, $crc);
+        		//server.log(format("CRC = %.2X", crc));
+        		$da32bit = $da32bit >> 8; //Shift right 8 bits
+    		}
+		//server.log(format("CRC = %#.2X", crc));
+    		//server.log(format("DA  = %#.2X", da32bit));
+    		if (($da32bit & 0xFF) == $crc) { //last byte of address should match CRC of other 7 bytes
+        		//server.log("CRC Passed");
+        		return 1; //match
+    		}
+	return 0; //bad CRC
+	}
+	
+	private function AddCRC(inbyte, crc) {
+    local j;
+    for(j=0; j<8; j++) {
+        local mix = (crc ^ inbyte) & 0x01;
+        crc = crc >> 1;
+        if (mix) crc = crc ^ 0x8C;
+        inbyte = inbyte >> 1;
+    }
+    return crc;
+}
+	
 }
 ?>
