@@ -1656,5 +1656,57 @@ class GeCoS_IO extends IPSModule
     	return 0;
 	}
 	
+	private function OWTriplet() 
+	{
+    		//server.log("Function: OneWire Triplet");
+	    	/*
+		if (owTripletDirection > 0) owTripletDirection = "\xFF";
+
+	    local e = i2c.write(I2CAddr, "\x78" + owTripletDirection); //send 1-wire triplet and direction
+	    if (e != 0) { //Device failed to acknowledge message
+		server.log("OneWire Triplet Failed");
+		return 0;
+	    }
+
+	    local loopcount = 0;
+	    while (true) {
+		loopcount++;
+		local data = i2c.read(I2CAddr, "", 1); //Read the status register
+		if(data == null) {
+		    server.log("I2C Read Status Failed");
+		    return -1;
+		} else {
+		    //server.log(format("Read Status Byte = %d", data[0]));
+		    if (data[0] & 0x01) { // 1-Wire Busy bit
+			//server.log("One-Wire bus is busy");
+			if (loopcount > 100) {
+			    server.log("One-Wire busy for too long");
+			    return -1;
+			}
+			imp.sleep(0.001); //Wait, try again
+		    } else {
+			//server.log("One-Wire bus is idle");
+			if (data[0] & 0x20) {
+			    owTripletFirstBit = 1;
+			} else {
+			    owTripletFirstBit = 0;
+			}
+			if (data[0] & 0x40) {
+			    owTripletSecondBit = 1;
+			} else {
+			    owTripletSecondBit = 0;
+			}
+			if (data[0] & 0x80) {
+			    owTripletDirection = 1;
+			} else {
+			    owTripletDirection = 0;
+			}
+			return 1;
+		    }
+		}
+	    }
+	    */
+	}
+	
 }
 ?>
