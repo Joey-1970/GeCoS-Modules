@@ -1537,16 +1537,19 @@ class GeCoS_IO extends IPSModule
 	private function OWReset() 
 	{
     		$this->SendDebug("OWReset", "I2C Reset", 0);
-    		
-		local e = i2c.write(I2CAddr, "\xB4"); //1-wire reset
-    if (e != 0) { //Device failed to acknowledge reset
-        server.log("I2C Reset Failed");
-        return 0;
-    }
-    local loopcount = 0;
-    while (true) {
-        loopcount++;
-        local data = i2c.read(I2CAddr, "", 1); //Read the status register
+    		$this->SetMUX(1);
+		
+		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 180), 16);//1-wire reset
+		
+		If ($Result < 0) {
+			$this->SendDebug("OWReset", "I2C Reset Failed", 0);
+			return 0;
+    		}
+    
+     		$loopcount = 0;
+    		while (true) {
+        		$loopcount++;
+        		local data = i2c.read(I2CAddr, "", 1); //Read the status register
         if(data == null) {
             server.log("I2C Read Status Failed");
             return 0;
