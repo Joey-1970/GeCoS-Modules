@@ -1549,37 +1549,39 @@ class GeCoS_IO extends IPSModule
      		$loopcount = 0;
     		while (true) {
         		$loopcount++;
-        		local data = i2c.read(I2CAddr, "", 1); //Read the status register
-        if(data == null) {
-            server.log("I2C Read Status Failed");
-            return 0;
-        } else {
-            //server.log(format("Read Status Byte = %d", data[0]));
-            if (data[0] & 0x01) { // 1-Wire Busy bit
-                //server.log("One-Wire bus is busy");
-                if (loopcount > 100) {
-                    server.log("One-Wire busy too long");
-                    return 0;
-                }
-                imp.sleep(0.001); //Wait, try again
-            } else {
-                //server.log("One-Wire bus is idle");
-                if (data[0] & 0x04) { //Short Detected bit
-                    server.log("One-Wire Short Detected");
-                    return 0;
-                }
-                if (data[0] & 0x02) { //Presense-Pulse Detect bit
-                   //server.log("One-Wire Devices Found");
-                   break;
-                } else {
-                    server.log("No One-Wire Devices Found");
-                    return 0;
-                }
-            }
-        }
-    }
-    return 1;
-}
-	
+			$Data = $this->CommandClientSocket(pack("L*", 61,$this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+        		If ($Result < 0) {
+				$this->SendDebug("OWReset", "I2C Read Status Failed", 0);
+				return 0;
+    			}
+			else {
+            			//server.log(format("Read Status Byte = %d", data[0]));
+            			if ($Data & 0x01) { // 1-Wire Busy bit
+                			//server.log("One-Wire bus is busy");
+                			if ($loopcount > 100) {
+                    				$this->SendDebug("OWReset", "One-Wire busy too long", 0);
+                    				return 0;
+                			}
+                			IPS_Sleep(10);//Wait, try again
+            			} 
+				else {
+					//server.log("One-Wire bus is idle");
+					if ($Data & 0x04) { //Short Detected bit
+						$this->SendDebug("OWReset", "One-Wire Short Detected", 0);
+						return 0;
+					}
+					if ($Data & 0x02) { //Presense-Pulse Detect bit
+						//server.log("One-Wire Devices Found");
+						break;
+					} 
+					else {
+						$this->SendDebug("OWReset", "No One-Wire Devices Found", 0);
+						return 0;
+					}
+            			}
+        		}
+    		}
+    	return 1;
+	}
 }
 ?>
