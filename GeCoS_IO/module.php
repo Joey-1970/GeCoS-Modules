@@ -1510,10 +1510,11 @@ class GeCoS_IO extends IPSModule
         		//server.log(format("CRC = %.2X", crc));
         		$da32bit = $da32bit >> 8; //Shift right 8 bits
     		}
-		//server.log(format("CRC = %#.2X", crc));
-    		//server.log(format("DA  = %#.2X", da32bit));
+		$this->SendDebug("OWCheckCRC", "CRC = ".$crc, 0);
+		$this->SendDebug("OWCheckCRC", "DA  = ".$da32bit, 0);
+    		
     		if (($da32bit & 0xFF) == $crc) { //last byte of address should match CRC of other 7 bytes
-        		//server.log("CRC Passed");
+        		$this->SendDebug("OWCheckCRC", "CRC Passed", 0);
         		return 1; //match
     		}
 	return 0; //bad CRC
@@ -1532,6 +1533,50 @@ class GeCoS_IO extends IPSModule
     		}
     	return $crc;
 	}
+	
+	private function OWReset() 
+	{
+    		$this->SendDebug("OWReset", "I2C Reset", 0);
+    		
+		local e = i2c.write(I2CAddr, "\xB4"); //1-wire reset
+    if (e != 0) { //Device failed to acknowledge reset
+        server.log("I2C Reset Failed");
+        return 0;
+    }
+    local loopcount = 0;
+    while (true) {
+        loopcount++;
+        local data = i2c.read(I2CAddr, "", 1); //Read the status register
+        if(data == null) {
+            server.log("I2C Read Status Failed");
+            return 0;
+        } else {
+            //server.log(format("Read Status Byte = %d", data[0]));
+            if (data[0] & 0x01) { // 1-Wire Busy bit
+                //server.log("One-Wire bus is busy");
+                if (loopcount > 100) {
+                    server.log("One-Wire busy too long");
+                    return 0;
+                }
+                imp.sleep(0.001); //Wait, try again
+            } else {
+                //server.log("One-Wire bus is idle");
+                if (data[0] & 0x04) { //Short Detected bit
+                    server.log("One-Wire Short Detected");
+                    return 0;
+                }
+                if (data[0] & 0x02) { //Presense-Pulse Detect bit
+                   //server.log("One-Wire Devices Found");
+                   break;
+                } else {
+                    server.log("No One-Wire Devices Found");
+                    return 0;
+                }
+            }
+        }
+    }
+    return 1;
+}
 	
 }
 ?>
