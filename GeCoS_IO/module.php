@@ -1583,5 +1583,73 @@ class GeCoS_IO extends IPSModule
     		}
     	return 1;
 	}
+	
+	private function OWWriteByte(byte) 
+	{
+		$this->SendDebug("OWWriteByte", "Function: Write Byte to One-Wire", 0);
+    		
+		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 225, 4, 240), 16);//set read pointer (E1) to the status register (F0)
+    		
+		If ($Result < 0) {
+			$this->SendDebug("OWWriteByte", "I2C Write Failed", 0);
+			return -1;
+    		}
+		
+    		$loopcount = 0;
+    		while (true) {
+        		$loopcount++;
+        		$Data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+        		If ($Result < 0) {
+				$this->SendDebug("OWWriteByte", "I2C Read Status Failed", 0);
+				return -1;
+    			} 
+			else {
+            			//server.log(format("Read Status Byte = %d", data[0]));
+            		if ($Data & 0x01) { // 1-Wire Busy bit
+                		//server.log("One-Wire bus is busy");
+                		if ($loopcount > 100) {
+                    			$this->SendDebug("OWWriteByte", "One-Wire busy too long", 0);
+                    			return -1;
+                		}
+                imp.sleep(0.001); //Wait, try again
+            } else {
+                //server.log("One-Wire bus is idle");
+                break;
+            }
+        }
+    }
+   
+    //server.log(byte);
+    local e = i2c.write(I2CAddr, format("%c%c", 0xA5, byte)); //set write byte command (A5) and send data (byte)
+    if (e != 0) { //Device failed to acknowledge
+        server.log(format("I2C Write Byte Failed. Data: %#.2X", byte));
+        return -1;
+    }
+    loopcount = 0;
+    while (true) {
+        loopcount++;
+        local data = i2c.read(I2CAddr, "", 1); //Read the status register
+        if(data == null) {
+            server.log("I2C Read Status Failed");
+            return -1;
+        } else {
+            //server.log(format("Read Status Byte = %d", data[0]));
+            if (data[0] & 0x01) { // 1-Wire Busy bit
+                //server.log("One-Wire bus is busy");
+                if (loopcount > 100) {
+                    server.log("One-Wire busy for too long");
+                    return -1;
+                }
+                imp.sleep(0.001); //Wait, try again
+            } else {
+                //server.log("One-Wire bus is idle");
+                break;
+            }
+        }
+    }
+    //server.log("One-Wire Write Byte complete");
+    return 0;
+}
+	
 }
 ?>
