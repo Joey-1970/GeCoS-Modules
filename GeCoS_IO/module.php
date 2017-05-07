@@ -1549,7 +1549,7 @@ class GeCoS_IO extends IPSModule
      		$loopcount = 0;
     		while (true) {
         		$loopcount++;
-			$Data = $this->CommandClientSocket(pack("L*", 61,$this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+			$data = $this->CommandClientSocket(pack("L*", 61,$this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
         		If ($Result < 0) {
 				$this->SendDebug("OWReset", "I2C Read Status Failed", 0);
 				return 0;
@@ -1598,7 +1598,7 @@ class GeCoS_IO extends IPSModule
     		$loopcount = 0;
     		while (true) {
         		$loopcount++;
-        		$Data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+        		$data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
         		If ($Result < 0) {
 				$this->SendDebug("OWWriteByte", "I2C Read Status Failed", 0);
 				return -1;
@@ -1631,7 +1631,7 @@ class GeCoS_IO extends IPSModule
     		while (true) {
         		$loopcount++;
         		//local data = i2c.read(I2CAddr, "", 1); //Read the status register
-        		$Data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+        		$data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
 			If ($Result < 0) {
             			$this->SendDebug("OWWriteByte", "I2C Read Status Failed", 0);
             			return -1;
@@ -1659,53 +1659,56 @@ class GeCoS_IO extends IPSModule
 	private function OWTriplet() 
 	{
     		//server.log("Function: OneWire Triplet");
-	    	/*
-		if (owTripletDirection > 0) owTripletDirection = "\xFF";
-
-	    local e = i2c.write(I2CAddr, "\x78" + owTripletDirection); //send 1-wire triplet and direction
-	    if (e != 0) { //Device failed to acknowledge message
-		server.log("OneWire Triplet Failed");
-		return 0;
-	    }
-
-	    local loopcount = 0;
-	    while (true) {
-		loopcount++;
-		local data = i2c.read(I2CAddr, "", 1); //Read the status register
-		if(data == null) {
-		    server.log("I2C Read Status Failed");
-		    return -1;
-		} else {
-		    //server.log(format("Read Status Byte = %d", data[0]));
-		    if (data[0] & 0x01) { // 1-Wire Busy bit
-			//server.log("One-Wire bus is busy");
-			if (loopcount > 100) {
-			    server.log("One-Wire busy for too long");
-			    return -1;
+	    	
+		if ($this->GetBuffer("owTripletDirection") > 0) $this->SetBuffer("owTripletDirection", 255);
+	    	$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 120 + $this->GetBuffer("owTripletDirection")), 16);
+		//local e = i2c.write(I2CAddr, "\x78" + owTripletDirection); //send 1-wire triplet and direction
+	    	If ($Result < 0) { //Device failed to acknowledge message
+        		$this->SendDebug("OWTriplet", "OneWire Triplet Failed", 0);
+        		return 0;
+    		}
+	    	$loopcount = 0;
+		while (true) {
+			$loopcount++;
+			$data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+			If ($Result < 0) {
+            			$this->SendDebug("OWTriplet", "I2C Read Status Failed", 0);
+            			return -1; 
+			} 
+			else {		
+		    		//server.log(format("Read Status Byte = %d", data[0]));
+		    		if ($data & 0x01) { // 1-Wire Busy bit
+					//server.log("One-Wire bus is busy");
+					if ($loopcount > 100) {
+			    			$this->SendDebug("OWTriplet", "One-Wire busy for too long", 0);
+			    			return -1;
+					}
+					IPS_Sleep(10);//Wait, try again
+		    		} 
+				else {
+					//server.log("One-Wire bus is idle");
+					if ($data & 0x20) {
+						$this->SetBuffer("owTripletFirstBit", 1);
+					} 
+					else {
+						$this->SetBuffer("owTripletFirstBit", 0);
+					}
+					if ($data & 0x40) {
+						$this->SetBuffer("owTripletSecondBit", 1);
+					} 
+					else {
+						$this->SetBuffer("owTripletSecondBit", 0);
+					}
+					if ($data & 0x80) {
+						$this->SetBuffer("owTripletDirection", 1);
+					} 
+					else {
+						$this->SetBuffer("owTripletDirection", 0);
+					}
+				return 1;
+				}
 			}
-			imp.sleep(0.001); //Wait, try again
-		    } else {
-			//server.log("One-Wire bus is idle");
-			if (data[0] & 0x20) {
-			    owTripletFirstBit = 1;
-			} else {
-			    owTripletFirstBit = 0;
-			}
-			if (data[0] & 0x40) {
-			    owTripletSecondBit = 1;
-			} else {
-			    owTripletSecondBit = 0;
-			}
-			if (data[0] & 0x80) {
-			    owTripletDirection = 1;
-			} else {
-			    owTripletDirection = 0;
-			}
-			return 1;
-		    }
 		}
-	    }
-	    */
 	}
 	
 }
