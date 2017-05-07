@@ -1622,7 +1622,7 @@ class GeCoS_IO extends IPSModule
    
     		//server.log(byte);
 		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 225, 4, 240), 16);
-    		local e = i2c.write(I2CAddr, format("%c%c", 0xA5, byte)); //set write byte command (A5) and send data (byte)
+    		//local e = i2c.write(I2CAddr, format("%c%c", 0xA5, byte)); //set write byte command (A5) and send data (byte)
     		If ($Result < 0) { //Device failed to acknowledge
         		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed. Data: ".$byte, 0);
         		return -1;
@@ -1630,8 +1630,9 @@ class GeCoS_IO extends IPSModule
     		$loopcount = 0;
     		while (true) {
         		$loopcount++;
-        		local data = i2c.read(I2CAddr, "", 1); //Read the status register
-        		if($data == null) {
+        		//local data = i2c.read(I2CAddr, "", 1); //Read the status register
+        		$Data = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+			If ($Result < 0) {
             			$this->SendDebug("OWWriteByte", "I2C Read Status Failed", 0);
             			return -1;
         		} 
