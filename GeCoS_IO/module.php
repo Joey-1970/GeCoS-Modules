@@ -1386,6 +1386,11 @@ class GeCoS_IO extends IPSModule
 	return $HardwareText;
 	}
 	
+	public function OWSearchStart()
+	{
+		$this->OWSearch();
+	}
+	
 	private function OWSearch()
 	{
 		$this->SendDebug("SearchOWDevices", "Suche gestartet", 0);
@@ -1499,13 +1504,13 @@ class GeCoS_IO extends IPSModule
     		$crc = 0;
      		$j = 0;
      		$da32bit = $this->GetBuffer("owDeviceAddress_1");
-    		for(j=0; j<4; j++) { //All four bytes
+    		for($j=0; $j<4; $j++) { //All four bytes
 			$crc = $this->AddCRC($da32bit & 0xFF, $crc);
 			//server.log(format("CRC = %.2X", crc));
         		$da32bit = $da32bit >> 8; //Shift right 8 bits
 		}	
 		$da32bit = $this->GetBuffer("owDeviceAddress_0");
-		for(j=0; j<3; j++) { //only three bytes
+		for($j=0; $j<3; $j++) { //only three bytes
         		$crc = $this->AddCRC($da32bit & 0xFF, $crc);
         		//server.log(format("CRC = %.2X", crc));
         		$da32bit = $da32bit >> 8; //Shift right 8 bits
@@ -1523,7 +1528,7 @@ class GeCoS_IO extends IPSModule
 	private function AddCRC($inbyte, $crc) 
 	{
 	    	$j = 0;
-    		for(j=0; j<8; j++) {
+    		for($j=0; $j<8; $j++) {
         		$mix = ($crc ^ $inbyte) & 0x01;
         		$crc = $crc >> 1;
         		if ($mix) {
