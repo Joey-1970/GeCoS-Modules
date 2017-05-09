@@ -1679,7 +1679,8 @@ class GeCoS_IO extends IPSModule
 		if ($this->GetBuffer("owTripletDirection") > 0) $this->SetBuffer("owTripletDirection", 255);
 	    	// ************************************
 		//local e = i2c.write(I2CAddr, "\x78" + owTripletDirection); //send 1-wire triplet and direction
-		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 120 + $this->GetBuffer("owTripletDirection")), 16);
+		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 120, $this->GetBuffer("owTripletDirection")), 16);
+		//$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 120 + $this->GetBuffer("owTripletDirection")), 16);
 	    	// ************************************
 		If ($Result < 0) { //Device failed to acknowledge message
         		$this->SendDebug("OWTriplet", "OneWire Triplet Failed", 0);
