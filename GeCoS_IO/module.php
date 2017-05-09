@@ -1601,8 +1601,10 @@ class GeCoS_IO extends IPSModule
 	private function OWWriteByte($byte) 
 	{
 		$this->SendDebug("OWWriteByte", "Function: Write Byte to One-Wire", 0);
-    		// ************************************
-		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 225, 4, 240), 16);//set read pointer (E1) to the status register (F0)
+    		
+		// ************************************
+		// local e = i2c.write(I2CAddr, "\xE1\xF0"); //set read pointer (E1) to the status register (F0)
+		$Result = $this->CommandClientSocket(pack("L*", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 240), 16); //set read pointer (E1) to the status register (F0)
     		// ************************************
 		If ($Result < 0) {
 			$this->SendDebug("OWWriteByte", "I2C Write Failed", 0);
@@ -1636,9 +1638,8 @@ class GeCoS_IO extends IPSModule
    
     		//server.log(byte);
 		// ************************************
-		//$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 225, 4, 240), 16);
-		$Result = $this->CommandClientSocket(pack("L*", 57, $this->GetBuffer("OW_Handle"), 0, 2), 16);
-    		//local e = i2c.write(I2CAddr, format("%c%c", 0xA5, byte)); //set write byte command (A5) and send data (byte)
+		//local e = i2c.write(I2CAddr, format("%c%c", 0xA5, byte)); //set write byte command (A5) and send data (byte)
+		$Result = $this->CommandClientSocket(pack("L*", 57, $this->GetBuffer("OW_Handle"), 0, 2, 165, $byte), 16);
     		// ************************************
 		If ($Result < 0) { //Device failed to acknowledge
         		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed. Data: ".$byte, 0);
@@ -1677,8 +1678,8 @@ class GeCoS_IO extends IPSModule
 		$this->SendDebug("OWTriplet", "Function: OneWire Triplet", 0);
 		if ($this->GetBuffer("owTripletDirection") > 0) $this->SetBuffer("owTripletDirection", 255);
 	    	// ************************************
-		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 120 + $this->GetBuffer("owTripletDirection")), 16);
 		//local e = i2c.write(I2CAddr, "\x78" + owTripletDirection); //send 1-wire triplet and direction
+		$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 120 + $this->GetBuffer("owTripletDirection")), 16);
 	    	// ************************************
 		If ($Result < 0) { //Device failed to acknowledge message
         		$this->SendDebug("OWTriplet", "OneWire Triplet Failed", 0);
