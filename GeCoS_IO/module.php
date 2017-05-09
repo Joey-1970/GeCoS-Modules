@@ -1602,10 +1602,8 @@ class GeCoS_IO extends IPSModule
 	{
 		$this->SendDebug("OWWriteByte", "Function: Write Byte to One-Wire", 0);
     		
-		// ************************************
-		// local e = i2c.write(I2CAddr, "\xE1\xF0"); //set read pointer (E1) to the status register (F0)
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 240), 16); //set read pointer (E1) to the status register (F0)
-    		// ************************************
+
 		If ($Result < 0) {
 			$this->SendDebug("OWWriteByte", "I2C Write Failed", 0);
 			return -1;
@@ -1630,17 +1628,14 @@ class GeCoS_IO extends IPSModule
 					IPS_Sleep(10);//Wait, try again
 				} 
 				else {
-					$this->SendDebug("OWWriteByte", "One-Wire bus is idle", 0);
+					//$this->SendDebug("OWWriteByte", "One-Wire bus is idle", 0);
 					break;
 				}
         		}
     		}
    
-    		//server.log(byte);
-		// ************************************
-		//local e = i2c.write(I2CAddr, format("%c%c", 0xA5, byte)); //set write byte command (A5) and send data (byte)
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 165, $byte), 16);
-    		// ************************************
+
 		If ($Result < 0) { //Device failed to acknowledge
         		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed. Data: ".$byte, 0);
         		return -1;
@@ -1664,7 +1659,7 @@ class GeCoS_IO extends IPSModule
                 			IPS_Sleep(10);//Wait, try again
             			} 
 				else {
-                			$this->SendDebug("OWWriteByte", "One-Wire bus is idle", 0);
+                			//$this->SendDebug("OWWriteByte", "One-Wire bus is idle", 0);
                 			break;
             			}
         		}
@@ -1675,13 +1670,11 @@ class GeCoS_IO extends IPSModule
 	
 	private function OWTriplet() 
 	{
-		$this->SendDebug("OWTriplet", "Function: OneWire Triplet", 0);
+		//$this->SendDebug("OWTriplet", "Function: OneWire Triplet", 0);
 		if ($this->GetBuffer("owTripletDirection") > 0) $this->SetBuffer("owTripletDirection", 255);
-	    	// ************************************
-		//local e = i2c.write(I2CAddr, "\x78" + owTripletDirection); //send 1-wire triplet and direction
+
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 120, $this->GetBuffer("owTripletDirection")), 16);
-		//$Result = $this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("OW_Handle"), 0, 4, 120 + $this->GetBuffer("owTripletDirection")), 16);
-	    	// ************************************
+
 		If ($Result < 0) { //Device failed to acknowledge message
         		$this->SendDebug("OWTriplet", "OneWire Triplet Failed", 0);
         		return 0;
@@ -1706,7 +1699,7 @@ class GeCoS_IO extends IPSModule
 					IPS_Sleep(10);//Wait, try again
 		    		} 
 				else {
-					$this->SendDebug("OWTriplet", "One-Wire bus is idle", 0);
+					//$this->SendDebug("OWTriplet", "One-Wire bus is idle", 0);
 					if ($Data & 0x20) {
 						$this->SetBuffer("owTripletFirstBit", 1);
 					} 
