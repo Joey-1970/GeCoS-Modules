@@ -1489,8 +1489,9 @@ class GeCoS_IO extends IPSModule
 				else {
                 			$this->SetBuffer("owLastDevice", 0);
             			}
-			    	
-			    	$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$this->GetBuffer("owDeviceAddress_0")." ".$this->GetBuffer("owDeviceAddress_1"), 0);
+			    
+				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1")), 0);
+				
 				if ($this->OWCheckCRC()) {
 					return 1;
 			    	} 
