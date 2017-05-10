@@ -1723,5 +1723,20 @@ class GeCoS_IO extends IPSModule
 		}
 	}
 	
+	private function OWSelect() 
+	{
+    		$this->SendDebug("OWSelect", "Selecting device", 0);
+    		$this->OWWriteByte(0x55); //Issue the Match ROM command
+    		
+    		for($i=1; $i>=0; $i--) {
+        		$da32bit = $this->GetBuffer("owDeviceAddress_".$i);
+        		for($j=0; $j<4; $j++) {
+            			//server.log(format("Writing byte: %.2X", da32bit & 0xFF));
+            			$this->OWWriteByte($da32bit & 0xFF); //Send lowest byte
+            			$da32bit = $da32bit >> 8; //Shift right 8 bits
+        		}
+    		}
+	}
+	
 }
 ?>
