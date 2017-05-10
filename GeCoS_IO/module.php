@@ -1081,50 +1081,6 @@ class GeCoS_IO extends IPSModule
 	return serialize($arrayCheckConfig);
 	}
 	
-	
-	private function GetOneWireDevices()
-	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			set_include_path(__DIR__);
-			require_once (__DIR__ . '/Net/SFTP.php');
-			$sftp = new Net_SFTP($this->ReadPropertyString("IPAddress"));
-			$login = @$sftp->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
-			
-			if ($login == false)
-			{
-			    	IPS_LogMessage("GeCoS_IO SFTP-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
-			    	$Result = "";
-				return false;
-			}
-			//IPS_LogMessage("IPS2GPIO SFTP-Connect","Verbindung hergestellt");
-			
-			$Path = "/sys/bus/w1/devices";
-			// Prüfen, ob der 1-Wire Server die Verzeichnisse angelegt hat
-			if (!$sftp->file_exists($Path)) {
-				IPS_LogMessage("GeCoS_IO SFTP-Connect",$Path." nicht gefunden! Ist 1-Wire aktiviert?");
-				return;
-			}
-			
-			// den Inhalt des Verzeichnisses ermitteln
-			$Sensors = array();
-			$Dir = $sftp->nlist($Path);
-			for ($i = 0; $i < Count($Dir); $i++) {
-				if ($Dir[$i] != "." && $Dir[$i] != ".." && $Dir[$i] != "w1_bus_master1") {
-					$Sensors[] = $Dir[$i];
-					//IPS_LogMessage("IPS2GPIO SFTP-Connect", $Dir[$i]);
-				}
-			}
-			
-			$Result = serialize($Sensors);
-			
-		}
-		else {
-			$ResultArray = Array();
-			$Result = serialize($ResultArray);
-		}
-	return $Result;
-	}
-	
 	private function ConnectionTest()
 	{
 	      $result = false;
