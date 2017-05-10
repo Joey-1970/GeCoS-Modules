@@ -1366,7 +1366,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$OWHardware = array("10" => "DS18S20 Temperatur", "12" => "DS2406 Switch", "1D" => "DS2423 Counter" , "28" => "DS18B20 Temperatur", "3A" => "DS2413 Switch");
 		If (array_key_exists($FamilyCode, $OWHardware)) {
-			$OWHardwareText = $Hardware[$FamilyCode];
+			$OWHardwareText = $OWHardware[$FamilyCode];
 		}
 		else {
 			$OWHardwareText = "Unbekannter 1-Wire-Typ!";
@@ -1378,7 +1378,7 @@ class GeCoS_IO extends IPSModule
 	public function OWSearchStart()
 	{
 		$OWDeviceArray = Array();
-		$this->SetBuffer("OWDeviceArray", $OWDeviceArray);
+		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 		$Result = 1;
 		$SearchNumber = 0;
 		while($Result == 1) {
