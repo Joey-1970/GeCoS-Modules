@@ -1276,11 +1276,12 @@ class GeCoS_IO extends IPSModule
 					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 									
 					if ($Handle >= 0) {
-						$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
 						// Testweise lesen
 						$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
-						$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
+						
 						If ($Result >= 0) {
+							$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
+							$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
 							$DeviceArray[$k][0] = $DeviceName[$i];
 							$DeviceArray[$k][1] = $SearchArray[$i];
 							$DeviceArray[$k][2] = $j - 4;
@@ -1294,7 +1295,7 @@ class GeCoS_IO extends IPSModule
 						}
 						// Handle löschen
 						$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
-						$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Loeschen: ".$Result, 0);
+						//$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Loeschen: ".$Result, 0);
 					}
 				}	
 			}
