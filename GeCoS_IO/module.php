@@ -96,7 +96,6 @@ class GeCoS_IO extends IPSModule
 			$OWDeviceArray = array();
 			$this->OWSearchStart();
 			$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-			//$this->SendDebug("RTC Handle", $RTC_Handle, 0);
 			If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
 				$arrayOWValues = array();
 				for ($i = 0; $i < Count($OWDeviceArray); $i++) {
