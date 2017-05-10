@@ -1425,21 +1425,6 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owTripletDirection", 0);
 				}
 
-				if ($bitNumber < $this->GetBuffer("owLastDiscrepancy")) {
-					if ($this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & $deviceAddress4ByteMask) {
-						$this->SetBuffer("owTripletDirection", 1);
-					} 
-					else {
-						$this->SetBuffer("owTripletDirection", 0);
-					}
-				} 
-				else if ($bitNumber == $this->GetBuffer("owLastDiscrepancy")) { //if equal to last pick 1, if not pick 0
-					$this->SetBuffer("owTripletDirection", 1);
-				} 
-				else {
-					$this->SetBuffer("owTripletDirection", 0);
-				}	
-
 				if (!$this->OWTriplet()) return 0;
 
 				//if 0 was picked then record its position in lastZero
