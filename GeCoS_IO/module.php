@@ -1465,6 +1465,7 @@ class GeCoS_IO extends IPSModule
 				$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
 				$FamilyCode = substr($SerialNumber, -2);
 				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$SerialNumber, 0);
+				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$this->GetBuffer("owDeviceAddress_0")." ".$this->GetBuffer("owDeviceAddress_1"), 0);
 				$OWDeviceArray = Array();
  				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 				$OWDeviceArray[$SearchNumber][0] = $this->GetOWHardware($FamilyCode); // Typ
