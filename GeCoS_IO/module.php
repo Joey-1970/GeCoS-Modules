@@ -67,13 +67,13 @@ class GeCoS_IO extends IPSModule
 		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "100px", "add" => "");
 		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "60px", "add" => "");
 		$arrayColumns[] = array("label" => "Bus", "name" => "DeviceBus", "width" => "40px", "add" => "");
-		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "80px", "add" => "");
+		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "70px", "add" => "");
 		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
 		
 		$arrayOWColumns = array();
 		$arrayOWColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "120px", "add" => "");
-		$arrayOWColumns[] = array("label" => "Adresse", "name" => "DeviceSerial", "width" => "100px", "add" => "");
-		$arrayOWColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "80px", "add" => "");
+		$arrayOWColumns[] = array("label" => "Serien-Nr.", "name" => "DeviceSerial", "width" => "120px", "add" => "");
+		$arrayOWColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "70px", "add" => "");
 		$arrayOWColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
 		
 		
