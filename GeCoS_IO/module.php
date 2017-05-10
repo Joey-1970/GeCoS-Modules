@@ -915,21 +915,6 @@ class GeCoS_IO extends IPSModule
 		}
 	}
 	
-	private function bitflip($Value)
-	{
-	   	// Umwandlung in einen Binär-String
-		$bin = decbin($Value);
-	   	$not = "";
-	   	// Umstellung der Binär-Strings
-		for ($i = 0; $i < strlen($bin); $i++)
-	   		{
-	      		if($bin[$i] == 0) { $not .= '1'; }
-	      		if($bin[$i] == 1) { $not .= '0'; }
-	   	}
-		// Rückgabe als Integer
-	return bindec($not);
-	}
-	
 	public function WriteSerial(String $Message)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
@@ -1349,6 +1334,19 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("Default_Serial_Bus", 0);
 		}
 	return $HardwareText;
+	}
+	
+	private function GetOWHardware(string $FamilyCode)
+	{
+		$OWHardware = array("10" => "DS18S20 Temperatur", "12" => "DS2406 Switch", "1D" => "DS2423 Counter" , "28" => "DS18B20 Temperatur", "3A" => "DS2413 Switch");
+		If (array_key_exists($FamilyCode, $OWHardware)) {
+			$OWHardwareText = $Hardware[$FamilyCode];
+		}
+		else {
+			$OWHardwareText = "Unbekannter 1-Wire-Typ!";
+		}
+		
+	return $OWHardwareText;
 	}
 	
 	public function OWSearchStart()
