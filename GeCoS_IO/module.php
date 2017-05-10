@@ -1351,7 +1351,10 @@ class GeCoS_IO extends IPSModule
 	
 	public function OWSearchStart()
 	{
-		$this->OWSearch();
+		$Result = 1;
+		while($Result == 1) {
+		   	$Result = $this->OWSearch();
+		}
 	}
 	
 	private function OWSearch()
