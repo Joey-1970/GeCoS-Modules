@@ -18,6 +18,7 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("Password", "Passwort");
 		$this->RegisterPropertyInteger("GlitchFilter", 100);
 		$this->RegisterPropertyString("I2C_Devices", "");
+		$this->RegisterPropertyString("OW_Devices", "");
 		$this->RegisterPropertyString("Raspi_Config", "");
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
@@ -62,9 +63,6 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		
-		$arraySort = array();
-		$arraySort[] = array("column" => "Typ", "direction" => "ascending");
-		
 		$arrayColumns = array();
 		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "100px", "add" => "");
 		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "60px", "add" => "");
@@ -72,7 +70,13 @@ class GeCoS_IO extends IPSModule
 		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "80px", "add" => "");
 		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
 		
-				
+		$arrayOWColumns = array();
+		$arrayOWColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "100px", "add" => "");
+		$arrayOWColumns[] = array("label" => "Adresse", "name" => "DeviceSerial", "width" => "60px", "add" => "");
+		$arrayOWColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "80px", "add" => "");
+		$arrayOWColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
+		
+		
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 			// Devices einlesen und in das Values-Array kopieren
 			$DeviceArray = array();
@@ -82,6 +86,14 @@ class GeCoS_IO extends IPSModule
 				$arrayValues[] = array("DeviceTyp" => $DeviceArray[$i][0], "DeviceAddress" => $DeviceArray[$i][1], "DeviceBus" => $DeviceArray[$i][2], "InstanceID" => $DeviceArray[$i][3], "DeviceStatus" => $DeviceArray[$i][4], "rowColor" => $DeviceArray[$i][5]);
 			}
 			$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
+			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+			$DeviceOWArray = array();
+			//$DeviceOWArray = unserialize($this->SearchOWDevices());
+			$arrayOWValues = array();
+			for ($i = 0; $i < Count($DeviceOWArray); $i++) {
+				$arrayOWValues[] = array("DeviceTyp" => $DeviceOWArray[$i][0], "DeviceSerial" => $DeviceOWArray[$i][1], "InstanceID" => $DeviceOWArray[$i][2], "DeviceStatus" => $DeviceOWArray[$i][3], "rowColor" => $DeviceOWArray[$i][4]);
+			}
+			$arrayElements[] = array("type" => "List", "name" => "OW_Devices", "caption" => "1-Wire-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayOWColumns, "values" => $arrayOWValues);
 			//$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 			$arrayElements[] = array("type" => "Label", "label" => "Führt einen Restart des PIGPIO aus:");
