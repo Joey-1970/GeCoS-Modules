@@ -88,6 +88,7 @@ class GeCoS_IO extends IPSModule
 			$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 			$DeviceOWArray = array();
+			$this->OWSearchStart();
 			//$DeviceOWArray = unserialize($this->SearchOWDevices());
 			$arrayOWValues = array();
 			for ($i = 0; $i < Count($DeviceOWArray); $i++) {
@@ -169,7 +170,9 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("owTripletSecondBit", 0);
 			$this->SetBuffer("owDeviceAddress_0", 0);
 			$this->SetBuffer("owDeviceAddress_1", 0);
-
+			$OWDeviceArray = Array();
+			$this->SetBuffer("OWDeviceArray", $OWDeviceArray);
+			
 			$ParentID = $this->GetParentID();
 			
 			If ($ParentID > 0) {
@@ -1363,16 +1366,20 @@ class GeCoS_IO extends IPSModule
 	
 	public function OWSearchStart()
 	{
+		$OWDeviceArray = Array();
+		$this->SetBuffer("OWDeviceArray", $OWDeviceArray);
 		$Result = 1;
+		$SearchNumber = 0;
 		while($Result == 1) {
-		   	$Result = $this->OWSearch();
+		   	$Result = $this->OWSearch($SearchNumber);
+			$SearchNumber++;
 		}
 	}
 	
-	private function OWSearch()
+	private function OWSearch(int $SearchNumber)
 	{
 		$this->SendDebug("SearchOWDevices", "Suche gestartet", 0);
-	
+
     		$bitNumber = 1;
     		$lastZero = 0;
   		$deviceAddress4ByteIndex = 1; //Fill last 4 bytes first, data from onewire comes LSB first.
@@ -1459,7 +1466,18 @@ class GeCoS_IO extends IPSModule
                 			$this->SetBuffer("owLastDevice", 0);
             			}
 			    
-				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1")), 0);
+				$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
+				$FamilyCode = substr($SerialNumber, -2);
+				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$SerialNumber, 0);
+				$OWDeviceArray = Array();
+ 				$OWDeviceArray = $this->GetBuffer("OWDeviceArray");
+				$OWDeviceArray[$SearchNumber][0] = $this->GetOWHardware($FamilyCode); // Typ
+				$OWDeviceArray[$SearchNumber][1] = $SerialNumber; // Seriennumber
+				$OWDeviceArray[$SearchNumber][2] = 0; // Instanz
+				$OWDeviceArray[$SearchNumber][3] = "OK"; // Status
+				// Farbe gelb für nicht registrierte Instanzen
+				$OWDeviceArray[$SearchNumber][4] = "#FFFF00";
+				$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 				
 				if ($this->OWCheckCRC()) {
 					return 1;
