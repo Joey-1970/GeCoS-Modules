@@ -1620,7 +1620,7 @@ class GeCoS_IO extends IPSModule
         		}
     		}
    
-		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 165, $byte), 16);
+		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 165, $byte), 16); //set write byte command (A5) and send data (byte)
 
 		If ($Result < 0) { //Device failed to acknowledge
         		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed. Data: ".$byte, 0);
@@ -1638,7 +1638,7 @@ class GeCoS_IO extends IPSModule
             			//server.log(format("Read Status Byte = %d", data[0]));
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			$this->SendDebug("OWWriteByte", "One-Wire bus is busy", 0);
-                			if (loopcount > 100) {
+                			if ($loopcount > 100) {
                     				$this->SendDebug("OWWriteByte", "One-Wire busy for too long", 0);
                     				return -1;
                 			}
@@ -1657,9 +1657,11 @@ class GeCoS_IO extends IPSModule
 	private function OWTriplet() 
 	{
 		//$this->SendDebug("OWTriplet", "Function: OneWire Triplet", 0);
-		if ($this->GetBuffer("owTripletDirection") > 0) $this->SetBuffer("owTripletDirection", 255);
+		if ($this->GetBuffer("owTripletDirection") > 0) {
+			$this->SetBuffer("owTripletDirection", 255);
+		}
 
-		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 120, $this->GetBuffer("owTripletDirection")), 16);
+		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 120, $this->GetBuffer("owTripletDirection")), 16); //send 1-wire triplet and direction
 
 		If ($Result < 0) { //Device failed to acknowledge message
         		$this->SendDebug("OWTriplet", "OneWire Triplet Failed", 0);
@@ -1713,13 +1715,13 @@ class GeCoS_IO extends IPSModule
 	private function OWSelect() 
 	{
     		$this->SendDebug("OWSelect", "Selecting device", 0);
-    		$this->OWWriteByte(0x55); //Issue the Match ROM command
+    		$this->OWWriteByte(85); //Issue the Match ROM command 55Hex
     		
-    		for($i=1; $i>=0; $i--) {
+    		for($i = 1; $i >= 0; $i--) {
         		$da32bit = $this->GetBuffer("owDeviceAddress_".$i);
-        		for($j=0; $j<4; $j++) {
+        		for($j = 0; $j < 4; $j++) {
             			//server.log(format("Writing byte: %.2X", da32bit & 0xFF));
-            			$this->OWWriteByte($da32bit & 0xFF); //Send lowest byte
+            			$this->OWWriteByte($da32bit & 255); //Send lowest byte
             			$da32bit = $da32bit >> 8; //Shift right 8 bits
         		}
     		}
