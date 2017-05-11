@@ -243,15 +243,20 @@ class GeCoS_IO extends IPSModule
 				$OW_Handle = $this->GetOnboardI2CHandle(24);
 				$this->SetBuffer("OW_Handle", $OW_Handle);
 				$this->SendDebug("OW_Handle", $OW_Handle, 0);
+				If ($OW_Handle >= 0) {
+					// DS 2482 zurücksetzen
+					$this->DS2482Reset();
+				}
 				// https://pastebin.com/0d93ZuRb
 				
 				// MUX einrichten
 				$MUX_Handle = $this->GetOnboardI2CHandle(112);
 				$this->SetBuffer("MUX_Handle", $MUX_Handle);
 				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
-				
-				// MUX setzen
-				$this->SetMUX(1);
+				If ($MUX_Handle >= 0) {
+					// MUX setzen
+					$this->SetMUX(1);
+				}
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
@@ -1386,6 +1391,16 @@ class GeCoS_IO extends IPSModule
 		   	$Result = $this->OWSearch($SearchNumber);
 			$SearchNumber++;
 		}
+	}
+	
+	private function DS2482Reset() 
+	{
+    		$this->SendDebug("DS2482Reset", "Function: Resetting DS2482", 0);
+		$Result = $this->CommandClientSocket(pack("L*", 60, $this->GetBuffer("OW_Handle"), 240, 0), 16); //reset DS2482
+		
+		If ($Result < 0) {
+			$this->SendDebug("DS2482Reset", "DS2482 Reset Failed", 0);
+    		}
 	}
 	
 	private function OWSearch(int $SearchNumber)
