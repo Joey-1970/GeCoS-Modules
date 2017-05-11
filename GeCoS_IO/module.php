@@ -1426,20 +1426,22 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owTripletDirection", 0);
 				}
 
-				if (!$this->OWTriplet()) return 0;
+				if (!$this->OWTriplet()) {
+					return 0;
+				}
 
 				//if 0 was picked then record its position in lastZero
-				if ($this->GetBuffer("owTripletFirstBit")==0 && $this->GetBuffer("owTripletSecondBit")==0 && $this->GetBuffer("owTripletDirection")==0) {
+				if ($this->GetBuffer("owTripletFirstBit") == 0 && $this->GetBuffer("owTripletSecondBit") == 0 && $this->GetBuffer("owTripletDirection") == 0) {
 					$lastZero = $bitNumber;
 				}
 
 				 //check for no devices on 1-wire
-				if ($this->GetBuffer("owTripletFirstBit")==1 && $this->GetBuffer("owTripletSecondBit")==1) {
+				if ($this->GetBuffer("owTripletFirstBit") == 1 && $this->GetBuffer("owTripletSecondBit") == 1) {
 					break;
 				}
 
 				//set or clear the bit in the SerialNum byte serial_byte_number with mask
-				if ($this->GetBuffer("owTripletDirection")==1) {
+				if ($this->GetBuffer("owTripletDirection") == 1) {
 					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) | $deviceAddress4ByteMask);
 				} 
 				else {
@@ -1456,7 +1458,7 @@ class GeCoS_IO extends IPSModule
 			
 			if ($bitNumber == 65) { //if the search was successful then
             			$this->SetBuffer("owLastDiscrepancy", $lastZero);
-            			if ($this->GetBuffer("owLastDiscrepancy")==0) {
+            			if ($this->GetBuffer("owLastDiscrepancy") == 0) {
                 			$this->SetBuffer("owLastDevice", 1);
             			} 
 				else {
@@ -1498,13 +1500,13 @@ class GeCoS_IO extends IPSModule
     		$crc = 0;
      		$j = 0;
      		$da32bit = $this->GetBuffer("owDeviceAddress_1");
-    		for($j=0; $j<4; $j++) { //All four bytes
+    		for($j = 0; $j < 4; $j++) { //All four bytes
 			$crc = $this->AddCRC($da32bit & 0xFF, $crc);
 			//server.log(format("CRC = %.2X", crc));
         		$da32bit = $da32bit >> 8; //Shift right 8 bits
 		}	
 		$da32bit = $this->GetBuffer("owDeviceAddress_0");
-		for($j=0; $j<3; $j++) { //only three bytes
+		for($j = 0; $j < 3; $j++) { //only three bytes
         		$crc = $this->AddCRC($da32bit & 0xFF, $crc);
         		//server.log(format("CRC = %.2X", crc));
         		$da32bit = $da32bit >> 8; //Shift right 8 bits
@@ -1522,7 +1524,7 @@ class GeCoS_IO extends IPSModule
 	private function AddCRC($inbyte, $crc) 
 	{
 	    	$j = 0;
-    		for($j=0; $j<8; $j++) {
+    		for($j = 0; $j < 8; $j++) {
         		$mix = ($crc ^ $inbyte) & 0x01;
         		$crc = $crc >> 1;
         		if ($mix) {
