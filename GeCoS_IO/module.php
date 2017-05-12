@@ -1744,5 +1744,47 @@ class GeCoS_IO extends IPSModule
     		}
 	}
 	
+	private function OWReadTemperature() 
+	{
+    		$data = Array();
+    		$i;
+    		for($i = 0; $i < 5; $i++) { //we only need 5 of the bytes
+        		$data[$i] = $this->OWReadByte();
+        		//server.log(format("read byte: %.2X", data[i]));
+    		}
+ 
+    		$raw = ($data[1] << 8) | $data[0];
+    		$SignBit = $raw & 0x8000;  // test most significant bit
+    		if ($SignBit) {
+			$raw = ($raw ^ 0xffff) + 1;
+		} // negative, 2's compliment
+		$cfg = $data[4] & 0x60;
+		if ($cfg == 0x60) {
+			//server.log("12 bit resolution"); //750 ms conversion time
+		} 
+		else if ($cfg == 0x40) {
+			//server.log("11 bit resolution"); //375 ms
+			$raw = $raw << 1;
+		} 
+		else if ($cfg == 0x20) {
+			//server.log("10 bit resolution"); //187.5 ms
+			$raw = $raw << 2;
+		} 
+		else { //if (cfg == 0x00)
+			//server.log("9 bit resolution"); //93.75 ms
+			$raw = $raw << 3;
+		}
+		//server.log(format("rawtemp= %.4X", raw));
+
+		$celsius = $raw / 16.0;
+		if ($SignBit) {
+			$celsius = $celsius * (-1);
+		}
+		//server.log(format("Temperature = %.1f °C", celsius));
+		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
+		$this->SendDebug("OWReadTemperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+	}
+	
+	
 }
 ?>
