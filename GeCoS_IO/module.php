@@ -1370,7 +1370,7 @@ class GeCoS_IO extends IPSModule
 	
 	private function GetOWHardware(string $FamilyCode)
 	{
-		$OWHardware = array("10" => "DS18S20 Temperatur", "12" => "DS2406 Switch", "1D" => "DS2423 Counter" , "28" => "DS18B20 Temperatur", "3A" => "DS2413 Switch");
+		$OWHardware = array("10" => "DS18S20 Temperatur", "12" => "DS2406 Switch", "1D" => "DS2423 Counter" , "28" => "DS18B20 Temperatur", "3A" => "DS2413 2 Ch. Switch", "29" => "DS2408 8 Ch.Switch", "05" => "DS2405 Switch", "26" => "DS2438 Batt.Monitor");
 		If (array_key_exists($FamilyCode, $OWHardware)) {
 			$OWHardwareText = $OWHardware[$FamilyCode];
 		}
