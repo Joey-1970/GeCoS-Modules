@@ -1822,7 +1822,6 @@ class GeCoS_IO extends IPSModule
     		}
    
     		//Send a read command, then wait for the 1wire bus to finish
-    		local e = i2c.write(I2CAddr, "\x96"); //send read byte command (96)
 		$Result = $this->CommandClientSocket(pack("L*", 60, $this->GetBuffer("OW_Handle"), 150, 0), 16); //send read byte command (96)
 		If ($Result < 0) {
 			$this->SendDebug("OWReadByte", "I2C Write read-request Failed", 0);
