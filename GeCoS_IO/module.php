@@ -1458,11 +1458,11 @@ class GeCoS_IO extends IPSModule
 				//set or clear the bit in the SerialNum byte serial_byte_number with mask
 				if ($this->GetBuffer("owTripletDirection") == 1) {
 					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) | $deviceAddress4ByteMask);
-					$this->SendDebug("SearchOWDevices", "owTripletDirection = 1 ".$this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex), 0);
+					//$this->SendDebug("SearchOWDevices", "owTripletDirection = 1 ".$this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex), 0);
 				} 
 				else {
 					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & (~$deviceAddress4ByteMask));
-					$this->SendDebug("SearchOWDevices", "owTripletDirection = 0 ".$this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex), 0);
+					//$this->SendDebug("SearchOWDevices", "owTripletDirection = 0 ".$this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex), 0);
 				}
 				$bitNumber++; //increment the byte counter bit number
 				$deviceAddress4ByteMask = $deviceAddress4ByteMask << 1; //shift the bit mask left
