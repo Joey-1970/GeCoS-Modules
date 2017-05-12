@@ -1460,7 +1460,7 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) | $deviceAddress4ByteMask);
 				} 
 				else {
-					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & ~($deviceAddress4ByteMask));
+					$this->SetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex, $this->GetBuffer("owDeviceAddress_".$deviceAddress4ByteIndex) & (~$deviceAddress4ByteMask));
 				}
 				$bitNumber++; //increment the byte counter bit number
 				$deviceAddress4ByteMask = $deviceAddress4ByteMask << 1; //shift the bit mask left
