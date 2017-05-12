@@ -1785,6 +1785,93 @@ class GeCoS_IO extends IPSModule
 		$this->SendDebug("OWReadTemperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
 	}
 	
-	
+	private function OWReadByte() 
+	{
+    		//See if the 1wire bus is idle
+    		//server.log("Function: Read Byte from One-Wire");
+    		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 240), 16); //set read pointer (E1) to the status register (F0)
+
+		If ($Result < 0) { //Device failed to acknowledge
+			$this->SendDebug("OWReadByte", "I2C Write Failed", 0);
+			return -1;
+    		}
+		
+    		$loopcount = 0;
+   		while (true) {
+        		$loopcount++;
+			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+			If ($Result < 0) {
+				$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
+				return -1;
+    			} 
+			else {
+            			//server.log(format("Read Status Byte = %d", data[0]));
+            			if ($Data & 0x01) { // 1-Wire Busy bit
+                			//server.log("One-Wire bus is busy");
+                			if ($loopcount > 100) {
+                    				$this->SendDebug("OWReadByte", "One-Wire busy for too long", 0);
+                    				return -1;
+					}
+					IPS_Sleep(10); //Wait, try again
+				} 
+				else {
+					//server.log("One-Wire bus is idle");
+					break;
+				}
+        		}
+    		}
+   
+    		//Send a read command, then wait for the 1wire bus to finish
+    		local e = i2c.write(I2CAddr, "\x96"); //send read byte command (96)
+		$Result = $this->CommandClientSocket(pack("L*", 60, $this->GetBuffer("OW_Handle"), 150, 0), 16); //send read byte command (96)
+		If ($Result < 0) {
+			$this->SendDebug("OWReadByte", "I2C Write read-request Failed", 0);
+			return -1;
+		} 
+    
+    		$loopcount = 0;
+    		while (true) {
+        		$loopcount++;
+        		
+			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+			If ($Result < 0) {
+            			$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
+            			return -1; 
+			} 
+			else {
+            			//server.log(format("Read Status Byte = %d", data[0]));
+            			if ($Data[0] & 0x01) { // 1-Wire Busy bit
+                			//server.log("One-Wire bus is busy");
+                			if ($loopcount > 100) {
+                    				$this->SendDebug("OWReadByte", "One-Wire busy for too long", 0);
+                    				return -1;
+                			}
+                			IPS_Sleep(10); //Wait, try again
+            			} 
+				else {
+					//server.log("One-Wire bus is idle");
+					break;
+				}
+        		}
+    		}
+   
+		//Go get the data byte
+		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 225), 16); //set read pointer (E1) to the read data register (E1)
+
+		If ($Result < 0) { //Device failed to acknowledge
+			$this->SendDebug("OWReadByte", "I2C Write Failed", 0);
+			return -1;
+		}
+		$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+		If ($Result < 0) {
+			$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
+			return -1;
+		} 
+		else {
+			//server.log(format("Read Data Byte = %d", data[0]));
+		}
+    		//server.log("One-Wire Read Byte complete");
+    	return $Data;
+	}
 }
 ?>
