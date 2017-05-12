@@ -1747,7 +1747,7 @@ class GeCoS_IO extends IPSModule
 	private function OWReadTemperature() 
 	{
     		$data = Array();
-    		$i;
+
     		for($i = 0; $i < 5; $i++) { //we only need 5 of the bytes
         		$data[$i] = $this->OWReadByte();
         		//server.log(format("read byte: %.2X", data[i]));
