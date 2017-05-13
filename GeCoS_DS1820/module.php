@@ -33,6 +33,7 @@
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+		$this->SendDebug("GetConfigurationForm", "OWDeviceArray ".Count($OWDeviceArray), 0);
 		If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $i);
@@ -114,6 +115,7 @@
 			case "set_OWDevices":
 			   	If ($data->InstanceID == $this->InstanceID) {
 					$this->SetBuffer("OWDeviceArray", $data->Result);
+					$this->SendDebug("ReceiveData", $data->Result, 0);
 			   	}
 			   	break;	
 	 	}
