@@ -465,11 +465,21 @@ class GeCoS_IO extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>true  )));
 			}
 			break;
-		    // 1-Wire
-		    case "get_1wire_devices":
-			$Result = $this->GetOneWireDevices();
-			$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_1wire_devices", "InstanceID" => $data->InstanceID, "Result"=>utf8_encode($Result) )));
-			break;
+		    	// 1-Wire
+		    	case "get_OWDevices":
+				$OWDeviceArray = array();
+				$this->OWSearchStart();
+				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+				If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
+					$DeviceSerialArray = array();
+					$DeviceSerial = $OWDeviceArray[$i][1];
+					$FamilyCode = substr($DeviceSerial, -2);
+					If ($FamilyCode == $data->FamilyCode) {
+						$DeviceSerialArray[] = $DeviceSerial;
+					}
+				}
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
+				break;
 		    case "get_1W_data":
 			$Result = $this->SSH_Connect_Array($data->Command);
 			//IPS_LogMessage("IPS2GPIO 1-Wire-Data", $Result );
