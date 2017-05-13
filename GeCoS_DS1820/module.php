@@ -38,7 +38,7 @@
 		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
 		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
 		
-		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Auflösung", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Messzyklus (sek)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
