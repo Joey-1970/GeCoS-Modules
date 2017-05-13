@@ -11,6 +11,8 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceSerial", 0);
 		$this->RegisterPropertyInteger("Resolution", 0);
+		$this->RegisterPropertyInteger("Messzyklus", 60);
+		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS1820_Measurement($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
