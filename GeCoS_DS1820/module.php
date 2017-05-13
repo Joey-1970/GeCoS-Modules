@@ -39,6 +39,7 @@
 		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Auflösung", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Messzyklus (sek)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
@@ -66,11 +67,13 @@
 				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 				$this->SetReceiveDataFilter($Filter);
 				//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
+				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
 				// Setup
 				//$this->Setup();
 				//$this->GetInput();
 			}
 			else {
+				$this->SetTimerInterval("Messzyklus", 0);
 				$this->SetStatus(104);
 			}	
 		}
@@ -99,7 +102,11 @@
  	}
 	    
 	// Beginn der Funktionen
-	
+	public function Measurement()
+	{
+		// Messung ausführen
+		
+	}
 	    
 	private function HasActiveParent()
     	{
