@@ -30,7 +30,6 @@
 		// Hier mus der Abruf der DS1820 erfolgen
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
-		$arrayElements[] = array("type" => "Label", "label" => "Auflösung");
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
 		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
