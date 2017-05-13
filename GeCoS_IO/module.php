@@ -472,10 +472,12 @@ class GeCoS_IO extends IPSModule
 				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 				If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
 					$DeviceSerialArray = array();
-					$DeviceSerial = $OWDeviceArray[$i][1];
-					$FamilyCode = substr($DeviceSerial, -2);
-					If ($FamilyCode == $data->FamilyCode) {
-						$DeviceSerialArray[] = $DeviceSerial;
+					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
+						$DeviceSerial = $OWDeviceArray[$i][1];
+						$FamilyCode = substr($DeviceSerial, -2);
+						If ($FamilyCode == $data->FamilyCode) {
+							$DeviceSerialArray[] = $DeviceSerial;
+						}
 					}
 				}
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
