@@ -54,7 +54,7 @@
             	parent::ApplyChanges();
             	
 		//Status-Variablen anlegen
-		$this->RegisterVariableFloat("Temperature", "Temparatur", "~Temperature", 10);
+		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
           	$this->DisableAction("Temperature");
 		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
 		
