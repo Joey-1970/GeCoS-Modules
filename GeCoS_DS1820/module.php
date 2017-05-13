@@ -28,10 +28,19 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "Keine Auswahl", "value" => 0);
+		
 		// Hier mus der Abruf der DS1820 erfolgen
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
-		
+		$OWDeviceArray = Array();
+		$OWDeviceArray = unserialize(GetBuffer("OWDeviceArray"));
+		If (count($OWDeviceArray) > 0) {
+			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $i);
+			}
+		}
+		else {
+			$arrayOptions[] = array("label" => "Keine Auswahl", "value" => 0);
+		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
@@ -62,6 +71,9 @@
 		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
           	$this->DisableAction("Temperature");
 		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
+		
+		$OWDeviceArray = Array();
+		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
@@ -99,7 +111,11 @@
 					}	
 			   	}
 			   	break;			
-			
+			case "set_OWDevices":
+			   	If ($data->InstanceID == $this->InstanceID) {
+					$this->SetBuffer("OWDeviceArray", $data->Result);
+			   	}
+			   	break;	
 	 	}
  	}
 	    
