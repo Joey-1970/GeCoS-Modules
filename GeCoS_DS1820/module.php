@@ -32,7 +32,7 @@
 		// Hier mus der Abruf der DS1820 erfolgen
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
-		$OWDeviceArray = unserialize(GetBuffer("OWDeviceArray"));
+		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $i);
