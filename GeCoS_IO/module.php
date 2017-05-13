@@ -471,8 +471,8 @@ class GeCoS_IO extends IPSModule
 				$this->OWSearchStart();
 				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 				$this->SendDebug("get_OWDevices", count($OWDeviceArray ,COUNT_RECURSIVE), 0);
+				$DeviceSerialArray = array();
 				If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
-					$DeviceSerialArray = array();
 					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
@@ -482,7 +482,7 @@ class GeCoS_IO extends IPSModule
 						}
 					}
 				}
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
 				break;
 		    case "get_1W_data":
 			$Result = $this->SSH_Connect_Array($data->Command);
