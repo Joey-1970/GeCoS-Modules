@@ -310,7 +310,9 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde getrennt", 0);
 				$InstanceArray = Array();
 				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
-				unset ($InstanceArray[$SenderID]);
+				If (array_key_exists($SenderID, $InstanceArray)) {
+					unset ($InstanceArray[$SenderID]);
+				}
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
 				$this->UnregisterMessage($SenderID, 11101);
 				$this->UnregisterMessage($SenderID, 11102);
