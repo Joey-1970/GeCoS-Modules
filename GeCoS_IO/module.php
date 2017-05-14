@@ -460,7 +460,6 @@ class GeCoS_IO extends IPSModule
 				$OWDeviceArray = array();
 				$this->OWSearchStart();
 				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-				//$this->SendDebug("get_OWDevices", count($OWDeviceArray ,COUNT_RECURSIVE), 0);
 				$DeviceSerialArray = array();
 				If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
 					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
@@ -474,9 +473,12 @@ class GeCoS_IO extends IPSModule
 				}
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
 				break;
-		  
+		  	case "set_OWDevices":
+				 
+				 break;
+				 
 		}
-	  }
+	 }
 	
 	 public function ReceiveData($JSONString) {
  	    	$CmdPossible = array(19, 21, 76, 81, 99, 115, 116);
