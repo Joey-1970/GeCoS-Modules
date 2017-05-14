@@ -298,22 +298,22 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde verbunden", 0);
 				/*
 				$InstanceArray = Array();
-				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+				$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 				$InstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
 				$InstanceArray[$SenderID]["DeviceAddress"] = IPS_GetProperty($SenderID, "DeviceAddress");
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
-				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				$this->SetBuffer("InstanceArray", serialize($I2CInstanceArray));
 				*/
 				break;
 			case 11102:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde getrennt", 0);
 				$InstanceArray = Array();
-				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+				$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 				If (array_key_exists($SenderID, $InstanceArray)) {
 					unset ($InstanceArray[$SenderID]);
 				}
-				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				$this->SetBuffer("I2CInstanceArray", serialize($InstanceArray));
 				$this->UnregisterMessage($SenderID, 11101);
 				$this->UnregisterMessage($SenderID, 11102);
 				break;	
@@ -332,7 +332,7 @@ class GeCoS_IO extends IPSModule
 	 	// Empfangene Daten von der Device Instanz
 	    	$data = json_decode($JSONString);
 	    	$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 	 	
 		 switch ($data->Function) {
 		// interne Kommunikation
@@ -351,7 +351,7 @@ class GeCoS_IO extends IPSModule
 				$this->SetMUX($data->DeviceBus);
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
 				$InstanceArray[$data->InstanceID]["Handle"] = $Handle;
-				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				$this->SetBuffer("I2CInstanceArray", serialize($InstanceArray));
 				// Testweise lesen
 				If ($Handle >= 0) {
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
