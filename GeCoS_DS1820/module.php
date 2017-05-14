@@ -9,7 +9,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceSerial", 0);
+ 	    	$this->RegisterPropertyString("DeviceSerial", "Sensorauswahl");
 		$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS1820_Measurement($_IPS["TARGET"]);');
@@ -34,13 +34,16 @@
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		$this->SendDebug("GetConfigurationForm", "OWDeviceArray ".Count($OWDeviceArray), 0);
-		If (count($OWDeviceArray) > 0) {
-			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $i);
-			}
+		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
+			$arrayOptions[] = array("label" => "Sensor wählen", "value" => "Sensorauswahl");
 		}
 		else {
-			$arrayOptions[] = array("label" => "Keine Auswahl", "value" => 0);
+			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $this->ReadPropertyString("DeviceSerial"));
+		}
+		If (count($OWDeviceArray) > 0) {
+			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
+			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
