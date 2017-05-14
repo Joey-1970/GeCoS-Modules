@@ -470,14 +470,14 @@ class GeCoS_IO extends IPSModule
 				$OWDeviceArray = array();
 				$this->OWSearchStart();
 				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-				$this->SendDebug("get_OWDevices", count($OWDeviceArray ,COUNT_RECURSIVE), 0);
+				//$this->SendDebug("get_OWDevices", count($OWDeviceArray ,COUNT_RECURSIVE), 0);
 				$DeviceSerialArray = array();
 				If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
 					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
-						If ($FamilyCode == $data->FamilyCode) {
-							$this->SendDebug("get_OWDevices", $DeviceSerial, 0);
+						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
+							//$this->SendDebug("get_OWDevices", $DeviceSerial, 0);
 							$DeviceSerialArray[] = $DeviceSerial;
 						}
 					}
