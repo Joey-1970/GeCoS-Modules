@@ -216,7 +216,7 @@ class GeCoS_IO extends IPSModule
 				
 				// I2C-Handle zurücksetzen
 				$InstanceArray = Array();
-				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+				$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 				If (count($InstanceArray) > 0) {
 					$this->ResetI2CHandle(0);
 				}
@@ -1148,7 +1148,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = 0;
 		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 		If (count($InstanceArray, COUNT_RECURSIVE) >= 5) {
 			foreach ($InstanceArray as $Type => $Properties) {
 				foreach ($Properties as $Property => $Value) {
@@ -1165,7 +1165,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -1;
 		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
+		$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 		If (count($InstanceArray, COUNT_RECURSIVE) >= 5) {
 			foreach ($InstanceArray as $Type => $Properties) {
 				If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
