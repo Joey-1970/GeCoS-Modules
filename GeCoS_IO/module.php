@@ -181,9 +181,10 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("owTripletSecondBit", 0);
 			$this->SetBuffer("owDeviceAddress_0", 0);
 			$this->SetBuffer("owDeviceAddress_1", 0);
+			/*
 			$OWDeviceArray = Array();
 			$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
-			
+			*/
 			$ParentID = $this->GetParentID();
 			
 			If ($ParentID > 0) {
@@ -295,6 +296,7 @@ class GeCoS_IO extends IPSModule
 				break;
 			case 11101:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde verbunden", 0);
+				/*
 				$InstanceArray = Array();
 				$InstanceArray = unserialize($this->GetBuffer("InstanceArray"));
 				$InstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
@@ -302,6 +304,7 @@ class GeCoS_IO extends IPSModule
 				$InstanceArray[$SenderID]["Status"] = "Verbunden";
 				$InstanceArray[$SenderID]["Handle"] = -1;
 				$this->SetBuffer("InstanceArray", serialize($InstanceArray));
+				*/
 				break;
 			case 11102:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde getrennt", 0);
@@ -445,26 +448,11 @@ class GeCoS_IO extends IPSModule
 		   		break;
 			// Serielle Kommunikation
 			case "serial_write":
-				 $Message = utf8_decode($data->Message);
-				 $this->WriteSerial($Message);
+				$Message = utf8_decode($data->Message);
+				$this->WriteSerial($Message);
 				break;
 			
-		    // Raspberry Pi Kommunikation
-		    case "get_RPi_connect":
-		   	// SSH Connection
-			If ($data->IsArray == false) {
-				// wenn es sich um ein einzelnes Kommando handelt
-				//IPS_LogMessage("IPS2GPIO SSH-Connect", $data->Command );
-				$Result = $this->SSH_Connect($data->Command);
-				//IPS_LogMessage("IPS2GPIO SSH-Connect", $Result );
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>false  )));
-			}
-			else {
-				// wenn es sich um ein Array von Kommandos handelt
-				$Result = $this->SSH_Connect_Array($data->Command);
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>true  )));
-			}
-			break;
+		    
 		    	// 1-Wire
 		    	case "get_OWDevices":
 				$OWDeviceArray = array();
@@ -484,11 +472,7 @@ class GeCoS_IO extends IPSModule
 				}
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
 				break;
-		    case "get_1W_data":
-			$Result = $this->SSH_Connect_Array($data->Command);
-			//IPS_LogMessage("IPS2GPIO 1-Wire-Data", $Result );
-			$this->SendDataToChildren(json_encode(Array("DataID" => "{8D44CA24-3B35-4918-9CBD-85A28C0C8917}", "Function"=>"set_1wire_data", "InstanceID" => $data->InstanceID, "Result"=>utf8_encode($Result) )));
-			break;
+		  
 		}
 	  }
 	
