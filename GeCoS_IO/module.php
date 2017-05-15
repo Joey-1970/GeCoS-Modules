@@ -1561,10 +1561,12 @@ class GeCoS_IO extends IPSModule
 	{
 	    	$j = 0;
     		for($j = 0; $j < 8; $j++) {
-        		$mix = ($crc ^ $inbyte) & 0x01;
+        		//$mix = ($crc ^ $inbyte) & 0x01;
+			$mix = (pow($crc, $inbyte)) & 0x01;
         		$crc = $crc >> 1;
         		if ($mix) {
-				$crc = $crc ^ 0x8C;
+				//$crc = $crc ^ 0x8C;
+				$crc = pow($crc, 0x8C);
 			}
         		$inbyte = $inbyte >> 1;
     		}
