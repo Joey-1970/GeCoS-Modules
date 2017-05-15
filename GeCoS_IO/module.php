@@ -486,6 +486,7 @@ class GeCoS_IO extends IPSModule
 				 $OWInstanceArray[$data->InstanceID]["Address_0"] = $data->DeviceAddress_0;
 				 $OWInstanceArray[$data->InstanceID]["Address_1"] = $data->DeviceAddress_1;
 				 $OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+				 $this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
 				 // Messages einrichten
 				 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
