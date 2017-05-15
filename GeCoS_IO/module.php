@@ -506,6 +506,22 @@ class GeCoS_IO extends IPSModule
 				 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				 break;
+			case "get_DS1820Temperature":
+				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+
+				 if ($this->OWReset()) { //Reset was successful
+                			$this->OWSelect();
+                			$this->OWWriteByte(0x44); //start conversion
+                			IPS_Sleep(1); //Wait for conversion
+                			if ($this->OWReset()) { //Reset was successful
+                    				$this->OWSelect();
+                    				$this->OWWriteByte(0xBE); //Read Scratchpad
+                    				$Celsius = $this->OWReadTemperature();
+                			}
+					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_S1820Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+            			}
+ 				break;
 				 
 		}
 	 }
@@ -1802,6 +1818,7 @@ class GeCoS_IO extends IPSModule
 	private function OWReadTemperature() 
 	{
     		$data = Array();
+		$celsius = -99;
 
     		for($i = 0; $i < 5; $i++) { //we only need 5 of the bytes
         		$data[$i] = $this->OWReadByte();
@@ -1838,6 +1855,7 @@ class GeCoS_IO extends IPSModule
 		//server.log(format("Temperature = %.1f °C", celsius));
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
 		$this->SendDebug("OWReadTemperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+	return $celsius;
 	}
 	
 	private function OWReadByte() 
