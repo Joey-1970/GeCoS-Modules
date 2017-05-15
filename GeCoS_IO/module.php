@@ -314,6 +314,12 @@ class GeCoS_IO extends IPSModule
 					unset ($I2CInstanceArray[$SenderID]);
 				}
 				$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
+				$OWInstanceArray = Array();
+				$OWInstanceArray = unserialize($this->GetBuffer("OWInstanceArray"));
+				If (array_key_exists($SenderID, $OWInstanceArray)) {
+					unset ($OWInstanceArray[$SenderID]);
+				}
+				$this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
 				$this->UnregisterMessage($SenderID, 11101);
 				$this->UnregisterMessage($SenderID, 11102);
 				break;	
@@ -329,13 +335,15 @@ class GeCoS_IO extends IPSModule
 	  
 	 public function ForwardData($JSONString) 
 	 {
-	 	// Empfangene Daten von der Device Instanz
-	    	$data = json_decode($JSONString);
-	    	$I2CInstanceArray = Array();
-		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+		 // Empfangene Daten von der Device Instanz
+	    	 $data = json_decode($JSONString);
+	    	 $I2CInstanceArray = Array();
+		 $I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+		 $OWInstanceArray = Array();
+		 $OWInstanceArray = unserialize($this->GetBuffer("OWInstanceArray"));
 	 	
 		 switch ($data->Function) {
-		// interne Kommunikation
+		 // interne Kommunikation
 		
 		   	case "get_pinupdate":
 				$this->Get_PinUpdate();
@@ -466,7 +474,6 @@ class GeCoS_IO extends IPSModule
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
 						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-							//$this->SendDebug("get_OWDevices", $DeviceSerial, 0);
 							$DeviceSerialArray[] = $DeviceSerial;
 						}
 					}
@@ -474,7 +481,14 @@ class GeCoS_IO extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
 				break;
 		  	case "set_OWDevices":
-				 
+				 // die genutzten Device Adressen anlegen
+				 $OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
+				 $OWInstanceArray[$data->InstanceID]["Address_0"] = $data->DeviceAddress_0;
+				 $OWInstanceArray[$data->InstanceID]["Address_1"] = $data->DeviceAddress_1;
+				 $OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+				 // Messages einrichten
+				 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
+				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				 break;
 				 
 		}
