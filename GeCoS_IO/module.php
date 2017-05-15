@@ -331,8 +331,8 @@ class GeCoS_IO extends IPSModule
 	 {
 	 	// Empfangene Daten von der Device Instanz
 	    	$data = json_decode($JSONString);
-	    	$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+	    	$I2CInstanceArray = Array();
+		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 	 	
 		 switch ($data->Function) {
 		// interne Kommunikation
@@ -344,14 +344,14 @@ class GeCoS_IO extends IPSModule
 		   	// I2C Kommunikation
 		   	case "set_used_i2c":		   	
 				// die genutzten Device Adressen anlegen
-				$InstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
-				$InstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
-				$InstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+				$I2CInstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
+				$I2CInstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
+				$I2CInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 				// MUX auf den erforderlichen Channel stellen
 				$this->SetMUX($data->DeviceBus);
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
-				$InstanceArray[$data->InstanceID]["Handle"] = $Handle;
-				$this->SetBuffer("I2CInstanceArray", serialize($InstanceArray));
+				$I2CInstanceArray[$data->InstanceID]["Handle"] = $Handle;
+				$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 				// Testweise lesen
 				If ($Handle >= 0) {
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
@@ -372,80 +372,80 @@ class GeCoS_IO extends IPSModule
 		
 			case "i2c_read_bytes":
 				// I2CRD h num - i2c Read bytes
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 56, $InstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
+					$this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 				}
 				break;  
 			case "i2c_write_bytes":
 				// I2CWD h bvs - i2c Write data
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
 					$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
-					$this->CommandClientSocket(pack("L*", 57, $InstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
+					$this->CommandClientSocket(pack("L*", 57, $I2CInstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 				}
 				break;	
 			case "i2c_read_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
+					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
 				}
 		   		break;
 			case "i2c_read_2_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
-								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0), 32);
+					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
+								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0), 32);
 				}
 		   		break;
 			case "i2c_read_6_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
-								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0).
-								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0).
-								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 5, 0).
-								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 0).
-								   pack("L*", 61, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 9, 0), 96);
+					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
+								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0).
+								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0).
+								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 5, 0).
+								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 0).
+								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 9, 0), 96);
 				}
 		   		break;
 			case "i2c_write_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
 				}
 		   		break;
 			case "i2c_write_4_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 3, 4, $data->Value_4), 64);
+					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 3, 4, $data->Value_4), 64);
 				}
 		   		break;
 			case "i2c_write_12_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($InstanceArray[$data->InstanceID]["Handle"] >= 0) {
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 3, 4, $data->Value_4).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 4, $data->Value_5).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 5, 4, $data->Value_6).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 6, 4, $data->Value_7).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 7, 4, $data->Value_8).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 4, $data->Value_9).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 9, 4, $data->Value_10).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 10, 4, $data->Value_11).
-								   pack("L*", 62, $InstanceArray[$data->InstanceID]["Handle"], $data->Register + 11, 4, $data->Value_12), 192);
+					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 3, 4, $data->Value_4).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 4, $data->Value_5).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 5, 4, $data->Value_6).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 6, 4, $data->Value_7).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 7, 4, $data->Value_8).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 4, $data->Value_9).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 9, 4, $data->Value_10).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 10, 4, $data->Value_11).
+								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 11, 4, $data->Value_12), 192);
 				}
 		   		break;
 			// Serielle Kommunikation
@@ -1147,10 +1147,10 @@ class GeCoS_IO extends IPSModule
 	private function InstanceArraySearch(String $SearchKey, Int $SearchValue)
 	{
 		$Result = 0;
-		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-		If (count($InstanceArray, COUNT_RECURSIVE) >= 5) {
-			foreach ($InstanceArray as $Type => $Properties) {
+		$I2CInstanceArray = Array();
+		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+			foreach ($I2CInstanceArray as $Type => $Properties) {
 				foreach ($Properties as $Property => $Value) {
 					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
 						$Result = $Type;
@@ -1164,12 +1164,12 @@ class GeCoS_IO extends IPSModule
 	private function InstanceArrayHandleSearch(String $DeviceBus, Int $DeviceAddress)
 	{
 		$Result = -1;
-		$InstanceArray = Array();
-		$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-		If (count($InstanceArray, COUNT_RECURSIVE) >= 5) {
-			foreach ($InstanceArray as $Type => $Properties) {
-				If (($InstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($InstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
-				    $Result = $InstanceArray[$Type]["Handle"];
+		$I2CInstanceArray = Array();
+		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+			foreach ($I2CInstanceArray as $Type => $Properties) {
+				If (($I2CInstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($I2CInstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
+				    $Result = $I2CInstanceArray[$Type]["Handle"];
 				}
 			}
 		}
