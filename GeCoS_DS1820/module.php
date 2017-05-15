@@ -120,6 +120,11 @@
 					$this->SetBuffer("OWDeviceArray", $data->Result);
 					$this->SendDebug("ReceiveData", $data->Result, 0);
 			   	}
+			   	break;
+			case "set_DS1820Temperature":
+			   	If ($data->InstanceID == $this->InstanceID) {
+					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
+			   	}
 			   	break;	
 	 	}
  	}
@@ -128,7 +133,7 @@
 	public function Measurement()
 	{
 		// Messung ausführen
-		
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS1820Temperature", "InstanceID" => $this->InstanceID)));
 	}
 	    
 	private function HasActiveParent()
