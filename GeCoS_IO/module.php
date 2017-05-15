@@ -247,6 +247,7 @@ class GeCoS_IO extends IPSModule
 				If ($OW_Handle >= 0) {
 					// DS 2482 zurücksetzen
 					$this->DS2482Reset();
+					$this->OWSearchStart();
 				}
 				// https://pastebin.com/0d93ZuRb
 				
@@ -481,10 +482,24 @@ class GeCoS_IO extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
 				break;
 		  	case "set_OWDevices":
-				 // die genutzten Device Adressen anlegen
-				 $OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
-				 $OWInstanceArray[$data->InstanceID]["Address_0"] = $data->DeviceAddress_0;
-				 $OWInstanceArray[$data->InstanceID]["Address_1"] = $data->DeviceAddress_1;
+				// die genutzten Device Adressen anlegen
+				$OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
+				 
+				$OWDeviceArray = array();
+				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+				If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
+					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
+						If ($OWDeviceArray[$i][1] == $data->DeviceSerial) {
+							$OWInstanceArray[$data->InstanceID]["Address_0"] = $OWDeviceArray[$i][5];
+				 			$OWInstanceArray[$data->InstanceID]["Address_1"] = $OWDeviceArray[$i][6];
+						}
+					}
+				}
+				else {
+				 	$OWInstanceArray[$data->InstanceID]["Address_0"] = 0;
+				 	$OWInstanceArray[$data->InstanceID]["Address_1"] = 0;	
+				}
+				
 				 $OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 				 $this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
 				 // Messages einrichten
