@@ -1413,6 +1413,23 @@ class GeCoS_IO extends IPSModule
 	return $OWHardwareText;
 	}
 	
+	private function OWInstanceArraySearch(String $SearchKey, String $SearchValue)
+	{
+		$Result = 0;
+		$OWInstanceArray = Array();
+		$OWInstanceArray = unserialize($this->GetBuffer("OWInstanceArray"));
+		If (count($OWInstanceArray, COUNT_RECURSIVE) >= 4) {
+			foreach ($OWInstanceArray as $Type => $Properties) {
+				foreach ($Properties as $Property => $Value) {
+					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+						$Result = $Type;
+					}
+				}
+			}
+		}
+	return $Result;
+	}
+	
 	public function OWSearchStart()
 	{
 		$OWDeviceArray = Array();
@@ -1522,7 +1539,7 @@ class GeCoS_IO extends IPSModule
  				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 				$OWDeviceArray[$SearchNumber][0] = $this->GetOWHardware($FamilyCode); // Typ
 				$OWDeviceArray[$SearchNumber][1] = $SerialNumber; // Seriennumber
-				$OWDeviceArray[$SearchNumber][2] = 0; // Instanz
+				$OWDeviceArray[$SearchNumber][2] =  $this->OWInstanceArraySearch("DeviceSerial", $SerialNumber); // Instanz
 				$OWDeviceArray[$SearchNumber][3] = "OK"; // Status
 				// Farbe gelb für nicht registrierte Instanzen
 				$OWDeviceArray[$SearchNumber][4] = "#FFFF00";
