@@ -1557,8 +1557,14 @@ class GeCoS_IO extends IPSModule
 				$OWDeviceArray[$SearchNumber][1] = $SerialNumber; // Seriennumber
 				$OWDeviceArray[$SearchNumber][2] =  $this->OWInstanceArraySearch("DeviceSerial", $SerialNumber); // Instanz
 				$OWDeviceArray[$SearchNumber][3] = "OK"; // Status
-				// Farbe gelb für nicht registrierte Instanzen
-				$OWDeviceArray[$SearchNumber][4] = "#FFFF00";
+				If ($OWDeviceArray[$SearchNumber][2] == 0) {
+					// Farbe gelb für nicht registrierte Instanzen
+					$OWDeviceArray[$SearchNumber][4] = "#FFFF00";
+				}
+				else {
+					// Farbe grün für erreichbare und registrierte Instanzen
+					$OWDeviceArray[$SearchNumber][4] = "#00FF00";
+				}
 				$OWDeviceArray[$SearchNumber][5] = $this->GetBuffer("owDeviceAddress_0"); // erster Teil der dezimalen Seriennummer
 				$OWDeviceArray[$SearchNumber][6] = $this->GetBuffer("owDeviceAddress_1"); // zweiter Teil der dezimalen Seriennummer
 				$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
