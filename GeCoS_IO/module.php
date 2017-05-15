@@ -215,9 +215,9 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
 				
 				// I2C-Handle zurücksetzen
-				$InstanceArray = Array();
-				$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-				If (count($InstanceArray) > 0) {
+				$I2CInstanceArray = Array();
+				$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+				If (count($I2CInstanceArray) > 0) {
 					$this->ResetI2CHandle(0);
 				}
 				
@@ -297,23 +297,23 @@ class GeCoS_IO extends IPSModule
 			case 11101:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde verbunden", 0);
 				/*
-				$InstanceArray = Array();
-				$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-				$InstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
-				$InstanceArray[$SenderID]["DeviceAddress"] = IPS_GetProperty($SenderID, "DeviceAddress");
-				$InstanceArray[$SenderID]["Status"] = "Verbunden";
-				$InstanceArray[$SenderID]["Handle"] = -1;
-				$this->SetBuffer("InstanceArray", serialize($I2CInstanceArray));
+				$I2CInstanceArray = Array();
+				$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+				$I2CInstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
+				$I2CInstanceArray[$SenderID]["DeviceAddress"] = IPS_GetProperty($SenderID, "DeviceAddress");
+				$I2CInstanceArray[$SenderID]["Status"] = "Verbunden";
+				$I2CInstanceArray[$SenderID]["Handle"] = -1;
+				$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 				*/
 				break;
 			case 11102:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde getrennt", 0);
-				$InstanceArray = Array();
-				$InstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-				If (array_key_exists($SenderID, $InstanceArray)) {
-					unset ($InstanceArray[$SenderID]);
+				$I2CInstanceArray = Array();
+				$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+				If (array_key_exists($SenderID, $I2CInstanceArray)) {
+					unset ($I2CInstanceArray[$SenderID]);
 				}
-				$this->SetBuffer("I2CInstanceArray", serialize($InstanceArray));
+				$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 				$this->UnregisterMessage($SenderID, 11101);
 				$this->UnregisterMessage($SenderID, 11102);
 				break;	
@@ -373,14 +373,14 @@ class GeCoS_IO extends IPSModule
 			case "i2c_read_bytes":
 				// I2CRD h num - i2c Read bytes
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 				}
 				break;  
 			case "i2c_write_bytes":
 				// I2CWD h bvs - i2c Write data
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
 					$this->CommandClientSocket(pack("L*", 57, $I2CInstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
@@ -389,14 +389,14 @@ class GeCoS_IO extends IPSModule
 			case "i2c_read_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
 				}
 		   		break;
 			case "i2c_read_2_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
 								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0), 32);
 				}
@@ -404,7 +404,7 @@ class GeCoS_IO extends IPSModule
 			case "i2c_read_6_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
 								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0).
 								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0).
@@ -423,7 +423,7 @@ class GeCoS_IO extends IPSModule
 			case "i2c_write_4_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
 								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
 								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
@@ -433,7 +433,7 @@ class GeCoS_IO extends IPSModule
 			case "i2c_write_12_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($InstanceArray[$data->InstanceID]["DeviceBus"]);
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
 								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
 								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
