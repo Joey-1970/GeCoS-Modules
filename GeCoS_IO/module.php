@@ -513,7 +513,7 @@ class GeCoS_IO extends IPSModule
 				 if ($this->OWReset()) { //Reset was successful
                 			$this->OWSelect();
                 			$this->OWWriteByte(0x44); //start conversion
-                			IPS_Sleep(1); //Wait for conversion
+                			IPS_Sleep(750); //Wait for conversion
                 			if ($this->OWReset()) { //Reset was successful
                     				$this->OWSelect();
                     				$this->OWWriteByte(0xBE); //Read Scratchpad
