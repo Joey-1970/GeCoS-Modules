@@ -1856,17 +1856,17 @@ class GeCoS_IO extends IPSModule
 		else if ($cfg == 0x40) {
 			$this->SendDebug("OWReadTemperature", "11 bit resolution", 0);
 			//server.log("11 bit resolution"); //375 ms
-			$raw = $raw >> 1;
+			$raw = $raw & 0xFFFE;
 		} 
 		else if ($cfg == 0x20) {
 			$this->SendDebug("OWReadTemperature", "10 bit resolution", 0);
 			//server.log("10 bit resolution"); //187.5 ms
-			$raw = $raw >> 2;
+			$raw = $raw & 0xFFFC;
 		} 
 		else { //if (cfg == 0x00)
 			$this->SendDebug("OWReadTemperature", "9 bit resolution", 0);
 			//server.log("9 bit resolution"); //93.75 ms
-			$raw = $raw >> 3;
+			$raw = $raw & 0xFFF8;
 		}
 		//server.log(format("rawtemp= %.4X", raw));
 
