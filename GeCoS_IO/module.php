@@ -528,6 +528,7 @@ class GeCoS_IO extends IPSModule
 
 				 if ($this->OWReset()) { //Reset was successful
                 			$this->OWSelect();
+					$this->OWWriteByte(78); 
                     			$this->OWWriteByte(0); 
                     			$this->OWWriteByte(0); 
 					$this->OWWriteByte($data->Resolution); 
