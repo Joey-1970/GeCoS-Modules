@@ -522,6 +522,17 @@ class GeCoS_IO extends IPSModule
 					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS1820Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
             			}
  				break;
+			case "set_DS1820Setup":
+				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+
+				 if ($this->OWReset()) { //Reset was successful
+                			$this->OWSelect();
+                    			$this->OWWriteByte(0); 
+                    			$this->OWWriteByte(0); 
+					$this->OWWriteByte($data->Resolution); 
+            			}
+ 				break;
 				 
 		}
 	 }
