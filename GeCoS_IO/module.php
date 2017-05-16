@@ -513,7 +513,7 @@ class GeCoS_IO extends IPSModule
 				 if ($this->OWReset()) { //Reset was successful
                 			$this->OWSelect();
                 			$this->OWWriteByte(0x44); //start conversion
-                			IPS_Sleep(750); //Wait for conversion
+                			IPS_Sleep($data->Time); //Wait for conversion
                 			if ($this->OWReset()) { //Reset was successful
                     				$this->OWSelect();
                     				$this->OWWriteByte(0xBE); //Read Scratchpad
@@ -1838,17 +1838,21 @@ class GeCoS_IO extends IPSModule
 		} // negative, 2's compliment
 		$cfg = $data[4] & 0x60;
 		if ($cfg == 0x60) {
+			$this->SendDebug("OWReadTemperature", "12 bit resolution", 0);
 			//server.log("12 bit resolution"); //750 ms conversion time
 		} 
 		else if ($cfg == 0x40) {
+			$this->SendDebug("OWReadTemperature", "11 bit resolution", 0);
 			//server.log("11 bit resolution"); //375 ms
 			$raw = $raw << 1;
 		} 
 		else if ($cfg == 0x20) {
+			$this->SendDebug("OWReadTemperature", "10 bit resolution", 0);
 			//server.log("10 bit resolution"); //187.5 ms
 			$raw = $raw << 2;
 		} 
 		else { //if (cfg == 0x00)
+			$this->SendDebug("OWReadTemperature", "9 bit resolution", 0);
 			//server.log("9 bit resolution"); //93.75 ms
 			$raw = $raw << 3;
 		}
