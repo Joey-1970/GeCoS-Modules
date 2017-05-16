@@ -33,7 +33,6 @@
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-		$this->SendDebug("GetConfigurationForm", "OWDeviceArray ".Count($OWDeviceArray), 0);
 		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
 			$arrayOptions[] = array("label" => "Sensor wählen", "value" => "Sensorauswahl");
 		}
@@ -52,8 +51,12 @@
 		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
 		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
 		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
-		
-		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
+		If ($this->ReadPropertyString("DeviceSerial") <> "Sensorauswahl") {
+			$FamilyCode = substr($this->ReadPropertyString("DeviceSerial"), -2);
+			If ($FamilyCode = "28") {
+				$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
+			}
+		}
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Messzyklus (sek)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -86,7 +89,10 @@
 				$this->SetReceiveDataFilter($Filter);
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceSerial"), "InstanceID" => $this->InstanceID)));		
 				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
-				$this->Setup();
+				$FamilyCode = substr($this->ReadPropertyString("DeviceSerial"), -2);
+				If ($FamilyCode = "28") {
+					$this->Setup();
+				}
 				$this->Measurement();
 				$this->SetStatus(102);
 			}
