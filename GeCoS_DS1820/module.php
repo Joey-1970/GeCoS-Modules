@@ -129,11 +129,21 @@
  	}
 	    
 	// Beginn der Funktionen
+	private function Setup()
+	{
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Resolution = array( 31, 63, 95, 127);
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS1820Setup", "Resolution" => $Resolution[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
+		}
+	}
+	    
 	public function Measurement()
 	{
-		$Time = array( 95, 190, 380, 750);
-		// Messung ausführen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS1820Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Time = array( 95, 190, 380, 750);
+			// Messung ausführen
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS1820Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
+		}
 	}
 	    
 	private function HasActiveParent()
