@@ -936,7 +936,6 @@ class GeCoS_IO extends IPSModule
 	public function GetRTC_Data()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$this->SetMUX(0);
 			$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
 			$Sec = str_pad(dechex($Sec & 127), 2 ,'0', STR_PAD_LEFT);
 			$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
@@ -987,7 +986,6 @@ class GeCoS_IO extends IPSModule
 	public function SetRTC_Data()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$this->SetMUX(0);
 			// Sekunden
 			$Sec = date("s");
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
