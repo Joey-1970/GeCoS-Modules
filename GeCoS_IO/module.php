@@ -1642,7 +1642,6 @@ class GeCoS_IO extends IPSModule
 	private function OWReset() 
 	{
     		$this->SendDebug("OWReset", "I2C Reset", 0);
-    		$this->SetMUX(1);
 		// Write Byte to Handle
 		$Result = $this->CommandClientSocket(pack("L*", 60, $this->GetBuffer("OW_Handle"), 180, 0), 16);//1-wire reset
 		
