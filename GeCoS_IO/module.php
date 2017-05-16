@@ -1691,7 +1691,7 @@ class GeCoS_IO extends IPSModule
 	
 	private function OWWriteByte($byte) 
 	{
-		$this->SendDebug("OWWriteByte", "Function: Write Byte to One-Wire", 0);
+		//$this->SendDebug("OWWriteByte", "Function: Write Byte to One-Wire", 0);
     		
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 240), 16); //set read pointer (E1) to the status register (F0)
 
@@ -1755,7 +1755,7 @@ class GeCoS_IO extends IPSModule
             			}
         		}
     		}
-    	$this->SendDebug("OWWriteByte", "One-Wire Write Byte complete", 0);
+    	//$this->SendDebug("OWWriteByte", "One-Wire Write Byte complete", 0);
     	return 0;
 	}
 	
