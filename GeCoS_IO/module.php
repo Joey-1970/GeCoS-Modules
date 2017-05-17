@@ -474,8 +474,15 @@ class GeCoS_IO extends IPSModule
 					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
-						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-							$DeviceSerialArray[] = $DeviceSerial;
+						If ($data->FamilyCode == "28") {
+							If ((($FamilyCode == "28") AND ($OWDeviceArray[$i][2] == 0)) OR (($FamilyCode == "10") AND ($OWDeviceArray[$i][2] == 0))) {
+								$DeviceSerialArray[] = $DeviceSerial;
+							}
+						}
+						else {
+							If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
+								$DeviceSerialArray[] = $DeviceSerial;
+							}
 						}
 					}
 				}
