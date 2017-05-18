@@ -618,11 +618,12 @@ class GeCoS_IO extends IPSModule
 			$this->CommandClientSocket(pack("LLLL", 0, 14, 2, 0).pack("LLLL", 0, 15, 2, 0), 32);
 		}
 		
-		// Reservierung des 1-Wire-Pins
-		$this->CommandClientSocket(pack("L*", 0, 4, 1, 0), 16);
+		// Starttrigger für 1-Wire-Instanzen
+		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
 
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
+		
 	}
 	
 	private function ClientSocket(String $message)
