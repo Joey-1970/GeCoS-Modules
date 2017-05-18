@@ -120,7 +120,10 @@
 						$this->SetStatus(104);
 					}	
 			   	}
-			   	break;			
+			   	break;
+			case "get_start_trigger":
+			   	$this->ApplyChanges();
+				break;
 			case "set_OWDevices":
 			   	If ($data->InstanceID == $this->InstanceID) {
 					$this->SetBuffer("OWDeviceArray", $data->Result);
