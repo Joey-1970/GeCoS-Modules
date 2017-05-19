@@ -181,10 +181,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("owTripletSecondBit", 0);
 			$this->SetBuffer("owDeviceAddress_0", 0);
 			$this->SetBuffer("owDeviceAddress_1", 0);
-			/*
-			$OWDeviceArray = Array();
-			$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
-			*/
+
 			$ParentID = $this->GetParentID();
 			
 			If ($ParentID > 0) {
@@ -297,15 +294,6 @@ class GeCoS_IO extends IPSModule
 				break;
 			case 11101:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde verbunden", 0);
-				/*
-				$I2CInstanceArray = Array();
-				$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-				$I2CInstanceArray[$SenderID]["DeviceBus"] = IPS_GetProperty($SenderID, "DeviceBus");
-				$I2CInstanceArray[$SenderID]["DeviceAddress"] = IPS_GetProperty($SenderID, "DeviceAddress");
-				$I2CInstanceArray[$SenderID]["Status"] = "Verbunden";
-				$I2CInstanceArray[$SenderID]["Handle"] = -1;
-				$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
-				*/
 				break;
 			case 11102:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde getrennt", 0);
