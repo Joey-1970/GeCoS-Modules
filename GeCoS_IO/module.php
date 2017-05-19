@@ -212,11 +212,7 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
 				
 				// I2C-Handle zurücksetzen
-				$I2CInstanceArray = Array();
-				$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-				If (count($I2CInstanceArray) > 0) {
-					$this->ResetI2CHandle(0);
-				}
+				$this->ResetI2CHandle(0);
 				
 				// Serial-Handle zurücksetzen
 				$this->ResetSerialHandle();
