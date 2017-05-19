@@ -1233,14 +1233,16 @@ class GeCoS_IO extends IPSModule
 	
 	private function ResetI2CHandle($MinHandle)
 	{
-		for ($i = $MinHandle; $i < 64 ; $i++) {
+		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+		for ($i = $MinHandle; $i <= $Handle ; $i++) {
 			$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
 		}
 	}
 	
 	private function ResetSerialHandle()
 	{
-		for ($i = 0; $i < 5 ; $i++) {
+		$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
+		for ($i = 0; $i <= $SerialHandle; $i++) {
 			$this->CommandClientSocket(pack("L*", 77, $i, 0, 0), 16);
 		}
 	}
