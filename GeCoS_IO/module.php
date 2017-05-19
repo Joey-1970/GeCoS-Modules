@@ -219,9 +219,7 @@ class GeCoS_IO extends IPSModule
 				}
 				
 				// Serial-Handle zurücksetzen
-				If ($this->GetBuffer("Serial_Handle") > 0) {
-					$this->ResetSerialHandle();
-				}
+				$this->ResetSerialHandle();
 				
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
