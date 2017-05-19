@@ -218,6 +218,11 @@ class GeCoS_IO extends IPSModule
 					$this->ResetI2CHandle(0);
 				}
 				
+				// Serial-Handle zurücksetzen
+				If ($this->GetBuffer("Serial_Handle") > 0) {
+					$this->ResetSerialHandle();
+				}
+				
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
@@ -1232,6 +1237,13 @@ class GeCoS_IO extends IPSModule
 	{
 		for ($i = $MinHandle; $i < 64 ; $i++) {
 			$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
+		}
+	}
+	
+	private function ResetSerialHandle()
+	{
+		for ($i = 0; $i < 5 ; $i++) {
+			$this->CommandClientSocket(pack("L*", 77, $i, 0, 0), 16);
 		}
 	}
 	
