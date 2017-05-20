@@ -277,7 +277,7 @@ class GeCoS_IO extends IPSModule
 	
 	public function GetConfigurationForParent()
 	{
-	  	$JsonArray = array( "Host" => $this->ReadPropertyString('IPAddress'), "Port" => 8888, "Open" => $this->ReadPropertyBoolean("Open"));
+	  	$JsonArray = array( "Host" => $this->ReadPropertyString('IPAddress'), "Port" => 8888, "Open" => true);
 	  	$Json = json_encode($JsonArray);        
 	  	return $Json;
 	}  
