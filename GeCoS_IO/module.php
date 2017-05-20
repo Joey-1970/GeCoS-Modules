@@ -207,6 +207,7 @@ class GeCoS_IO extends IPSModule
 			
 			
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
+				$this->SendDebug("ApplyChangges", "Starte Vorbereitung", 0);
 				$this->CheckConfig();
 				// Hardware und Softwareversion feststellen
 				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
@@ -215,7 +216,7 @@ class GeCoS_IO extends IPSModule
 				//$this->ResetI2CHandle(0);
 				
 				// Serial-Handle zurücksetzen
-				$this->ResetSerialHandle();
+				//$this->ResetSerialHandle();
 				
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
