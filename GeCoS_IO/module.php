@@ -1229,7 +1229,7 @@ class GeCoS_IO extends IPSModule
 	
 	private function ResetI2CHandle($MinHandle)
 	{
-		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, 1, 4, 0), 16);
 		for ($i = $MinHandle; $i <= $Handle ; $i++) {
 			$this->CommandClientSocket(pack("L*", 55, $i, 0, 0), 16);
 		}
