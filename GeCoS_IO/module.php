@@ -197,6 +197,10 @@ class GeCoS_IO extends IPSModule
 				If (IPS_GetName($ParentID) == "Client Socket") {
 		                	IPS_SetName($ParentID, "GeCoS");
 				}
+				if(IPS_HasChanges($ParentID))
+				{
+				    IPS_ApplyChanges($ParentID);
+				}
 			}
 						
 		        // Änderung an den untergeordneten Instanzen
@@ -277,7 +281,7 @@ class GeCoS_IO extends IPSModule
 	
 	public function GetConfigurationForParent()
 	{
-	  	$JsonArray = array( "Host" => $this->ReadPropertyString('IPAddress'), "Port" => 8888, "Open" => true);
+	  	$JsonArray = array( "Host" => $this->ReadPropertyString('IPAddress'), "Port" => 8888, "Open" => $this->ReadPropertyBoolean("Open"));
 	  	$Json = json_encode($JsonArray);        
 	  	return $Json;
 	}  
