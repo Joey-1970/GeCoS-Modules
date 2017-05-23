@@ -1891,7 +1891,7 @@ class GeCoS_IO extends IPSModule
 		}
 		//server.log(format("Temperature = %.1f °C", celsius));
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
-		$this->SendDebug("OWReadTemperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+		$this->SendDebug("OWRead_18B20_Temperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
 	return $celsius;
 	}
 	
@@ -1900,7 +1900,7 @@ class GeCoS_IO extends IPSModule
     		$data = Array();
 		$celsius = -99;
 
-    		for($i = 0; $i < 1; $i++) { //we only need 5 of the bytes
+    		for($i = 0; $i < 2; $i++) { //we only need 2 of the bytes
         		$data[$i] = $this->OWReadByte();
         		//server.log(format("read byte: %.2X", data[i]));
     		}
@@ -1910,26 +1910,7 @@ class GeCoS_IO extends IPSModule
     		if ($SignBit) {
 			$raw = ($raw ^ 0xffff) + 1;
 		} // negative, 2's compliment
-		$cfg = $data[4] & 0x60;
-		if ($cfg == 0x60) {
-			$this->SendDebug("OWReadTemperature", "12 bit resolution", 0);
-			//server.log("12 bit resolution"); //750 ms conversion time
-		} 
-		else if ($cfg == 0x40) {
-			$this->SendDebug("OWReadTemperature", "11 bit resolution", 0);
-			//server.log("11 bit resolution"); //375 ms
-			$raw = $raw & 0xFFFE;
-		} 
-		else if ($cfg == 0x20) {
-			$this->SendDebug("OWReadTemperature", "10 bit resolution", 0);
-			//server.log("10 bit resolution"); //187.5 ms
-			$raw = $raw & 0xFFFC;
-		} 
-		else { //if (cfg == 0x00)
-			$this->SendDebug("OWReadTemperature", "9 bit resolution", 0);
-			//server.log("9 bit resolution"); //93.75 ms
-			$raw = $raw & 0xFFF8;
-		}
+		
 		//server.log(format("rawtemp= %.4X", raw));
 
 		$celsius = $raw / 16.0;
@@ -1938,7 +1919,7 @@ class GeCoS_IO extends IPSModule
 		}
 		//server.log(format("Temperature = %.1f °C", celsius));
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
-		$this->SendDebug("OWReadTemperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+		$this->SendDebug("OWRead_18S20_Temperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
 	return $celsius;
 	}
 	
