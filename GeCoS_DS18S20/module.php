@@ -115,7 +115,7 @@
 					$this->SendDebug("ReceiveData", $data->Result, 0);
 			   	}
 			   	break;
-			case "set_DS1820Temperature":
+			case "set_DS18S20Temperature":
 			   	If ($data->InstanceID == $this->InstanceID) {
 					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
 			   	}
