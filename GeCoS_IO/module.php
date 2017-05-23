@@ -1913,7 +1913,7 @@ class GeCoS_IO extends IPSModule
 		
 		//server.log(format("rawtemp= %.4X", raw));
 
-		$celsius = $raw / 16.0;
+		$celsius = $raw / 8.0;
 		if ($SignBit) {
 			$celsius = $celsius * (-1);
 		}
