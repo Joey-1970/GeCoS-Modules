@@ -127,9 +127,8 @@
 	public function Measurement()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Time = array( 95, 190, 380, 750);
 			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18S20Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18S20Temperature", "Time" => 750, "InstanceID" => $this->InstanceID)));
 		}
 	}
 	    
