@@ -52,10 +52,7 @@
 		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
 		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
 		If ($this->ReadPropertyString("DeviceSerial") <> "Sensorauswahl") {
-			$FamilyCode = substr($this->ReadPropertyString("DeviceSerial"), -2);
-			If ($FamilyCode = "28") {
-				$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
-			}
+			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		}
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Messzyklus (sek)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
@@ -89,10 +86,7 @@
 				$this->SetReceiveDataFilter($Filter);
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceSerial"), "InstanceID" => $this->InstanceID)));		
 				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
-				$FamilyCode = substr($this->ReadPropertyString("DeviceSerial"), -2);
-				If ($FamilyCode = "28") {
-					$this->Setup();
-				}
+				$this->Setup();
 				$this->Measurement();
 				$this->SetStatus(102);
 			}
