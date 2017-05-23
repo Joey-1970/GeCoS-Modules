@@ -466,15 +466,8 @@ class GeCoS_IO extends IPSModule
 					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
-						If ($data->FamilyCode == "28") {
-							If ((($FamilyCode == "28") AND ($OWDeviceArray[$i][2] == 0)) OR (($FamilyCode == "10") AND ($OWDeviceArray[$i][2] == 0))) {
-								$DeviceSerialArray[] = $DeviceSerial;
-							}
-						}
-						else {
-							If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-								$DeviceSerialArray[] = $DeviceSerial;
-							}
+						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
+							$DeviceSerialArray[] = $DeviceSerial;
 						}
 					}
 				}
@@ -505,7 +498,7 @@ class GeCoS_IO extends IPSModule
 				 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				 break;
-			case "get_DS1820Temperature":
+			case "get_DS18S20Temperature":
 				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
 				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
 
@@ -516,12 +509,28 @@ class GeCoS_IO extends IPSModule
                 			if ($this->OWReset()) { //Reset was successful
                     				$this->OWSelect();
                     				$this->OWWriteByte(0xBE); //Read Scratchpad
-                    				$Celsius = $this->OWReadTemperature();
+                    				$Celsius = $this->OWRead_18S20_Temperature();
                 			}
-					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS1820Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
             			}
  				break;
-			case "set_DS1820Setup":
+			 case "get_DS18B20Temperature":
+				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+
+				 if ($this->OWReset()) { //Reset was successful
+                			$this->OWSelect();
+                			$this->OWWriteByte(0x44); //start conversion
+                			IPS_Sleep($data->Time); //Wait for conversion
+                			if ($this->OWReset()) { //Reset was successful
+                    				$this->OWSelect();
+                    				$this->OWWriteByte(0xBE); //Read Scratchpad
+                    				$Celsius = $this->OWRead_18B20_Temperature();
+                			}
+					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+            			}
+ 				break;
+			case "set_DS18B20Setup":
 				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
 				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
 
@@ -1839,12 +1848,59 @@ class GeCoS_IO extends IPSModule
     		}
 	}
 	
-	private function OWReadTemperature() 
+	private function OWRead_18B20_Temperature() 
 	{
     		$data = Array();
 		$celsius = -99;
 
     		for($i = 0; $i < 5; $i++) { //we only need 5 of the bytes
+        		$data[$i] = $this->OWReadByte();
+        		//server.log(format("read byte: %.2X", data[i]));
+    		}
+ 
+    		$raw = ($data[1] << 8) | $data[0];
+    		$SignBit = $raw & 0x8000;  // test most significant bit
+    		if ($SignBit) {
+			$raw = ($raw ^ 0xffff) + 1;
+		} // negative, 2's compliment
+		$cfg = $data[4] & 0x60;
+		if ($cfg == 0x60) {
+			$this->SendDebug("OWReadTemperature", "12 bit resolution", 0);
+			//server.log("12 bit resolution"); //750 ms conversion time
+		} 
+		else if ($cfg == 0x40) {
+			$this->SendDebug("OWReadTemperature", "11 bit resolution", 0);
+			//server.log("11 bit resolution"); //375 ms
+			$raw = $raw & 0xFFFE;
+		} 
+		else if ($cfg == 0x20) {
+			$this->SendDebug("OWReadTemperature", "10 bit resolution", 0);
+			//server.log("10 bit resolution"); //187.5 ms
+			$raw = $raw & 0xFFFC;
+		} 
+		else { //if (cfg == 0x00)
+			$this->SendDebug("OWReadTemperature", "9 bit resolution", 0);
+			//server.log("9 bit resolution"); //93.75 ms
+			$raw = $raw & 0xFFF8;
+		}
+		//server.log(format("rawtemp= %.4X", raw));
+
+		$celsius = $raw / 16.0;
+		if ($SignBit) {
+			$celsius = $celsius * (-1);
+		}
+		//server.log(format("Temperature = %.1f °C", celsius));
+		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
+		$this->SendDebug("OWReadTemperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+	return $celsius;
+	}
+	
+	private function OWRead_18S20_Temperature() 
+	{
+    		$data = Array();
+		$celsius = -99;
+
+    		for($i = 0; $i < 1; $i++) { //we only need 5 of the bytes
         		$data[$i] = $this->OWReadByte();
         		//server.log(format("read byte: %.2X", data[i]));
     		}
