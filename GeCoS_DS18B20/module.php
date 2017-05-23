@@ -12,7 +12,7 @@
  	    	$this->RegisterPropertyString("DeviceSerial", "Sensorauswahl");
 		$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
-		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS1820_Measurement($_IPS["TARGET"]);');
+		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
@@ -137,7 +137,7 @@
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Resolution = array( 31, 63, 95, 127);
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS1820Setup", "Resolution" => $Resolution[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS18B20Setup", "Resolution" => $Resolution[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
 		}
 	}
 	    
@@ -146,7 +146,7 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Time = array( 95, 190, 380, 750);
 			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS1820Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18B20Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID)));
 		}
 	}
 	    
