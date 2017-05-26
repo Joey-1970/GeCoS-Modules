@@ -502,50 +502,71 @@ class GeCoS_IO extends IPSModule
 				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				 break;
 			case "get_DS18S20Temperature":
-				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
-				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+				if (IPS_SemaphoreEnter("DS18S20Temperature", 2000))
+				{
+				 	$this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+				 	$this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
 
-				 if ($this->OWReset()) { //Reset was successful
-                			$this->OWSelect();
-                			$this->OWWriteByte(0x44); //start conversion
-                			$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
-					IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
-                			if ($this->OWReset()) { //Reset was successful
-                    				$this->OWSelect();
-                    				$this->OWWriteByte(0xBE); //Read Scratchpad
-                    				$Celsius = $this->OWRead_18S20_Temperature();
-                			}
-					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
-            			}
- 				break;
+				 	if ($this->OWReset()) { //Reset was successful
+						$this->OWSelect();
+						$this->OWWriteByte(0x44); //start conversion
+						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
+						IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+						if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(0xBE); //Read Scratchpad
+							$Celsius = $this->OWRead_18S20_Temperature();
+						}
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+            				}
+					IPS_SemaphoreLeave("DS18S20Temperature");
+				}
+				else {
+					$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
+				}	
+				break;
 			 case "get_DS18B20Temperature":
-				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
-				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+				if (IPS_SemaphoreEnter("DS18B20Temperature", 2000))
+				{
+					 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+					 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
 
-				 if ($this->OWReset()) { //Reset was successful
-                			$this->OWSelect();
-                			$this->OWWriteByte(0x44); //start conversion
-                			$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
-					IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
-                			if ($this->OWReset()) { //Reset was successful
-                    				$this->OWSelect();
-                    				$this->OWWriteByte(0xBE); //Read Scratchpad
-                    				$Celsius = $this->OWRead_18B20_Temperature();
-                			}
-					 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
-            			}
+					 if ($this->OWReset()) { //Reset was successful
+						$this->OWSelect();
+						$this->OWWriteByte(0x44); //start conversion
+						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
+						IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+						if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(0xBE); //Read Scratchpad
+							$Celsius = $this->OWRead_18B20_Temperature();
+						}
+						 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+					}
+					IPS_SemaphoreLeave("DS18B20Temperature");
+				}
+				else {
+					$this->SendDebug("DS18B20Temperature", "Semaphore Abbruch", 0);
+				}	
  				break;
 			case "set_DS18B20Setup":
-				 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
-				 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+				if (IPS_SemaphoreEnter("DS18B20Setup", 2000))
+				{
+					 $this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+					 $this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
 
-				 if ($this->OWReset()) { //Reset was successful
-                			$this->OWSelect();
-					$this->OWWriteByte(78); 
-                    			$this->OWWriteByte(0); 
-                    			$this->OWWriteByte(0); 
-					$this->OWWriteByte($data->Resolution); 
-            			}
+					 if ($this->OWReset()) { //Reset was successful
+						$this->OWSelect();
+						$this->OWWriteByte(78); 
+						$this->OWWriteByte(0); 
+						$this->OWWriteByte(0); 
+						$this->OWWriteByte($data->Resolution); 
+					}
+					IPS_SemaphoreLeave("DS18B20Setup");
+				}
+				else {
+					$this->SendDebug("DS18B20Setup", "Semaphore Abbruch", 0);
+				}	
  				break;
 				 
 		}
