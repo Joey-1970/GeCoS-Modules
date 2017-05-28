@@ -470,7 +470,9 @@ class GeCoS_IO extends IPSModule
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
 						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-							$DeviceSerialArray[] = $DeviceSerial;
+							$DeviceSerialArray[][0] = $DeviceSerial; // DeviceAdresse
+							$DeviceSerialArray[][1] = $OWDeviceArray[$i][5]; // Erster Teil der Adresse
+							$DeviceSerialArray[][2] = $OWDeviceArray[$i][6]; // Zweiter Teil der Adresse
 						}
 					}
 				}
