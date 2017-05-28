@@ -39,9 +39,13 @@
 		else {
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $this->ReadPropertyString("DeviceSerial"));
 		}
-		If (count($OWDeviceArray) > 0) {
+		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
+		//If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
+				//$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
+				$arrayValues = Array();
+				$arrayValues[] = array("DeviceSerial" => $OWDeviceArray[$i][0], "DeviceAddress_0" => $OWDeviceArray[$i][1], "DeviceAddress_1" => $OWDeviceArray[$i][2]);
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $arrayValues);
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
