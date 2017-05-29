@@ -506,8 +506,11 @@ class GeCoS_IO extends IPSModule
 			case "get_DS18S20Temperature":
 				if (IPS_SemaphoreEnter("DS18S20Temperature", 2000))
 				{
-				 	$this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
-				 	$this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+				 	//$this->SetBuffer("owDeviceAddress_0", $OWInstanceArray[$data->InstanceID]["Address_0"]);
+				 	//$this->SetBuffer("owDeviceAddress_1", $OWInstanceArray[$data->InstanceID]["Address_1"]);
+					
+					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 
 				 	if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
