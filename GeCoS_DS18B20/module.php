@@ -10,7 +10,6 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyString("DeviceSerial", "Sensorauswahl");
-		$this->RegisterPropertyString("DeviceSerials", "");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
 		$this->RegisterPropertyInteger("Resolution", 0);
@@ -38,12 +37,12 @@
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
 			$arrayValues = Array();
-			$arrayValues[] = array("DeviceSerials" => "Sensorauswahl", "DeviceAddress_0" => 0, "DeviceAddress_1" => 0);
+			$arrayValues[] = array("DeviceAddress_0" => 0, "DeviceAddress_1" => 0);
 			$arrayOptions[] = array("label" => "Sensor wählen", "value" => $arrayValues);
 		}
 		else {
 			$arrayValues = Array();
-			$arrayValues[] = array("DeviceSerials" => $this->ReadPropertyString("DeviceSerial"), "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"));
+			$arrayValues[] = array("DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"));
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $arrayValues);
 		}
 		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
@@ -51,7 +50,7 @@
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 				//$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
 				$arrayValues = Array();
-				$arrayValues[] = array("DeviceSerials" => $OWDeviceArray[$i][0], "DeviceAddress_0" => $OWDeviceArray[$i][1], "DeviceAddress_1" => $OWDeviceArray[$i][2]);
+				$arrayValues[] = array("DeviceAddress_0" => $OWDeviceArray[$i][1], "DeviceAddress_1" => $OWDeviceArray[$i][2]);
 				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
 			}
 		}
