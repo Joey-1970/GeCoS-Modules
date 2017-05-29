@@ -517,6 +517,10 @@ class GeCoS_IO extends IPSModule
 						$this->OWWriteByte(0x44); //start conversion
 						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
 						IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+						
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+						
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(0xBE); //Read Scratchpad
@@ -544,6 +548,10 @@ class GeCoS_IO extends IPSModule
 						$this->OWWriteByte(0x44); //start conversion
 						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
 						IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+						 
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+						 
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(0xBE); //Read Scratchpad
