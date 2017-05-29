@@ -38,12 +38,12 @@
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
 			$arrayValues = Array();
-			$arrayValues[] = array("DeviceSerial" => "Sensorauswahl", "DeviceAddress_0" => 0, "DeviceAddress_1" => 0);
+			$arrayValues[] = array("DeviceSerials" => "Sensorauswahl", "DeviceAddress_0" => 0, "DeviceAddress_1" => 0);
 			$arrayOptions[] = array("label" => "Sensor wählen", "value" => $arrayValues);
 		}
 		else {
 			$arrayValues = Array();
-			$arrayValues[] = array("DeviceSerial" => $this->ReadPropertyString("DeviceSerial"), "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"));
+			$arrayValues[] = array("DeviceSerials" => $this->ReadPropertyString("DeviceSerial"), "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"));
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $arrayValues);
 		}
 		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
