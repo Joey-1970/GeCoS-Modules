@@ -461,6 +461,7 @@ class GeCoS_IO extends IPSModule
 		    
 		    	// 1-Wire
 		    	case "get_OWDevices":
+				$j = 0;
 				$OWDeviceArray = array();
 				$this->OWSearchStart();
 				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
@@ -470,9 +471,10 @@ class GeCoS_IO extends IPSModule
 						$DeviceSerial = $OWDeviceArray[$i][1];
 						$FamilyCode = substr($DeviceSerial, -2);
 						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-							$DeviceSerialArray[][0] = $DeviceSerial; // DeviceAdresse
-							$DeviceSerialArray[][1] = $OWDeviceArray[$i][5]; // Erster Teil der Adresse
-							$DeviceSerialArray[][2] = $OWDeviceArray[$i][6]; // Zweiter Teil der Adresse
+							$DeviceSerialArray[$j][0] = $DeviceSerial; // DeviceAdresse
+							$DeviceSerialArray[$j][1] = $OWDeviceArray[$i][5]; // Erster Teil der Adresse
+							$DeviceSerialArray[$j][2] = $OWDeviceArray[$i][6]; // Zweiter Teil der Adresse
+							$j = $j + 1;
 						}
 					}
 				}
