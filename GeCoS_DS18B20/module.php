@@ -10,6 +10,8 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyString("DeviceSerial", "Sensorauswahl");
+		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
+		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
 		$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
@@ -34,10 +36,14 @@
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
-			$arrayOptions[] = array("label" => "Sensor wählen", "value" => "Sensorauswahl");
+			$arrayValues = Array();
+			$arrayValues[] = array("DeviceSerial" => "Sensorauswahl", "DeviceAddress_0" => 0, "DeviceAddress_1" => 0);
+			$arrayOptions[] = array("label" => "Sensor wählen", "value" => $arrayValues);
 		}
 		else {
-			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $this->ReadPropertyString("DeviceSerial"));
+			$arrayValues = Array();
+			$arrayValues[] = array("DeviceSerial" => $this->ReadPropertyString("DeviceSerial"), "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"));
+			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $arrayValues);
 		}
 		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
 		//If (count($OWDeviceArray) > 0) {
