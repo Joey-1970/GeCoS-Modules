@@ -51,9 +51,7 @@
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $arrayValues);
 		}
 		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
-		//If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				//$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
 				$arrayValues = Array();
 				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
 				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
@@ -106,7 +104,7 @@
 				$this->Setup();
 				$this->Measurement();
 				$this->SetStatus(102);
-				$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceSerial")." ".$this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
+				$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 			}
 			else {
 				$this->SetTimerInterval("Messzyklus", 0);
