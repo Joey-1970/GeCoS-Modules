@@ -318,11 +318,14 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
 				$this->UnregisterMessage($SenderID, 11101);
 				$this->UnregisterMessage($SenderID, 11102);
-				break;	
+				break;				
 			case 10505:
 				$this->SendDebug("MessageSink", "Uebergeordnete Instanz ".$SenderID." meldet Status ".$Data[0], 0);
 				If ($Data[0] == 102) {
 					$this->ApplyChanges();
+				}
+				elseif ($Data[0] == 200) {
+					$this->ConnectionTest();
 				}
 				break;
 		}
