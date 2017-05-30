@@ -9,7 +9,8 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyString("DeviceSerial", "Sensorauswahl");
+ 	    	$this->RegisterPropertyString("DeviceSerial", "");
+		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
@@ -34,21 +35,28 @@
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "10", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
+		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
 			$arrayValues = Array();
-			$arrayValues[] = array("DeviceAddress_0" => 0, "DeviceAddress_1" => 0);
-			$arrayOptions[] = array("label" => "Sensor wählen", "value" => $arrayValues);
+			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
+			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => 0);
+			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => 0);
+			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => $arrayValues);
 		}
 		else {
 			$arrayValues = Array();
-			$arrayValues[] = array("DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"));
+			$arrayValues[] = array("name" => "DeviceAddress", "value" => $this->ReadPropertyString("DeviceAddress"));
+			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $this->ReadPropertyInteger("DeviceAddress_0"));
+			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $this->ReadPropertyInteger("DeviceAddress_1"));
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $arrayValues);
 		}
-		If (count($OWDeviceArray) > 0) {
+		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
+		//If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 				//$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
 				$arrayValues = Array();
-				//$arrayValues[] = array("DeviceAddress_0" => $OWDeviceArray[$i][1], "DeviceAddress_1" => $OWDeviceArray[$i][2]);
+				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
+				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
+				$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $OWDeviceArray[$i][2]);
 				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
 			}
 		}
@@ -135,7 +143,7 @@
 	// Beginn der Funktionen    
 	public function Measurement()
 	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceSerial") <> "Sensorauswahl")) {
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
 			// Messung ausführen
 			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18S20Temperature", "Time" => 750, "InstanceID" => $this->InstanceID)));
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18S20Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
