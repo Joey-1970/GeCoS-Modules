@@ -38,7 +38,7 @@
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceSerial") == "Sensorauswahl") {
 			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => "");
+			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
 			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => 0);
 			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => 0);
 			$arrayOptions[] = array("label" => "Sensor wählen", "value" => $arrayValues);
