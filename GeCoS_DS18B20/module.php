@@ -41,7 +41,7 @@
 			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
 			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => 0);
 			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => 0);
-			$arrayOptions[] = array("label" => "Sensor wählen", "value" => $arrayValues);
+			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => $arrayValues);
 		}
 		else {
 			$arrayValues = Array();
@@ -106,6 +106,7 @@
 				$this->Setup();
 				$this->Measurement();
 				$this->SetStatus(102);
+				$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceSerial")." ".$this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 			}
 			else {
 				$this->SetTimerInterval("Messzyklus", 0);
