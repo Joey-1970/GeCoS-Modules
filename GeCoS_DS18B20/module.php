@@ -10,6 +10,7 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyString("DeviceSerial", "Sensorauswahl");
+		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
 		$this->RegisterPropertyInteger("Resolution", 0);
@@ -50,8 +51,10 @@
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 				//$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
 				$arrayValues = Array();
-				//$arrayValues[] = array("DeviceAddress_0" => $OWDeviceArray[$i][1], "DeviceAddress_1" => $OWDeviceArray[$i][2]);
-				//$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
+				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
+				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
+				$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $OWDeviceArray[$i][2]);
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
