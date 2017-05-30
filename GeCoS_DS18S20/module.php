@@ -50,9 +50,7 @@
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceSerial"), "value" => $arrayValues);
 		}
 		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
-		//If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				//$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $OWDeviceArray[$i]);
 				$arrayValues = Array();
 				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
 				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
