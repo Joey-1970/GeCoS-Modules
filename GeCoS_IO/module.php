@@ -324,7 +324,7 @@ class GeCoS_IO extends IPSModule
 				If ($Data[0] == 102) {
 					$this->ApplyChanges();
 				}
-				elseif ($Data[0] == 200) {
+				elseif (($Data[0] == 200) AND ($this->ReadPropertyBoolean("Open") == true)) {
 					$this->ConnectionTest();
 				}
 				break;
