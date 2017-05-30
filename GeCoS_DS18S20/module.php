@@ -95,6 +95,7 @@
 				
 				$this->Measurement();
 				$this->SetStatus(102);
+				$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 			}
 			else {
 				$this->SetTimerInterval("Messzyklus", 0);
