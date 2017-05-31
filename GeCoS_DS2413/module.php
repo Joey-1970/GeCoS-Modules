@@ -67,7 +67,7 @@
 		
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "Digital Input", "value" => 0);
-		$arrayOptions[] = array("label" => "Digital Input", "value" => 1);
+		$arrayOptions[] = array("label" => "Digital Output", "value" => 1);
 		
 		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
 			$arrayElements[] = array("type" => "Select", "name" => "DeviceFunction_0", "caption" => "Port (0)", "options" => $arrayOptions );
