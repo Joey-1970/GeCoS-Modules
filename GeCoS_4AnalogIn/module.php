@@ -73,10 +73,8 @@
 			$arrayElements[] = array("type" => "Select", "name" => "Resolution_".$i, "caption" => "Auflösung", "options" => $arrayOptionsResolution );
 			$arrayElements[] = array("type" => "Label", "label" => "Verstärkung des Kanals wählen (Default 1x)");
 			$arrayElements[] = array("type" => "Select", "name" => "Amplifier_".$i, "caption" => "Verstärkung", "options" => $arrayOptionsAmplifier );
-			$arrayElements[] = array("name" => "Logging_".$i, "type" => "CheckBox",  "caption" => "Logging"); 
 		}
 				
-		
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
