@@ -1349,11 +1349,6 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 			$DeviceName[] = "16 Output";
 		}
-		// 4AnalogIn
-		for ($i = 72; $i <= 75; $i++) {
-			$SearchArray[] = $i;
-			$DeviceName[] = "4 Analog Input";
-		}
 		// 4CurrentSense
 		for ($i = 76; $i <= 79; $i++) {
 			$SearchArray[] = $i;
@@ -1369,7 +1364,11 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 			$DeviceName[] = "4 RGBW Output";
 		}
-				
+		// 4AnalogIn
+		for ($i = 104; $i <= 107; $i++) {
+			$SearchArray[] = $i;
+			$DeviceName[] = "4 Analog Input";
+		}		
 		$k = 0;
 		
 		for ($j = 4; $j <= 5; $j++) {
