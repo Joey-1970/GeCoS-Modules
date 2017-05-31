@@ -17,7 +17,6 @@
 		$this->RegisterPropertyInteger("DeviceFunction_1", 0);
 		$this->RegisterPropertyBoolean("Invert_0", false);
 		$this->RegisterPropertyBoolean("Invert_1", false);
-		//$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS2413_Measurement($_IPS["TARGET"]);');
         }
@@ -76,8 +75,6 @@
 			$arrayElements[] = array("name" => "Invert_1", "type" => "CheckBox",  "caption" => "Invert (1)");
 		}
 		
-		
-	
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -92,11 +89,7 @@
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
 		}
-		
-		
-		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
-		
-		
+	
  		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
  	}           
 	  
@@ -110,6 +103,7 @@
 		$this->RegisterVariableBoolean("Status_0", "Status (0)", "~Switch", 10);
 		$this->EnableAction("Status_0");	
 		IPS_SetHidden($this->GetIDForIdent("Status_0"), false);
+		
 		$this->RegisterVariableBoolean("Status_1", "Status (1)", "~Switch", 20);
 		$this->EnableAction("Status_1");	
 		IPS_SetHidden($this->GetIDForIdent("Status_1"), false);
