@@ -24,7 +24,7 @@
 		$this->RegisterPropertyBoolean("Active_1", true);
 		$this->RegisterPropertyBoolean("Active_2", true);
 		$this->RegisterPropertyBoolean("Active_3", true);
-		$this->RegisterTimer("Messzyklus", 0, 'GeCoS4AnalogIn_Measurement($_IPS["TARGET"]);');
+		$this->RegisterTimer("Messzyklus", 0, 'GeCoS4AnalogIn_GetInput($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
@@ -91,9 +91,12 @@
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
             	
+		// Profil anlegen
+	    	$this->RegisterProfileFloat("GeCoS.mV", "Electricity", "", " mV", -100000, +100000, 0.1, 3);
+		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 3; $i++) {
-			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "", ($i + 1) * 10);
+			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "GeCoS.mV", ($i + 1) * 10);
 			$this->DisableAction("Input_X".$i);
 			IPS_SetHidden($this->GetIDForIdent("Input_X".$i), false);
 		}
@@ -147,19 +150,25 @@
  	}
 	    
 	// Beginn der Funktionen
-	private function GetInput()
+	public function GetInput()
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
-		}
-	}
-	        
-	private function Setup()
-	{
-		$this->SendDebug("Setup", "Ausfuehrung", 0);
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			
+			// Messwerterfassung setzen
+			$i = 0;
+			for ($i = 0; $i <= 3; $i++) {
+				If ($this->ReadPropertyBoolean("Active_".$i) == true) {
+					$Configuration = ($i << 5) | (1 << 4) | ($this->ReadPropertyInteger("Resolution_".$i) << 2) | $this->ReadPropertyInteger("Amplifier_".$i);
+					//$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "i2c_write_byte_onhandle", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Value" => $Configuration)));
+					IPS_Sleep(320);
+					If ($this->ReadPropertyInteger("Resolution_".$i) <= 2) { 
+						//$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 3)));
+					}
+					elseif ($this->ReadPropertyInteger("Resolution_".$i) == 3) {
+						$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 4)));
+					}
+				}
+			}
 		}
 	}
 	    
@@ -175,5 +184,23 @@
 		}
         return false;
     	}  
+	    
+	private function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits)
+	{
+	        if (!IPS_VariableProfileExists($Name))
+	        {
+	            IPS_CreateVariableProfile($Name, 2);
+	        }
+	        else
+	        {
+	            $profile = IPS_GetVariableProfile($Name);
+	            if ($profile['ProfileType'] != 2)
+	                throw new Exception("Variable profile type does not match for profile " . $Name);
+	        }
+	        IPS_SetVariableProfileIcon($Name, $Icon);
+	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
+	        IPS_SetVariableProfileDigits($Name, $Digits);
+	}
 }
 ?>
