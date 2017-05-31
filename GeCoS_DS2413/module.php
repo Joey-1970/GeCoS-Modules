@@ -107,9 +107,12 @@
             	parent::ApplyChanges();
             	
 		//Status-Variablen anlegen
-		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
-          	$this->DisableAction("Temperature");
-		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
+		$this->RegisterVariableBoolean("Status_0", "Status (0)", "~Switch", 10);
+		$this->EnableAction("Status_0");	
+		IPS_SetHidden($this->GetIDForIdent("Status_0"), false);
+		$this->RegisterVariableBoolean("Status_1", "Status (1)", "~Switch", 20);
+		$this->EnableAction("Status_1");	
+		IPS_SetHidden($this->GetIDForIdent("Status_1"), false);
 		
 		$OWDeviceArray = Array();
 		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
