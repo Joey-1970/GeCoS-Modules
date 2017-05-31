@@ -13,9 +13,9 @@
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
-		$this->RegisterPropertyInteger("Resolution", 0);
+		//$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
-		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
+		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS2413_Measurement($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
@@ -33,7 +33,7 @@
 		$arrayOptions = array();
 		
 		// Hier mus der Abruf der DS1820 erfolgen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "3A", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
@@ -60,7 +60,7 @@
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
-		
+		/*
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
 		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
@@ -69,6 +69,7 @@
 		If ($this->ReadPropertyString("DeviceSerial") <> "Sensorauswahl") {
 			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		}
+		*/
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Messzyklus (sek)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -152,17 +153,17 @@
 	private function Setup()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$Resolution = array( 31, 63, 95, 127);
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS18B20Setup", "Resolution" => $Resolution[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			//$Resolution = array( 31, 63, 95, 127);
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS18B20Setup", "Resolution" => $Resolution[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
 		}
 	}
 	    
 	public function Measurement()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$Time = array( 95, 190, 380, 750);
+			//$Time = array( 95, 190, 380, 750);
 			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18B20Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18B20Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
 		}
 	}
 	    
