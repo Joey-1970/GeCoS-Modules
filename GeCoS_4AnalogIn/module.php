@@ -101,6 +101,8 @@
 			IPS_SetHidden($this->GetIDForIdent("Input_X".$i), false);
 		}
 		
+		$MeasurementData = array();
+		$this->SetBuffer("MeasurementData", serialize($MeasurementData));
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
@@ -108,8 +110,7 @@
 				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 				$this->SetReceiveDataFilter($Filter);
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
-				// Setup
-				$this->Setup();
+
 				$this->GetInput();
 			}
 			else {
@@ -143,9 +144,70 @@
 			   	break;			
 			case "set_i2c_byte_block":
 			   	If ($data->InstanceID == $this->InstanceID) {
-			   		
+			   		$this->SetBuffer("MeasurementData", $data->ByteArray);
 			   	}
-			  	break;
+				// Test
+				$MeasurementData = unserialize($this->GetBuffer("MeasurementData"));
+				//IPS_LogMessage("IPS2GPIO MCP", "Anzahl Daten: ".count($MeasurementData));
+				
+				// Auslesen des Konfigurations-Registers
+				$Configuration = $MeasurementData[count($MeasurementData)];
+				$Amplifier = ($Configuration & 3);
+				$Resolution = ($Configuration & 12) >> 2;
+				$Channel = ($Configuration & 96) >> 5;
+				$ReadyBit = ($Configuration & 128) >> 7;
+				//IPS_LogMessage("IPS2GPIO MCP", "Anzahl Daten: ".count($MeasurementData)." Verst: ".$Amplifier." Aufl:: ".$Resolution." RDY:".$ReadyBit);
+				If ($ReadyBit == false) {
+					//IPS_LogMessage("IPS2GPIO MCP", "Channel: ".$Channel);
+					switch ($Resolution) {
+						case 0:	
+							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 12 Bit");
+							$SignBit = ($MeasurementData[1] & 8) >> 3;
+							$Value = (($MeasurementData[1] & 15) << 8) | $MeasurementData[2];
+							If ($SignBit == 0) {
+								$Value = $Value;
+							}
+							else {
+ 								$Value = -($this->bitflip($Value));
+							}
+							break;
+						case 1:
+							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 14 Bit");
+							$SignBit = ($MeasurementData[1] & 32) >> 5;
+							$Value = (($MeasurementData[1] & 63) << 8) | $MeasurementData[2];
+							If ($SignBit == 0) {
+								$Value = $Value * 0.25;
+							}
+							else {
+								$Value = -($this->bitflip($Value)) * 0.25;
+							}
+							break;
+						case 2:	
+							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 16 Bit");
+							$SignBit = ($MeasurementData[1] & 128) >> 7;
+							$Value = (($MeasurementData[1] & 255) << 8) | $MeasurementData[2];
+							If ($SignBit == 0) {
+								$Value = $Value * 0.0625;
+							}
+							else {
+								$Value = -($this->bitflip($Value)) * 0.0625;
+							}
+							break;
+						case 3:
+							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 18 Bit");
+							$SignBit = ($MeasurementData[1] & 2) >> 1;
+							$Value = (($MeasurementData[1] & 3) << 16) | ($MeasurementData[2] << 8) | $MeasurementData[3];
+							If ($SignBit == 0) {
+								$Value = $Value * 0.015625;
+							}
+							else {
+								$Value = -($this->bitflip($Value)) * 0.015625;
+							}
+							break;	
+					}	
+					SetValueFloat($this->GetIDForIdent("Input_X".($Channel + 1)), $Value);
+				}
+			   	break;
 	 	}
  	}
 	    
@@ -165,11 +227,26 @@
 						//$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 3)));
 					}
 					elseif ($this->ReadPropertyInteger("Resolution_".$i) == 3) {
-						$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 4)));
+						//$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "i2c_read_bytes", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 4)));
 					}
 				}
 			}
 		}
+	}
+	    
+	private function bitflip($Value)
+	{
+	   	// Umwandlung in einen Binär-String
+		$bin = decbin($Value);
+	   	$not = "";
+	   	// Umstellung der Binär-Strings
+		for ($i = 0; $i < strlen($bin); $i++)
+	   		{
+	      		if($bin[$i] == 0) { $not .= '1'; }
+	      		if($bin[$i] == 1) { $not .= '0'; }
+	   	}
+		// Rückgabe als Integer
+	return bindec($not);
 	}
 	    
 	private function HasActiveParent()
