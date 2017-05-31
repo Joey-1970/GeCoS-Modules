@@ -13,6 +13,10 @@
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
+		$this->RegisterPropertyInteger("DeviceFunction_0", 0);
+		$this->RegisterPropertyInteger("DeviceFunction_1", 0);
+		$this->RegisterPropertyBoolean("Invert_0", false);
+		$this->RegisterPropertyBoolean("Invert_1", false);
 		//$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS2413_Measurement($_IPS["TARGET"]);');
@@ -60,16 +64,20 @@
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
-		/*
+		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
-		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
-		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
-		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
-		If ($this->ReadPropertyString("DeviceSerial") <> "Sensorauswahl") {
-			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
+		$arrayOptions[] = array("label" => "Digital Input", "value" => 0);
+		$arrayOptions[] = array("label" => "Digital Input", "value" => 1);
+		
+		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
+			$arrayElements[] = array("type" => "Select", "name" => "DeviceFunction_0", "caption" => "Port (0)", "options" => $arrayOptions );
+			$arrayElements[] = array("name" => "Invert_0", "type" => "CheckBox",  "caption" => "Invert (0)");
+			$arrayElements[] = array("type" => "Select", "name" => "DeviceFunction_1", "caption" => "Port (1)", "options" => $arrayOptions );
+			$arrayElements[] = array("name" => "Invert_1", "type" => "CheckBox",  "caption" => "Invert (1)");
 		}
-		*/
+		
+		
+	
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Messzyklus (sek)");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
