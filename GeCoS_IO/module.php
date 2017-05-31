@@ -1365,7 +1365,7 @@ class GeCoS_IO extends IPSModule
 			$DeviceName[] = "4 RGBW Output";
 		}
 		// 4AnalogIn
-		for ($i = 104; $i <= 107; $i++) {
+		for ($i = 105; $i <= 107; $i++) {
 			$SearchArray[] = $i;
 			$DeviceName[] = "4 Analog Input";
 		}		
