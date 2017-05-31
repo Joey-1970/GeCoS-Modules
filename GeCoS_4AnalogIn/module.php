@@ -11,6 +11,20 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 105);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterPropertyInteger("Messzyklus", 60);
+		$this->RegisterPropertyInteger("Resolution_0", 0);
+		$this->RegisterPropertyInteger("Resolution_1", 0);
+		$this->RegisterPropertyInteger("Resolution_2", 0);
+		$this->RegisterPropertyInteger("Resolution_3", 0);
+		$this->RegisterPropertyInteger("Amplifier_0", 0);
+		$this->RegisterPropertyInteger("Amplifier_1", 0);
+		$this->RegisterPropertyInteger("Amplifier_2", 0);
+		$this->RegisterPropertyInteger("Amplifier_3", 0);
+		$this->RegisterPropertyBoolean("Active_0", true);
+		$this->RegisterPropertyBoolean("Active_1", true);
+		$this->RegisterPropertyBoolean("Active_2", true);
+		$this->RegisterPropertyBoolean("Active_3", true);
+		$this->RegisterTimer("Messzyklus", 0, 'GeCoS4AnalogIn_Measurement($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
@@ -37,6 +51,32 @@
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "Device Bus", "options" => $arrayOptions );
+		
+		$arrayOptionsResolution = array();
+		$arrayOptionsResolution[] = array("label" => "12 Bit", "value" => 0);
+		$arrayOptionsResolution[] = array("label" => "14 Bit", "value" => 1);
+		$arrayOptionsResolution[] = array("label" => "16 Bit", "value" => 2);
+		$arrayOptionsResolution[] = array("label" => "18 Bit", "value" => 3);
+		
+		$arrayOptionsAmplifier = array();
+		$arrayOptionsAmplifier[] = array("label" => "1x", "value" => 0);
+		$arrayOptionsAmplifier[] = array("label" => "2x", "value" => 1);
+		$arrayOptionsAmplifier[] = array("label" => "4x", "value" => 2);
+		$arrayOptionsAmplifier[] = array("label" => "8x", "value" => 3);
+		
+		
+		for ($i = 0; $i <= 3; $i++) {
+			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+			$arrayElements[] = array("type" => "Label", "label" => "Optionen Kanal ".($i + 1));
+			$arrayElements[] = array("type" => "Label", "label" => "Auflösung des Kanals wählen (Default 12 Bit)");
+			$arrayElements[] = array("name" => "Active_".$i, "type" => "CheckBox",  "caption" => "Aktiv"); 
+			$arrayElements[] = array("type" => "Select", "name" => "Resolution_".$i, "caption" => "Auflösung", "options" => $arrayOptionsResolution );
+			$arrayElements[] = array("type" => "Label", "label" => "Verstärkung des Kanals wählen (Default 1x)");
+			$arrayElements[] = array("type" => "Select", "name" => "Amplifier_".$i, "caption" => "Verstärkung", "options" => $arrayOptionsAmplifier );
+			$arrayElements[] = array("name" => "Logging_".$i, "type" => "CheckBox",  "caption" => "Logging"); 
+		}
+				
+		
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
