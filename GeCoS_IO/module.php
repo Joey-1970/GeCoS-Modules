@@ -1349,6 +1349,11 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 			$DeviceName[] = "16 Output";
 		}
+		// 4AnalogIn
+		for ($i = 72; $i <= 75; $i++) {
+			$SearchArray[] = $i;
+			$DeviceName[] = "4 Analog Input";
+		}
 		// 16PWMOut
 		for ($i = 80; $i <= 87; $i++) {
 			$SearchArray[] = $i;
