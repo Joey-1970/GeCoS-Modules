@@ -583,6 +583,24 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("DS18B20Setup", "Semaphore Abbruch", 0);
 				}	
  				break;
+			case "get_DS2413State":
+				if (IPS_SemaphoreEnter("DS2413State", 2000))
+				{
+					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+					 if ($this->OWReset()) { //Reset was successful
+						$this->OWSelect();
+						$this->OWWriteByte(0xBE); //Read Scratchpad
+						$Result = $this->OWRead_2413_State();	
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
+					}
+					IPS_SemaphoreLeave("DS2413State");
+				}
+				else {
+					$this->SendDebug("DS2413State", "Semaphore Abbruch", 0);
+				}	
+ 				break;
 				 
 		}
 	 }
@@ -1971,6 +1989,15 @@ class GeCoS_IO extends IPSModule
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
 		$this->SendDebug("OWRead_18S20_Temperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
 	return $celsius;
+	}
+	
+	private function OWRead_2413_State() 
+	{
+		$result = -99;
+    		$result = $this->OWReadByte();
+		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
+    		$this->SendDebug("OWRead_2413_State", "OneWire Device Address = ".$SerialNumber. "State = ".$result, 0);
+	return $result;
 	}
 	
 	private function OWReadByte() 
