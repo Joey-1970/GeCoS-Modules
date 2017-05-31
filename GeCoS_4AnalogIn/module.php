@@ -26,7 +26,7 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		
 		$arrayOptions = array();
-		for ($i = 16; $i <= 23; $i++) {
+		for ($i = 105; $i <= 107; $i++) {
 		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
@@ -54,18 +54,12 @@
             	parent::ApplyChanges();
             	
 		//Status-Variablen anlegen
-		for ($i = 0; $i <= 15; $i++) {
-			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
-			$this->DisableAction("Input_X".$i);	
+		for ($i = 0; $i <= 3; $i++) {
+			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "", ($i + 1) * 10);
+			$this->DisableAction("Input_X".$i);
+			IPS_SetHidden($this->GetIDForIdent("Input_X".$i), false);
 		}
 		
-		$this->RegisterVariableInteger("InputBank0", "Input Bank 0", "", 170);
-          	$this->DisableAction("InputBank0");
-		IPS_SetHidden($this->GetIDForIdent("InputBank0"), true);
-		
-		$this->RegisterVariableInteger("InputBank1", "Input Bank 1", "", 180);
-          	$this->DisableAction("InputBank1");
-		IPS_SetHidden($this->GetIDForIdent("InputBank1"), true);
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
@@ -105,32 +99,10 @@
 						$this->SetStatus(104);
 					}	
 			   	}
-			   	break;
-			case "interrupt":
-				If ($this->ReadPropertyBoolean("Open") == true) {
-					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
-						$this->GetInput();
-					}
-				}
-				break;				
+			   	break;			
 			case "set_i2c_byte_block":
 			   	If ($data->InstanceID == $this->InstanceID) {
-			   		$ByteArray = array();
-					$ByteArray = unserialize($data->ByteArray);
-					SetValueInteger($this->GetIDForIdent("InputBank0"), $ByteArray[1]);
-					SetValueInteger($this->GetIDForIdent("InputBank1"), $ByteArray[2]);
-					for ($i = 0; $i <= 7; $i++) {
-						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
-					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
-						}
-					}
-					for ($i = 8; $i <= 15; $i++) {
-						$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
-					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
-						}
-					}
+			   		
 			   	}
 			  	break;
 	 	}
@@ -141,7 +113,7 @@
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 		}
 	}
 	        
@@ -149,14 +121,7 @@
 	{
 		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$ByteArray = array();
-			$ByteArray[0] = hexdec("06");
-			$ByteArray[1] = hexdec("FF");
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-			$ByteArray = array();
-			$ByteArray[0] = hexdec("07");
-			$ByteArray[1] = hexdec("FF");
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
+			
 		}
 	}
 	    
