@@ -31,12 +31,11 @@
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
-		$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
 		
-		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "Device Bus", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
