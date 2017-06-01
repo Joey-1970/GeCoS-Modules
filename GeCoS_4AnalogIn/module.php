@@ -208,7 +208,7 @@
 							}
 							break;	
 					}	
-					SetValueFloat($this->GetIDForIdent("Input_X".($Channel + 1)), $Value);
+					SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value);
 				}
 			   	break;
 	 	}
