@@ -393,6 +393,14 @@ class GeCoS_IO extends IPSModule
 					$this->CommandClientSocket(pack("L*", 57, $I2CInstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 				}
 				break;	
+			case "i2c_write_byte_onhandle":
+				// I2CWS h bv - smb Write Byte: write byte
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->CommandClientSocket(pack("L*", 60, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Value, 0), 16);
+				}
+				break;	
+			 
+			 
 			case "i2c_read_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
