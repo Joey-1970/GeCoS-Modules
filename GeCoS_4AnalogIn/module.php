@@ -219,6 +219,7 @@
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Time = array( 5, 17, 67, 267);
 			// Messwerterfassung setzen
 			$i = 0;
 			for ($i = 0; $i <= 3; $i++) {
@@ -226,10 +227,10 @@
 					$Configuration = ($i << 5) | (1 << 4) | ($this->ReadPropertyInteger("Resolution_".$i) << 2) | $this->ReadPropertyInteger("Amplifier_".$i);
 
 					If ($this->ReadPropertyInteger("Resolution_".$i) <= 2) { 
-						$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 3)));
+						$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 3, "Time" => $Time[$this->ReadPropertyInteger("Resolution_".$i)])));
 					}
 					elseif ($this->ReadPropertyInteger("Resolution_".$i) == 3) {
-						$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 4)));
+						$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 4, "Time" => $Time[$this->ReadPropertyInteger("Resolution_".$i)])));
 					}
 				}
 			}
