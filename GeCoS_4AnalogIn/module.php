@@ -219,7 +219,7 @@
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Time = array( 5, 17, 67, 267);
+			$Time = array( 8, 22, 80, 280);
 			// Messwerterfassung setzen
 			$i = 0;
 			for ($i = 0; $i <= 3; $i++) {
