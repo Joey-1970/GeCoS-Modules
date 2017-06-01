@@ -398,7 +398,7 @@ class GeCoS_IO extends IPSModule
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$Result = $this->CommandClientSocket(pack("L*", 60, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Value, 0), 16);
 					If ($Result >= 0) {
-						//IPS_Sleep(320);
+						IPS_Sleep(320);
 						$this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 					}
 				}
