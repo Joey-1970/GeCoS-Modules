@@ -142,7 +142,9 @@
 			   	break;
 			case "set_DS18B20Temperature":
 			   	If ($data->InstanceID == $this->InstanceID) {
-					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
+					If (GetValueFloat($this->GetIDForIdent("Temperature")) <> $data->Result) {
+						SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
+					}
 			   	}
 			   	break;	
 	 	}
