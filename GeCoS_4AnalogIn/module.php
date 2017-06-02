@@ -45,7 +45,6 @@
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
-		//$arrayElements[] = array("type" => "Label", "label" => "GeCoS I²C-Bus");
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
@@ -73,8 +72,6 @@
 			$arrayElements[] = array("name" => "Active_".$i, "type" => "CheckBox",  "caption" => "Aktiv"); 
 			$arrayElements[] = array("type" => "Label", "label" => "Auflösung des Kanals wählen (Default 12 Bit)");
 			$arrayElements[] = array("type" => "Select", "name" => "Resolution_".$i, "caption" => "Auflösung", "options" => $arrayOptionsResolution );
-			//$arrayElements[] = array("type" => "Label", "label" => "Verstärkung des Kanals wählen (Default 1x)");
-			//$arrayElements[] = array("type" => "Select", "name" => "Amplifier_".$i, "caption" => "Verstärkung", "options" => $arrayOptionsAmplifier );
 		}
 				
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
@@ -164,7 +161,7 @@
 					//IPS_LogMessage("IPS2GPIO MCP", "Channel: ".$Channel);
 					switch ($Resolution) {
 						case 0:	
-							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 12 Bit");
+							$this->SendDebug("ReceiveData", "Auflösung 12 Bit", 0);
 							$SignBit = ($MeasurementData[1] & 8) >> 3;
 							$Value = (($MeasurementData[1] & 15) << 8) | $MeasurementData[2];
 							If ($SignBit == 0) {
@@ -175,7 +172,7 @@
 							}
 							break;
 						case 1:
-							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 14 Bit");
+							$this->SendDebug("ReceiveData", "Auflösung 14 Bit", 0);
 							$SignBit = ($MeasurementData[1] & 32) >> 5;
 							$Value = (($MeasurementData[1] & 63) << 8) | $MeasurementData[2];
 							If ($SignBit == 0) {
@@ -185,8 +182,8 @@
 								$Value = -($this->bitflip($Value)) * 0.25;
 							}
 							break;
-						case 2:	
-							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 16 Bit");
+						case 2:								
+							$this->SendDebug("ReceiveData", "Auflösung 16 Bit", 0);
 							$SignBit = ($MeasurementData[1] & 128) >> 7;
 							$Value = (($MeasurementData[1] & 255) << 8) | $MeasurementData[2];
 							If ($SignBit == 0) {
@@ -197,7 +194,7 @@
 							}
 							break;
 						case 3:
-							//IPS_LogMessage("IPS2GPIO MCP", "Auflösung 18 Bit");
+							$this->SendDebug("ReceiveData", "Auflösung 18 Bit", 0);
 							$SignBit = ($MeasurementData[1] & 2) >> 1;
 							$Value = (($MeasurementData[1] & 3) << 16) | ($MeasurementData[2] << 8) | $MeasurementData[3];
 							If ($SignBit == 0) {
