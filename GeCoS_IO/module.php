@@ -1746,8 +1746,6 @@ class GeCoS_IO extends IPSModule
 			return 0;
     		}
 		
-		IPS_Sleep(10);
-		
      		$loopcount = 0;
     		while (true) {
         		$loopcount++;
@@ -1758,7 +1756,7 @@ class GeCoS_IO extends IPSModule
 				return 0;
     			}
 			else {
-            			//server.log(format("Read Status Byte = %d", data[0]));
+				$this->SendDebug("OWReset", "Read Status Byte: ".$Data, 0);
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
