@@ -91,11 +91,11 @@
             	parent::ApplyChanges();
             	
 		// Profil anlegen
-	    	$this->RegisterProfileFloat("GeCoS.mV", "Electricity", "", " mV", -100000, +100000, 0.1, 3);
+	    	$this->RegisterProfileFloat("GeCoS.V", "Electricity", "", " V", -100000, +100000, 0.1, 3);
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 3; $i++) {
-			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "GeCoS.mV", ($i + 1) * 10);
+			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "GeCoS.V", ($i + 1) * 10);
 			$this->DisableAction("Input_X".$i);
 			IPS_SetHidden($this->GetIDForIdent("Input_X".$i), false);
 		}
@@ -203,7 +203,7 @@
 							}
 							break;	
 					}	
-					SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value * 4.923);
+					SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value * 4.923 / 1000);
 				}
 			   	break;
 	 	}
