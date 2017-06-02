@@ -148,7 +148,6 @@
 			   	}
 				// Test
 				$MeasurementData = unserialize($this->GetBuffer("MeasurementData"));
-				//IPS_LogMessage("IPS2GPIO MCP", "Anzahl Daten: ".count($MeasurementData));
 				
 				// Auslesen des Konfigurations-Registers
 				$Configuration = $MeasurementData[count($MeasurementData)];
@@ -156,9 +155,8 @@
 				$Resolution = ($Configuration & 12) >> 2;
 				$Channel = ($Configuration & 96) >> 5;
 				$ReadyBit = ($Configuration & 128) >> 7;
-				//IPS_LogMessage("IPS2GPIO MCP", "Anzahl Daten: ".count($MeasurementData)." Verst: ".$Amplifier." Aufl:: ".$Resolution." RDY:".$ReadyBit);
 				If ($ReadyBit == false) {
-					//IPS_LogMessage("IPS2GPIO MCP", "Channel: ".$Channel);
+					$this->SendDebug("ReceiveData", "Kanal: ".$Channel, 0);
 					switch ($Resolution) {
 						case 0:	
 							$this->SendDebug("ReceiveData", "Auflösung 12 Bit", 0);
