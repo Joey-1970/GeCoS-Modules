@@ -1768,15 +1768,15 @@ class GeCoS_IO extends IPSModule
 				else {
 					//server.log("One-Wire bus is idle");
 					if ($Data & 0x04) { //Short Detected bit
-						$this->SendDebug("OWReset", "One-Wire Short Detected", 0);
+						$this->SendDebug("OWReset", "One-Wire Short Detected: ".$Data, 0);
 						return 0;
 					}
 					if ($Data & 0x02) { //Presense-Pulse Detect bit
-						$this->SendDebug("OWReset", "One-Wire Devices Found", 0);
+						$this->SendDebug("OWReset", "One-Wire Devices Found: ".$Data, 0);
 						break;
 					} 
 					else {
-						$this->SendDebug("OWReset", "No One-Wire Devices Found", 0);
+						$this->SendDebug("OWReset", "No One-Wire Devices Found: ".$Data, 0);
 						return 0;
 					}
             			}
