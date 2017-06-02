@@ -1746,6 +1746,8 @@ class GeCoS_IO extends IPSModule
 			return 0;
     		}
 		
+		IPS_Sleep(10);
+		
      		$loopcount = 0;
     		while (true) {
         		$loopcount++;
