@@ -625,7 +625,7 @@ class GeCoS_IO extends IPSModule
 						$this->OWSelect();
 						$this->OWWriteByte(0x5A); //PIO ACCESS WRITE
 						$this->OWWriteByte($data->Setup); 
-					 }					}
+					 }
 					IPS_SemaphoreLeave("DS2413Setup");
 				}
 				else {
