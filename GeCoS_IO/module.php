@@ -539,8 +539,9 @@ class GeCoS_IO extends IPSModule
 							$this->OWSelect();
 							$this->OWWriteByte(0xBE); //Read Scratchpad
 							$Celsius = $this->OWRead_18S20_Temperature();
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
 						}
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+						
             				}
 					IPS_SemaphoreLeave("DS18S20Temperature");
 				}
@@ -566,9 +567,10 @@ class GeCoS_IO extends IPSModule
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(0xBE); //Read Scratchpad
-							$Celsius = $this->OWRead_18B20_Temperature();
+							$Celsius = $this->OWRead_18B20_Temperature(); 
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
 						}
-						 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+						
 					}
 					IPS_SemaphoreLeave("DS18B20Temperature");
 				}
