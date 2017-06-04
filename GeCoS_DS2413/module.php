@@ -159,7 +159,22 @@
 			   	break;
 			case "set_DS2413State":
 			   	If ($data->InstanceID == $this->InstanceID) {
-					//SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
+					// die höchsten vier Bit eleminieren
+					$Result = $data->Result & 15;
+					// das erste Bit prüfen
+					If ($Result & 1) {
+						SetValueBoolean($this->GetIDForIdent("Status_0"), true);
+					}
+					else {
+						SetValueBoolean($this->GetIDForIdent("Status_0"), false);
+					}
+					// das dritte Bit prüfen
+					If ($Result & 4) {
+						SetValueBoolean($this->GetIDForIdent("Status_1"), true);
+					}
+					else {
+						SetValueBoolean($this->GetIDForIdent("Status_1"), false);
+					}
 			   	}
 			   	break;	
 	 	}
