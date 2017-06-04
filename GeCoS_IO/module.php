@@ -603,7 +603,7 @@ class GeCoS_IO extends IPSModule
 
 					 if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
-						$this->OWWriteByte(0xF5); //Read Scratchpad
+						$this->OWWriteByte(0xF5); //PIO ACCESS READ
 						$Result = $this->OWRead_2413_State();	
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
 					}
@@ -621,10 +621,9 @@ class GeCoS_IO extends IPSModule
 
 					 if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
-						$this->OWWriteByte(0x5A); //Read Scratchpad
-						$Result = $this->OWRead_2413_State();	
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
-					}
+						$this->OWWriteByte(0x5A); //PIO ACCESS WRITE
+						$this->OWWriteByte($data->Setup); 
+					 }					}
 					IPS_SemaphoreLeave("DS2413Setup");
 				}
 				else {
