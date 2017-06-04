@@ -13,8 +13,8 @@
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
-		$this->RegisterPropertyInteger("DeviceFunction_0", 0);
-		$this->RegisterPropertyInteger("DeviceFunction_1", 0);
+		$this->RegisterPropertyInteger("DeviceFunction_0", 1);
+		$this->RegisterPropertyInteger("DeviceFunction_1", 1);
 		$this->RegisterPropertyBoolean("Invert_0", false);
 		$this->RegisterPropertyBoolean("Invert_1", false);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
@@ -65,8 +65,8 @@
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "Digital Input", "value" => 0);
-		$arrayOptions[] = array("label" => "Digital Output", "value" => 1);
+		$arrayOptions[] = array("label" => "Digital Input", "value" => 1);
+		$arrayOptions[] = array("label" => "Digital Output", "value" => 0);
 		
 		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
 			$arrayElements[] = array("type" => "Select", "name" => "DeviceFunction_0", "caption" => "Port (0)", "options" => $arrayOptions );
@@ -175,6 +175,8 @@
 					else {
 						SetValueBoolean($this->GetIDForIdent("Status_1"), false);
 					}
+					$this->SendDebug("set_DS2413State", "Wert Bit 2: ".$Result & 2, 0);
+					$this->SendDebug("set_DS2413State", "Wert Bit 4: ".$Result & 8, 0);
 			   	}
 			   	break;	
 	 	}
@@ -184,7 +186,8 @@
 	private function Setup()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$Result = 3;
+			$Result = ($this->ReadPropertyInteger("DeviceFunction_1") << 1) | $this->ReadPropertyInteger("DeviceFunction_0")| 252;
+			$this->SendDebug("Setup", "Wert: ".$Result, 0);
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
 		}
 	}
