@@ -613,6 +613,24 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("DS2413State", "Semaphore Abbruch", 0);
 				}	
  				break;
+			case "set_DS2413Setup":
+				if (IPS_SemaphoreEnter("DS2413Setup", 2000))
+				{
+					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+					 if ($this->OWReset()) { //Reset was successful
+						$this->OWSelect();
+						$this->OWWriteByte(0x5A); //Read Scratchpad
+						$Result = $this->OWRead_2413_State();	
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
+					}
+					IPS_SemaphoreLeave("DS2413Setup");
+				}
+				else {
+					$this->SendDebug("DS2413Setup", "Semaphore Abbruch", 0);
+				}	
+ 				break;
 				 
 		}
 	 }
