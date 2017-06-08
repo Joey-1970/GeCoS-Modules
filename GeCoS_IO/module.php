@@ -731,7 +731,7 @@ class GeCoS_IO extends IPSModule
 		$Result = -999;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 			
-			if (IPS_SemaphoreEnter("CommandClientSocket", 25))
+			if (IPS_SemaphoreEnter("CommandClientSocket", 100))
 			{
 				// Socket erstellen
 				if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0))) {
