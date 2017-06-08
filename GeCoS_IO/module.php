@@ -1826,7 +1826,7 @@ class GeCoS_IO extends IPSModule
 				return -1;
     			} 
 			else {
-            			//server.log(format("Read Status Byte = %d", data[0]));
+            			$this->SendDebug("OWWriteByte", "Read Status Byte: ".$Data, 0);
 				if ($Data & 0x01) { // 1-Wire Busy bit
 					//server.log("One-Wire bus is busy");
 					if ($loopcount > 100) {
@@ -1857,7 +1857,7 @@ class GeCoS_IO extends IPSModule
             			return -1;
         		} 
 			else {
-            			//server.log(format("Read Status Byte = %d", data[0]));
+            			$this->SendDebug("OWWriteByte", "Read Status Byte: ".$Data, 0);
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			$this->SendDebug("OWWriteByte", "One-Wire bus is busy", 0);
                 			if ($loopcount > 100) {
@@ -1899,7 +1899,7 @@ class GeCoS_IO extends IPSModule
             			return -1; 
 			} 
 			else {		
-		    		//server.log(format("Read Status Byte = %d", data[0]));
+		    		$this->SendDebug("OWTriplet", "Read Status Byte: ".$Data, 0);
 		    		if ($Data & 0x01) { // 1-Wire Busy bit
 					$this->SendDebug("OWTriplet", "One-Wire bus is busy", 0);
 					if ($loopcount > 100) {
@@ -2053,7 +2053,7 @@ class GeCoS_IO extends IPSModule
 				return -1;
     			} 
 			else {
-            			//server.log(format("Read Status Byte = %d", data[0]));
+            			$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
@@ -2086,7 +2086,7 @@ class GeCoS_IO extends IPSModule
             			return -1; 
 			} 
 			else {
-            			//server.log(format("Read Status Byte = %d", data[0]));
+            			$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
             			if ($Data[0] & 0x01) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
