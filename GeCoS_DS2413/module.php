@@ -172,7 +172,7 @@
 					If (boolval($Result & 2) <> $this->ReadPropertyInteger("DeviceFunction_0")) {
 						$this->SendDebug("set_DS2413State", "Wert Bit 2: ".(boolval($Result & 2)), 0);
 					}
-					If (boolval($Result & 2) <> $this->ReadPropertyIntegern("DeviceFunction_1")) {
+					If (boolval($Result & 2) <> $this->ReadPropertyInteger("DeviceFunction_1")) {
 						$this->SendDebug("set_DS2413State", "Wert Bit 4: ".(boolval($Result & 8)), 0);
 					}
 					
