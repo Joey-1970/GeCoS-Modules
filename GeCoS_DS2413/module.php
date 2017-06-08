@@ -81,10 +81,10 @@
 	
 		$arrayActions = array();
 		If (($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") AND ($this->ReadPropertyBoolean("Open") == true)) {
-			$arrayActions[] = array("type" => "Button", "label" => "An (0)", "onClick" => 'GeCoSDS2413_SetStatus($id, 0, true);');
-			$arrayActions[] = array("type" => "Button", "label" => "Aus (0)", "onClick" => 'GeCoSDS2413_SetStatus($id, 0, false);');
-			$arrayActions[] = array("type" => "Button", "label" => "An (1)", "onClick" => 'GeCoSDS2413_SetStatus($id, 1, true);');
-			$arrayActions[] = array("type" => "Button", "label" => "Aus (1)", "onClick" => 'GeCoSDS2413_SetStatus($id, 1, false);');
+			$arrayActions[] = array("type" => "Button", "label" => "An (0)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 0, true);');
+			$arrayActions[] = array("type" => "Button", "label" => "Aus (0)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 0, false);');
+			$arrayActions[] = array("type" => "Button", "label" => "An (1)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 1, true);');
+			$arrayActions[] = array("type" => "Button", "label" => "Aus (1)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 1, false);');
 		}
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
@@ -201,7 +201,7 @@
 		}
 	}
 	
-	public function SetStatus(int $Port, bool $Value)
+	public function SetPortStatus(int $Port, bool $Value)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
 		
