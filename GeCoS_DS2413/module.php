@@ -116,6 +116,7 @@
 				//ReceiveData-Filter setzen
 				$Filter = '(.*"Function":"status".*|.*"InstanceID":'.$this->InstanceID.'.*)';
 				$this->SetReceiveDataFilter($Filter);
+				
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
 				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
 				$this->Setup();
@@ -141,6 +142,7 @@
 			case "status":
 			   	If ($data->InstanceID == $this->InstanceID) {
 				   	If ($this->ReadPropertyBoolean("Open") == true) {				
+						$this->SendDebug("ReceiveData", "Statusänderung: ".$data->Status, 0);
 						$this->SetStatus($data->Status);
 					}
 					else {
