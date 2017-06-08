@@ -162,14 +162,14 @@
 					// die höchsten vier Bit eleminieren
 					$Result = $data->Result & 15;
 					// das erste Bit prüfen
-					$Value = boolval($Result & 1) ^ $this->ReadPropertyIntegern("Invert_0");
+					$Value = boolval($Result & 1) ^ $this->ReadPropertyBoolean("Invert_0");
 					SetValueBoolean($this->GetIDForIdent("Status_0"), $Value);
 					
 					// das dritte Bit prüfen
-					$Value = boolval($Result & 4) ^ $this->ReadPropertyIntegern("Invert_1");
+					$Value = boolval($Result & 4) ^ $this->ReadPropertyBoolean("Invert_1");
 					SetValueBoolean($this->GetIDForIdent("Status_1"), $Value);
 						
-					If (boolval($Result & 2) <> $this->ReadPropertyIntegern("DeviceFunction_0")) {
+					If (boolval($Result & 2) <> $this->ReadPropertyInteger("DeviceFunction_0")) {
 						$this->SendDebug("set_DS2413State", "Wert Bit 2: ".(boolval($Result & 2)), 0);
 					}
 					If (boolval($Result & 2) <> $this->ReadPropertyIntegern("DeviceFunction_1")) {
