@@ -175,8 +175,14 @@
 					else {
 						SetValueBoolean($this->GetIDForIdent("Status_1"), false);
 					}
-					$this->SendDebug("set_DS2413State", "Wert Bit 2: ".($Result & 2), 0);
-					$this->SendDebug("set_DS2413State", "Wert Bit 4: ".($Result & 8), 0);
+						
+					If (boolval($Result & 2) <> $this->ReadPropertyIntegern("DeviceFunction_0")) {
+						$this->SendDebug("set_DS2413State", "Wert Bit 2: ".(boolval($Result & 2)), 0);
+					}
+					If (boolval($Result & 2) <> $this->ReadPropertyIntegern("DeviceFunction_1")) {
+						$this->SendDebug("set_DS2413State", "Wert Bit 4: ".(boolval($Result & 8)), 0);
+					}
+					
 			   	}
 			   	break;	
 	 	}
