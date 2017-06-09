@@ -101,11 +101,21 @@
             	
 		//Status-Variablen anlegen
 		$this->RegisterVariableBoolean("Status_0", "Status (0)", "~Switch", 10);
-		$this->EnableAction("Status_0");	
+		If ($this->ReadPropertyInteger("DeviceFunction_0") = 0) {
+			$this->EnableAction("Status_0");
+		}
+		else {
+			$this->DisableAction("Status_0");
+		}
 		IPS_SetHidden($this->GetIDForIdent("Status_0"), false);
 		
 		$this->RegisterVariableBoolean("Status_1", "Status (1)", "~Switch", 20);
-		$this->EnableAction("Status_1");	
+		If ($this->ReadPropertyInteger("DeviceFunction_1") = 0) {
+			$this->EnableAction("Status_1");
+		}
+		else {
+			$this->DisableAction("Status_1");
+		}	
 		IPS_SetHidden($this->GetIDForIdent("Status_1"), false);
 		
 		$OWDeviceArray = Array();
