@@ -2110,7 +2110,6 @@ class GeCoS_IO extends IPSModule
 			return -1;
 		}
 		$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-		//$Result = $this->OWStatusRegister();//Read the status register
 		If ($Data < 0) {
 			$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
 			return -1;
@@ -2131,7 +2130,7 @@ class GeCoS_IO extends IPSModule
 		}
 		else {
 			$Result = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-			$this->SendDebug("OWStatusRegister", "Read Status Byte: ".$Result, 0);
+			//$this->SendDebug("OWStatusRegister", "Read Status Byte: ".$Result, 0);
 		}
 	return $Result;
 	}
