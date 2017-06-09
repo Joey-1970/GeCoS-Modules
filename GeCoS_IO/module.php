@@ -1771,13 +1771,13 @@ class GeCoS_IO extends IPSModule
     		while (true) {
         		$loopcount++;
 			// Read Byte from Handle
-			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-        		If ($Result < 0) {
+			$Data = $this->OWStatusRegister();//Read the status register
+        		If ($Data < 0) {
 				$this->SendDebug("OWReset", "I2C Read Status Failed", 0);
 				return 0;
     			}
 			else {
-				$this->SendDebug("OWReset", "Read Status Byte: ".$Data, 0);
+				//$this->SendDebug("OWReset", "Read Status Byte: ".$Data, 0);
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
@@ -1820,13 +1820,13 @@ class GeCoS_IO extends IPSModule
     		$loopcount = 0;
     		while (true) {
         		$loopcount++;
-        		$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-			If ($Result < 0) {
+        		$Data = $this->OWStatusRegister();//Read the status register
+			If ($Data < 0) {
 				$this->SendDebug("OWWriteByte", "I2C Read Status Failed", 0);
 				return -1;
     			} 
 			else {
-            			$this->SendDebug("OWWriteByte", "Read Status Byte: ".$Data, 0);
+            			//$this->SendDebug("OWWriteByte", "Read Status Byte: ".$Data, 0);
 				if ($Data & 0x01) { // 1-Wire Busy bit
 					//server.log("One-Wire bus is busy");
 					if ($loopcount > 100) {
@@ -1845,19 +1845,19 @@ class GeCoS_IO extends IPSModule
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 165, $byte), 16); //set write byte command (A5) and send data (byte)
 
 		If ($Result < 0) { //Device failed to acknowledge
-        		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed. Data: ".$byte, 0);
+        		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed.", 0);
         		return -1;
     		}
     		$loopcount = 0;
     		while (true) {
         		$loopcount++;
- 			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-			If ($Result < 0) {
+ 			$Data = $this->OWStatusRegister();//Read the status register
+			If ($Data < 0) {
             			$this->SendDebug("OWWriteByte", "I2C Read Status Failed", 0);
             			return -1;
         		} 
 			else {
-            			$this->SendDebug("OWWriteByte", "Read Status Byte: ".$Data, 0);
+            			//$this->SendDebug("OWWriteByte", "Read Status Byte: ".$Data, 0);
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			$this->SendDebug("OWWriteByte", "One-Wire bus is busy", 0);
                 			if ($loopcount > 100) {
@@ -1893,8 +1893,8 @@ class GeCoS_IO extends IPSModule
 		while (true) {
 			$loopcount++;
 			
-			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-			If ($Result < 0) {
+			$Data = $this->OWStatusRegister();//Read the status register
+			If ($Data < 0) {
             			$this->SendDebug("OWTriplet", "I2C Read Status Failed", 0);
             			return -1; 
 			} 
@@ -2047,13 +2047,13 @@ class GeCoS_IO extends IPSModule
     		$loopcount = 0;
    		while (true) {
         		$loopcount++;
-			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-			If ($Result < 0) {
+			$Data = $this->OWStatusRegister();//Read the status register
+			If ($Data < 0) {
 				$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
 				return -1;
     			} 
 			else {
-            			$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
+            			//$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
             			if ($Data & 0x01) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
@@ -2080,13 +2080,13 @@ class GeCoS_IO extends IPSModule
     		while (true) {
         		$loopcount++;
         		
-			$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-			If ($Result < 0) {
+			$Data = $this->OWStatusRegister();//Read the status register
+			If ($Data < 0) {
             			$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
             			return -1; 
 			} 
 			else {
-            			$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
+            			//$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
             			if ($Data[0] & 0x01) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
@@ -2123,8 +2123,15 @@ class GeCoS_IO extends IPSModule
 	
 	private function OWStatusRegister()
 	{
-		$Result = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
-		$this->SendDebug("OWReadByte", "Read Status Byte: ".$Result, 0);
+		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 240), 16); //set read pointer (E1) to the read status register (F0)
+		If ($Result < 0) { //Device failed to acknowledge
+			$this->SendDebug("OWStatusRegister", "I2C Write Failed", 0);
+			$Result = -1;
+		}
+		else {
+			$Result = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+			$this->SendDebug("OWStatusRegister", "Read Status Byte: ".$Result, 0);
+		}
 	return $Result;
 	}
 }
