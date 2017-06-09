@@ -2109,7 +2109,7 @@ class GeCoS_IO extends IPSModule
 			$this->SendDebug("OWReadByte", "I2C Write Failed", 0);
 			return -1;
 		}
-		$Data = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+		$Result = $this->OWStatusRegister();//Read the status register
 		If ($Result < 0) {
 			$this->SendDebug("OWReadByte", "I2C Read Status Failed", 0);
 			return -1;
@@ -2119,6 +2119,13 @@ class GeCoS_IO extends IPSModule
 		}
     		//server.log("One-Wire Read Byte complete");
     	return $Data;
+	}
+	
+	private function OWStatusRegister()
+	{
+		$Result = $this->CommandClientSocket(pack("L*", 59, $this->GetBuffer("OW_Handle"), 0, 0), 16);//Read the status register
+		$this->SendDebug("OWReadByte", "Read Status Byte: ".$Result, 0);
+	return $Result;
 	}
 }
 ?>
