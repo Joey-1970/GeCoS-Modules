@@ -605,7 +605,7 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
-					//$this->SendDebug("get_DS18B20Temperature", "OWVerify: ".$this->OWVerify(), 0);
+					$this->SendDebug("get_DS18B20Temperature", "OWVerify: ".$this->OWVerify(), 0);
 
 					if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
