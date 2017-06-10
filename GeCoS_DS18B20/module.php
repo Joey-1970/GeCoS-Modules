@@ -145,7 +145,8 @@
 					If (GetValueFloat($this->GetIDForIdent("Temperature")) <> $data->Result) {
 						SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
 					}
-			   	}
+			   	$this->SetStatus(102);
+				}
 			   	break;	
 	 	}
  	}
