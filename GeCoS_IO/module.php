@@ -528,23 +528,28 @@ class GeCoS_IO extends IPSModule
 					
 					$this->SendDebug("get_DS18S20Temperature", "OWVerify: ".$this->OWVerify(), 0);
 					
-				 	if ($this->OWReset()) { //Reset was successful
-						$this->OWSelect();
-						$this->OWWriteByte(0x44); //start conversion
-						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
-						IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
-						
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						
+					if ($this->OWVerify()) {
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
-							$this->OWWriteByte(0xBE); //Read Scratchpad
-							$Celsius = $this->OWRead_18S20_Temperature();
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+							$this->OWWriteByte(0x44); //start conversion
+							$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
+							IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+
+							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0xBE); //Read Scratchpad
+								$Celsius = $this->OWRead_18S20_Temperature();
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+							}
+
 						}
-						
-            				}
+					}
+					else {
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+					}
 					IPS_SemaphoreLeave("DS18S20Temperature");
 				}
 				else {
@@ -559,22 +564,27 @@ class GeCoS_IO extends IPSModule
 					
 					$this->SendDebug("get_DS18B20Temperature", "OWVerify: ".$this->OWVerify(), 0);
 					
-					if ($this->OWReset()) { //Reset was successful
-						$this->OWSelect();
-						$this->OWWriteByte(0x44); //start conversion
-						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
-						IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
-						 
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						 
+					if ($this->OWVerify()) {
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
-							$this->OWWriteByte(0xBE); //Read Scratchpad
-							$Celsius = $this->OWRead_18B20_Temperature(); 
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+							$this->OWWriteByte(0x44); //start conversion
+							$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
+							IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+
+							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0xBE); //Read Scratchpad
+								$Celsius = $this->OWRead_18B20_Temperature(); 
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+							}
+
 						}
-						
+					}
+					else {
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
 					IPS_SemaphoreLeave("DS18B20Temperature");
 				}
@@ -608,12 +618,17 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
 					$this->SendDebug("get_DS2413State", "OWVerify: ".$this->OWVerify(), 0);
-
-					if ($this->OWReset()) { //Reset was successful
-						$this->OWSelect();
-						$this->OWWriteByte(0xF5); //PIO ACCESS READ
-						$Result = $this->OWRead_2413_State();	
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
+					
+					if ($this->OWVerify()) {
+						if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(0xF5); //PIO ACCESS READ
+							$Result = $this->OWRead_2413_State();	
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
+						}
+					}
+					else {
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
 					IPS_SemaphoreLeave("DS2413State");
 				}
