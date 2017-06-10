@@ -555,7 +555,7 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
-					$this->SendDebug("get_DS18B20Temperature", "OWVerify".$this->OWVerify(), 0);
+					//$this->SendDebug("get_DS18B20Temperature", "OWVerify: ".$this->OWVerify(), 0);
 					
 					if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
@@ -605,7 +605,7 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
-					$this->SendDebug("get_DS18B20Temperature", "OWVerify".$this->OWVerify(), 0);
+					//$this->SendDebug("get_DS18B20Temperature", "OWVerify: ".$this->OWVerify(), 0);
 
 					if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
@@ -1903,7 +1903,7 @@ class GeCoS_IO extends IPSModule
             			return -1; 
 			} 
 			else {		
-		    		$this->SendDebug("OWTriplet", "Read Status Byte: ".$Data, 0);
+		    		//$this->SendDebug("OWTriplet", "Read Status Byte: ".$Data, 0);
 		    		if ($Data & 0x01) { // 1-Wire Busy bit
 					$this->SendDebug("OWTriplet", "One-Wire bus is busy", 0);
 					if ($loopcount > 100) {
