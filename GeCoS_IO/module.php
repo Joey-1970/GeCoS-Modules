@@ -2160,14 +2160,14 @@ class GeCoS_IO extends IPSModule
    		if ($this->OWSearch(0))
    		{
       			// check if same device found
-      			$Result = TRUE;
+      			$Result = 1;
       			If (($owDeviceAddress_0_backup <> $this->GetBuffer("owDeviceAddress_0")) AND ($owDeviceAddress_1_backup <> $this->GetBuffer("owDeviceAddress_1"))) { 
-            			$Result = FALSE;
-            			break;
+            			$Result = 0;
+            			//break;
       			}
    		}
    		else {
-     			$Result = FALSE;
+     			$Result = 0;
    			// restore the search state 
    			$this->SetBuffer("owDeviceAddress_0", $owDeviceAddress_0_backup);
 		 	$this->GetBuffer("owDeviceAddress_1", $owDeviceAddress_1_backup);
