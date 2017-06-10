@@ -526,8 +526,6 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
-					$this->SendDebug("get_DS18S20Temperature", "OWVerify: ".$this->OWVerify(), 0);
-					
 					if ($this->OWVerify()) {
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
@@ -548,6 +546,7 @@ class GeCoS_IO extends IPSModule
 						}
 					}
 					else {
+						$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
 					IPS_SemaphoreLeave("DS18S20Temperature");
@@ -561,8 +560,6 @@ class GeCoS_IO extends IPSModule
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-					
-					$this->SendDebug("get_DS18B20Temperature", "OWVerify: ".$this->OWVerify(), 0);
 					
 					if ($this->OWVerify()) {
 						if ($this->OWReset()) { //Reset was successful
@@ -584,6 +581,7 @@ class GeCoS_IO extends IPSModule
 						}
 					}
 					else {
+						$this->SendDebug("get_DS18B20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
 					IPS_SemaphoreLeave("DS18B20Temperature");
@@ -617,8 +615,6 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
-					$this->SendDebug("get_DS2413State", "OWVerify: ".$this->OWVerify(), 0);
-					
 					if ($this->OWVerify()) {
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
@@ -628,6 +624,7 @@ class GeCoS_IO extends IPSModule
 						}
 					}
 					else {
+						$this->SendDebug("get_DS2413State", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
 					IPS_SemaphoreLeave("DS2413State");
