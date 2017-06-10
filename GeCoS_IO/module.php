@@ -2138,16 +2138,16 @@ class GeCoS_IO extends IPSModule
 	private function OWVerify()
 	{
 		//--------------------------------------------------------------------------
-// Verify the device with the ROM number in ROM_NO buffer is present.
-// Return TRUE  : device verified present
-//        FALSE : device not present
-//
+		// Verify the device with the ROM number in ROM_NO buffer is present.
+		// Return TRUE  : device verified present
+		//        FALSE : device not present
+		//
 
-   	/*
-	unsigned char rom_backup[8];
-   int i,rslt,ld_backup,ldf_backup,lfd_backup;
+   		/*
+		unsigned char rom_backup[8];
+   		int i,rslt,ld_backup,ldf_backup,lfd_backup;
 
-   // keep a backup copy of the current state
+   		// keep a backup copy of the current state
    for (i = 0; i < 8; i++)
       rom_backup[i] = ROM_NO[i];
    ld_backup = LastDiscrepancy;
