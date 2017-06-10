@@ -525,7 +525,7 @@ class GeCoS_IO extends IPSModule
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
+					
 				 	if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
 						$this->OWWriteByte(0x44); //start conversion
@@ -554,8 +554,10 @@ class GeCoS_IO extends IPSModule
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
-					 if ($this->OWReset()) { //Reset was successful
+					
+					$this->SendDebug("get_DS18B20Temperature", "OWVerify".$this->OWVerify(), 0);
+					
+					if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
 						$this->OWWriteByte(0x44); //start conversion
 						$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
@@ -602,8 +604,10 @@ class GeCoS_IO extends IPSModule
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+					
+					$this->SendDebug("get_DS18B20Temperature", "OWVerify".$this->OWVerify(), 0);
 
-					 if ($this->OWReset()) { //Reset was successful
+					if ($this->OWReset()) { //Reset was successful
 						$this->OWSelect();
 						$this->OWWriteByte(0xF5); //PIO ACCESS READ
 						$Result = $this->OWRead_2413_State();	
@@ -2144,10 +2148,8 @@ class GeCoS_IO extends IPSModule
 		//
 
    		// keep a backup copy of the current state
-   		for ($i = 0; $i < 8; $i++)
-     			 rom_backup[i] = ROM_NO[i];
-  		}
-   
+   		$owDeviceAddress_0_backup = $this->GetBuffer("owDeviceAddress_0");
+		$owDeviceAddress_1_backup = $this->GetBuffer("owDeviceAddress_1");
    		$ld_backup = $this->GetBuffer("owLastDiscrepancy");
    		$ldf_backup = $this->GetBuffer("owLastDevice");
 
@@ -2160,24 +2162,18 @@ class GeCoS_IO extends IPSModule
    		{
       			// check if same device found
       			$Result = TRUE;
-      			for ($i = 0; $i < 8; $i++)
-      			{
-         			//if (rom_backup[i] != ROM_NO[i])
-         			{
-            				$Result = FALSE;
-            				break;
-         			}
+      			If (($owDeviceAddress_0_backup <> $this->GetBuffer("owDeviceAddress_0")) AND ($owDeviceAddress_1_backup <> $this->GetBuffer("owDeviceAddress_1"))) { 
+            			$Result = FALSE;
+            			break;
       			}
    		}
    		else {
      			$Result = FALSE;
-
    			// restore the search state 
-   			for ($i = 0; $i < 8; $i++)
-      				//ROM_NO[i] = rom_backup[i];
-   				$this->SetBuffer("owLastDiscrepancy", $ld_backup);
-   		 		$this->SetBuffer("owLastDevice", $ldf_backup);
-			}
+   			$this->SetBuffer("owDeviceAddress_0", $owDeviceAddress_0_backup);
+		 	$this->GetBuffer("owDeviceAddress_1", $owDeviceAddress_1_backup);
+   			$this->SetBuffer("owLastDiscrepancy", $ld_backup);
+   		 	$this->SetBuffer("owLastDevice", $ldf_backup);
 		}
 	// return the result of the verify
 	return $Result;
