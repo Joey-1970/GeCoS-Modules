@@ -2134,5 +2134,56 @@ class GeCoS_IO extends IPSModule
 		}
 	return $Result;
 	}
+	
+	private function OWVerify()
+	{
+		//--------------------------------------------------------------------------
+// Verify the device with the ROM number in ROM_NO buffer is present.
+// Return TRUE  : device verified present
+//        FALSE : device not present
+//
+
+   	/*
+	unsigned char rom_backup[8];
+   int i,rslt,ld_backup,ldf_backup,lfd_backup;
+
+   // keep a backup copy of the current state
+   for (i = 0; i < 8; i++)
+      rom_backup[i] = ROM_NO[i];
+   ld_backup = LastDiscrepancy;
+   ldf_backup = LastDeviceFlag;
+   lfd_backup = LastFamilyDiscrepancy;
+
+   // set search to find the same device
+   LastDiscrepancy = 64;
+   LastDeviceFlag = FALSE;
+
+   if (OWSearch())
+   {
+      // check if same device found
+      rslt = TRUE;
+      for (i = 0; i < 8; i++)
+      {
+         if (rom_backup[i] != ROM_NO[i])
+         {
+            rslt = FALSE;
+            break;
+         }
+      }
+   }
+   else
+     rslt = FALSE;
+
+   // restore the search state 
+   for (i = 0; i < 8; i++)
+      ROM_NO[i] = rom_backup[i];
+   LastDiscrepancy = ld_backup;
+   LastDeviceFlag = ldf_backup;
+   LastFamilyDiscrepancy = lfd_backup
+
+*/	
+	// return the result of the verify
+	return $Result;
+	}
 }
 ?>
