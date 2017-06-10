@@ -187,7 +187,7 @@
 					If (boolval($Result & 2) <> $this->ReadPropertyInteger("DeviceFunction_1")) {
 						$this->SendDebug("set_DS2413State", "Wert Bit 4: ".(boolval($Result & 8)), 0);
 					}
-					
+					$this->SetStatus(102);
 			   	}
 			   	break;	
 	 	}
