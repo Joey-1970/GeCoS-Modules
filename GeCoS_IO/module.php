@@ -2157,7 +2157,7 @@ class GeCoS_IO extends IPSModule
    		$this->SetBuffer("owLastDiscrepancy", 64);
    		$this->SetBuffer("owLastDevice", 0);
 
-   		if ($this->OWSearch())
+   		if ($this->OWSearch(0))
    		{
       			// check if same device found
       			$Result = TRUE;
