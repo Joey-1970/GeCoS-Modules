@@ -2154,9 +2154,8 @@ class GeCoS_IO extends IPSModule
    		$ldf_backup = $this->GetBuffer("owLastDevice");
 
    		// set search to find the same device
-   		$this->SetBuffer("owLastDiscrepancy", 64)
-   
-   		$LastDeviceFlag = FALSE;
+   		$this->SetBuffer("owLastDiscrepancy", 64);
+   		$this->SetBuffer("owLastDevice", 0);
 
    		if ($this->OWSearch())
    		{
