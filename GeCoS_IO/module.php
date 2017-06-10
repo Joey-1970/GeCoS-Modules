@@ -2143,45 +2143,42 @@ class GeCoS_IO extends IPSModule
 		//        FALSE : device not present
 		//
 
-   		/*
-		unsigned char rom_backup[8];
-   		int i,rslt,ld_backup,ldf_backup,lfd_backup;
-
    		// keep a backup copy of the current state
-   for (i = 0; i < 8; i++)
-      rom_backup[i] = ROM_NO[i];
-   ld_backup = LastDiscrepancy;
-   ldf_backup = LastDeviceFlag;
-   lfd_backup = LastFamilyDiscrepancy;
+   		for ($i = 0; $i < 8; $i++)
+     			 rom_backup[i] = ROM_NO[i];
+  		}
+   
+   		$ld_backup = $this->GetBuffer("owLastDiscrepancy");
+   		$ldf_backup = $this->GetBuffer("owLastDevice");
 
-   // set search to find the same device
-   LastDiscrepancy = 64;
-   LastDeviceFlag = FALSE;
+   		// set search to find the same device
+   		$this->SetBuffer("owLastDiscrepancy", 64)
+   
+   		$LastDeviceFlag = FALSE;
 
-   if (OWSearch())
-   {
-      // check if same device found
-      rslt = TRUE;
-      for (i = 0; i < 8; i++)
-      {
-         if (rom_backup[i] != ROM_NO[i])
-         {
-            rslt = FALSE;
-            break;
-         }
-      }
-   }
-   else
-     rslt = FALSE;
+   		if ($this->OWSearch())
+   		{
+      			// check if same device found
+      			$Result = TRUE;
+      			for ($i = 0; $i < 8; $i++)
+      			{
+         			//if (rom_backup[i] != ROM_NO[i])
+         			{
+            				$Result = FALSE;
+            				break;
+         			}
+      			}
+   		}
+   		else {
+     			$Result = FALSE;
 
-   // restore the search state 
-   for (i = 0; i < 8; i++)
-      ROM_NO[i] = rom_backup[i];
-   LastDiscrepancy = ld_backup;
-   LastDeviceFlag = ldf_backup;
-   LastFamilyDiscrepancy = lfd_backup
-
-*/	
+   			// restore the search state 
+   			for ($i = 0; $i < 8; $i++)
+      				//ROM_NO[i] = rom_backup[i];
+   				$this->SetBuffer("owLastDiscrepancy", $ld_backup);
+   		 		$this->SetBuffer("owLastDevice", $ldf_backup);
+			}
+		}
 	// return the result of the verify
 	return $Result;
 	}
