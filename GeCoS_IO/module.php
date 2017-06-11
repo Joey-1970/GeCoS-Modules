@@ -521,7 +521,7 @@ class GeCoS_IO extends IPSModule
 				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				 break;
 			case "get_DS18S20Temperature":
-				if (IPS_SemaphoreEnter("DS18S20Temperature", 2000))
+				if (IPS_SemaphoreEnter("OW", 3000))
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -549,14 +549,14 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
-					IPS_SemaphoreLeave("DS18S20Temperature");
+					IPS_SemaphoreLeave("OW");
 				}
 				else {
 					$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
 				}	
 				break;
 			 case "get_DS18B20Temperature":
-				if (IPS_SemaphoreEnter("DS18B20Temperature", 2000))
+				if (IPS_SemaphoreEnter("OW", 3000))
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -584,14 +584,14 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("get_DS18B20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
-					IPS_SemaphoreLeave("DS18B20Temperature");
+					IPS_SemaphoreLeave("OW");
 				}
 				else {
 					$this->SendDebug("DS18B20Temperature", "Semaphore Abbruch", 0);
 				}	
  				break;
 			case "set_DS18B20Setup":
-				if (IPS_SemaphoreEnter("DS18B20Setup", 2000))
+				if (IPS_SemaphoreEnter("OW", 3000))
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -603,14 +603,14 @@ class GeCoS_IO extends IPSModule
 						$this->OWWriteByte(0); 
 						$this->OWWriteByte($data->Resolution); 
 					}
-					IPS_SemaphoreLeave("DS18B20Setup");
+					IPS_SemaphoreLeave("OW");
 				}
 				else {
 					$this->SendDebug("DS18B20Setup", "Semaphore Abbruch", 0);
 				}	
  				break;
 			case "get_DS2413State":
-				if (IPS_SemaphoreEnter("DS2413State", 2000))
+				if (IPS_SemaphoreEnter("OW", 2000))
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -627,14 +627,14 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("get_DS2413State", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
-					IPS_SemaphoreLeave("DS2413State");
+					IPS_SemaphoreLeave("OW");
 				}
 				else {
 					$this->SendDebug("DS2413State", "Semaphore Abbruch", 0);
 				}	
  				break;
 			case "set_DS2413Setup":
-				if (IPS_SemaphoreEnter("DS2413Setup", 2000))
+				if (IPS_SemaphoreEnter("OW", 3000))
 				{
 					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -646,7 +646,7 @@ class GeCoS_IO extends IPSModule
 						$this->OWWriteByte($Value); 
 						$this->OWWriteByte($Value ^ 0xFF); 
 					 }
-					IPS_SemaphoreLeave("DS2413Setup");
+					IPS_SemaphoreLeave("OW");
 				}
 				else {
 					$this->SendDebug("DS2413Setup", "Semaphore Abbruch", 0);
@@ -1595,14 +1595,21 @@ class GeCoS_IO extends IPSModule
 	
 	public function OWSearchStart()
 	{
-		$OWDeviceArray = Array();
-		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
-		$Result = 1;
-		$SearchNumber = 0;
-		while($Result == 1) {
-		   	$Result = $this->OWSearch($SearchNumber);
-			$SearchNumber++;
+		if (IPS_SemaphoreEnter("OW", 3000))
+			{
+			$OWDeviceArray = Array();
+			$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
+			$Result = 1;
+			$SearchNumber = 0;
+			while($Result == 1) {
+				$Result = $this->OWSearch($SearchNumber);
+				$SearchNumber++;
+			}
+			IPS_SemaphoreLeave("OW");
 		}
+		else {
+			$this->SendDebug("OWSearchStart", "Semaphore Abbruch", 0);
+		}	
 	}
 	
 	private function DS2482Reset() 
