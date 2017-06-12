@@ -1704,7 +1704,7 @@ class GeCoS_IO extends IPSModule
 				$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
 				$FamilyCode = substr($SerialNumber, -2);
 				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$SerialNumber, 0);
-				$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$this->GetBuffer("owDeviceAddress_0")." ".$this->GetBuffer("owDeviceAddress_1"), 0);
+				//$this->SendDebug("SearchOWDevices", "OneWire Device Address = ".$this->GetBuffer("owDeviceAddress_0")." ".$this->GetBuffer("owDeviceAddress_1"), 0);
 				$OWDeviceArray = Array();
  				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 				$OWDeviceArray[$SearchNumber][0] = $this->GetOWHardware($FamilyCode); // Typ
@@ -1755,8 +1755,8 @@ class GeCoS_IO extends IPSModule
         		//server.log(format("CRC = %.2X", crc));
         		$da32bit = $da32bit >> 8; //Shift right 8 bits
     		}
-		$this->SendDebug("OWCheckCRC", "CRC = ".$crc, 0);
-		$this->SendDebug("OWCheckCRC", "DA  = ".$da32bit, 0);
+		//$this->SendDebug("OWCheckCRC", "CRC = ".$crc, 0);
+		//$this->SendDebug("OWCheckCRC", "DA  = ".$da32bit, 0);
     		
     		if (($da32bit & 0xFF) == $crc) { //last byte of address should match CRC of other 7 bytes
         		$this->SendDebug("OWCheckCRC", "CRC Passed", 0);
@@ -1814,15 +1814,15 @@ class GeCoS_IO extends IPSModule
 				else {
 					//server.log("One-Wire bus is idle");
 					if ($Data & 0x04) { //Short Detected bit
-						$this->SendDebug("OWReset", "One-Wire Short Detected: ".$Data, 0);
+						$this->SendDebug("OWReset", "One-Wire Short Detected: ", 0);
 						return 0;
 					}
 					if ($Data & 0x02) { //Presense-Pulse Detect bit
-						$this->SendDebug("OWReset", "One-Wire Devices Found: ".$Data, 0);
+						$this->SendDebug("OWReset", "One-Wire Devices Found: ", 0);
 						break;
 					} 
 					else {
-						$this->SendDebug("OWReset", "No One-Wire Devices Found: ".$Data, 0);
+						$this->SendDebug("OWReset", "No One-Wire Devices Found: ", 0);
 						return 0;
 					}
             			}
@@ -2017,7 +2017,7 @@ class GeCoS_IO extends IPSModule
 		}
 		//server.log(format("Temperature = %.1f °C", celsius));
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
-		$this->SendDebug("OWRead_18B20_Temperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+		$this->SendDebug("OWRead_18B20_Temperature", "OneWire Device Address = ".$SerialNumber. " Temperatur = ".$celsius, 0);
 	return $celsius;
 	}
 	
@@ -2045,7 +2045,7 @@ class GeCoS_IO extends IPSModule
 		}
 		//server.log(format("Temperature = %.1f °C", celsius));
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
-		$this->SendDebug("OWRead_18S20_Temperature", "OneWire Device Address = ".$SerialNumber. "Temperatur = ".$celsius." °C", 0);
+		$this->SendDebug("OWRead_18S20_Temperature", "OneWire Device Address = ".$SerialNumber. " Temperatur = ".$celsius, 0);
 	return $celsius;
 	}
 	
@@ -2054,7 +2054,7 @@ class GeCoS_IO extends IPSModule
 		$result = -99;
     		$result = $this->OWReadByte();
 		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
-    		$this->SendDebug("OWRead_2413_State", "OneWire Device Address = ".$SerialNumber. "State = ".$result, 0);
+    		$this->SendDebug("OWRead_2413_State", "OneWire Device Address = ".$SerialNumber. " State = ".$result, 0);
 	return $result;
 	}
 	
