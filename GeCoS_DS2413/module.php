@@ -195,7 +195,7 @@
 	 
 	public function RequestAction($Ident, $Value) 
 	{
-		$Port = intval(substr($Ident, 8, 2));
+		$Port = intval(substr($Ident, 7, 2));
 		$this->SetPortStatus($Port, $Value);
 	}
 	    
@@ -225,7 +225,7 @@
 			$Value = min(1, max(0, $Value));
 			// zu sendenden Wert ggf. invertieren
 			$Value = $Value ^ $this->ReadPropertyBoolean("Invert_".$Port);
-			
+			$Result = ($this->ReadPropertyInteger("DeviceFunction_1") << 1) | $this->ReadPropertyInteger("DeviceFunction_0")| 252;
 		}
 	}    
 	 
