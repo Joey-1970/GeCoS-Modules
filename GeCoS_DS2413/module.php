@@ -214,7 +214,12 @@
 	public function SetPortStatus(int $Port, bool $Value)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-		
+			// Eingabeparameter filtern
+			$Port = min(1, max(0, $Port));
+			$Value = min(1, max(0, $Value));
+			// zu sendenden Wert ggf. invertieren
+			$Value = $Value ^ $this->ReadPropertyBoolean("Invert_".$Port);
+			
 		}
 	}    
 	 
