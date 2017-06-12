@@ -225,8 +225,8 @@
 			$Value = min(1, max(0, $Value));
 			// zu sendenden Wert ggf. invertieren
 			$arrayValues = array(); 
-			$arrayValues[$Port] = $Value ^ $this->ReadPropertyBoolean("Invert_".$Port);
-			$arrayValues[!$Port] = GetValueBoolean($this->GetIDForIdent("Status_".(!$Port))) ^ $this->ReadPropertyBoolean("Invert_".$Port);
+			$arrayValues[(int)$Port] = $Value ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
+			$arrayValues[(int)!$Port] = GetValueBoolean($this->GetIDForIdent("Status_".((int)!$Port))) ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
 			$Result = ($Value[1] << 1) | $Value[0]| 252;
 			$this->SendDebug("Setup", "Wert: ".$Result, 0);
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
