@@ -1597,6 +1597,10 @@ class GeCoS_IO extends IPSModule
 	{
 		if (IPS_SemaphoreEnter("OW", 3000))
 			{
+			$this->SetBuffer("owLastDevice", 0);
+			$this->SetBuffer("owLastDiscrepancy", 0);
+			$this->SetBuffer("owDeviceAddress_0", 0xFFFFFFFF);
+			$this->SetBuffer("owDeviceAddress_1", 0xFFFFFFFF);
 			$OWDeviceArray = Array();
 			$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 			$Result = 1;
