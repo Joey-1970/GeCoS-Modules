@@ -192,6 +192,12 @@
 			   	break;	
 	 	}
  	}
+	 
+	public function RequestAction($Ident, $Value) 
+	{
+		$Port = intval(substr($Ident, 8, 2));
+		$this->SetPortStatus($Port, $Value);
+	}
 	    
 	// Beginn der Funktionen
 	private function Setup()
