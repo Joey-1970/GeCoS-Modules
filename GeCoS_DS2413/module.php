@@ -233,7 +233,7 @@
 			$arrayValues = array(); 
 			$arrayValues[(int)$Port] = $Value ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
 			$arrayValues[(int)!$Port] = GetValueBoolean($this->GetIDForIdent("Status_".((int)!$Port))) ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
-			$Result = ($Value[1] << 1) | $Value[0]| 252;
+			$Result = ($arrayValues[1] << 1) | $arrayValues[0]| 252;
 			//$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
 			$this->SendDebug("SetPortStatus", "Wert: ".$Result, 0);
 			$this->SendDebug("SetPortStatus", "Port[0]: ".$arrayValues[0]." Port[1]: ".$arrayValues[1], 0);
