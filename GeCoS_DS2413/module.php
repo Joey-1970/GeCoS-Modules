@@ -128,7 +128,12 @@
 				$this->SetReceiveDataFilter($Filter);
 				
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
-				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
+				If (($this->ReadPropertyInteger("DeviceFunction_0") == 1) OR ($this->ReadPropertyInteger("DeviceFunction_1") == 1)) {
+					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
+				}
+				else {
+					$this->SetTimerInterval("Messzyklus", 0);
+				}
 				$this->Setup();
 				$this->Measurement();
 				$this->SetStatus(102);
@@ -230,7 +235,8 @@
 			$arrayValues[(int)!$Port] = GetValueBoolean($this->GetIDForIdent("Status_".((int)!$Port))) ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
 			$Result = ($Value[1] << 1) | $Value[0]| 252;
 			$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
-			$this->SendDebug("Setup", "Wert: ".$Result, 0);
+			$this->SendDebug("SetPortStatus", "Wert: ".$Result, 0);
+			$this->SendDebug("SetPortStatus", "Port[0]: ".$arrayValues[0]." Port[1]: ".$arrayValues[1], 0);
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
 			// Messung ausführen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS2413State", "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
