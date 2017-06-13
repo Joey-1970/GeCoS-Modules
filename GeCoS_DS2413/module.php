@@ -186,13 +186,7 @@
 					$Value = boolval($Result & 4) ^ $this->ReadPropertyBoolean("Invert_1");
 					SetValueBoolean($this->GetIDForIdent("Status_1"), $Value);
 						
-					If (boolval($Result & 2) <> $this->ReadPropertyInteger("DeviceFunction_0")) {
-						$this->SendDebug("set_DS2413State", "Wert Bit 2: ".(int)(boolval($Result & 2)), 0);
-					}
-					If (boolval($Result & 8) <> $this->ReadPropertyInteger("DeviceFunction_1")) {
-						$this->SendDebug("set_DS2413State", "Wert Bit 4: ".(int)(boolval($Result & 8)), 0);
-					}
-					$this->SetStatus(102);
+					$this->SendDebug("set_DS2413State", "Status Port 0: ".(int)(boolval($Result & 2))." Status Port 1: ".(int)(boolval($Result & 8)), 0);
 			   	}
 			   	break;	
 	 	}
