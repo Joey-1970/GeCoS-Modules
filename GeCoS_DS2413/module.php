@@ -220,6 +220,7 @@
 	public function SetPortStatus(int $Port, bool $Value)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
+			$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
 			// Eingabeparameter filtern
 			$Port = min(1, max(0, $Port));
 			$Value = min(1, max(0, $Value));
@@ -228,6 +229,7 @@
 			$arrayValues[(int)$Port] = $Value ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
 			$arrayValues[(int)!$Port] = GetValueBoolean($this->GetIDForIdent("Status_".((int)!$Port))) ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
 			$Result = ($Value[1] << 1) | $Value[0]| 252;
+			$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
 			$this->SendDebug("Setup", "Wert: ".$Result, 0);
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
 			// Messung ausführen
