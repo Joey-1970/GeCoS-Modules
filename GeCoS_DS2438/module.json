@@ -1,0 +1,14 @@
+{
+  "id": "{99250714-5864-43B4-BDF8-E6F62FEBFA8A}",
+  "name": "GeCoS_DS2438",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_DS2438"
+  ],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "childRequirements": [],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "prefix": "GeCoSDS2438"
+}
