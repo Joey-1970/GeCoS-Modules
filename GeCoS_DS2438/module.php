@@ -13,10 +13,6 @@
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
-		$this->RegisterPropertyInteger("DeviceFunction_0", 1);
-		$this->RegisterPropertyInteger("DeviceFunction_1", 1);
-		$this->RegisterPropertyBoolean("Invert_0", false);
-		$this->RegisterPropertyBoolean("Invert_1", false);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS2413_Measurement($_IPS["TARGET"]);');
         }
@@ -36,7 +32,7 @@
 		$arrayOptions = array();
 		
 		// Hier mus der Abruf der DS1820 erfolgen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "3A", "InstanceID" => $this->InstanceID)));
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "26", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
@@ -64,27 +60,13 @@
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
-		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "Digital Input", "value" => 1);
-		$arrayOptions[] = array("label" => "Digital Output", "value" => 0);
-		
-		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
-			$arrayElements[] = array("type" => "Select", "name" => "DeviceFunction_0", "caption" => "Port (0)", "options" => $arrayOptions );
-			$arrayElements[] = array("name" => "Invert_0", "type" => "CheckBox",  "caption" => "Invert (0)");
-			$arrayElements[] = array("type" => "Select", "name" => "DeviceFunction_1", "caption" => "Port (1)", "options" => $arrayOptions );
-			$arrayElements[] = array("name" => "Invert_1", "type" => "CheckBox",  "caption" => "Invert (1)");
-		}
-		
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
 		$arrayActions = array();
 		If (($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") AND ($this->ReadPropertyBoolean("Open") == true)) {
-			$arrayActions[] = array("type" => "Button", "label" => "An (0)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 0, true);');
-			$arrayActions[] = array("type" => "Button", "label" => "Aus (0)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 0, false);');
-			$arrayActions[] = array("type" => "Button", "label" => "An (1)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 1, true);');
-			$arrayActions[] = array("type" => "Button", "label" => "Aus (1)", "onClick" => 'GeCoSDS2413_SetPortStatus($id, 1, false);');
+			$arrayActions[] = array("type" => "Label", "label" => "Aktuell sind keine Testfunktionen definiert");
 		}
 		else {
 			$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
@@ -100,23 +82,21 @@
             	parent::ApplyChanges();
             	
 		//Status-Variablen anlegen
-		$this->RegisterVariableBoolean("Status_0", "Status (0)", "~Switch", 10);
-		If ($this->ReadPropertyInteger("DeviceFunction_0") == 0) {
-			$this->EnableAction("Status_0");
-		}
-		else {
-			$this->DisableAction("Status_0");
-		}
-		IPS_SetHidden($this->GetIDForIdent("Status_0"), false);
+		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
+          	$this->DisableAction("Temperature");
+		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
 		
-		$this->RegisterVariableBoolean("Status_1", "Status (1)", "~Switch", 20);
-		If ($this->ReadPropertyInteger("DeviceFunction_1") == 0) {
-			$this->EnableAction("Status_1");
-		}
-		else {
-			$this->DisableAction("Status_1");
-		}	
-		IPS_SetHidden($this->GetIDForIdent("Status_1"), false);
+		$this->RegisterVariableFloat("VAD", "VAD", "", 20);
+          	$this->DisableAction("VAD");
+		IPS_SetHidden($this->GetIDForIdent("VAD"), false);
+		
+		$this->RegisterVariableFloat("VDD", "VDD", "", 30);
+          	$this->DisableAction("VDD");
+		IPS_SetHidden($this->GetIDForIdent("VDD"), false);
+		
+		$this->RegisterVariableFloat("XSENS", "XSENS", "", 40);
+          	$this->DisableAction("XSENS");
+		IPS_SetHidden($this->GetIDForIdent("XSENS"), false);
 		
 		$OWDeviceArray = Array();
 		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
@@ -128,14 +108,9 @@
 				$this->SetReceiveDataFilter($Filter);
 				
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
-				If (($this->ReadPropertyInteger("DeviceFunction_0") == 1) OR ($this->ReadPropertyInteger("DeviceFunction_1") == 1)) {
-					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
-				}
-				else {
-					$this->SetTimerInterval("Messzyklus", 0);
-				}
-				$this->Setup();
-				$this->Measurement();
+				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
+				//$this->Setup();
+				//$this->Measurement();
 				$this->SetStatus(102);
 				$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 			}
@@ -174,6 +149,7 @@
 					$this->SendDebug("ReceiveData", $data->Result, 0);
 			   	}
 			   	break;
+			/*
 			case "set_DS2413State":
 			   	If ($data->InstanceID == $this->InstanceID) {
 					// die höchsten vier Bit eleminieren
@@ -189,6 +165,7 @@
 					$this->SendDebug("set_DS2413State", "Status Port 0: ".(int)(boolval($Result & 2))." Status Port 1: ".(int)(boolval($Result & 8)), 0);
 			   	}
 			   	break;	
+			*/
 	 	}
  	}
 	 
@@ -202,9 +179,11 @@
 	private function Setup()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
+			/*
 			$Result = ($this->ReadPropertyInteger("DeviceFunction_1") << 1) | $this->ReadPropertyInteger("DeviceFunction_0")| 252;
 			$this->SendDebug("Setup", "Wert: ".$Result, 0);
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			*/
 		}
 	}
 	    
@@ -212,30 +191,11 @@
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
 			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS2413State", "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS2413State", "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
 		}
 	}
 	
-	public function SetPortStatus(int $Port, bool $Value)
-	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
-			// Eingabeparameter filtern
-			$Port = min(1, max(0, $Port));
-			$Value = min(1, max(0, $Value));
-			// zu sendenden Wert ggf. invertieren
-			$arrayValues = array(); 
-			$arrayValues[(int)$Port] = $Value ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
-			$arrayValues[(int)!$Port] = GetValueBoolean($this->GetIDForIdent("Status_".((int)!$Port))) ^ $this->ReadPropertyBoolean("Invert_".((int)$Port));
-			$Result = ($arrayValues[1] << 1) | $arrayValues[0]| 252;
-			//$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
-			$this->SendDebug("SetPortStatus", "Wert: ".$Result, 0);
-			$this->SendDebug("SetPortStatus", "Port[0]: ".$arrayValues[0]." Port[1]: ".$arrayValues[1], 0);
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
-			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS2413State", "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
-		}
-	}    
+	
 	 
 	private function HasActiveParent()
     	{
