@@ -652,6 +652,42 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("DS2413Setup", "Semaphore Abbruch", 0);
 				}	
  				break;
+			case "get_DS2438Measurement":
+				if (IPS_SemaphoreEnter("OW", 3000))
+				{
+					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+					
+					if ($this->OWVerify()) {
+						if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(0x44); //start C° conversion
+							IPS_Sleep(10); //Wait for conversion
+							$this->OWWriteByte(0xB4); //start A/D V conversion
+							IPS_Sleep(4); //Wait for conversion
+
+							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0xBE); //Read Scratchpad
+								list(($Celsius, $Voltage, $Current) = $this->OWRead_2438();
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage"=>$Voltage, "Current"=>$Current )));
+							}
+
+						}
+					}
+					else {
+						$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+					}
+					IPS_SemaphoreLeave("OW");
+				}
+				else {
+					$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
+				}	
+				break;
 				 
 		}
 	 }
@@ -2201,6 +2237,61 @@ class GeCoS_IO extends IPSModule
 		}
 	// return the result of the verify
 	return $Result;
+	}
+	
+	private function OWRead_2438() 
+	{
+    		$data = Array();
+		$Celsius = -99;
+		$Voltage = -99;
+		$Current = -99;
+
+    		for($i = 0; $i < 6; $i++) { //we only need 6 of the bytes
+        		$data[$i] = $this->OWReadByte();
+        		//server.log(format("read byte: %.2X", data[i]));
+    		}
+ 
+		// $data[0] = Status
+		// $data[1] = Temperatur LSB
+		// $data[2] = Temperatur MSB
+		// $data[3] = Voltage LSB
+		// $data[4] = Voltage MSB
+		// $data[5] = Current LSB
+		// $data[6] = Current MSB
+		
+		// Temperatur ermitteln
+    		$raw = ($data[2] << 8) | $data[1];
+    		$SignBit = $raw & 0x8000;  // test most significant bit
+    		$raw = $raw >> 3; 
+		
+		if ($SignBit) {
+			$raw = ($raw ^ 0xffff) + 1;
+		} // negative, 2's compliment
+		
+		$Celsius = $raw / 16.0;
+		if ($SignBit) {
+			$Celsius = $Celsius * (-1);
+		}
+		
+		// Spannung ermitteln
+		$raw = ($data[4] << 8) | $data[3];
+		$raw = $raw & 0x3FF;
+		
+		$Voltage = $raw * 0.01;
+		
+		// Strom ermitteln
+		$raw = ($data[6] << 8) | $data[5];
+		$raw = $raw & 0x3FF;
+		$SignBit = $raw & 0x8000;  // test most significant bit
+		
+		$Current = $raw;
+		if ($SignBit) {
+			$Current = $Current * (-1);
+		}
+		//server.log(format("Temperature = %.1f °C", celsius));
+		$SerialNumber = sprintf("%X", $this->GetBuffer("owDeviceAddress_0")).sprintf("%X", $this->GetBuffer("owDeviceAddress_1"));
+		$this->SendDebug("OWRead_2438", "OneWire Device Address = ".$SerialNumber." Temperatur = ".$Celsius." Spannung = ".$Voltage." Strom = ".$Current, 0);
+	return array($Celsius, $Voltage, $Current);
 	}
 }
 ?>
