@@ -672,7 +672,7 @@ class GeCoS_IO extends IPSModule
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0xBE); //Read Scratchpad
-								list(($Celsius, $Voltage, $Current) = $this->OWRead_2438();
+								list($Celsius, $Voltage, $Current) = $this->OWRead_2438();
 								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage"=>$Voltage, "Current"=>$Current )));
 							}
 
