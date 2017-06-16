@@ -283,8 +283,10 @@
 		}		
 	}    	    
 	    
-	private function SetOutputPinColor(Int $Group, Int $Color)
+	public function SetOutputPinColor(Int $Group, Int $Color)
 	{
+		$Group = min(4, max(1, $Group));
+		
 		// Farbwerte aufsplitten
 		list($Value_R, $Value_G, $Value_B) = $this->Hex2RGB($Color);
 		
