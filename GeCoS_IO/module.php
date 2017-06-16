@@ -2284,7 +2284,7 @@ class GeCoS_IO extends IPSModule
 		
 		$raw = $raw >> 3; 
 		
-		$Celsius = $raw / 16.0;
+		$Celsius = $raw / 32.0;
 		if ($SignBit) {
 			$Celsius = $Celsius * (-1);
 		}
