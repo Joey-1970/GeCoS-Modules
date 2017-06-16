@@ -2282,7 +2282,7 @@ class GeCoS_IO extends IPSModule
 			$raw = ($raw ^ 0xffff) + 1;
 		} // negative, 2's compliment
 		
-		//$raw = $raw >> 3; 
+		$raw = $raw >> 3; 
 		
 		$Celsius = $raw / 16.0;
 		if ($SignBit) {
@@ -2293,7 +2293,7 @@ class GeCoS_IO extends IPSModule
 		$raw = ($data[4] << 8) | $data[3];
 		$raw = $raw & 0x3FF;
 		
-		$Voltage = $raw * 0.01 / 2;
+		$Voltage = $raw * 0.01;
 		
 		// Strom ermitteln
 		$raw = ($data[6] << 8) | $data[5];
