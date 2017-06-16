@@ -14,7 +14,7 @@
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
-		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS2413_Measurement($_IPS["TARGET"]);');
+		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS2438_Measurement($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
