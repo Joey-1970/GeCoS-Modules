@@ -2300,7 +2300,7 @@ class GeCoS_IO extends IPSModule
 		$raw = $raw & 0x3FF;
 		$SignBit = $raw & 0x8000;  // test most significant bit
 		
-		$Current = $raw / 4096;
+		$Current = $raw * 0.2441;
 		if ($SignBit) {
 			$Current = $Current * (-1);
 		}
