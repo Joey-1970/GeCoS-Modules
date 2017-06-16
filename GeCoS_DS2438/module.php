@@ -157,6 +157,7 @@
 					SetValueFloat($this->GetIDForIdent("VDD"), $data->Voltage);
 					$this->SendDebug("ReceiveData", "Strom: ".$data->Current, 0);
 					SetValueFloat($this->GetIDForIdent("XSENS"), $data->Current);
+					$this->SetStatus(102);
 				}
 			   	break;	
 	 	}
