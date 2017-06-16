@@ -664,19 +664,32 @@ class GeCoS_IO extends IPSModule
 							$this->OWWriteByte(0x44); //start C° conversion
 							IPS_Sleep(10); //Wait for conversion
 							
-							//$this->OWWriteByte(0xB4); //start A/D V conversion
-							//IPS_Sleep(4); //Wait for conversion
-
-							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
-								$this->OWWriteByte(0xBE); //Read Scratchpad
-								$this->OWWriteByte(0x00); //Read Scratchpad
-								list($Celsius, $Voltage, $Current) = $this->OWRead_2438();
-								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage"=>$Voltage, "Current"=>$Current )));
+								$this->OWWriteByte(0xB4); //start A/D V conversion
+								IPS_Sleep(4); //Wait for conversion
+								
+								if ($this->OWReset()) { //Reset was successful
+									$this->OWSelect();
+									$this->OWWriteByte(0xB8); //Recall memory
+									$this->OWWriteByte(0x00); //Recall memory
+									if ($this->OWReset()) { //Reset was successful
+										$this->OWSelect();
+										$this->OWWriteByte(0xBE); //Read Scratchpad
+										$this->OWWriteByte(0x00); //Read Scratchpad
+										list($Celsius, $Voltage, $Current) = $this->OWRead_2438();
+										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage"=>$Voltage, "Current"=>$Current )));
+
+									}
+								}
+								
 							}
+							//
+
+							//$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+							//$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+							
 
 						}
 					}
