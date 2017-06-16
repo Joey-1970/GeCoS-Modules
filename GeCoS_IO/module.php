@@ -673,6 +673,7 @@ class GeCoS_IO extends IPSModule
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0xBE); //Read Scratchpad
+								$this->OWWriteByte(0x00); //Read Scratchpad
 								list($Celsius, $Voltage, $Current) = $this->OWRead_2438();
 								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage"=>$Voltage, "Current"=>$Current )));
 							}
@@ -680,13 +681,13 @@ class GeCoS_IO extends IPSModule
 						}
 					}
 					else {
-						$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
+						$this->SendDebug("get_DS2438Measurement", "OWVerify: Device wurde nicht gefunden!", 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
 					}
 					IPS_SemaphoreLeave("OW");
 				}
 				else {
-					$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
+					$this->SendDebug("DS2438Measurement", "Semaphore Abbruch", 0);
 				}	
 				break;
 				 
