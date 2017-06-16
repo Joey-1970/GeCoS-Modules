@@ -152,8 +152,11 @@
 			case "set_DS2438":
 			   	If ($data->InstanceID == $this->InstanceID) {
 					$this->SendDebug("ReceiveData", "Temperatur: ".$data->Temperature, 0);
+					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Temperature);
 					$this->SendDebug("ReceiveData", "Volt: ".$data->Voltage, 0);
+					SetValueFloat($this->GetIDForIdent("VDD"), $data->Voltage);
 					$this->SendDebug("ReceiveData", "Strom: ".$data->Current, 0);
+					SetValueFloat($this->GetIDForIdent("XSENS"), $data->Current);
 				}
 			   	break;	
 	 	}
