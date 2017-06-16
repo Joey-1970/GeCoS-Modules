@@ -2246,7 +2246,7 @@ class GeCoS_IO extends IPSModule
 		$Voltage = -99;
 		$Current = -99;
 
-    		for($i = 0; $i < 6; $i++) { //we only need 6 of the bytes
+    		for($i = 0; $i <= 6; $i++) { //we only need 6 of the bytes
         		$data[$i] = $this->OWReadByte();
         		//server.log(format("read byte: %.2X", data[i]));
     		}
