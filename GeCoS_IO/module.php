@@ -663,8 +663,9 @@ class GeCoS_IO extends IPSModule
 							$this->OWSelect();
 							$this->OWWriteByte(0x44); //start C° conversion
 							IPS_Sleep(10); //Wait for conversion
-							$this->OWWriteByte(0xB4); //start A/D V conversion
-							IPS_Sleep(4); //Wait for conversion
+							
+							//$this->OWWriteByte(0xB4); //start A/D V conversion
+							//IPS_Sleep(4); //Wait for conversion
 
 							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
