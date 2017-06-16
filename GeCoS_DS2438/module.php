@@ -149,23 +149,10 @@
 					$this->SendDebug("ReceiveData", $data->Result, 0);
 			   	}
 			   	break;
-			/*
-			case "set_DS2413State":
+			case "set_DS2438":
 			   	If ($data->InstanceID == $this->InstanceID) {
-					// die höchsten vier Bit eleminieren
-					$Result = $data->Result & 15;
-					// das erste Bit prüfen
-					$Value = boolval($Result & 1) ^ $this->ReadPropertyBoolean("Invert_0");
-					SetValueBoolean($this->GetIDForIdent("Status_0"), $Value);
-					
-					// das dritte Bit prüfen
-					$Value = boolval($Result & 4) ^ $this->ReadPropertyBoolean("Invert_1");
-					SetValueBoolean($this->GetIDForIdent("Status_1"), $Value);
-						
-					$this->SendDebug("set_DS2413State", "Status Port 0: ".(int)(boolval($Result & 2))." Status Port 1: ".(int)(boolval($Result & 8)), 0);
-			   	}
+								   	}
 			   	break;	
-			*/
 	 	}
  	}
 	 
