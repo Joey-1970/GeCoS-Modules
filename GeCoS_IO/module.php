@@ -2267,7 +2267,7 @@ class GeCoS_IO extends IPSModule
 			$raw = ($raw ^ 0xffff) + 1;
 		} // negative, 2's compliment
 		
-		$raw = $raw >> 3; 
+		//$raw = $raw >> 3; 
 		
 		$Celsius = $raw / 16.0;
 		if ($SignBit) {
@@ -2285,7 +2285,7 @@ class GeCoS_IO extends IPSModule
 		$raw = $raw & 0x3FF;
 		$SignBit = $raw & 0x8000;  // test most significant bit
 		
-		$Current = $raw;
+		$Current = $raw / 4096;
 		if ($SignBit) {
 			$Current = $Current * (-1);
 		}
