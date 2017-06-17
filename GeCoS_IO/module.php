@@ -659,6 +659,9 @@ class GeCoS_IO extends IPSModule
 					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 					
 					if ($this->OWVerify()) {
+						// Erster Schritt: VDD ermitteln
+						
+						
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(0x44); //start C° conversion
