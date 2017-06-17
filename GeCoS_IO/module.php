@@ -667,15 +667,20 @@ class GeCoS_IO extends IPSModule
 							$this->OWWriteByte(0x0F);
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
-								$this->OWWriteByte(0xBE);
-								$this->OWWriteByte(0x00);
-								list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
+								$this->OWWriteByte(0xB4); //start A/D V conversion
+								IPS_Sleep(10); //Wait for conversion
 								if ($this->OWReset()) { //Reset was successful
 									$this->OWSelect();
-									$this->OWWriteByte(0x48);
+									$this->OWWriteByte(0xBE);
 									$this->OWWriteByte(0x00);
+									list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
+									if ($this->OWReset()) { //Reset was successful
+										$this->OWSelect();
+										$this->OWWriteByte(0x48);
+										$this->OWWriteByte(0x00);
+									}
 								}
-							}	
+							}
 						}
 						
 						if ($this->OWReset()) { //Reset was successful
@@ -691,7 +696,7 @@ class GeCoS_IO extends IPSModule
 								if ($this->OWReset()) { //Reset was successful
 									$this->OWSelect();
 									$this->OWWriteByte(0xB4); //start A/D V conversion
-									IPS_Sleep(4); //Wait for conversion
+									IPS_Sleep(10); //Wait for conversion
 
 									if ($this->OWReset()) { //Reset was successful
 										$this->OWSelect();
