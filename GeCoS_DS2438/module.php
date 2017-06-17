@@ -153,8 +153,10 @@
 			   	If ($data->InstanceID == $this->InstanceID) {
 					$this->SendDebug("ReceiveData", "Temperatur: ".$data->Temperature, 0);
 					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Temperature);
-					$this->SendDebug("ReceiveData", "Volt: ".$data->Voltage, 0);
-					SetValueFloat($this->GetIDForIdent("VAD"), $data->Voltage);
+					$this->SendDebug("ReceiveData", "Volt: ".$data->Voltage_VAD, 0);
+					SetValueFloat($this->GetIDForIdent("VAD"), $data->Voltage_VAD);
+					$this->SendDebug("ReceiveData", "Volt: ".$data->Voltage_VDD, 0);
+					SetValueFloat($this->GetIDForIdent("VDD"), $data->Voltage_VDD);
 					$this->SendDebug("ReceiveData", "Strom: ".$data->Current, 0);
 					SetValueFloat($this->GetIDForIdent("XSENS"), $data->Current);
 					$this->SetStatus(102);
