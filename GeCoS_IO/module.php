@@ -665,8 +665,6 @@ class GeCoS_IO extends IPSModule
 							$this->OWWriteByte(0x4E);
 							$this->OWWriteByte(0x00);
 							$this->OWWriteByte(0x07);
-					
-
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0xB4); //start A/D V conversion
@@ -676,17 +674,15 @@ class GeCoS_IO extends IPSModule
 									$this->OWSelect();
 									$this->OWWriteByte(0xB8); //Recall memory
 									$this->OWWriteByte(0x00); //Recall memory
+									IPS_Sleep(10); 
 									if ($this->OWReset()) { //Reset was successful
 										$this->OWSelect();
 										$this->OWWriteByte(0xBE); //Read Scratchpad
 										$this->OWWriteByte(0x00); //Read Scratchpad
-										list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
-										//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VDD, "Current"=>$Current )));
-
+										list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
 									}
 								}
-							}
-							
+							}	
 						}
 						
 						if ($this->OWReset()) { //Reset was successful
@@ -708,24 +704,18 @@ class GeCoS_IO extends IPSModule
 										$this->OWSelect();
 										$this->OWWriteByte(0xB8); //Recall memory
 										$this->OWWriteByte(0x00); //Recall memory
+										IPS_Sleep(10); 
 										if ($this->OWReset()) { //Reset was successful
 											$this->OWSelect();
 											$this->OWWriteByte(0xBE); //Read Scratchpad
 											$this->OWWriteByte(0x00); //Read Scratchpad
-											list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
-											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VDD, "Current"=>$Current )));
-
+											list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
+												"Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VDD, "Current"=>$Current )));
 										}
 									}
 								}
 							}
-							//
-
-							//$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-							//$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
-							
-
 						}
 					}
 					else {
