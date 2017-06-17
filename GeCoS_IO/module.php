@@ -711,7 +711,7 @@ class GeCoS_IO extends IPSModule
 											$this->OWWriteByte(0x00); //Read Scratchpad
 											list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
 											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
-												"Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VDD, "Current"=>$Current )));
+												"Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VAD, "Current"=>$Current )));
 										}
 									}
 								}
