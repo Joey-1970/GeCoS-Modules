@@ -664,30 +664,36 @@ class GeCoS_IO extends IPSModule
 							$this->OWSelect();
 							$this->OWWriteByte(0x4E);
 							$this->OWWriteByte(0x00);
-							$this->OWWriteByte(0x0F);
+							$this->OWWriteByte(0x07);
+					
+
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0xB4); //start A/D V conversion
 								IPS_Sleep(10); //Wait for conversion
+
 								if ($this->OWReset()) { //Reset was successful
 									$this->OWSelect();
-									$this->OWWriteByte(0xBE);
-									$this->OWWriteByte(0x00);
-									list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
+									$this->OWWriteByte(0xB8); //Recall memory
+									$this->OWWriteByte(0x00); //Recall memory
 									if ($this->OWReset()) { //Reset was successful
 										$this->OWSelect();
-										$this->OWWriteByte(0x48);
-										$this->OWWriteByte(0x00);
+										$this->OWWriteByte(0xBE); //Read Scratchpad
+										$this->OWWriteByte(0x00); //Read Scratchpad
+										list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
+										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VDD, "Current"=>$Current )));
+
 									}
 								}
 							}
+							
 						}
 						
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(0x4E);
 							$this->OWWriteByte(0x00);
-							$this->OWWriteByte(0x07);
+							$this->OWWriteByte(0x0F);
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0x44); //start C° conversion
