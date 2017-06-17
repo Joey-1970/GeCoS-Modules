@@ -660,7 +660,23 @@ class GeCoS_IO extends IPSModule
 					
 					if ($this->OWVerify()) {
 						// Erster Schritt: VDD ermitteln
-						
+						if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(0x4E);
+							$this->OWWriteByte(0x00);
+							$this->OWWriteByte(0x0F);
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0xBE);
+								$this->OWWriteByte(0x00);
+								list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
+								if ($this->OWReset()) { //Reset was successful
+									$this->OWSelect();
+									$this->OWWriteByte(0x48);
+									$this->OWWriteByte(0x00);
+								}
+							}	
+						}
 						
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
@@ -680,8 +696,8 @@ class GeCoS_IO extends IPSModule
 										$this->OWSelect();
 										$this->OWWriteByte(0xBE); //Read Scratchpad
 										$this->OWWriteByte(0x00); //Read Scratchpad
-										list($Celsius, $Voltage, $Current) = $this->OWRead_2438();
-										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage"=>$Voltage, "Current"=>$Current )));
+										list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
+										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VDD, "Current"=>$Current )));
 
 									}
 								}
