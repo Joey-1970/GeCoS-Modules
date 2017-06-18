@@ -11,10 +11,7 @@
 		$this->RegisterPropertyBoolean("Open", false);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSRPi_Measurement_1($_IPS["TARGET"]);');
-		$this->RegisterPropertyBoolean("LoggingTempCPU", false);
- 	    	$this->RegisterPropertyBoolean("LoggingTempGPU", false);
- 	    	$this->RegisterPropertyBoolean("LoggingLoadAvg", false);
-       }
+      }
 
 	public function GetConfigurationForm() 
 	{ 
