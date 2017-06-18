@@ -1,6 +1,6 @@
 <?
     // Klassendefinition
-    class CeCoS_RPi extends IPSModule 
+    class GeCoS_RPi extends IPSModule 
     {
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
@@ -23,9 +23,8 @@
                  parent::ApplyChanges();
   	   	
 		// Profil anlegen
-		$this->RegisterProfileFloat("megabyte.MB", "Information", "", " MB", 0, 1000000, 0.1, 1);
-		//$this->RegisterProfileInteger("kilobyte", "Information", "", " kb", 0, 1000000, 1);
-		$this->RegisterProfileFloat("frequenzy.mhz", "Speedo", "", " MHz", 0, 10000, 0.1, 1);
+		$this->RegisterProfileFloat("GeCoS.MB", "Information", "", " MB", 0, 1000000, 0.1, 1);
+		$this->RegisterProfileFloat("GeCoS.Mhz", "Speedo", "", " MHz", 0, 10000, 0.1, 1);
 		
 		//Status-Variablen anlegen
 		$this->RegisterVariableString("Board", "Board", "", 10);
@@ -53,7 +52,7 @@
 		$this->DisableAction("TemperaturGPU");
 		$this->RegisterVariableFloat("VoltageCPU", "Voltage CPU", "~Volt", 120);
 		$this->DisableAction("VoltageCPU");
-		$this->RegisterVariableFloat("ARM_Frequenzy", "ARM Frequenzy", "frequenzy.mhz", 130);
+		$this->RegisterVariableFloat("ARM_Frequenzy", "ARM Frequenzy", "GeCoS.Mhz", 130);
 		$this->DisableAction("ARM_Frequenzy");
 		// CPU Auslastung
 		$this->RegisterVariableFloat("AverageLoad", "CPU AverageLoad", "~Intensity.1", 140);
@@ -61,33 +60,27 @@
 		$this->SetBuffer("PrevTotal", 0);
 		$this->SetBuffer("PrevIdle", 0);
 		// Arbeitsspeicher
-		$this->RegisterVariableFloat("MemoryTotal", "Memory Total", "megabyte.MB", 200);
+		$this->RegisterVariableFloat("MemoryTotal", "Memory Total", "GeCoS.MB", 200);
 		$this->DisableAction("MemoryTotal");
-		$this->RegisterVariableFloat("MemoryFree", "Memory Free", "megabyte.MB", 210);
+		$this->RegisterVariableFloat("MemoryFree", "Memory Free", "GeCoS.MB", 210);
 		$this->DisableAction("MemoryFree");
-		$this->RegisterVariableFloat("MemoryAvailable", "Memory Available", "megabyte.MB", 220);
+		$this->RegisterVariableFloat("MemoryAvailable", "Memory Available", "GeCoS.MB", 220);
 		$this->DisableAction("MemoryAvailable");
 		// SD-Card
-		$this->RegisterVariableFloat("SD_Card_Total", "SD-Card Total", "megabyte.MB", 300);
+		$this->RegisterVariableFloat("SD_Card_Total", "SD-Card Total", "GeCoS.MB", 300);
 		$this->DisableAction("SD_Card_Total");
-		$this->RegisterVariableFloat("SD_Card_Used", "SD-Card Used", "megabyte.MB", 310);
+		$this->RegisterVariableFloat("SD_Card_Used", "SD-Card Used", "GeCoS.MB", 310);
 		$this->DisableAction("SD_Card_Used");
-		$this->RegisterVariableFloat("SD_Card_Available", "SD-Card Available", "megabyte.MB", 320);
+		$this->RegisterVariableFloat("SD_Card_Available", "SD-Card Available", "GeCoS.MB", 320);
 		$this->DisableAction("SD_Card_Available");
 		$this->RegisterVariableFloat("SD_Card_Used_rel", "SD-Card Used (rel)", "~Intensity.1", 330);
 		$this->DisableAction("SD_Card_Used_rel");
 		
-                If (IPS_GetKernelRunlevel() == 10103) {
-			// Logging setzen
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("TemperaturCPU"), $this->ReadPropertyBoolean("LoggingTempCPU"));
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("TemperaturGPU"), $this->ReadPropertyBoolean("LoggingTempGPU"));
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("AverageLoad"), $this->ReadPropertyBoolean("LoggingLoadAvg"));
-			IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
+                If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			//ReceiveData-Filter setzen
 			$Filter = '(.*"Function":"get_start_trigger".*|.*"InstanceID":'.$this->InstanceID.'.*)';
 			$this->SetReceiveDataFilter($Filter);
-				
-			
+							
 			If ($this->ReadPropertyBoolean("Open") == true) {
 				$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
 				$this->Measurement();
@@ -102,15 +95,6 @@
 		else {
 			$this->SetTimerInterval("Messzyklus", 0);
 		}
-	}
-	
-	public function RequestAction($Ident, $Value) 
-	{
-  		switch($Ident) {
-	       
-	        default:
-	            throw new Exception("Invalid Ident");
-	    	}
 	}
 	
 	public function ReceiveData($JSONString) 
@@ -289,7 +273,7 @@
 			$CommandArray[3] = "vcgencmd get_mem gpu";
 			// Hostname
 			$CommandArray[4] = "hostname";
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => serialize($CommandArray), "CommandNumber" => 0, "IsArray" => true )));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => serialize($CommandArray), "CommandNumber" => 0, "IsArray" => true )));
 		}
 	}
 	    
@@ -315,20 +299,20 @@
 			$CommandArray[6] = "df -P | grep /dev/root";
 			// Uptime
 			$CommandArray[7] = "uptime";
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => serialize($CommandArray), "CommandNumber" => 1, "IsArray" => true )));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => serialize($CommandArray), "CommandNumber" => 1, "IsArray" => true )));
 		}
 	}
  	
 	public function PiReboot()
 	{
 		$Command = "sudo reboot";
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
 	}    
 	
 	public function PiShutdown()
 	{
 		$Command = "sudo shutdown –h";
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
 	}       
 	    
 	public function SetDisplayPower(bool $Value)
@@ -340,7 +324,7 @@
 			$Status = 0;
 		}
 		$Command = "vcgencmd display_power ".$Status;
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{A0DAAF26-4A2D-4350-963E-CC02E74BD414}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
 	}       
 	    
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
@@ -377,6 +361,19 @@
 	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
 	        IPS_SetVariableProfileDigits($Name, $Digits);
 	}
+	
+	private function HasActiveParent()
+    	{
+		$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
+		$Instance = @IPS_GetInstance($this->InstanceID);
+		if ($Instance['ConnectionID'] > 0)
+		{
+			$Parent = IPS_GetInstance($Instance['ConnectionID']);
+			if ($Parent['InstanceStatus'] == 102)
+			return true;
+		}
+        return false;
+    	}  
 	
 	private function GetHardware(Int $RevNumber)
 	{
