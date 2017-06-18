@@ -185,7 +185,8 @@
 					// das dritte Bit prüfen
 					$Value = boolval($Result & 4) ^ $this->ReadPropertyBoolean("Invert_1");
 					SetValueBoolean($this->GetIDForIdent("Status_1"), $Value);
-						
+					
+					$this->SetStatus(102);
 					$this->SendDebug("set_DS2413State", "Status Port 0: ".(int)(boolval($Result & 2))." Status Port 1: ".(int)(boolval($Result & 8)), 0);
 			   	}
 			   	break;	
