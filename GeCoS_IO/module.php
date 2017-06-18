@@ -728,6 +728,23 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("DS2438Measurement", "Semaphore Abbruch", 0);
 				}	
 				break;
+			// Raspberry Pi Kommunikation
+		    case "get_RPi_connect":
+		   	// SSH Connection
+			If ($data->IsArray == false) {
+				// wenn es sich um ein einzelnes Kommando handelt
+				//IPS_LogMessage("IPS2GPIO SSH-Connect", $data->Command );
+				$Result = $this->SSH_Connect($data->Command);
+				//IPS_LogMessage("IPS2GPIO SSH-Connect", $Result );
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>false  )));
+			}
+			else {
+				// wenn es sich um ein Array von Kommandos handelt
+				$Result = $this->SSH_Connect_Array($data->Command);
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>true  )));
+			}
+			break;
+			
 				 
 		}
 	 }
@@ -1253,6 +1270,36 @@ class GeCoS_IO extends IPSModule
 			$Result = "";
 		}
 	
+        return $Result;
+	}
+	
+	private function SSH_Connect_Array(String $Command)
+	{
+	        If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			set_include_path(__DIR__);
+			require_once (__DIR__ . '/Net/SSH2.php');
+			$ssh = new Net_SSH2($this->ReadPropertyString("IPAddress"));
+			$login = @$ssh->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
+			if ($login == false)
+			{
+			    	IPS_LogMessage("GeCoS_IO SSH-Connect","Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
+				$this->SendDebug("SSH-Connect", "Angegebene IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
+			    	$Result = "";
+				return false;
+			}
+			$ResultArray = Array();
+			$CommandArray = unserialize($Command);
+			for ($i = 0; $i < Count($CommandArray); $i++) {
+				$ResultArray[key($CommandArray)] = $ssh->exec($CommandArray[key($CommandArray)]);
+				next($CommandArray);
+			}
+			$ssh->disconnect();
+			$Result = serialize($ResultArray);
+		}
+		else {
+			$ResultArray = Array();
+			$Result = serialize($ResultArray);
+		}
         return $Result;
 	}
 	
