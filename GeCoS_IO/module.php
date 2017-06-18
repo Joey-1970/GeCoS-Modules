@@ -838,7 +838,8 @@ class GeCoS_IO extends IPSModule
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
 					$this->SendDebug("CommandClientSocket", "Fehler beim Erstellen ".$errorcode." ".$errormsg, 0);
-					return;
+					IPS_SemaphoreLeave("CommandClientSocket");
+					return $Result;
 				}
 				// Timeout setzen
 				socket_set_option($sock,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>2, "usec"=>0));
@@ -848,7 +849,8 @@ class GeCoS_IO extends IPSModule
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
 					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg, 0);
-					return;
+					IPS_SemaphoreLeave("CommandClientSocket");
+					return $Result;
 				}
 				// Message senden
 				if( ! socket_send ($sock, $message, strlen($message), 0))
@@ -856,16 +858,18 @@ class GeCoS_IO extends IPSModule
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
-					$this->SendDebug("CommandClientSocket", "Fehler beim beim Senden ".$errorcode." ".$errormsg, 0);
-					return;
+					$this->SendDebug("CommandClientSocket", "Fehler beim Senden ".$errorcode." ".$errormsg, 0);
+					IPS_SemaphoreLeave("CommandClientSocket");
+					return $Result;
 				}
 				//Now receive reply from server
 				if(socket_recv ($sock, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
-					$this->SendDebug("CommandClientSocket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg, 0);
-					return;
+					$this->SendDebug("CommandClientSocket", "Fehler beim Empfangen ".$errorcode." ".$errormsg, 0);
+					IPS_SemaphoreLeave("CommandClientSocket");
+					return $Result;
 				}
 				// Anfragen mit variabler Rückgabelänge
 				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
