@@ -774,7 +774,12 @@ class GeCoS_IO extends IPSModule
 				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
 				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
 				IPS_Sleep(75);
-				$this->CheckSerial();
+				If ($this->GetBuffer("Serial_Handle") >= 0) {
+					$this->CheckSerial();
+				}
+				else {
+					$this->SendDebug("ReceiveData", "Der Serial-Buffer wird nicht geprüft, da kein gültiger Handle verfügbar ist!", 0);
+				}
 				
 			}
 		}
@@ -883,6 +888,9 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 				}
 				IPS_SemaphoreLeave("CommandClientSocket");
+			}
+			else {
+				$this->SendDebug("CommandClientSocket", "Semaphore Abbruch", 0);
 			}
 		}	
 	return $Result;
