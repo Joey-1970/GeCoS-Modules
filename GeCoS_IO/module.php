@@ -908,6 +908,7 @@ class GeCoS_IO extends IPSModule
 					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
 					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 				}
+				socket_close($sock);
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
 			else {
@@ -923,10 +924,10 @@ class GeCoS_IO extends IPSModule
 		switch($response[1]) {
 		        case "0":
 		        	If ($response[4] == 0) {
-		        		//IPS_LogMessage("IPS2GPIO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet");
+		        		//IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet");
 		        	}
 		        	else {
-		        		IPS_LogMessage("IPS2GPIO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])));
+		        		IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])));
 		        	}
 		        	break;
 		        case "17":
