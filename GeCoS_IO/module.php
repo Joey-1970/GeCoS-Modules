@@ -918,6 +918,7 @@ class GeCoS_IO extends IPSModule
 				}
 				
 				socket_close($sock);
+				IPS_Sleep(10);
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
 			else {
