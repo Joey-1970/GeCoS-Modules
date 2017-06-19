@@ -870,7 +870,7 @@ class GeCoS_IO extends IPSModule
 					return $Result;
 				}
 				// Message senden
-				if( ! socket_send ($sock, $message, strlen($message), 0))
+				if(!socket_send($sock, $message, strlen($message), 0))
 				{
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
@@ -908,6 +908,15 @@ class GeCoS_IO extends IPSModule
 					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
 					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 				}
+				
+				if(!socket_shutdown($sock, 2))
+				{
+					$errorcode = socket_last_error();
+					$errormsg = socket_strerror($errorcode);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Schliessen ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim Schliessen ".$errorcode." ".$errormsg, 0);
+				}
+				
 				socket_close($sock);
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
