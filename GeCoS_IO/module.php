@@ -838,7 +838,11 @@ class GeCoS_IO extends IPSModule
 	private function ClientSocket(String $message)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message)))); 
+			if (IPS_SemaphoreEnter("CommandClientSocket", 100))
+			{
+				$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message))));
+				IPS_SemaphoreLeave("CommandClientSocket");
+			}
 		}
 	}
 	
