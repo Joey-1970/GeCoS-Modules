@@ -913,7 +913,7 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 				}
 				
-				/*
+				
 				if(!socket_shutdown($sock, 2))
 				{
 					$errorcode = socket_last_error();
@@ -923,8 +923,7 @@ class GeCoS_IO extends IPSModule
 				}
 				
 				socket_close($sock);
-				IPS_Sleep(10);
-				*/
+
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
 			else {
