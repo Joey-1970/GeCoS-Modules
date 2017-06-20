@@ -864,6 +864,8 @@ class GeCoS_IO extends IPSModule
 				}
 				// Timeout setzen
 				socket_set_option($sock,SOL_SOCKET, SO_RCVTIMEO, array("sec"=>2, "usec"=>0));
+				socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1);
+				
 				// Verbindung aufbauen
 				if(!(socket_connect($sock, $this->ReadPropertyString("IPAddress"), 8888))) {
 					$errorcode = socket_last_error();
