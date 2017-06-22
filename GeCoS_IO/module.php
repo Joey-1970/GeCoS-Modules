@@ -1556,7 +1556,7 @@ class GeCoS_IO extends IPSModule
 	return $Handle;
 	}
 	
-  	public function SearchI2CDevices()
+  	private function SearchI2CDevices()
 	{
 		$DeviceArray = Array();
 		$DeviceName = Array();
