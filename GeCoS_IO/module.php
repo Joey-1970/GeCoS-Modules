@@ -13,7 +13,7 @@ class GeCoS_IO extends IPSModule
 	    
 	    	// Modul-Eigenschaftserstellung
 	    	$this->RegisterPropertyBoolean("Open", false);
-		$this->RegisterPropertyBoolean("SocketTest", false);
+		//$this->RegisterPropertyBoolean("SocketTest", false);
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
@@ -38,7 +38,7 @@ class GeCoS_IO extends IPSModule
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("type" => "CheckBox", "name" => "Open", "caption" => "Aktiv");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "SocketTest", "caption" => "SocketTest");
+		//$arrayElements[] = array("type" => "CheckBox", "name" => "SocketTest", "caption" => "SocketTest");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
  		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
@@ -855,6 +855,7 @@ class GeCoS_IO extends IPSModule
 			
 			if (IPS_SemaphoreEnter("CommandClientSocket", 200))
 			{
+				/*
 				If ($this->ReadPropertyBoolean("SocketTest") == false) {
 					// Socket erstellen
 					if(!($sock = socket_create(AF_INET, SOCK_STREAM, 0))) {
@@ -930,6 +931,7 @@ class GeCoS_IO extends IPSModule
 					socket_close($sock);
 				}
 				else {
+				*/
 					$Host = $this->ReadPropertyString("IPAddress");
 					$Port = 8888;
 					$Data = $message;
@@ -965,7 +967,7 @@ class GeCoS_IO extends IPSModule
 							$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 						}
 					}  
-				}
+				//}
 
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
