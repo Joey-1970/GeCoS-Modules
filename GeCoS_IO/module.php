@@ -476,25 +476,27 @@ class GeCoS_IO extends IPSModule
 		    
 		    	// 1-Wire
 		    	case "get_OWDevices":
-				$j = 0;
-				$OWDeviceArray = array();
-				$this->OWSearchStart();
-				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-				$DeviceSerialArray = array();
-				If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
-					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-						$DeviceSerial = $OWDeviceArray[$i][1];
-						$FamilyCode = substr($DeviceSerial, -2);
-						If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-							$DeviceSerialArray[$j][0] = $DeviceSerial; // DeviceAdresse
-							$DeviceSerialArray[$j][1] = $OWDeviceArray[$i][5]; // Erster Teil der Adresse
-							$DeviceSerialArray[$j][2] = $OWDeviceArray[$i][6]; // Zweiter Teil der Adresse
-							$j = $j + 1;
+				 If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					$j = 0;
+					$OWDeviceArray = array();
+					$this->OWSearchStart();
+					$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+					$DeviceSerialArray = array();
+					If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
+						for ($i = 0; $i < Count($OWDeviceArray); $i++) {
+							$DeviceSerial = $OWDeviceArray[$i][1];
+							$FamilyCode = substr($DeviceSerial, -2);
+							If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
+								$DeviceSerialArray[$j][0] = $DeviceSerial; // DeviceAdresse
+								$DeviceSerialArray[$j][1] = $OWDeviceArray[$i][5]; // Erster Teil der Adresse
+								$DeviceSerialArray[$j][2] = $OWDeviceArray[$i][6]; // Zweiter Teil der Adresse
+								$j = $j + 1;
+							}
 						}
 					}
-				}
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
-				break;
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
+				 }
+				 break;
 		  	case "set_OWDevices":
 				// die genutzten Device Adressen anlegen
 				$OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
@@ -521,180 +523,161 @@ class GeCoS_IO extends IPSModule
 				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				 break;
 			case "get_DS18S20Temperature":
-				if (IPS_SemaphoreEnter("OW", 3000))
-				{
-					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-					
-					if ($this->OWVerify()) {
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(0x44); //start conversion
-							$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
-							IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					 if (IPS_SemaphoreEnter("OW", 3000))
+					 {
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 
-							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
+						if ($this->OWVerify()) {
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
-								$this->OWWriteByte(0xBE); //Read Scratchpad
-								$Celsius = $this->OWRead_18S20_Temperature();
-								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
-							}
+								$this->OWWriteByte(0x44); //start conversion
+								$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
+								IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
 
-						}
-					}
-					else {
-						$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-					}
-					IPS_SemaphoreLeave("OW");
-				}
-				else {
-					$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
-				}	
-				break;
-			 case "get_DS18B20Temperature":
-				if (IPS_SemaphoreEnter("OW", 3000))
-				{
-					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-					
-					if ($this->OWVerify()) {
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(0x44); //start conversion
-							$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
-							IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
-
-							$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-							$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0xBE); //Read Scratchpad
-								$Celsius = $this->OWRead_18B20_Temperature(); 
-								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
-							}
-
-						}
-					}
-					else {
-						$this->SendDebug("get_DS18B20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-					}
-					IPS_SemaphoreLeave("OW");
-				}
-				else {
-					$this->SendDebug("DS18B20Temperature", "Semaphore Abbruch", 0);
-				}	
- 				break;
-			case "set_DS18B20Setup":
-				if (IPS_SemaphoreEnter("OW", 3000))
-				{
-					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
-					 if ($this->OWReset()) { //Reset was successful
-						$this->OWSelect();
-						$this->OWWriteByte(78); 
-						$this->OWWriteByte(0); 
-						$this->OWWriteByte(0); 
-						$this->OWWriteByte($data->Resolution); 
-					}
-					IPS_SemaphoreLeave("OW");
-				}
-				else {
-					$this->SendDebug("DS18B20Setup", "Semaphore Abbruch", 0);
-				}	
- 				break;
-			case "get_DS2413State":
-				if (IPS_SemaphoreEnter("OW", 2000))
-				{
-					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-					
-					if ($this->OWVerify()) {
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(0xF5); //PIO ACCESS READ
-							$Result = $this->OWRead_2413_State();	
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
-						}
-					}
-					else {
-						$this->SendDebug("get_DS2413State", "OWVerify: Device wurde nicht gefunden!", 0);
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-					}
-					IPS_SemaphoreLeave("OW");
-				}
-				else {
-					$this->SendDebug("DS2413State", "Semaphore Abbruch", 0);
-				}	
- 				break;
-			case "set_DS2413Setup":
-				if (IPS_SemaphoreEnter("OW", 3000))
-				{
-					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-
-					 if ($this->OWReset()) { //Reset was successful
-						$this->OWSelect();
-						$this->OWWriteByte(0x5A); //PIO ACCESS WRITE
-						$Value = $data->Setup;
-						$this->OWWriteByte($Value); 
-						$this->OWWriteByte($Value ^ 0xFF); 
-					 }
-					IPS_SemaphoreLeave("OW");
-				}
-				else {
-					$this->SendDebug("DS2413Setup", "Semaphore Abbruch", 0);
-				}	
- 				break;
-			case "get_DS2438Measurement":
-				if (IPS_SemaphoreEnter("OW", 3000))
-				{
-					$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-					$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-					
-					if ($this->OWVerify()) {
-						// Erster Schritt: VDD ermitteln
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(0x4E);
-							$this->OWWriteByte(0x00);
-							$this->OWWriteByte(0x07);
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0xB4); //start A/D V conversion
-								IPS_Sleep(10); //Wait for conversion
+								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+								$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
 
 								if ($this->OWReset()) { //Reset was successful
 									$this->OWSelect();
-									$this->OWWriteByte(0xB8); //Recall memory
-									$this->OWWriteByte(0x00); //Recall memory
-									IPS_Sleep(10); 
-									if ($this->OWReset()) { //Reset was successful
-										$this->OWSelect();
-										$this->OWWriteByte(0xBE); //Read Scratchpad
-										$this->OWWriteByte(0x00); //Read Scratchpad
-										list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
-									}
+									$this->OWWriteByte(0xBE); //Read Scratchpad
+									$Celsius = $this->OWRead_18S20_Temperature();
+									$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
 								}
-							}	
+
+							}
 						}
-						
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(0x4E);
-							$this->OWWriteByte(0x00);
-							$this->OWWriteByte(0x0F);
+						else {
+							$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+						}
+						IPS_SemaphoreLeave("OW");
+					}
+					else {
+						$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
+					}
+				}
+				break;
+			 case "get_DS18B20Temperature":
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					if (IPS_SemaphoreEnter("OW", 3000))
+					{
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+						if ($this->OWVerify()) {
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
-								$this->OWWriteByte(0x44); //start C° conversion
-								IPS_Sleep(10); //Wait for conversion
+								$this->OWWriteByte(0x44); //start conversion
+								$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
+								IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
 
+								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+								$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+								if ($this->OWReset()) { //Reset was successful
+									$this->OWSelect();
+									$this->OWWriteByte(0xBE); //Read Scratchpad
+									$Celsius = $this->OWRead_18B20_Temperature(); 
+									$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
+								}
+
+							}
+						}
+						else {
+							$this->SendDebug("get_DS18B20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+						}
+						IPS_SemaphoreLeave("OW");
+					}
+					else {
+						$this->SendDebug("DS18B20Temperature", "Semaphore Abbruch", 0);
+					}
+				}
+ 				break;
+			case "set_DS18B20Setup":
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					if (IPS_SemaphoreEnter("OW", 3000))
+					{
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+						 if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(78); 
+							$this->OWWriteByte(0); 
+							$this->OWWriteByte(0); 
+							$this->OWWriteByte($data->Resolution); 
+						}
+						IPS_SemaphoreLeave("OW");
+					}
+					else {
+						$this->SendDebug("DS18B20Setup", "Semaphore Abbruch", 0);
+					}
+				}
+ 				break;
+			case "get_DS2413State":
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					if (IPS_SemaphoreEnter("OW", 2000))
+					{
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+						if ($this->OWVerify()) {
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0xF5); //PIO ACCESS READ
+								$Result = $this->OWRead_2413_State();	
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
+							}
+						}
+						else {
+							$this->SendDebug("get_DS2413State", "OWVerify: Device wurde nicht gefunden!", 0);
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+						}
+						IPS_SemaphoreLeave("OW");
+					}
+					else {
+						$this->SendDebug("DS2413State", "Semaphore Abbruch", 0);
+					}
+				}
+ 				break;
+			case "set_DS2413Setup":
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					if (IPS_SemaphoreEnter("OW", 3000))
+					{
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+						 if ($this->OWReset()) { //Reset was successful
+							$this->OWSelect();
+							$this->OWWriteByte(0x5A); //PIO ACCESS WRITE
+							$Value = $data->Setup;
+							$this->OWWriteByte($Value); 
+							$this->OWWriteByte($Value ^ 0xFF); 
+						 }
+						IPS_SemaphoreLeave("OW");
+					}
+					else {
+						$this->SendDebug("DS2413Setup", "Semaphore Abbruch", 0);
+					}
+				}
+ 				break;
+			case "get_DS2438Measurement":
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+					if (IPS_SemaphoreEnter("OW", 3000))
+					{
+						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
+						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
+
+						if ($this->OWVerify()) {
+							// Erster Schritt: VDD ermitteln
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0x4E);
+								$this->OWWriteByte(0x00);
+								$this->OWWriteByte(0x07);
 								if ($this->OWReset()) { //Reset was successful
 									$this->OWSelect();
 									$this->OWWriteByte(0xB4); //start A/D V conversion
@@ -709,24 +692,55 @@ class GeCoS_IO extends IPSModule
 											$this->OWSelect();
 											$this->OWWriteByte(0xBE); //Read Scratchpad
 											$this->OWWriteByte(0x00); //Read Scratchpad
-											list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
-											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
-												"Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VAD, "Current"=>$Current )));
+											list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
+										}
+									}
+								}	
+							}
+
+							if ($this->OWReset()) { //Reset was successful
+								$this->OWSelect();
+								$this->OWWriteByte(0x4E);
+								$this->OWWriteByte(0x00);
+								$this->OWWriteByte(0x0F);
+								if ($this->OWReset()) { //Reset was successful
+									$this->OWSelect();
+									$this->OWWriteByte(0x44); //start C° conversion
+									IPS_Sleep(10); //Wait for conversion
+
+									if ($this->OWReset()) { //Reset was successful
+										$this->OWSelect();
+										$this->OWWriteByte(0xB4); //start A/D V conversion
+										IPS_Sleep(10); //Wait for conversion
+
+										if ($this->OWReset()) { //Reset was successful
+											$this->OWSelect();
+											$this->OWWriteByte(0xB8); //Recall memory
+											$this->OWWriteByte(0x00); //Recall memory
+											IPS_Sleep(10); 
+											if ($this->OWReset()) { //Reset was successful
+												$this->OWSelect();
+												$this->OWWriteByte(0xBE); //Read Scratchpad
+												$this->OWWriteByte(0x00); //Read Scratchpad
+												list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
+												$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
+													"Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VAD, "Current"=>$Current )));
+											}
 										}
 									}
 								}
 							}
 						}
+						else {
+							$this->SendDebug("get_DS2438Measurement", "OWVerify: Device wurde nicht gefunden!", 0);
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+						}
+						IPS_SemaphoreLeave("OW");
 					}
 					else {
-						$this->SendDebug("get_DS2438Measurement", "OWVerify: Device wurde nicht gefunden!", 0);
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
+						$this->SendDebug("DS2438Measurement", "Semaphore Abbruch", 0);
 					}
-					IPS_SemaphoreLeave("OW");
 				}
-				else {
-					$this->SendDebug("DS2438Measurement", "Semaphore Abbruch", 0);
-				}	
 				break;
 			// Raspberry Pi Kommunikation
 		    case "get_RPi_connect":
