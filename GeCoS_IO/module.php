@@ -176,6 +176,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("RTC_Handle", -1);
 			$this->SetBuffer("Serial_Handle", -1);
 			$this->SetBuffer("OW_Handle", -1);
+			$this->SetBuffer("NotifyCounter", -1);
 			
 			$this->SetBuffer("owLastDevice", 0);
 			$this->SetBuffer("owLastDiscrepancy", 0);
@@ -233,6 +234,7 @@ class GeCoS_IO extends IPSModule
 					// I²C Bus 1 für RTC, Serielle Schnittstelle,
 					//Notify Pin 17 + 27 + 15= Bitmask 134381568
 					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568, 0), 16);
+					$this->SetBuffer("NotifyCounter", 0);
 				}
 				
 				// GlitchFilter setzen
@@ -794,7 +796,8 @@ class GeCoS_IO extends IPSModule
 				$KeepAlive = (int)boolval($Flags & (1<<6));
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
-				$this->SendDebug("Datenanalyse", "Event: Zaehler = ".$SeqNo." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);
+				$this->SendDebug("Datenanalyse", "Event: Zaehler = ".$SeqNo."NotifyCounter: ".$this->GetBuffer("NotifyCounter")." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);				
+				$this->SetBuffer("NotifyCounter", $this->GetBuffer("NotifyCounter") + 1);
 				$i = $i + 2;
 			}
 			else {
