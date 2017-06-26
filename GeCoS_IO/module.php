@@ -789,10 +789,10 @@ class GeCoS_IO extends IPSModule
 					//If bit 7 is set (PI_NTFY_FLAGS_EVENT) then bits 0-4 of the flags indicate an event which has been triggered. 
 				// I tick: the number of microseconds since system boot. It wraps around after 1h12m. 
 				// I level: indicates the level of each GPIO. If bit 1<<x is set then GPIO x is high. 
-				$EventArray = unpack("S*", $MessageArray[$i]);
-				$this->SendDebug("Datenanalyse", "EventArray = ".count($EventArray), 0);
-				$SeqNo = $EventArray[1];
-				$Flags = $EventArray[2];
+				//$EventArray = unpack("S*", $MessageArray[$i]);
+				//$this->SendDebug("Datenanalyse", "EventArray = ".count($EventArray), 0);
+				$SeqNo = $MessageArray[$i] & 65535;
+				$Flags = $MessageArray[$i] >> 16;
 				$KeepAlive = (int)boolval($Flags & 64);
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
