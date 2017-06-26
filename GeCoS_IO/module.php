@@ -775,7 +775,7 @@ class GeCoS_IO extends IPSModule
 	    	 $MessageArray = unpack("L*", $Message);
 		 $Command = $MessageArray[1];
 		 
-		 /*
+		 
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
 			$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
@@ -805,7 +805,7 @@ class GeCoS_IO extends IPSModule
 				$i = $i + 3;
 			}
 		 }
-		 */
+		 
 		 
 	    	
 	    	If ((in_array($Command, $CmdPossible)) AND (in_array($MessageLen, $RDlen))) {
