@@ -777,7 +777,7 @@ class GeCoS_IO extends IPSModule
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
 			$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
-			If ($MessageArray[$i] > 116) {
+			If (($MessageArray[$i] > 116) OR ($MessageLen == 12)) {
 				// es handelt sich um ein Event
 				// Struktur:
 				// H seqno: starts at 0 each time the handle is opened and then increments by one for each report.
