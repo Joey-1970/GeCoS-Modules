@@ -793,11 +793,11 @@ class GeCoS_IO extends IPSModule
 				$KeepAlive = (int)boolval($Flags & (1<<6));
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
-				$this->SendDebug("Datenanalyse", "Zaehler = ".$SeqNo." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);
+				$this->SendDebug("Datenanalyse", "Event: Zaehler = ".$SeqNo." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);
 				$i = $i + 2;
 			}
 			else {
-				$this->SendDebug("Datenanalyse", "Command = ".$MessageArray[$i], 0);
+				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
 				$i = $i + 3;
 			}
 		 }
