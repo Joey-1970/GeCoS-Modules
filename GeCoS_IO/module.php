@@ -776,6 +776,7 @@ class GeCoS_IO extends IPSModule
 		 /*
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
+			$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
 			If ($MessageArray[$i] > 116) {
 				// es handelt sich um ein Event
 				// Struktur:
