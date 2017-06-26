@@ -778,7 +778,7 @@ class GeCoS_IO extends IPSModule
 		 
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
-			$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
+			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
 			If (($MessageArray[$i] > 116) OR ($MessageLen == 12)) {
 				// es handelt sich um ein Event
 				// Struktur:
@@ -793,10 +793,10 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("Datenanalyse", "EventArray = ".count($EventArray), 0);
 				$SeqNo = $EventArray[1];
 				$Flags = $EventArray[2];
-				$KeepAlive = (int)boolval($Flags & (1<<6));
+				$KeepAlive = (int)boolval($Flags & 64);
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
-				$this->SendDebug("Datenanalyse", "Event: Zaehler = ".$SeqNo."NotifyCounter: ".$this->GetBuffer("NotifyCounter")." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);				
+				$this->SendDebug("Datenanalyse", "Event: Zaehler = ".$SeqNo." NotifyCounter: ".$this->GetBuffer("NotifyCounter")." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);				
 				$this->SetBuffer("NotifyCounter", $this->GetBuffer("NotifyCounter") + 1);
 				$i = $i + 2;
 			}
