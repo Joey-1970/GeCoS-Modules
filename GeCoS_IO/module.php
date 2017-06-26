@@ -764,14 +764,44 @@ class GeCoS_IO extends IPSModule
 	 }
 	
 	 public function ReceiveData($JSONString) {
- 	    	$CmdPossible = array(19, 21, 76, 81, 99, 115, 116);
- 	    	$RDlen = array(16, 32);	
- 	    	// Empfangene Daten vom I/O
-	    	$Data = json_decode($JSONString);
-	    	$Message = utf8_decode($Data->Buffer);
-	    	$MessageLen = strlen($Message);
-	    	$MessageArray = unpack("L*", $Message);
-		$Command = $MessageArray[1];
+		 $CmdPossible = array(19, 21, 76, 81, 99, 115, 116);
+ 	    	 $RDlen = array(16, 32);	
+ 	    	 // Empfangene Daten vom I/O
+	    	 $Data = json_decode($JSONString);
+	    	 $Message = utf8_decode($Data->Buffer);
+	    	 $MessageLen = strlen($Message);
+	    	 $MessageArray = unpack("L*", $Message);
+		 $Command = $MessageArray[1];
+		 
+		 /*
+		 // Analyse der eingegangenen Daten
+		 for ($i = 1; $i < Count($MessageArray); $i++) {
+			If ($MessageArray[$i] > 116) {
+				// es handelt sich um ein Event
+				// Struktur:
+				// H seqno: starts at 0 each time the handle is opened and then increments by one for each report.
+				// H flags: three flags are defined, PI_NTFY_FLAGS_WDOG, PI_NTFY_FLAGS_ALIVE, and PI_NTFY_FLAGS_EVENT. 
+					//If bit 5 is set (PI_NTFY_FLAGS_WDOG) then bits 0-4 of the flags indicate a GPIO which has had a watchdog timeout. 
+					//If bit 6 is set (PI_NTFY_FLAGS_ALIVE) this indicates a keep alive signal on the pipe/socket and is sent once a minute in the absence of other notification activity. 
+					//If bit 7 is set (PI_NTFY_FLAGS_EVENT) then bits 0-4 of the flags indicate an event which has been triggered. 
+				// I tick: the number of microseconds since system boot. It wraps around after 1h12m. 
+				// I level: indicates the level of each GPIO. If bit 1<<x is set then GPIO x is high. 
+				$EventArray = unpack("C*", $Message[$i]);
+				$SeqNo = $EventArray[1];
+				$Flags = $EventArray[2];
+				$KeepAlive = boolval($Flags&(1<<6));
+				$Tick = $MessageArray[$i + 1];
+				$Level = $MessageArray[$i + 2];
+				$this->SendDebug("Datenanalyse", "SeqNo = ".$SeqNo." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);
+				$i = $i + 2;
+			}
+			else {
+				$this->SendDebug("Datenanalyse", "Command", 0);
+				$i = $i + 3;
+			}
+		 }
+		 */
+		 
 	    	
 	    	If ((in_array($Command, $CmdPossible)) AND (in_array($MessageLen, $RDlen))) {
 	    		// wenn es sich um mehrere Standarddatensätze handelt
