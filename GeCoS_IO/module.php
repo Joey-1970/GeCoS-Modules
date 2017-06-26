@@ -764,7 +764,7 @@ class GeCoS_IO extends IPSModule
 	 }
 	
 	 public function ReceiveData($JSONString) {
-		 $CmdPossible = array(19, 21, 76, 81, 99, 115, 116);
+		 $CmdPossible = array(19, 21, 76, 81, 99);
  	    	 $RDlen = array(16, 32);	
  	    	 // Empfangene Daten vom I/O
 	    	 $Data = json_decode($JSONString);
@@ -786,17 +786,18 @@ class GeCoS_IO extends IPSModule
 					//If bit 7 is set (PI_NTFY_FLAGS_EVENT) then bits 0-4 of the flags indicate an event which has been triggered. 
 				// I tick: the number of microseconds since system boot. It wraps around after 1h12m. 
 				// I level: indicates the level of each GPIO. If bit 1<<x is set then GPIO x is high. 
-				$EventArray = unpack("C*", $Message[$i]);
+				$EventArray = unpack("S*", $MessageArray[$i]);
+				$this->SendDebug("Datenanalyse", "EventArray = ".count($EventArray), 0);
 				$SeqNo = $EventArray[1];
 				$Flags = $EventArray[2];
-				$KeepAlive = boolval($Flags&(1<<6));
+				$KeepAlive = (int)boolval($Flags & (1<<6));
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
-				$this->SendDebug("Datenanalyse", "SeqNo = ".$SeqNo." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);
+				$this->SendDebug("Datenanalyse", "Zaehler = ".$SeqNo." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);
 				$i = $i + 2;
 			}
 			else {
-				$this->SendDebug("Datenanalyse", "Command", 0);
+				$this->SendDebug("Datenanalyse", "Command = ".$MessageArray[$i], 0);
 				$i = $i + 3;
 			}
 		 }
@@ -819,19 +820,19 @@ class GeCoS_IO extends IPSModule
 				$MessageParts = unpack("L*", $DataArray[$i]);
 				
 				// Wert von Pin 17
-				$Bitvalue_17 = boolval($MessageParts[3]&(1<<17));
+				$Bitvalue_17 = boolval($MessageParts[3] & (1<<17));
 				//IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
 				$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 				
 				// Wert von Pin 27
-				$Bitvalue_27 = boolval($MessageParts[3]&(1<<27));
+				$Bitvalue_27 = boolval($MessageParts[3] & (1<<27));
 				//IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
 				$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 				
 				// Wert von Pin 15
-				$Bitvalue_15 = boolval($MessageParts[3]&(1<<15));
+				$Bitvalue_15 = boolval($MessageParts[3] & (1<<15));
 				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
 				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
 				IPS_Sleep(75);
