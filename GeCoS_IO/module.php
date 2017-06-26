@@ -176,7 +176,6 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("RTC_Handle", -1);
 			$this->SetBuffer("Serial_Handle", -1);
 			$this->SetBuffer("OW_Handle", -1);
-			$this->SetBuffer("NotifyCounter", -1);
 			
 			$this->SetBuffer("owLastDevice", 0);
 			$this->SetBuffer("owLastDiscrepancy", 0);
@@ -234,7 +233,6 @@ class GeCoS_IO extends IPSModule
 					// I²C Bus 1 für RTC, Serielle Schnittstelle,
 					//Notify Pin 17 + 27 + 15= Bitmask 134381568
 					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568, 0), 16);
-					$this->SetBuffer("NotifyCounter", 0);
 				}
 				
 				// GlitchFilter setzen
@@ -789,15 +787,17 @@ class GeCoS_IO extends IPSModule
 					//If bit 7 is set (PI_NTFY_FLAGS_EVENT) then bits 0-4 of the flags indicate an event which has been triggered. 
 				// I tick: the number of microseconds since system boot. It wraps around after 1h12m. 
 				// I level: indicates the level of each GPIO. If bit 1<<x is set then GPIO x is high. 
-				//$EventArray = unpack("S*", $MessageArray[$i]);
-				//$this->SendDebug("Datenanalyse", "EventArray = ".count($EventArray), 0);
 				$SeqNo = $MessageArray[$i] & 65535;
 				$Flags = $MessageArray[$i] >> 16;
 				$KeepAlive = (int)boolval($Flags & 64);
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
-				$this->SendDebug("Datenanalyse", "Event: Zaehler = ".$SeqNo." NotifyCounter: ".$this->GetBuffer("NotifyCounter")." Flags = ".$Flags." KeepAlive = ".$KeepAlive." Tick = ".$Tick." Level = ".$Level, 0);				
-				$this->SetBuffer("NotifyCounter", $this->GetBuffer("NotifyCounter") + 1);
+				If ($KeepAlive == 1) {
+					$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
+				}
+				else {
+					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
+				}
 				$i = $i + 2;
 			}
 			else {
