@@ -829,7 +829,7 @@ class GeCoS_IO extends IPSModule
 			}
 			else {
 				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
-				//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]);
+				$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]);
 				$i = $i + 4;
 			}
 		 }
@@ -841,7 +841,7 @@ class GeCoS_IO extends IPSModule
 	    		$DataArray = str_split($Message, 16);
 	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Command-Datensätze");
 	    		for ($i = 0; $i < Count($DataArray); $i++) {
-    				$this->ClientResponse($DataArray[$i]);
+    				//$this->ClientResponse($DataArray[$i]);
 			}
 	    	}
 		elseif (($MessageLen / 12) == intval($MessageLen / 12)) {
@@ -1640,7 +1640,7 @@ class GeCoS_IO extends IPSModule
 					// Testweise lesen
 					$this->SendDebug("SearchI2CDevices", "Device bekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
 					
-					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+					$Result = $this->ClientSocket(pack("L*", 59, $Handle, 0, 0));
 					$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
 					
 					$DeviceArray[$k][0] = $DeviceName[$i];
@@ -1663,11 +1663,11 @@ class GeCoS_IO extends IPSModule
 				}
 				else {
 					// Handle ermitteln
-					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+					$Handle = $this->ClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
 									
 					if ($Handle >= 0) {
 						// Testweise lesen
-						$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+						$Result = $this->ClientSocket(pack("L*", 59, $Handle, 0, 0));
 						
 						If ($Result >= 0) {
 							$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
@@ -1684,7 +1684,7 @@ class GeCoS_IO extends IPSModule
 							//IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 						}
 						// Handle löschen
-						$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+						$Result = $this->ClientSocket(pack("L*", 55, $Handle, 0, 0));
 						//$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Loeschen: ".$Result, 0);
 					}
 				}	
