@@ -1309,7 +1309,7 @@ class GeCoS_IO extends IPSModule
 	{
 	        If (($this->ReadPropertyBoolean("Open") == true) ) {
 			set_include_path(__DIR__);
-			require_once (__DIR__ . '/Net/SSH2.php');
+			require_once (__DIR__ . '/libs/Net/SSH2.php');
 			$ssh = new Net_SSH2($this->ReadPropertyString("IPAddress"));
 			$login = @$ssh->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
 			if ($login == false)
@@ -1333,7 +1333,7 @@ class GeCoS_IO extends IPSModule
 	{
 	        If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 			set_include_path(__DIR__);
-			require_once (__DIR__ . '/Net/SSH2.php');
+			require_once (__DIR__ . '/libs/Net/SSH2.php');
 			$ssh = new Net_SSH2($this->ReadPropertyString("IPAddress"));
 			$login = @$ssh->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
 			if ($login == false)
@@ -1375,7 +1375,7 @@ class GeCoS_IO extends IPSModule
 			
 			
 			set_include_path(__DIR__);
-			require_once (__DIR__ . '/Net/SFTP.php');
+			require_once (__DIR__ . '/libs/Net/SFTP.php');
 			$sftp = new Net_SFTP($this->ReadPropertyString("IPAddress"));
 			$login = @$sftp->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
 			
