@@ -801,19 +801,23 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
 					// Wert von Pin 17
 					$Bitvalue_17 = boolval($Level & pow(2, 17));
-					$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);				
-					//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+					$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);
+					If ($Bitvalue_17 == 0) {
+						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+					}
 
 					// Wert von Pin 27
 					$Bitvalue_27 = boolval($Level & pow(2, 27));
 					$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
-					//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+					If ($Bitvalue_27 == 0) {
+						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+					}
 
 					// Wert von Pin 15
 					$Bitvalue_15 = boolval($Level & pow(2, 15));
 					$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
 					IPS_Sleep(75);
-					If ($this->GetBuffer("Serial_Handle") >= 0) {
+					If (($this->GetBuffer("Serial_Handle") >= 0) AND ($Bitvalue_15 == 0)) {
 						//$this->CheckSerial();
 					}
 					else {
@@ -1168,10 +1172,11 @@ class GeCoS_IO extends IPSModule
   		            	break;
 		        case "97":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("IPS2GPIO GlitchFilter","gesetzt");
+					$this->SendDebug("Glitch Filter", "Glitch Filter wurde erfolgreich gesetzt", 0);
            			}
            			else {
-           				IPS_LogMessage("GeCoS_IO GlitchFilter","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				$this->SendDebug("Glitch Filter", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+					IPS_LogMessage("GeCoS_IO GlitchFilter","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
          
 		            	break;
