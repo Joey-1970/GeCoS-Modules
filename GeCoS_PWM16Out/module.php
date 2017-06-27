@@ -70,7 +70,7 @@
 			$this->EnableAction("Output_Int_X".$i);	
 		}
 		
-		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
+		If ((IPS_GetKernelRunlevel() == 10001) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
 				//ReceiveData-Filter setzen
 				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|.*"Function":"status".*)';
