@@ -38,7 +38,7 @@
 	    	$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
 	    	
 		
-		If (IPS_GetKernelRunlevel() == 10103) {
+		If (IPS_GetKernelRunlevel() == 10001) {
 			//ReceiveData-Filter setzen
 			$Filter = '((.*"Function":"set_serial_data".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*))';
 			$this->SetReceiveDataFilter($Filter);
