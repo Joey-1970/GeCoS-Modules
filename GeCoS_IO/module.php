@@ -764,7 +764,7 @@ class GeCoS_IO extends IPSModule
 	 }
 	
 	 public function ReceiveData($JSONString) {
-		 $CmdPossible = array(19, 21, 76, 81, 99);
+		 $CmdPossible = array(19, 21, 54, 55, 59, 76, 81, 99);
  	    	 $RDlen = array(16, 32);	
  	    	 // Empfangene Daten vom I/O
 	    	 $Data = json_decode($JSONString);
@@ -829,7 +829,7 @@ class GeCoS_IO extends IPSModule
 			}
 			else {
 				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
-				$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
+				//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
 				$i = $i + 4;
 			}
 		 }
@@ -841,7 +841,7 @@ class GeCoS_IO extends IPSModule
 	    		$DataArray = str_split($Message, 16);
 	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Command-Datensätze");
 	    		for ($i = 0; $i < Count($DataArray); $i++) {
-    				//$this->ClientResponse($DataArray[$i]);
+    				$this->ClientResponse($DataArray[$i]);
 			}
 	    	}
 		elseif (($MessageLen / 12) == intval($MessageLen / 12)) {
