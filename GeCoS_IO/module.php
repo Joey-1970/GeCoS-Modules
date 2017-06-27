@@ -776,6 +776,7 @@ class GeCoS_IO extends IPSModule
 		 
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
+			 $this->SendDebug("Datenanalyse", "SeqNo: ".$MessageArray[$i] & pow(2, 16)." Counter: ".$this->GetBuffer("NotifyCounter")), 0);
 			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
 			If (($MessageArray[$i] > 116) OR ($MessageLen == 12) OR ($MessageArray[$i] & pow(2, 16) == $this->GetBuffer("NotifyCounter"))) {
 				// es handelt sich um ein Event
@@ -792,6 +793,7 @@ class GeCoS_IO extends IPSModule
 				$KeepAlive = (int)boolval($Flags & 64);
 				$Tick = $MessageArray[$i + 1];
 				$Level = $MessageArray[$i + 2];
+				
 				If ($KeepAlive == 1) {
 					$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
 				}
@@ -815,11 +817,11 @@ class GeCoS_IO extends IPSModule
 					$Bitvalue_15 = boolval($Level & pow(2, 15));
 					$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
 					IPS_Sleep(75);
-					If (($this->GetBuffer("Serial_Handle") >= 0) AND ($Bitvalue_15 == 0)) {
+					If ($this->GetBuffer("Serial_Handle") >= 0) {
 						//$this->CheckSerial();
 					}
 					else {
-						$this->SendDebug("ReceiveData", "Der Serial-Buffer wird nicht geprüft, da kein gültiger Handle verfügbar ist!", 0);
+						$this->SendDebug("ReceiveData", "Der Serial-Buffer wird nicht geprueft, da kein gueltiger Handle verfügbar ist!", 0);
 					}
 				}
 				$this->SetBuffer("NotifyCounter", $SeqNo + 1);
