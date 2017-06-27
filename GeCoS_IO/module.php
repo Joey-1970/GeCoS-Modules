@@ -776,9 +776,9 @@ class GeCoS_IO extends IPSModule
 		 
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
-			 $this->SendDebug("Datenanalyse", "SeqNo: ".($MessageArray[$i] & pow(2, 16))." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
+			 $this->SendDebug("Datenanalyse", "SeqNo: ".($MessageArray[$i] & 65535)." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
 			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
-			If (($MessageArray[$i] > 116) OR ($MessageLen == 12) OR ($MessageArray[$i] & pow(2, 16) == $this->GetBuffer("NotifyCounter"))) {
+			If (($MessageArray[$i] > 100) OR ($MessageLen == 12) OR ($MessageArray[$i] & 65535 == $this->GetBuffer("NotifyCounter"))) {
 				// es handelt sich um ein Event
 				// Struktur:
 				// H seqno: starts at 0 each time the handle is opened and then increments by one for each report.
