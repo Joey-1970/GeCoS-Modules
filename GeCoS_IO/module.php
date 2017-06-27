@@ -1663,7 +1663,7 @@ class GeCoS_IO extends IPSModule
 				}
 				else {
 					// Handle ermitteln
-					$Handle = $this->ClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+					$Handle = $this->ClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0));
 									
 					if ($Handle >= 0) {
 						// Testweise lesen
