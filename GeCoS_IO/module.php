@@ -829,7 +829,7 @@ class GeCoS_IO extends IPSModule
 			}
 			else {
 				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
-				$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]);
+				$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
 				$i = $i + 4;
 			}
 		 }
