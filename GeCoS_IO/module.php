@@ -798,11 +798,11 @@ class GeCoS_IO extends IPSModule
 				else {
 					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
 				}
-				$i = $i + 2;
+				$i = $i + 3;
 			}
 			else {
 				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
-				$i = $i + 3;
+				$i = $i + 4;
 			}
 		 }
 		 
