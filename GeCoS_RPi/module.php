@@ -96,7 +96,7 @@
 		$this->RegisterVariableFloat("SD_Card_Used_rel", "SD-Card Used (rel)", "~Intensity.1", 330);
 		$this->DisableAction("SD_Card_Used_rel");
 		
-                If ((IPS_GetKernelRunlevel() == 10001) AND ($this->HasActiveParent() == true)) {
+                If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			//ReceiveData-Filter setzen
 			$Filter = '(.*"Function":"get_start_trigger".*|.*"InstanceID":'.$this->InstanceID.'.*)';
 			$this->SetReceiveDataFilter($Filter);
