@@ -176,6 +176,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("RTC_Handle", -1);
 			$this->SetBuffer("Serial_Handle", -1);
 			$this->SetBuffer("OW_Handle", -1);
+			$this->SetBuffer("NotifyCounter", -1);
 			
 			$this->SetBuffer("owLastDevice", 0);
 			$this->SetBuffer("owLastDiscrepancy", 0);
@@ -233,6 +234,7 @@ class GeCoS_IO extends IPSModule
 					// I²C Bus 1 für RTC, Serielle Schnittstelle,
 					//Notify Pin 17 + 27 + 15= Bitmask 134381568
 					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568, 0), 16);
+					$this->SetBuffer("NotifyCounter", 0);
 				}
 				
 				// GlitchFilter setzen
@@ -777,7 +779,7 @@ class GeCoS_IO extends IPSModule
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
 			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
-			If (($MessageArray[$i] > 116) OR ($MessageLen == 12)) {
+			If (($MessageArray[$i] > 116) OR ($MessageLen == 12) OR ($MessageArray[$i] & pow(2, 16) == $this->GetBuffer("NotifyCounter"))) {
 				// es handelt sich um ein Event
 				// Struktur:
 				// H seqno: starts at 0 each time the handle is opened and then increments by one for each report.
@@ -797,11 +799,33 @@ class GeCoS_IO extends IPSModule
 				}
 				else {
 					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
+					// Wert von Pin 17
+					$Bitvalue_17 = boolval($Level & pow(2, 17));
+					$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);				
+					//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+
+					// Wert von Pin 27
+					$Bitvalue_27 = boolval($Level & pow(2, 27));
+					$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
+					//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+
+					// Wert von Pin 15
+					$Bitvalue_15 = boolval($Level & pow(2, 15));
+					$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
+					IPS_Sleep(75);
+					If ($this->GetBuffer("Serial_Handle") >= 0) {
+						//$this->CheckSerial();
+					}
+					else {
+						$this->SendDebug("ReceiveData", "Der Serial-Buffer wird nicht geprüft, da kein gültiger Handle verfügbar ist!", 0);
+					}
 				}
+				$this->SetBuffer("NotifyCounter", $SeqNo + 1);
 				$i = $i + 3;
 			}
 			else {
 				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
+				//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]);
 				$i = $i + 4;
 			}
 		 }
