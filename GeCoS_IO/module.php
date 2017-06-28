@@ -1172,7 +1172,7 @@ class GeCoS_IO extends IPSModule
   		            	break;
 		        case "97":
            			If ($response[4] >= 0) {
-					$this->SendDebug("Glitch Filter", "Glitch Filter wurde erfolgreich gesetzt", 0);
+					$this->SendDebug("Glitch Filter", "Glitch Filter Pin ".$response[2]." wurde erfolgreich gesetzt", 0);
            			}
            			else {
            				$this->SendDebug("Glitch Filter", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
