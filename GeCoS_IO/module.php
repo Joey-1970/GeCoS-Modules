@@ -958,7 +958,7 @@ class GeCoS_IO extends IPSModule
 				//********************************************************************
 				*/
 
-				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 1);
+				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
 				if (!$fp) {
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
