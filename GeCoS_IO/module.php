@@ -948,6 +948,7 @@ class GeCoS_IO extends IPSModule
 						$this->SetBuffer("CS_Handle", $CS_Handle);
 						$fp = $CS_Handle;
 					}
+				}
 				else {
 					$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
 					$this->SetBuffer("CS_Handle", $CS_Handle);
