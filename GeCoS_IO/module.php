@@ -777,7 +777,7 @@ class GeCoS_IO extends IPSModule
 		 
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i < Count($MessageArray); $i++) {
-			 $this->SendDebug("Datenanalyse", "SeqNo: ".($MessageArray[$i] & 65535)." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
+			 $this->SendDebug("Datenanalyse", "i: ".$i." Laenge: ".$MessageLen." SeqNo: ".($MessageArray[$i] & 65535)." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
 			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
 			If (($MessageLen == 12) OR (($MessageArray[$i] & 65535) == $this->GetBuffer("NotifyCounter"))) {
 				// es handelt sich um ein Event
@@ -802,27 +802,27 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
 					// Wert von Pin 17
 					$Bitvalue_17 = boolval($Level & pow(2, 17));
-					$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);
+					$this->SendDebug("Datenanalyse", "Bit 17: ".$Bitvalue_17, 0);
 					If ($Bitvalue_17 == 0) {
 						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 					}
 
 					// Wert von Pin 27
 					$Bitvalue_27 = boolval($Level & pow(2, 27));
-					$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
+					$this->SendDebug("Datenanalyse", "Bit 27: ".$Bitvalue_27, 0);
 					If ($Bitvalue_27 == 0) {
 						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
 
 					// Wert von Pin 15
 					$Bitvalue_15 = boolval($Level & pow(2, 15));
-					$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
+					$this->SendDebug("Datenanalyse", "Bit 15: ".$Bitvalue_15, 0);
 					IPS_Sleep(75);
 					If ($this->GetBuffer("Serial_Handle") >= 0) {
 						//$this->CheckSerial();
 					}
 					else {
-						$this->SendDebug("ReceiveData", "Der Serial-Buffer wird nicht geprueft, da kein gueltiger Handle verfügbar ist!", 0);
+						$this->SendDebug("Datenanalyse", "Der Serial-Buffer wird nicht geprueft, da kein gueltiger Handle verfügbar ist!", 0);
 					}
 				}
 				$this->SetBuffer("NotifyCounter", $SeqNo + 1);
