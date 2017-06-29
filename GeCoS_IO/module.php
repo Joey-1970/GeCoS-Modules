@@ -940,20 +940,23 @@ class GeCoS_IO extends IPSModule
 					$Result = stream_set_timeout($this->GetBuffer("CS_Handle"), 5);
 					If ($Result) {
 						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht!", 0);
-						$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
-						$this->SetBuffer("CS_Handle", $CS_Handle);
+						$fp = $this->GetBuffer("CS_Handle");
 					}
 					else {
 						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht nicht mehr!", 0);
+						$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
+						$this->SetBuffer("CS_Handle", $CS_Handle);
+						$fp = $CS_Handle;
 					}
 				else {
 					$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
 					$this->SetBuffer("CS_Handle", $CS_Handle);
-					$this->SendDebug("CommandClientSocketTest", "CS_Handle: ".$CS_Handle, 0);	
+					$this->SendDebug("CommandClientSocketTest", "CS_Handle: ".$CS_Handle, 0);
+					$fp = $CS_Handle;
 				}
 				//********************************************************************
 
-				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 1);
+				//$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 1);
 				if (!$fp) {
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
@@ -962,7 +965,8 @@ class GeCoS_IO extends IPSModule
 					stream_set_timeout($fp, 5);
 					stream_socket_sendto($fp, $Data);
 					$buf = fgets($fp, $ResponseLen + 1);
-					fclose($fp);
+					//fclose($fp);
+					
 					// Anfragen mit variabler Rückgabelänge
 					$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
 					$MessageArray = unpack("L*", $buf);
