@@ -944,12 +944,12 @@ class GeCoS_IO extends IPSModule
 					}
 					else {
 						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht nicht mehr!", 0);
-						$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
+						$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
 						$this->SetBuffer("CS_Handle", $CS_Handle);
 						$fp = $CS_Handle;
 					}
 				else {
-					$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
+					$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
 					$this->SetBuffer("CS_Handle", $CS_Handle);
 					$this->SendDebug("CommandClientSocketTest", "CS_Handle: ".$CS_Handle, 0);
 					$fp = $CS_Handle;
