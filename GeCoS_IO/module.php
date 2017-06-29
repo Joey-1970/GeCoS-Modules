@@ -175,6 +175,7 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("Serial_Handle", -1);
 			$this->SetBuffer("OW_Handle", -1);
 			$this->SetBuffer("NotifyCounter", -1);
+			$this->SetBuffer("CS_Handle", 0);
 			
 			$this->SetBuffer("owLastDevice", 0);
 			$this->SetBuffer("owLastDiscrepancy", 0);
@@ -933,6 +934,24 @@ class GeCoS_IO extends IPSModule
 				$Host = $this->ReadPropertyString("IPAddress");
 				$Port = 8888;
 				$Data = $message;
+				
+				//********************************************************************
+				If ($this->GetBuffer("CS_Handle") > 0) {
+					$Result = stream_set_timeout($this->GetBuffer("CS_Handle"), 5);
+					If ($Result) {
+						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht!", 0);
+						$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
+						$this->SetBuffer("CS_Handle", $CS_Handle);
+					}
+					else {
+						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht nicht mehr!", 0);
+					}
+				else {
+					$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5)
+					$this->SetBuffer("CS_Handle", $CS_Handle);
+					$this->SendDebug("CommandClientSocketTest", "CS_Handle: ".$CS_Handle, 0);	
+				}
+				//********************************************************************
 
 				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 1);
 				if (!$fp) {
