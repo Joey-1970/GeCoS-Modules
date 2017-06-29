@@ -1679,8 +1679,7 @@ class GeCoS_IO extends IPSModule
 					stream_socket_sendto($fp, $Data);
 					$Buffer = fgets($fp, 16 + 1);
 					$Result = $this->ClientResponse($Buffer);
-					
-					//$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0));
+
 					$this->SendDebug("SearchI2CDevices", "Ergebnis des Test-Lesen: ".$Result, 0);
 					
 					$DeviceArray[$k][0] = $DeviceName[$i];
@@ -1707,8 +1706,6 @@ class GeCoS_IO extends IPSModule
 					stream_socket_sendto($fp, $Data);
 					$Buffer = fgets($fp, 16 + 1);
 					$Handle = $this->ClientResponse($Buffer);
-					
-					//$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0));
 									
 					if ($Handle >= 0) {
 						// Testweise lesen
@@ -1716,8 +1713,6 @@ class GeCoS_IO extends IPSModule
 						stream_socket_sendto($fp, $Data);
 						$Buffer = fgets($fp, 16 + 1);
 						$Result = $this->ClientResponse($Buffer);
-						
-						//$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0));
 						
 						If ($Result >= 0) {
 							$this->SendDebug("SearchI2CDevices", "Device unbekannt - Handle: ".$Handle." Adresse: ".$SearchArray[$i], 0);
@@ -1731,16 +1726,12 @@ class GeCoS_IO extends IPSModule
 							$DeviceArray[$k][5] = "#FFFF00";
 							$k = $k + 1;
 							$this->SendDebug("SearchI2CDevices", "Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4), 0);
-							//IPS_LogMessage("GeCoS_IO I2C-Suche","Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4));
 						}
 						// Handle löschen
 						$Data = pack("L*", 55, $Handle, 0, 0);
 						stream_socket_sendto($fp, $Data);
 						$Buffer = fgets($fp, 16 + 1);
 						$Result = $this->ClientResponse($Buffer);
-						
-						//$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0));
-						//$this->SendDebug("SearchI2CDevices", "Ergebnis des Handle-Loeschen: ".$Result, 0);
 					}
 				}	
 			}
