@@ -934,7 +934,7 @@ class GeCoS_IO extends IPSModule
 				$Host = $this->ReadPropertyString("IPAddress");
 				$Port = 8888;
 				$Data = $message;
-				
+				/*
 				//********************************************************************
 				If ($this->GetBuffer("CS_Handle") > 0) {
 					$Result = stream_set_timeout($this->GetBuffer("CS_Handle"), 5);
@@ -956,8 +956,9 @@ class GeCoS_IO extends IPSModule
 					$fp = $CS_Handle;
 				}
 				//********************************************************************
+				*/
 
-				//$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 1);
+				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 1);
 				if (!$fp) {
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
