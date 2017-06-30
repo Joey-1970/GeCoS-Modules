@@ -7,13 +7,13 @@ class GeCoS_IO extends IPSModule
 	{
             	parent::__construct($InstanceID);
 	}
-	
+	/*
 	public function __destruct()
 	{
 		if ($this->Socket)
 		    	fclose($this->Socket);
 	} 
-	
+	*/
 	public function Create() 
 	{
 	    	parent::Create();
