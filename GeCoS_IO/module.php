@@ -890,7 +890,7 @@ class GeCoS_IO extends IPSModule
 	 	else {
 	 		// Prüfen ob Daten im Serial Buffer vorhanden sind
 			IPS_Sleep(75);
-			$this->CommandClientSocket(pack("L*", 82, GetValueInteger($this->GetIDForIdent("Serial_Handle")), 0, 0), 16);
+			$this->CheckSerial();
 	 	}
 	 }
  
