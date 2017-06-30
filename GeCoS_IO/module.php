@@ -955,26 +955,25 @@ class GeCoS_IO extends IPSModule
 					stream_set_timeout($this->Socket, 5);
 				}
 				stream_socket_sendto($fp, $Data);
-				$buf = fgets($fp, $ResponseLen + 1);
-				//fclose($fp);
+				$Buffer = fgets($fp, $ResponseLen + 1);
 
 				// Anfragen mit variabler Rückgabelänge
 				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
-				$MessageArray = unpack("L*", $buf);
+				$MessageArray = unpack("L*", $Buffer);
 				$Command = $MessageArray[1];
 				If (in_array($Command, $CmdVarLen)) {
-					$Result = $this->ClientResponse($buf);
+					$Result = $this->ClientResponse($Buffer);
 				}
 				// Standardantworten
-				elseIf ((strlen($buf) == 16) OR ((strlen($buf) / 16) == intval(strlen($buf) / 16))) {
-					$DataArray = str_split($buf, 16);
+				elseIf ((strlen($Buffer) == 16) OR ((strlen($Buffer) / 16) == intval(strlen($Buffer) / 16))) {
+					$DataArray = str_split($Buffer, 16);
 					for ($i = 0; $i < Count($DataArray); $i++) {
 						$Result = $this->ClientResponse($DataArray[$i]);
 					}
 				}
 				else {
-					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
-					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
+					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($Buffer)." Zeichen - nicht differenzierbar!");
+					$this->SendDebug("CommandClientSocket", strlen($Buffer)." Zeichen - nicht differenzierbar!", 0);
 				}
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
@@ -1005,7 +1004,7 @@ class GeCoS_IO extends IPSModule
 					stream_set_timeout($fp, 5);
 					stream_socket_sendto($fp, $Data);
 					$buf = fgets($fp, $ResponseLen + 1);
-					//fclose($fp);
+					fclose($fp);
 					
 					// Anfragen mit variabler Rückgabelänge
 					$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
