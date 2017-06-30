@@ -131,7 +131,7 @@
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			if (IPS_SemaphoreEnter("GetInput", 10))
+			if (IPS_SemaphoreEnter("GetInput", 2))
 			{
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 				IPS_SemaphoreLeave("GetInput");
