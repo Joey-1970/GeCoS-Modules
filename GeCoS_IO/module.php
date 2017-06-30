@@ -1,10 +1,19 @@
 <?
 class GeCoS_IO extends IPSModule
 {
- 	public function __construct($InstanceID) {
+ 	private $Socket = false;
+	
+	public function __construct($InstanceID) 
+	{
             	parent::__construct($InstanceID);
 	}
-	 
+	
+	public function __destruct()
+	{
+		if ($this->Socket)
+		    	fclose($this->Socket);
+	} 
+	
 	public function Create() 
 	{
 	    	parent::Create();
@@ -934,29 +943,43 @@ class GeCoS_IO extends IPSModule
 				$Host = $this->ReadPropertyString("IPAddress");
 				$Port = 8888;
 				$Data = $message;
-				/*
+				
 				//********************************************************************
-				If ($this->GetBuffer("CS_Handle") > 0) {
-					$Result = stream_set_timeout($this->GetBuffer("CS_Handle"), 5);
-					If ($Result) {
-						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht!", 0);
-						$fp = $this->GetBuffer("CS_Handle");
+				if (!$this->Socket)
+				{
+					$this->Socket = @tream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
+					if (!$this->Socket) {
+					    	IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
+						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 					}
-					else {
-						$this->SendDebug("CommandClientSocketTest", "Verbindung besteht nicht mehr!", 0);
-						$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
-						$this->SetBuffer("CS_Handle", $CS_Handle);
-						$fp = $CS_Handle;
+					stream_set_timeout($this->Socket, 5);
+				}
+				stream_socket_sendto($fp, $Data);
+				$buf = fgets($fp, $ResponseLen + 1);
+				//fclose($fp);
+
+				// Anfragen mit variabler Rückgabelänge
+				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
+				$MessageArray = unpack("L*", $buf);
+				$Command = $MessageArray[1];
+				If (in_array($Command, $CmdVarLen)) {
+					$Result = $this->ClientResponse($buf);
+				}
+				// Standardantworten
+				elseIf ((strlen($buf) == 16) OR ((strlen($buf) / 16) == intval(strlen($buf) / 16))) {
+					$DataArray = str_split($buf, 16);
+					for ($i = 0; $i < Count($DataArray); $i++) {
+						$Result = $this->ClientResponse($DataArray[$i]);
 					}
 				}
 				else {
-					$CS_Handle = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
-					$this->SetBuffer("CS_Handle", $CS_Handle);
-					$this->SendDebug("CommandClientSocketTest", "CS_Handle: ".$CS_Handle, 0);
-					$fp = $CS_Handle;
+					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
+					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 				}
+				
+				    
 				//********************************************************************
-				*/
+				/*
 
 				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
 				if (!$fp) {
@@ -988,6 +1011,7 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 					}
 				}  
+				*/
 				IPS_SemaphoreLeave("CommandClientSocket");
 			}
 			else {
