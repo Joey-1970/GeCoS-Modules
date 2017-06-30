@@ -804,14 +804,14 @@ class GeCoS_IO extends IPSModule
 					$Bitvalue_17 = boolval($Level & pow(2, 17));
 					$this->SendDebug("Datenanalyse", "Bit 17: ".(int)$Bitvalue_17, 0);
 					If ($Bitvalue_17 == 0) {
-						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 					}
 
 					// Wert von Pin 27
 					$Bitvalue_27 = boolval($Level & pow(2, 27));
 					$this->SendDebug("Datenanalyse", "Bit 27: ".(int)$Bitvalue_27, 0);
 					If ($Bitvalue_27 == 0) {
-						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
 
 					// Wert von Pin 15
@@ -851,7 +851,7 @@ class GeCoS_IO extends IPSModule
 	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Notify-Datensätze");
 	    		for ($i = 0; $i < min(2, Count($DataArray)); $i++) {
 				$MessageParts = unpack("L*", $DataArray[$i]);
-				
+				/*
 				// Wert von Pin 17
 				$Bitvalue_17 = boolval($MessageParts[3] & (1<<17));
 				//IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
@@ -863,7 +863,7 @@ class GeCoS_IO extends IPSModule
 				//IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
 				$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-				
+				*/
 				// Wert von Pin 15
 				$Bitvalue_15 = boolval($MessageParts[3] & (1<<15));
 				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
