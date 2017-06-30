@@ -776,7 +776,7 @@ class GeCoS_IO extends IPSModule
 		 
 		 
 		 // Analyse der eingegangenen Daten
-		 for ($i = 1; $i < Count($MessageArray); $i++) {
+		 for ($i = 1; $i <= Count($MessageArray); $i++) {
 			 $this->SendDebug("Datenanalyse", "i: ".$i." Laenge: ".$MessageLen." SeqNo: ".($MessageArray[$i] & 65535)." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
 			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
 			If (($MessageLen == 12) OR (($MessageArray[$i] & 65535) == $this->GetBuffer("NotifyCounter"))) {
@@ -802,21 +802,21 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
 					// Wert von Pin 17
 					$Bitvalue_17 = boolval($Level & pow(2, 17));
-					$this->SendDebug("Datenanalyse", "Bit 17: ".$Bitvalue_17, 0);
+					$this->SendDebug("Datenanalyse", "Bit 17: ".(int)$Bitvalue_17, 0);
 					If ($Bitvalue_17 == 0) {
 						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 					}
 
 					// Wert von Pin 27
 					$Bitvalue_27 = boolval($Level & pow(2, 27));
-					$this->SendDebug("Datenanalyse", "Bit 27: ".$Bitvalue_27, 0);
+					$this->SendDebug("Datenanalyse", "Bit 27: ".(int)$Bitvalue_27, 0);
 					If ($Bitvalue_27 == 0) {
 						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
 
 					// Wert von Pin 15
 					$Bitvalue_15 = boolval($Level & pow(2, 15));
-					$this->SendDebug("Datenanalyse", "Bit 15: ".$Bitvalue_15, 0);
+					$this->SendDebug("Datenanalyse", "Bit 15: ".(int)$Bitvalue_15, 0);
 					IPS_Sleep(75);
 					If ($this->GetBuffer("Serial_Handle") >= 0) {
 						//$this->CheckSerial();
@@ -826,12 +826,12 @@ class GeCoS_IO extends IPSModule
 					}
 				}
 				$this->SetBuffer("NotifyCounter", $SeqNo + 1);
-				$i = $i + 3;
+				$i = $i + 2;
 			}
 			else {
 				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
 				//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
-				$i = $i + 4;
+				$i = $i + 3;
 			}
 		 }
 		 
