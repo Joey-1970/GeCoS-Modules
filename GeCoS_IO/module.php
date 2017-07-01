@@ -826,7 +826,7 @@ class GeCoS_IO extends IPSModule
 					// Wert von Pin 15
 					$Bitvalue_15 = boolval($Level & pow(2, 15));
 					$this->SendDebug("Datenanalyse", "Bit 15 (RS232): ".(int)$Bitvalue_15, 0);				
-					If ($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false) {
+					If (($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
 						$SerialRead = true;
 						IPS_Sleep(75);
 						//$this->CheckSerial();
