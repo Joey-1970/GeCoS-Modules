@@ -7,13 +7,13 @@ class GeCoS_IO extends IPSModule
 	{
             	parent::__construct($InstanceID);
 	}
-	/*
+	
 	public function __destruct()
 	{
 		if ($this->Socket)
 		    	fclose($this->Socket);
 	} 
-	*/
+	
 	public function Create() 
 	{
 	    	parent::Create();
@@ -933,7 +933,7 @@ class GeCoS_IO extends IPSModule
 		}
 	}
 	
-	
+	/*
 	protected function CommandClientSocket(String $message, $ResponseLen = 16)
 	{
 		$Result = -999;
@@ -983,8 +983,8 @@ class GeCoS_IO extends IPSModule
 		}	
 	return $Result;
 	}
+	*/
 	
-	/*
 	private function CommandClientSocket(String $message, $ResponseLen = 16)
 	{
 		$Result = -999;
@@ -1035,7 +1035,7 @@ class GeCoS_IO extends IPSModule
 		}	
 	return $Result;
 	}
-	*/
+	
 	private function ClientResponse(String $Message)
 	{
 		$response = unpack("L*", $Message);
