@@ -1004,25 +1004,25 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("Socket Test", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 					}
 					else {
-						$this->SendDebug("Socket Test", "Verbindung besteht nach Aufbau", 0);
+						//$this->SendDebug("Socket Test", "Verbindung besteht nach Aufbau", 0);
 					}    
 					stream_set_timeout($this->Socket, 5);
 				}
 				else {
-					$this->SendDebug("Socket Test", "Verbindung besteht ohne Aufbau", 0);
+					//$this->SendDebug("Socket Test", "Verbindung besteht ohne Aufbau", 0);
 				}
 				
 				
-				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
-				if (!$fp) {
+				//$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
+				if (!$this->Socket) {
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 				}
 				else {
-					stream_set_timeout($fp, 5);
-					stream_socket_sendto($fp, $Data);
-					$buf = fgets($fp, $ResponseLen + 1);
-					fclose($fp);
+					stream_set_timeout(!$this->Socket, 5);
+					stream_socket_sendto(!$this->Socket, $Data);
+					$buf = fgets($!$this->Socket, $ResponseLen + 1);
+					//fclose($fp);
 					
 					// Anfragen mit variabler Rückgabelänge
 					$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
