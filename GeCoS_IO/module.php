@@ -950,6 +950,7 @@ class GeCoS_IO extends IPSModule
 					if (!$this->Socket) {
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
+						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
 					}
 				}
@@ -2392,7 +2393,7 @@ class GeCoS_IO extends IPSModule
      			$Result = 0;
    			// restore the search state 
    			$this->SetBuffer("owDeviceAddress_0", $owDeviceAddress_0_backup);
-		 	$this->GetBuffer("owDeviceAddress_1", $owDeviceAddress_1_backup);
+		 	$this->SetBuffer("owDeviceAddress_1", $owDeviceAddress_1_backup);
    			$this->SetBuffer("owLastDiscrepancy", $ld_backup);
    		 	$this->SetBuffer("owLastDevice", $ldf_backup);
 		}
