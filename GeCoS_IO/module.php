@@ -996,6 +996,23 @@ class GeCoS_IO extends IPSModule
 				$Port = 8888;
 				$Data = $message;
 				
+				if (!$this->Socket)
+				{
+					$this->SendDebug("Socket Test", "Verbindung besteht nicht", 0);
+					$this->Socket = @stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
+					if (!$this->Socket) {
+						$this->SendDebug("Socket Test", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
+					}
+					else {
+						$this->SendDebug("Socket Test", "Verbindung besteht nach Aufbau", 0);
+					    
+					stream_set_timeout($this->Socket, 5);
+				}
+				else {
+					$this->SendDebug("Socket Test", "Verbindung besteht ohne Aufbau", 0);
+				}
+				
+				
 				$fp = stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
 				if (!$fp) {
 					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
