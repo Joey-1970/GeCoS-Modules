@@ -1021,7 +1021,7 @@ class GeCoS_IO extends IPSModule
 				else {
 					stream_set_timeout(!$this->Socket, 5);
 					stream_socket_sendto(!$this->Socket, $Data);
-					$buf = fgets($!$this->Socket, $ResponseLen + 1);
+					$buf = fgets(!$this->Socket, $ResponseLen + 1);
 					//fclose($fp);
 					
 					// Anfragen mit variabler Rückgabelänge
