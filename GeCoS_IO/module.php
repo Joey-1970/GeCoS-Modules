@@ -1,7 +1,7 @@
 <?
 class GeCoS_IO extends IPSModule
 {
- 	//private $Socket = false;
+ 	private $Socket = false;
 	
 	public function __construct($InstanceID) 
 	{
