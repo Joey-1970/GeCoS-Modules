@@ -1005,7 +1005,7 @@ class GeCoS_IO extends IPSModule
 					}
 					else {
 						$this->SendDebug("Socket Test", "Verbindung besteht nach Aufbau", 0);
-					    
+					}    
 					stream_set_timeout($this->Socket, 5);
 				}
 				else {
