@@ -949,9 +949,10 @@ class GeCoS_IO extends IPSModule
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 						If ($errno == 10060) {
+							$this->SendDebug("CommandClientSocket", "Fehler ".$errno, 0);
 							$this->SetStatus(201);
 							// Testballon über IPS-ClientSocket senden
-							$this->ClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0));
+							$this->ClientSocket(pack("L*", 17, 0, 0, 0));
 						}
 						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
