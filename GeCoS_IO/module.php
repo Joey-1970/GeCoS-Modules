@@ -41,6 +41,7 @@ class GeCoS_IO extends IPSModule
 		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
 		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
+		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Datenverbindung ist gestört");
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("type" => "CheckBox", "name" => "Open", "caption" => "Aktiv");
@@ -947,6 +948,10 @@ class GeCoS_IO extends IPSModule
 					if (!$this->Socket) {
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
+						If ($errno == 10060) {
+							$this->SetStatus(201);
+							// Starte Timer
+						}
 						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
 					}
