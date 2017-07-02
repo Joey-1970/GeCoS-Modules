@@ -808,31 +808,27 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
 				}
 				else {
-					$this->SendDebug("Datenanalyse", "Event: Interrupt", 0);
 					// Wert von Pin 17
 					$Bitvalue_17 = boolval($Level & pow(2, 17));
-					$this->SendDebug("Datenanalyse", "Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
 					If ($Bitvalue_17 == 0) {
+						$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 					}
 
 					// Wert von Pin 27
 					$Bitvalue_27 = boolval($Level & pow(2, 27));
-					$this->SendDebug("Datenanalyse", "Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
 					If ($Bitvalue_27 == 0) {
+						$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
 
 					// Wert von Pin 15
-					$Bitvalue_15 = boolval($Level & pow(2, 15));
-					$this->SendDebug("Datenanalyse", "Bit 15 (RS232): ".(int)$Bitvalue_15, 0);				
-					If (($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
+					$Bitvalue_15 = boolval($Level & pow(2, 15));			
+					If (($Bitvalue_27 == 0) AND ($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
+						$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
 						$SerialRead = true;
 						IPS_Sleep(75);
 						//$this->CheckSerial();
-					}
-					else {
-						$this->SendDebug("Datenanalyse", "Der Serial-Buffer wird nicht geprueft, da kein gueltiger Handle verfuegbar ist!", 0);
 					}
 				}
 				$this->SetBuffer("NotifyCounter", $SeqNo + 1);
