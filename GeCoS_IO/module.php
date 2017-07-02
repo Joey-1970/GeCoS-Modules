@@ -950,7 +950,8 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 						$this->SetStatus(201);
 						// Testballon über IPS-ClientSocket senden
-						$this->ClientSocket(pack("L*", 17, 0, 0, 0));
+						$this->ConnectionTest()
+						//$this->ClientSocket(pack("L*", 17, 0, 0, 0));
 						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
 					}
@@ -1493,7 +1494,7 @@ class GeCoS_IO extends IPSModule
 					if (!$status) {
 						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
 						$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
-						$this->SetStatus(104);
+						$this->SetStatus(201);
 					}
 					else {
 						fclose($status);
@@ -1514,7 +1515,7 @@ class GeCoS_IO extends IPSModule
 		else {
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
-			$this->SetStatus(104);
+			$this->SetStatus(201);
 		}
 	return $result;
 	}
