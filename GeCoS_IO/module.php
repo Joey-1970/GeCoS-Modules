@@ -805,46 +805,50 @@ class GeCoS_IO extends IPSModule
 					//If bit 7 is set (PI_NTFY_FLAGS_EVENT) then bits 0-4 of the flags indicate an event which has been triggered. 
 				// I tick: the number of microseconds since system boot. It wraps around after 1h12m. 
 				// I level: indicates the level of each GPIO. If bit 1<<x is set then GPIO x is high. 
-				$SeqNo = $MessageArray[$i] & 65535;
-				$Flags = $MessageArray[$i] >> 16;
-				$KeepAlive = (int)boolval($Flags & 64);
-				$Tick = $MessageArray[$i + 1];
-				$Level = $MessageArray[$i + 2];
-				
-				If ($KeepAlive == 1) {
-					$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
-				}
-				else {
-					// Wert von Pin 17
-					$Bitvalue_17 = boolval($Level & pow(2, 17));
-					If ($Bitvalue_17 == 0) {
-						$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
-					}
+				if (array_key_exists($i + 2, $MessageArray)) {
+					$SeqNo = $MessageArray[$i] & 65535;
+					$Flags = $MessageArray[$i] >> 16;
+					$KeepAlive = (int)boolval($Flags & 64);
+					$Tick = $MessageArray[$i + 1];
+					$Level = $MessageArray[$i + 2];
 
-					// Wert von Pin 27
-					$Bitvalue_27 = boolval($Level & pow(2, 27));
-					If ($Bitvalue_27 == 0) {
-						$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+					If ($KeepAlive == 1) {
+						$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
 					}
+					else {
+						// Wert von Pin 17
+						$Bitvalue_17 = boolval($Level & pow(2, 17));
+						If ($Bitvalue_17 == 0) {
+							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+						}
 
-					// Wert von Pin 15
-					$Bitvalue_15 = boolval($Level & pow(2, 15));			
-					If (($Bitvalue_27 == 0) AND ($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
-						$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
-						$SerialRead = true;
-						IPS_Sleep(75);
-						//$this->CheckSerial();
+						// Wert von Pin 27
+						$Bitvalue_27 = boolval($Level & pow(2, 27));
+						If ($Bitvalue_27 == 0) {
+							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+						}
+
+						// Wert von Pin 15
+						$Bitvalue_15 = boolval($Level & pow(2, 15));			
+						If (($Bitvalue_27 == 0) AND ($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
+							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
+							$SerialRead = true;
+							IPS_Sleep(75);
+							//$this->CheckSerial();
+						}
 					}
+					$this->SetBuffer("NotifyCounter", $SeqNo + 1);
+					$i = $i + 2;
 				}
-				$this->SetBuffer("NotifyCounter", $SeqNo + 1);
-				$i = $i + 2;
 			}
 			else {
-				$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
-				//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
-				$i = $i + 3;
+				if (array_key_exists($i + 3, $MessageArray)) {
+					$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
+					//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
+					$i = $i + 3;
+				}
 			}
 		 }
 		 
