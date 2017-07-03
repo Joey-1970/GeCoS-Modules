@@ -133,6 +133,31 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			if (IPS_SemaphoreEnter("GetInput", 2))
 			{
+				/*
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_16In", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
+				if ($Result === NULL) { // Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+                			$this->SendDebug('GetInput', 'Keine gültige Antwort', 0);
+					return NULL;
+				}
+				else {
+					$ByteArray = array();
+					$ByteArray = unserialize($Result);
+					
+					for ($i = 0; $i <= 7; $i++) {
+						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
+					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
+					}
+					for ($i = 8; $i <= 15; $i++) {
+						$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
+					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
+					}
+				}
+				*/
+         		
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 				IPS_SemaphoreLeave("GetInput");
 			}
