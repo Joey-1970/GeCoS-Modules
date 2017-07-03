@@ -57,15 +57,7 @@
 			$this->RegisterVariableBoolean("Output_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
 			$this->EnableAction("Output_X".$i);	
 		}
-		
-		$this->RegisterVariableInteger("OutputBank0", "Output Bank 0", "", 170);
-          	$this->DisableAction("OutputBank0");
-		IPS_SetHidden($this->GetIDForIdent("OutputBank0"), false);
-		
-		$this->RegisterVariableInteger("OutputBank1", "Output Bank 1", "", 180);
-          	$this->DisableAction("OutputBank1");
-		IPS_SetHidden($this->GetIDForIdent("OutputBank1"), false);
-		
+	
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
 				//ReceiveData-Filter setzen
@@ -107,8 +99,6 @@
 			   	If ($data->InstanceID == $this->InstanceID) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
-					SetValueInteger($this->GetIDForIdent("OutputBank0"), $ByteArray[1]);
-					SetValueInteger($this->GetIDForIdent("OutputBank1"), $ByteArray[2]);
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
