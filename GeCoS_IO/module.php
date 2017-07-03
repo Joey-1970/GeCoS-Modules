@@ -404,7 +404,15 @@ class GeCoS_IO extends IPSModule
 					$this->CommandClientSocket(pack("L*", 57, $I2CInstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 				}
 				break;	
-			case "i2c_4AnalogIn":
+			case "i2c_16In":
+				// I2CRD h num - i2c Read bytes
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
+					$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
+					return $Result;
+				}
+				break;
+			 case "i2c_4AnalogIn":
 				// I2CWS h bv - smb Write Byte: write byte
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$Result = $this->CommandClientSocket(pack("L*", 60, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Value, 0), 16);
@@ -414,8 +422,6 @@ class GeCoS_IO extends IPSModule
 					}
 				}
 				break;	
-			 
-			 
 			case "i2c_read_byte":
 		   		// I2CRB h r - smb Read Byte Data: read byte from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
@@ -1071,6 +1077,7 @@ class GeCoS_IO extends IPSModule
 					$ByteResponse = unpack("C*", $ByteMessage);
 					$ByteArray = serialize($ByteResponse);
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_byte_block", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Count" => $response[4], "ByteArray" => $ByteArray)));
+					Return $ByteArray; 
 				}
 		            	else {
            				IPS_LogMessage("GeCoS_IO I2C Read Bytes","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
