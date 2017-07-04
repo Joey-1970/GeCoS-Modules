@@ -191,19 +191,17 @@
 		$Value = min(255, max(0, $Value));
 		$Bank = min(1, max(0, $Bank));
 		$ByteArray = array();
+		$this->SendDebug("SetOutputBank", "Bank ".$Bank." Value: ".$Value, 0);
 		$ByteArray[0] = 2;
 		If ($Bank == 0) {
-			$this->SendDebug("SetOutputBank", "Bank 0", 0);
 			$ByteArray[1] = $Value;
 			$ByteArray[2] = $this->GetBuffer("OutputBank1");
 		}
 		else {
-			$this->SendDebug("SetOutputBank", "Bank 1", 0);
 			$ByteArray[1] = $this->GetBuffer("OutputBank0");
 			$ByteArray[2] = $Value;
 		}
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-		IPS_Sleep(5);
 		$this->GetOutput();
 	}
 	    
