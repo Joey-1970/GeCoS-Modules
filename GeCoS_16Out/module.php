@@ -107,6 +107,8 @@
 			   	If ($data->InstanceID == $this->InstanceID) {
 			   		$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
+					SetValueInteger($this->GetIDForIdent("OutputBank0"), $ByteArray[1]);
+-					SetValueInteger($this->GetIDForIdent("OutputBank1"), $ByteArray[2]);
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
