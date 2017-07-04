@@ -110,7 +110,7 @@
 					$ByteArray[3] = ($ByteArray[2] << 8) & $ByteArray[1];
 					
 					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($ByteArray[1] & pow(2, $i));	
+						$Bitvalue = boolval($ByteArray[3] & pow(2, $i));	
 						//$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
 							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
