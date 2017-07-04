@@ -106,7 +106,17 @@
 					$ByteArray = unserialize($data->ByteArray);
 					$this->SetBuffer("OutputBank0", $ByteArray[1]);
 					$this->SetBuffer("OutputBank1", $ByteArray[2]);
-				
+					
+					$ByteArray[3] = ($ByteArray[2] << 8) & $ByteArray[1];
+					
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($ByteArray[1] & pow(2, $i));	
+						//$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
+					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+						}
+					}
+					/*
 					for ($i = 0; $i <= 7; $i++) {
 						$Bitvalue = boolval($ByteArray[1] & pow(2, $i));	
 						//$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
@@ -121,6 +131,7 @@
 							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 						}
 					}
+					*/
 			   	}
 			  	break;
 	 	}
