@@ -108,7 +108,7 @@
 					$this->SetBuffer("OutputBank1", $ByteArray[2]);
 					
 					$ByteArray[3] = ($ByteArray[2] << 8) & $ByteArray[1];
-					
+					$this->SendDebug("set_i2c_byte_block", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
 					for ($i = 0; $i <= 15; $i++) {
 						$Bitvalue = boolval($ByteArray[3] & pow(2, $i));	
 						//$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
