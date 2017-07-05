@@ -1143,11 +1143,7 @@ class GeCoS_IO extends IPSModule
 			case "63":
            			If ($response[4] >= 0) {
 					//IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Count: ".$response[4]." DeviceSign: ".$this->GetI2C_HandleDevice($response[2]));
-					$ByteResponse = unpack("S*", $response[4]);
-					
-					$this->SendDebug("Case 63", "Wert: ".$ByteResponse[1], 0);
-					Return $ByteResponse[1];
-					
+					$this->SendDebug("Case 63", "Wert: ".$response[4], 0);
 					//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_byte_block", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Count" => $response[4], "ByteArray" => $ByteArray)));
 				}
 				else {
