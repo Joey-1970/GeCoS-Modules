@@ -156,20 +156,21 @@
 			}
 			$ByteArray = array();
 			$ByteArray = unserialize($Result); 
-			$ByteArray[3] = ($ByteArray[2] << 8) | $ByteArray[1];
-			$this->SendDebug("GetOutput", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
-			$this->SetBuffer("OutputBank0", $ByteArray[1]);
-			$this->SetBuffer("OutputBank1", $ByteArray[2]);
+			If (count($ByteArray) == 2) {
+				$ByteArray[3] = ($ByteArray[2] << 8) | $ByteArray[1];
+				$this->SendDebug("GetOutput", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
+				$this->SetBuffer("OutputBank0", $ByteArray[1]);
+				$this->SetBuffer("OutputBank1", $ByteArray[2]);
 
-			$ByteArray[3] = ($ByteArray[2] << 8) | $ByteArray[1];
-			$this->SendDebug("GetOutput", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
-			for ($i = 0; $i <= 15; $i++) {
-				$Bitvalue = boolval($ByteArray[3] & pow(2, $i));					
-				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-					SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+				$ByteArray[3] = ($ByteArray[2] << 8) | $ByteArray[1];
+				$this->SendDebug("GetOutput", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
+				for ($i = 0; $i <= 15; $i++) {
+					$Bitvalue = boolval($ByteArray[3] & pow(2, $i));					
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+					}
 				}
 			}
-			
 		}
 	}
 	    
