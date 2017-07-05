@@ -412,7 +412,7 @@ class GeCoS_IO extends IPSModule
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					
 					//I2CRW 	63 	handle 	register 	0
-					$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 2), 16);
+					$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
 					//$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 16 + ($data->Count));
 					//$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 					
