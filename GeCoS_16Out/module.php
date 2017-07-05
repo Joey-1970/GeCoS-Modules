@@ -110,28 +110,11 @@
 					$ByteArray[3] = ($ByteArray[2] << 8) | $ByteArray[1];
 					$this->SendDebug("set_i2c_byte_block", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
 					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($ByteArray[3] & pow(2, $i));	
-						//$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
+						$Bitvalue = boolval($ByteArray[3] & pow(2, $i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
 							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 						}
 					}
-					/*
-					for ($i = 0; $i <= 7; $i++) {
-						$Bitvalue = boolval($ByteArray[1] & pow(2, $i));	
-						//$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
-					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-						}
-					}
-					for ($i = 8; $i <= 15; $i++) {
-						$Bitvalue = boolval($ByteArray[2]& pow(2, $i - 8));
-						//$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
-					    	If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-						}
-					}
-					*/
 			   	}
 			  	break;
 	 	}
@@ -181,12 +164,13 @@
 	
 	private function GetOutput()
 	{
+		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 			/*
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 			if ($Result === NULL) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SendDebug("GetOutput", "Keine valider Rückgabewert!", 0);
+				$this->SendDebug("GetOutput", "Keine gültige Antwort!", 0);
 				return;
 			}
 			$ByteArray = array();
@@ -218,6 +202,7 @@
 	    
 	private function Setup()
 	{
+		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$ByteArray = array();
 			$ByteArray[0] = hexdec("06");
