@@ -154,6 +154,16 @@
 				$this->SendDebug("GetOutput", "Keine gültige Antwort!", 0);
 				return;
 			}
+			$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
+			$this->SetBuffer("OutputBank0", $Result & 255);
+			$this->SetBuffer("OutputBank1", $Result >> 8);
+			for ($i = 0; $i <= 15; $i++) {
+				$Bitvalue = boolval($Result & pow(2, $i));					
+				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+					SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+				}
+			}
+			/*
 			$ByteArray = array();
 			$ByteArray = unserialize($Result); 
 			If (count($ByteArray) == 2) {
@@ -171,6 +181,7 @@
 					}
 				}
 			}
+			*/
 		}
 	}
 	    
