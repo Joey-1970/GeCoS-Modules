@@ -404,15 +404,7 @@ class GeCoS_IO extends IPSModule
 					$this->CommandClientSocket(pack("L*", 57, $I2CInstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
 				}
 				break;	
-			case "i2c_16In":
-				// I2CRD h num - i2c Read bytes
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
-					return $Result;
-				}
-				break;
-			case "i2c_16Out":
+			case "i2c_PCA9655E_Read": // Module 16In und 16 Out
 				// I2CRD h num - i2c Read bytes
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
