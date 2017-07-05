@@ -368,6 +368,7 @@ class GeCoS_IO extends IPSModule
 				// MUX auf den erforderlichen Channel stellen
 				$this->SetMUX($data->DeviceBus);
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
+				$this->SendDebug("Set Used I2C", "Handle fuer Device-Adresse ".$data->DeviceAddress." an Bus ".($data->DeviceBus - 4).": ".$Handle, 0);
 				$I2CInstanceArray[$data->InstanceID]["Handle"] = $Handle;
 				$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 				// Testweise lesen
