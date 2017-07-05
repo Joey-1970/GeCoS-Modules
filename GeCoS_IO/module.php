@@ -406,10 +406,14 @@ class GeCoS_IO extends IPSModule
 				}
 				break;	
 			case "i2c_PCA9655E_Read": // Module 16In und 16 Out
+				// I2CRI h r num - smb Read I2C Block Data: read bytes from register 
 				// I2CRD h num - i2c Read bytes
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
+					
+					//$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 16 + ($data->Count));
 					$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
+					
 					return $Result;
 				}
 				break;  
@@ -1134,6 +1138,18 @@ class GeCoS_IO extends IPSModule
            				IPS_LogMessage("GeCoS_IO I2C Write Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
 		            	break;
+			case "67":
+           			If ($response[4] >= 0) {
+					//IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Count: ".$response[4]." DeviceSign: ".$this->GetI2C_HandleDevice($response[2]));
+					$ByteMessage = substr($Message, -($response[4]));
+					$ByteResponse = unpack("C*", $ByteMessage);
+					$ByteArray = serialize($ByteResponse);
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_byte_block", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Count" => $response[4], "ByteArray" => $ByteArray)));
+					Return $ByteArray; 				}
+				else {
+		            		IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+		            	}
+				break;
 			case "68":
            			If ($response[4] >= 0) {
            				//IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Value: ".$response[4]);
