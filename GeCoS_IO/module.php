@@ -1142,7 +1142,7 @@ class GeCoS_IO extends IPSModule
            			If ($response[4] >= 0) {
 					//IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Count: ".$response[4]." DeviceSign: ".$this->GetI2C_HandleDevice($response[2]));
 					$ByteMessage = substr($Message, -($response[4]));
-					$ByteResponse = unpack("C*", $ByteMessage);
+					$ByteResponse = unpack("c*", $ByteMessage);
 					$this->SendDebug("Case 67", "Wert 1: ".$ByteResponse[1]." Wert 2: ".$ByteResponse[2], 0);
 					$ByteArray = serialize($ByteResponse);
 					
