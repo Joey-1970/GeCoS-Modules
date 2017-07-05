@@ -152,7 +152,7 @@
 			//$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2, "Count" => 2)));
 			IPS_Sleep(100);
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
-			if ($Result === NULL)  {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
 				$this->SendDebug("GetOutput", "Keine gueltige Antwort:".$Result, 0);
 				return;
 			}
