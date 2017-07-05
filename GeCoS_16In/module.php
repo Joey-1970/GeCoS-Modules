@@ -2,6 +2,8 @@
     // Klassendefinition
     class GeCoS_16In extends IPSModule 
     {
+	// PCA9655E
+	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
         {
@@ -135,31 +137,24 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			if (IPS_SemaphoreEnter("GetInput", 2))
 			{
-				
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_16In", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 				if ($Result === NULL) { // Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-                			$this->SendDebug('GetInput', 'Keine gültige Antwort', 0);
+                			$this->SendDebug('GetInput', 'Keine gültige Antwort!', 0);
 					return NULL;
 				}
 				else {
 					$ByteArray = array();
-					$ByteArray = unserialize($Result);
+					$ByteArray = unserialize($data->ByteArray);
 					
-					for ($i = 0; $i <= 7; $i++) {
-						$Bitvalue = boolval($ByteArray[1]&(1<<$i));					
-					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
-						}
-					}
-					for ($i = 8; $i <= 15; $i++) {
-						$Bitvalue = boolval($ByteArray[2]&(1<<($i - 8)));					
+					$ByteArray[3] = ($ByteArray[2] << 8) | $ByteArray[1];
+					$this->SendDebug("GetInput", "Bank 0: ".$ByteArray[1]." Bank 1: ".$ByteArray[2]." Summe: ".$ByteArray[3], 0);
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($ByteArray[3] & pow(2, $i));					
 					    	If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
 							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
 						}
 					}
 				}
-				
-         		
 				//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
 				IPS_SemaphoreLeave("GetInput");
 			}
@@ -177,10 +172,7 @@
 			$ByteArray = array();
 			$ByteArray[0] = hexdec("06");
 			$ByteArray[1] = hexdec("FF");
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-			$ByteArray = array();
-			$ByteArray[0] = hexdec("07");
-			$ByteArray[1] = hexdec("FF");
+			$ByteArray[2] = hexdec("FF");
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
 		}
 	}
