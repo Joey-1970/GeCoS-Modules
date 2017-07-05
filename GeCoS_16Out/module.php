@@ -102,7 +102,8 @@
 			   	break;
 			  case "set_i2c_byte_block":
 			   	If ($data->InstanceID == $this->InstanceID) {
-			   		$ByteArray = array();
+			   		/*
+					$ByteArray = array();
 					$ByteArray = unserialize($data->ByteArray);
 					$this->SetBuffer("OutputBank0", $ByteArray[1]);
 					$this->SetBuffer("OutputBank1", $ByteArray[2]);
@@ -115,6 +116,7 @@
 							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 						}
 					}
+					*/
 			   	}
 			  	break;
 	 	}
@@ -166,8 +168,8 @@
 	{
 		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
-			/*
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_bytes", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Count" => 2)));
+			
 			
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2, "Count" => 2)));
 			if ($Result === NULL) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
@@ -189,7 +191,7 @@
 					SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 				}
 			}
-			*/
+			
 		}
 	}
 	    
