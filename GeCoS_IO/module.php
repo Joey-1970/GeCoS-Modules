@@ -958,7 +958,7 @@ class GeCoS_IO extends IPSModule
 	private function CommandClientSocket(String $message, $ResponseLen = 16)
 	{
 		$Result = -999;
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102) AND (GetValueBoolean($this->GetIDForIdent("ConnectionStatus")))) {
 			
 			if (IPS_SemaphoreEnter("CommandClientSocket", 200))
 			{
