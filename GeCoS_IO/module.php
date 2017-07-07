@@ -162,21 +162,27 @@ class GeCoS_IO extends IPSModule
 	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
 		
 		If (IPS_GetKernelRunlevel() == 10103) {		
-			$this->RegisterVariableString("Hardware", "Hardware", "", 107);
+			$this->RegisterVariableBoolean("ConnectionStatus", "Verbindungs-Status", "~Switch", 10);
+			$this->DisableAction("ConnectionStatus");
+			IPS_SetHidden($this->GetIDForIdent("ConnectionStatus"), false);
+			
+			$this->RegisterVariableString("Hardware", "Hardware", "", 20);
 			$this->DisableAction("Hardware");
 			IPS_SetHidden($this->GetIDForIdent("Hardware"), true);
 			
-			$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 108);
+			$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
 			$this->DisableAction("SoftwareVersion");
 			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
 			
-			$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 110);
+			$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 40);
 			$this->DisableAction("RTC_Temperature");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Temperature"), false);
 			
-			$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 140);
+			$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 50);
 			$this->DisableAction("RTC_Timestamp");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Timestamp"), false);
+			
+			
 		
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
@@ -965,15 +971,14 @@ class GeCoS_IO extends IPSModule
 					if (!$this->Socket) {
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
+						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
 						$this->SetStatus(201);
-						// Testballon über IPS-ClientSocket senden
-						$this->ConnectionTest();
-						//$this->ClientSocket(pack("L*", 17, 0, 0, 0));
 						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
 					}
 				}
 				
+				SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
 				stream_set_timeout($this->Socket, 5);
 				stream_socket_sendto($this->Socket, $Data);
 				$buf = fgets($this->Socket, $ResponseLen + 1);
@@ -1536,6 +1541,7 @@ class GeCoS_IO extends IPSModule
 					if (!$status) {
 						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
 						$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
+						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
 						$this->SetStatus(201);
 					}
 					else {
@@ -1543,6 +1549,7 @@ class GeCoS_IO extends IPSModule
 						//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
 						$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 						$result = true;
+						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
 						$this->SetStatus(102);
 					}
 	   			}
@@ -1551,12 +1558,14 @@ class GeCoS_IO extends IPSModule
 					//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
 					$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 					$result = true;
+					SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
 					$this->SetStatus(102);
 	   			}
 		}
 		else {
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
+			SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
 			$this->SetStatus(201);
 		}
 	return $result;
