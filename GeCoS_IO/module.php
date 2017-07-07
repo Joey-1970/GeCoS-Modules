@@ -31,6 +31,7 @@ class GeCoS_IO extends IPSModule
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
+		$this->RegisterTimer("ConnectionStatus", 0, 'GeCoSIO_ConnectionStatus($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
@@ -972,6 +973,7 @@ class GeCoS_IO extends IPSModule
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
+						$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
 						$this->SetStatus(201);
 						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
@@ -979,6 +981,8 @@ class GeCoS_IO extends IPSModule
 				}
 				
 				SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
+				$this->SetTimerInterval("ConnectionStatus", 0);
+				
 				stream_set_timeout($this->Socket, 5);
 				stream_socket_sendto($this->Socket, $Data);
 				$buf = fgets($this->Socket, $ResponseLen + 1);
@@ -1542,6 +1546,7 @@ class GeCoS_IO extends IPSModule
 						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
 						$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
 						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
+						$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
 						$this->SetStatus(201);
 					}
 					else {
@@ -1550,6 +1555,7 @@ class GeCoS_IO extends IPSModule
 						$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 						$result = true;
 						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
+						$this->SetTimerInterval("ConnectionStatus", 0);
 						$this->SetStatus(102);
 					}
 	   			}
@@ -1559,6 +1565,7 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 					$result = true;
 					SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
+					$this->SetTimerInterval("ConnectionStatus", 0);
 					$this->SetStatus(102);
 	   			}
 		}
@@ -1566,9 +1573,15 @@ class GeCoS_IO extends IPSModule
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
 			SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
+			$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
 			$this->SetStatus(201);
 		}
 	return $result;
+	}
+	
+	public function ConnectionStatus()
+	{
+		$this->ConnectionTest();
 	}
 	
 	private function InstanceArraySearch(String $SearchKey, Int $SearchValue)
