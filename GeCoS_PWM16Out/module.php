@@ -2,6 +2,8 @@
     // Klassendefinition
     class GeCoS_PWM16Out extends IPSModule 
     {
+	// PCA9685
+	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
         {
