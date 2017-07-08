@@ -354,6 +354,7 @@ class GeCoS_IO extends IPSModule
 	 {
 		 // Empfangene Daten von der Device Instanz
 	    	 $data = json_decode($JSONString);
+		 $Result = -999;
 	    	 $I2CInstanceArray = Array();
 		 $I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 		 $OWInstanceArray = Array();
@@ -423,7 +424,7 @@ class GeCoS_IO extends IPSModule
 					//$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 16 + ($data->Count));
 					//$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 					
-					return $Result;
+					
 				}
 				break;  
 			 case "i2c_4AnalogIn":
@@ -789,10 +790,10 @@ class GeCoS_IO extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>true  )));
 			}
 			break;
-			
 				 
 		}
-	 }
+	Return $Result;
+	}
 	
 	 public function ReceiveData($JSONString) {
 		 $CmdPossible = array(19, 21, 54, 55, 59, 76, 81, 99);
@@ -1012,6 +1013,7 @@ class GeCoS_IO extends IPSModule
 	private function ClientResponse(String $Message)
 	{
 		$response = unpack("L*", $Message);
+		$Result = $response[4];
 		switch($response[1]) {
 		        case "0":
 		        	If ($response[4] == 0) {
@@ -1097,7 +1099,7 @@ class GeCoS_IO extends IPSModule
 					$ByteResponse = unpack("C*", $ByteMessage);
 					$ByteArray = serialize($ByteResponse);
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_byte_block", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Count" => $response[4], "ByteArray" => $ByteArray)));
-					Return $ByteArray; 
+					$Result = $ByteArray; 
 				}
 		            	else {
            				IPS_LogMessage("GeCoS_IO I2C Read Bytes","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
@@ -1168,7 +1170,7 @@ class GeCoS_IO extends IPSModule
 					$ByteArray = serialize($ByteResponse);
 					
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_byte_block", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Count" => $response[4], "ByteArray" => $ByteArray)));
-					Return $ByteArray; 				}
+					$Result =  $ByteArray; 				}
 				else {
 		            		IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
 		            	}
@@ -1253,7 +1255,7 @@ class GeCoS_IO extends IPSModule
            			}
            			break;
 		    }
-	return $response[4];
+	return $Result;
 	}
 	
 	public function PIGPIOD_Restart()
