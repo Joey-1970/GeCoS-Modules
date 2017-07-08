@@ -145,7 +145,7 @@
 		}
 	}	
 	
-	private function GetOutput()
+	public function GetOutput()
 	{
 		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
