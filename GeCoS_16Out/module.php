@@ -60,6 +60,8 @@
 			$this->EnableAction("Output_X".$i);	
 		}
 		
+		$this->SetBuffer("OutputBank", 0);
+		
 		$this->SetBuffer("OutputBank0", 0);
 		$this->SetBuffer("OutputBank1", 0);
 			
@@ -115,6 +117,24 @@
 		$Output = min(15, max(0, $Output));
 		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			
+			/*
+			$Bitmask = $this->GetBuffer("OutputBank");
+			If ($Value == true) {
+				$Bitmask = $this->setBit($Bitmask, $Output);
+			}
+			else {
+				$Bitmask = $this->unsetBit($Bitmask, $Output);
+			}
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
+			If ($Result) {
+				$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
+			}
+			else {
+				$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
+			}
+			*/
+			
 			If ($Output <= 7) {
 				$Bitmask = $this->GetBuffer("OutputBank0");
 				If ($Value == true) {
@@ -155,8 +175,11 @@
 				return;
 			}
 			$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
+			$this->SetBuffer("OutputBank", $Result);
+			// ******
 			$this->SetBuffer("OutputBank0", $Result & 255);
 			$this->SetBuffer("OutputBank1", $Result >> 8);
+			// ******
 			for ($i = 0; $i <= 15; $i++) {
 				$Bitvalue = boolval($Result & pow(2, $i));					
 				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
@@ -184,11 +207,35 @@
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
 		$this->GetOutput();
 	}
-	    
+	/*
+	public function SetOutput(int $Value) 
+	{
+		$Value = min(65536, max(0, $Value));
+		$ByteArray = array();
+		$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
+		If ($Result) {
+			$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
+		}
+		else {
+			$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
+		}
+		$this->GetOutput();
+	}    
+	*/    
 	private function Setup()
 	{
 		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			/*
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 0 )));
+			If ($Result) {
+				$this->SendDebug("Setup", "erfolgreich", 0);
+			}
+			else {
+				$this->SendDebug("Setup", "nicht erfolgreich!", 0);
+			}
+			*/
 			$ByteArray = array();
 			$ByteArray[0] = hexdec("06");
 			$ByteArray[1] = hexdec("00");
