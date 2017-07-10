@@ -139,19 +139,7 @@
 			}
 		}
 	}
-	/*        
-	private function Setup()
-	{
-		$this->SendDebug("Setup", "Ausfuehrung", 0);
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			$ByteArray = array();
-			$ByteArray[0] = hexdec("06");
-			$ByteArray[1] = hexdec("FF");
-			$ByteArray[2] = hexdec("FF");
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-		}
-	}
-	*/
+
 	private function Setup()
 	{
 		$this->SendDebug("Setup", "Ausfuehrung", 0);
