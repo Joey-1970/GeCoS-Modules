@@ -961,7 +961,7 @@ class GeCoS_IO extends IPSModule
 		$Result = -999;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102) AND (GetValueBoolean($this->GetIDForIdent("ConnectionStatus")))) {
 			
-			if (IPS_SemaphoreEnter("CommandClientSocket", 200))
+			if (IPS_SemaphoreEnter("CommandClientSocket", 500))
 			{
 				$Host = $this->ReadPropertyString("IPAddress");
 				$Port = 8888;
