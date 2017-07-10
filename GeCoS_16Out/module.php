@@ -118,7 +118,7 @@
 		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			
-			/*
+			
 			$Bitmask = $this->GetBuffer("OutputBank");
 			If ($Value == true) {
 				$Bitmask = $this->setBit($Bitmask, $Output);
@@ -135,8 +135,8 @@
 				IPS_LogMessage("GeCoS_16Out", "SetOutputPin: Output ".$Output." Value: ".$Value." nicht erfolgreich!");
 				
 			}
-			*/
 			
+			/*
 			If ($Output <= 7) {
 				$Bitmask = $this->GetBuffer("OutputBank0");
 				If ($Value == true) {
@@ -163,6 +163,7 @@
 				$ByteArray[1] = $Bitmask;
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
 			}
+			*/
 			$this->GetOutput();
 		}
 	}	
@@ -192,26 +193,6 @@
 		}
 	}
 	    
-	/*
-	public function SetOutputBank(int $Bank, int $Value) 
-	{
-		$Value = min(255, max(0, $Value));
-		$Bank = min(1, max(0, $Bank));
-		$ByteArray = array();
-		$this->SendDebug("SetOutputBank", "Bank ".$Bank." Value: ".$Value, 0);
-		$ByteArray[0] = 2;
-		If ($Bank == 0) {
-			$ByteArray[1] = $Value;
-			$ByteArray[2] = $this->GetBuffer("OutputBank1");
-		}
-		else {
-			$ByteArray[1] = $this->GetBuffer("OutputBank0");
-			$ByteArray[2] = $Value;
-		}
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-		$this->GetOutput();
-	}
-	*/
 	public function SetOutput(int $Value) 
 	{
 		$Value = min(65536, max(0, $Value));
