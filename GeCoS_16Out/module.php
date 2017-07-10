@@ -135,35 +135,6 @@
 				IPS_LogMessage("GeCoS_16Out", "SetOutputPin: Output ".$Output." Value: ".$Value." nicht erfolgreich!");
 				
 			}
-			
-			/*
-			If ($Output <= 7) {
-				$Bitmask = $this->GetBuffer("OutputBank0");
-				If ($Value == true) {
-					$Bitmask = $this->setBit($Bitmask, $Output);
-				}
-				else {
-					$Bitmask = $this->unsetBit($Bitmask, $Output);
-				}
-				$ByteArray = array();
-				$ByteArray[0] = hexdec("02");
-				$ByteArray[1] = $Bitmask;
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-			}
-			else {
-				$Bitmask = $this->GetBuffer("OutputBank1");
-				If ($Value == true) {
-					$Bitmask = $this->setBit($Bitmask, $Output - 8);
-				}
-				else {
-					$Bitmask = $this->unsetBit($Bitmask, $Output - 8);
-				}
-				$ByteArray = array();
-				$ByteArray[0] = hexdec("03");
-				$ByteArray[1] = $Bitmask;
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_bytes", "InstanceID" => $this->InstanceID, "ByteArray" => serialize($ByteArray) )));
-			}
-			*/
 			$this->GetOutput();
 		}
 	}	
