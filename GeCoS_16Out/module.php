@@ -61,10 +61,7 @@
 		}
 		
 		$this->SetBuffer("OutputBank", 0);
-		
-		$this->SetBuffer("OutputBank0", 0);
-		$this->SetBuffer("OutputBank1", 0);
-			
+
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
 				//ReceiveData-Filter setzen
@@ -117,8 +114,6 @@
 		$Output = min(15, max(0, $Output));
 		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			
-			
 			$Bitmask = $this->GetBuffer("OutputBank");
 			If ($Value == true) {
 				$Bitmask = $this->setBit($Bitmask, $Output);
@@ -151,10 +146,7 @@
 			}
 			$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
 			$this->SetBuffer("OutputBank", $Result);
-			// ******
-			$this->SetBuffer("OutputBank0", $Result & 255);
-			$this->SetBuffer("OutputBank1", $Result >> 8);
-			// ******
+
 			for ($i = 0; $i <= 15; $i++) {
 				$Bitvalue = boolval($Result & pow(2, $i));					
 				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
