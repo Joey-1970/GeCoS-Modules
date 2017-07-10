@@ -132,6 +132,8 @@
 			}
 			else {
 				$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
+				IPS_LogMessage("GeCoS_16Out", "SetOutputPin: Output ".$Output." Value: ".$Value." nicht erfolgreich!");
+				
 			}
 			*/
 			
@@ -171,7 +173,8 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
 			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SendDebug("GetOutput", "Keine gueltige Antwort:".$Result, 0);
+				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
+				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
 				return;
 			}
 			$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
@@ -211,7 +214,6 @@
 	public function SetOutput(int $Value) 
 	{
 		$Value = min(65536, max(0, $Value));
-		$ByteArray = array();
 		$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
 		If ($Result) {
@@ -219,6 +221,7 @@
 		}
 		else {
 			$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
+			IPS_LogMessage("GeCoS_16Out", "SetOutput: "."Value: ".$Value." nicht erfolgreich!");
 		}
 		$this->GetOutput();
 	}    
@@ -234,6 +237,7 @@
 			}
 			else {
 				$this->SendDebug("Setup", "nicht erfolgreich!", 0);
+				IPS_LogMessage("GeCoS_16Out", "Setup: nicht erfolgreich!");
 			}
 			*/
 			$ByteArray = array();
