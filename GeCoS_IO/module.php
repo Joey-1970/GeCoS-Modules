@@ -833,17 +833,17 @@ class GeCoS_IO extends IPSModule
 					else {
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
-						If ($Bitvalue_17 == 0) {
+						//If ($Bitvalue_17 == 0) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
-						}
+						//}
 
 						// Wert von Pin 27
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
-						If ($Bitvalue_27 == 0) {
+						//If ($Bitvalue_27 == 0) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-						}
+						//}
 
 						// Wert von Pin 15
 						$Bitvalue_15 = boolval($Level & pow(2, 15));			
