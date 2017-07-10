@@ -414,19 +414,19 @@ class GeCoS_IO extends IPSModule
 				}
 				break;	
 			case "i2c_PCA9655E_Read": // Module 16In und 16 Out
-				// I2CRI h r num - smb Read I2C Block Data: read bytes from register 
-				// I2CRD h num - i2c Read bytes
+				// I2CRW h r - smb Read Word Data: read word from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					
-					//I2CRW 	63 	handle 	register 	0
 					$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-					//$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 16 + ($data->Count));
-					//$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
-					
-					
 				}
 				break;  
+			case "i2c_PCA9655E_Write": // Module 16In und 16 Out
+				//I2CWW h r wv - smb Write Word Data: write word to register
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
+					$Result = $this->CommandClientSocket(pack("L*", 64, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
+				}
+				break;   
 			 case "i2c_4AnalogIn":
 				// I2CWS h bv - smb Write Byte: write byte
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
