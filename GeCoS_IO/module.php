@@ -834,7 +834,7 @@ class GeCoS_IO extends IPSModule
 					else {
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
-						If (($Bitvalue_17 == 0) AND ($Bit17Read == false)) {
+						If (($Bit17Read == false)) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 							$Bit17Read = true;
@@ -842,7 +842,7 @@ class GeCoS_IO extends IPSModule
 
 						// Wert von Pin 27
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
-						If (($Bitvalue_27 == 0) AND ($Bit27Read == false)) {
+						If (($Bit27Read == false)) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 							$Bit27Read = true;	
@@ -850,7 +850,7 @@ class GeCoS_IO extends IPSModule
 
 						// Wert von Pin 15
 						$Bitvalue_15 = boolval($Level & pow(2, 15));			
-						If (($Bitvalue_27 == 0) AND ($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
+						If (($this->GetBuffer("Serial_Handle") >= 0) AND ($SerialRead = false)) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
 							$SerialRead = true;
 							IPS_Sleep(75);
@@ -922,7 +922,7 @@ class GeCoS_IO extends IPSModule
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 		
-		If ($Handle >= 0) {
+		If ($this->GetBuffer("Handle") >= 0) {
 			// I²C Bus 1 für RTC, Serielle Schnittstelle,
 			//Notify Pin 17 + 27 + 15= Bitmask 134381568
 			$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
