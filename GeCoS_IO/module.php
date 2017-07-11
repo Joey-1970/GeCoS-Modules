@@ -797,15 +797,12 @@ class GeCoS_IO extends IPSModule
 	Return $Result;
 	}
 	
-	 public function ReceiveData($JSONString) {
-		 $CmdPossible = array(19, 21, 54, 55, 59, 76, 81, 99);
- 	    	 $RDlen = array(16, 32);	
+	 public function ReceiveData($JSONString) {	
  	    	 // Empfangene Daten vom I/O
 	    	 $Data = json_decode($JSONString);
 	    	 $Message = utf8_decode($Data->Buffer);
 	    	 $MessageLen = strlen($Message);
 	    	 $MessageArray = unpack("L*", $Message);
-		 $Command = $MessageArray[1];
 		 $SerialRead = false;
 		 $Bit17Read = false;
 		 $Bit27Read = false;
@@ -876,67 +873,18 @@ class GeCoS_IO extends IPSModule
 		 }
 		 
 		 If ($Bit17Read) {
+			 IPS_Sleep(100);
 			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 		 }
 		 If ($Bit27Read) {
+			 IPS_Sleep(100);
 			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 		 }
 		 If ($SerialRead) {
+			 IPS_Sleep(100);
 			 $this->CheckSerial();
 		 } 
-		 
-	    	/*
-	    	If ((in_array($Command, $CmdPossible)) AND (in_array($MessageLen, $RDlen))) {
-	    		// wenn es sich um mehrere Standarddatensätze handelt
-	    		$DataArray = str_split($Message, 16);
-	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Command-Datensätze");
-	    		for ($i = 0; $i < Count($DataArray); $i++) {
-    				$this->ClientResponse($DataArray[$i]);
-			}
-	    	}
-		elseif (($MessageLen / 12) == intval($MessageLen / 12)) {
-	    		// wenn es sich um mehrere Notifikationen handelt
-	    		$DataArray = str_split($Message, 12);
-	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Notify-Datensätze");
-	    		for ($i = 0; $i < min(2, Count($DataArray)); $i++) {
-				$MessageParts = unpack("L*", $DataArray[$i]);
-				
-				// Wert von Pin 17
-				$Bitvalue_17 = boolval($MessageParts[3] & (1<<17));
-				//IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
-				$this->SendDebug("ReceiveData", "Bit 17: ".$Bitvalue_17, 0);
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
-				
-				// Wert von Pin 27
-				$Bitvalue_27 = boolval($MessageParts[3] & (1<<27));
-				//IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
-				$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-				
-				// Wert von Pin 15
-				$Bitvalue_15 = boolval($MessageParts[3] & (1<<15));
-				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
-				$this->SendDebug("ReceiveData", "Bit 15: ".$Bitvalue_15, 0);
-				IPS_Sleep(75);
-				If ($this->GetBuffer("Serial_Handle") >= 0) {
-					$this->CheckSerial();
-				}
-				else {
-					$this->SendDebug("ReceiveData", "Der Serial-Buffer wird nicht geprueft, da kein gueltiger Handle verfuegbar ist!", 0);
-				}
-				
-			}
-			
-	
-		}
-	 	else {
-	 		// Prüfen ob Daten im Serial Buffer vorhanden sind
-			IPS_Sleep(75);
-			$this->CheckSerial();
-	 	}
-		*/
-
-	 }
+	}
  
 	// Aktualisierung der genutzten Pins und der Notifikation
 	private function Get_PinUpdate()
