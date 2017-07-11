@@ -875,6 +875,15 @@ class GeCoS_IO extends IPSModule
 			}
 		 }
 		 
+		 If ($Bit17Read) {
+			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+		 }
+		 If ($Bit27Read) {
+			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+		 }
+		 If ($SerialRead) {
+			 $this->CheckSerial();
+		 } 
 		 
 	    	/*
 	    	If ((in_array($Command, $CmdPossible)) AND (in_array($MessageLen, $RDlen))) {
