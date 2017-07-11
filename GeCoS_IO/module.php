@@ -830,11 +830,13 @@ class GeCoS_IO extends IPSModule
 
 					If ($KeepAlive == 1) {
 						$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
 					else {
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
-						If (($Bit17Read == false)) {
+						If ($Bit17Read == false) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 							$Bit17Read = true;
@@ -842,7 +844,7 @@ class GeCoS_IO extends IPSModule
 
 						// Wert von Pin 27
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
-						If (($Bit27Read == false)) {
+						If ($Bit27Read == false) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 							$Bit27Read = true;	
