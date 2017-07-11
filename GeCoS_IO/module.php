@@ -807,11 +807,12 @@ class GeCoS_IO extends IPSModule
 	    	 $MessageArray = unpack("L*", $Message);
 		 $Command = $MessageArray[1];
 		 $SerialRead = false;
+		 $this->SendDebug("ReceiveData","Dateneingang Laenge: ".$MessageLen, 0);
 		 
 		 // Analyse der eingegangenen Daten
 		 for ($i = 1; $i <= Count($MessageArray); $i++) {
-			 $this->SendDebug("Datenanalyse", "i: ".$i." Laenge: ".$MessageLen." SeqNo: ".($MessageArray[$i] & 65535)." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
-			//$this->SendDebug("Datenanalyse", "MessageArray = ".$MessageArray[$i], 0);
+			$this->SendDebug("Datenanalyse", "i: ".$i." Laenge: ".$MessageLen." SeqNo: ".($MessageArray[$i] & 65535)." Counter: ".$this->GetBuffer("NotifyCounter"), 0);
+			 
 			If (($MessageLen == 12) OR (($MessageArray[$i] & 65535) == $this->GetBuffer("NotifyCounter"))) {
 				// es handelt sich um ein Event
 				// Struktur:
@@ -853,7 +854,7 @@ class GeCoS_IO extends IPSModule
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
 							$SerialRead = true;
 							IPS_Sleep(75);
-							//$this->CheckSerial();
+							$this->CheckSerial();
 						}
 					}
 					$this->SetBuffer("NotifyCounter", $SeqNo + 1);
@@ -863,14 +864,14 @@ class GeCoS_IO extends IPSModule
 			else {
 				if (array_key_exists($i + 3, $MessageArray)) {
 					$this->SendDebug("Datenanalyse", "Kommando: ".$MessageArray[$i], 0);
-					//$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
+					$this->ClientResponse(pack("L*", $MessageArray[$i], $MessageArray[$i + 1], $MessageArray[$i + 2], $MessageArray[$i + 3]));
 					$i = $i + 3;
 				}
 			}
 		 }
 		 
 		 
-	    	
+	    	/*
 	    	If ((in_array($Command, $CmdPossible)) AND (in_array($MessageLen, $RDlen))) {
 	    		// wenn es sich um mehrere Standarddatensätze handelt
 	    		$DataArray = str_split($Message, 16);
@@ -885,7 +886,7 @@ class GeCoS_IO extends IPSModule
 	    		//IPS_LogMessage("IPS2GPIO ReceiveData", "Überlänge: ".Count($DataArray)." Notify-Datensätze");
 	    		for ($i = 0; $i < min(2, Count($DataArray)); $i++) {
 				$MessageParts = unpack("L*", $DataArray[$i]);
-				/*
+				
 				// Wert von Pin 17
 				$Bitvalue_17 = boolval($MessageParts[3] & (1<<17));
 				//IPS_LogMessage("GeCoS_IO", "Bit 17: ".$Bitvalue_17);
@@ -897,7 +898,7 @@ class GeCoS_IO extends IPSModule
 				//IPS_LogMessage("GeCoS_IO", "Bit 27: ".$Bitvalue_27);
 				$this->SendDebug("ReceiveData", "Bit 27: ".$Bitvalue_27, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-				*/
+				
 				// Wert von Pin 15
 				$Bitvalue_15 = boolval($MessageParts[3] & (1<<15));
 				//IPS_LogMessage("GeCoS_IO", "Bit 15: ".$Bitvalue_15);
@@ -911,12 +912,16 @@ class GeCoS_IO extends IPSModule
 				}
 				
 			}
+			
+	
 		}
 	 	else {
 	 		// Prüfen ob Daten im Serial Buffer vorhanden sind
 			IPS_Sleep(75);
 			$this->CheckSerial();
 	 	}
+		*/
+
 	 }
  
 	// Aktualisierung der genutzten Pins und der Notifikation
