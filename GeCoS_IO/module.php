@@ -242,6 +242,13 @@ class GeCoS_IO extends IPSModule
 				// Serial-Handle zurücksetzen
 				$this->ResetSerialHandle();
 				
+				// Modes setzen
+				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0) , 32);
+				
+				// GlitchFilter setzen
+				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
+				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
+				
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
@@ -252,10 +259,6 @@ class GeCoS_IO extends IPSModule
 					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
 					$this->SetBuffer("NotifyCounter", 0);
 				}
-				
-				// GlitchFilter setzen
-				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
-				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
 				// RTC einrichten
 				$RTC_Handle = $this->GetOnboardI2CHandle(104);
@@ -1006,9 +1009,11 @@ class GeCoS_IO extends IPSModule
 		        case "0":
 		        	If ($response[4] == 0) {
 		        		//IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet");
+					$this->SendDebug("Set GPIO Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet" , 0);
 		        	}
 		        	else {
-		        		IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])));
+		        		$this->SendDebug("Set GPIO Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])) , 0);
+					IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])));
 		        	}
 		        	break;
 		        case "17":
