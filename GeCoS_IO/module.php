@@ -249,9 +249,15 @@ class GeCoS_IO extends IPSModule
 				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
 				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
+				// Notify Stoppen
+				If ($this->GetBuffer("Handle") >= 0) {
+					$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
+				}
+				
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$this->SendDebug("Notify Handle", $Handle, 0);
 				$this->SetBuffer("Handle", $Handle);
 				If ($Handle >= 0) {
 					// I²C Bus 1 für RTC, Serielle Schnittstelle,
