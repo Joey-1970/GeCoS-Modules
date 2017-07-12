@@ -249,7 +249,7 @@ class GeCoS_IO extends IPSModule
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				$this->SendDebug("Notify Handle", $Handle, 0);
+				$this->SendDebug("Notify Handle", (int)$Handle, 0);
 				$this->SetBuffer("Handle", $Handle);
 				If ($Handle >= 0) {
 					// I²C Bus 1 für RTC, Serielle Schnittstelle,
