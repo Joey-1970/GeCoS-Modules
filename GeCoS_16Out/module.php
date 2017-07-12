@@ -144,7 +144,7 @@
 				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
 				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
 				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
-				If ($ErrorCounter <= 3) {
+				If ($this->GetBuffer("ErrorCounter") <= 3) {
 					$this->GetOutput();
 				}
 			}
