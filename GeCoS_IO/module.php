@@ -847,7 +847,7 @@ class GeCoS_IO extends IPSModule
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
 						If ($Bit17Read == false) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
-							IPS_Sleep(100);
+							IPS_Sleep(50);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 							$Bit17Read = true;
 						}
@@ -856,7 +856,7 @@ class GeCoS_IO extends IPSModule
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
 						If ($Bit27Read == false) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
-							IPS_Sleep(100);
+							IPS_Sleep(50);
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 							$Bit27Read = true;	
 						}
@@ -882,32 +882,6 @@ class GeCoS_IO extends IPSModule
 				}
 			}
 		 }
-		 /*
-		 If ($Bit17Read) {
-			 IPS_Sleep(100);
-			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
-		 }
-		 If ($Bit27Read) {
-			 IPS_Sleep(100);
-			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-		 }
-		 If ($SerialRead) {
-			 IPS_Sleep(100);
-			 $this->CheckSerial();
-		 }
-		 If ($Bit17Read) {
-			 IPS_Sleep(100);
-			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
-		 }
-		 If ($Bit27Read) {
-			 IPS_Sleep(100);
-			 $this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-		 }
-		 If ($SerialRead) {
-			 IPS_Sleep(100);
-			 $this->CheckSerial();
-		 } 
-		 */
 	}
  
 	// Aktualisierung der genutzten Pins und der Notifikation
@@ -973,6 +947,8 @@ class GeCoS_IO extends IPSModule
 					if (!$this->Socket) {
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
+						// Testballon an IPS-ClientSocket
+						$this->ClientSocket(pack("L*", 17, 0, 0, 0));
 						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
 						$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
 						$this->SetStatus(201);
@@ -1594,7 +1570,7 @@ class GeCoS_IO extends IPSModule
 	
 	public function ConnectionStatus()
 	{
-		$this->ConnectionTest();
+		//$this->ConnectionTest();
 	}
 	
 	private function InstanceArraySearch(String $SearchKey, Int $SearchValue)
