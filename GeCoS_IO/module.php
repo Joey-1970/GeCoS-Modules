@@ -178,8 +178,6 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("RTC_Timestamp");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Timestamp"), false);
 			
-			
-		
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
 			$this->SetBuffer("MUX_Channel", 1);
@@ -223,8 +221,7 @@ class GeCoS_IO extends IPSModule
 		        $this->RegisterMessage($this->InstanceID, 11102); // Instanz wurde getrennt (InstanceID vom Parent)
 		        // INSTANCEMESSAGE
 		        $this->RegisterMessage($ParentID, 10505); // Status hat sich geändert
-			
-			
+						
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 				$this->SendDebug("ApplyChangges", "Starte Vorbereitung", 0);
 				$this->CheckConfig();
