@@ -31,7 +31,6 @@ class GeCoS_IO extends IPSModule
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
-		$this->RegisterTimer("ConnectionStatus", 0, 'GeCoSIO_ConnectionStatus($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 	}
   
@@ -163,10 +162,6 @@ class GeCoS_IO extends IPSModule
 	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
 		
 		If (IPS_GetKernelRunlevel() == 10103) {		
-			$this->RegisterVariableBoolean("ConnectionStatus", "Verbindungs-Status", "~Switch", 10);
-			$this->DisableAction("ConnectionStatus");
-			IPS_SetHidden($this->GetIDForIdent("ConnectionStatus"), false);
-			
 			$this->RegisterVariableString("Hardware", "Hardware", "", 20);
 			$this->DisableAction("Hardware");
 			IPS_SetHidden($this->GetIDForIdent("Hardware"), true);
@@ -933,7 +928,7 @@ class GeCoS_IO extends IPSModule
 	private function CommandClientSocket(String $message, $ResponseLen = 16)
 	{
 		$Result = -999;
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102) AND (GetValueBoolean($this->GetIDForIdent("ConnectionStatus")))) {
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 			
 			if (IPS_SemaphoreEnter("CommandClientSocket", 500))
 			{
@@ -948,18 +943,13 @@ class GeCoS_IO extends IPSModule
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
 						// Testballon an IPS-ClientSocket
-						$this->ClientSocket(pack("L*", 17, 0, 0, 0));
-						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
-						$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
+						$this->ClientSocket(pack("L*", 17, 0, 0, 0));						
 						$this->SetStatus(201);
 						IPS_SemaphoreLeave("CommandClientSocket");
 						return $Result;
 					}
 				}
-				
-				SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
-				$this->SetTimerInterval("ConnectionStatus", 0);
-				
+								
 				stream_set_timeout($this->Socket, 5);
 				stream_socket_sendto($this->Socket, $Data);
 				$buf = fread($this->Socket, $ResponseLen);
@@ -1534,8 +1524,6 @@ class GeCoS_IO extends IPSModule
 					if (!$status) {
 						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
 						$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
-						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
-						$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
 						$this->SetStatus(201);
 					}
 					else {
@@ -1543,8 +1531,6 @@ class GeCoS_IO extends IPSModule
 						//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
 						$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 						$result = true;
-						SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
-						$this->SetTimerInterval("ConnectionStatus", 0);
 						$this->SetStatus(102);
 					}
 	   			}
@@ -1553,24 +1539,15 @@ class GeCoS_IO extends IPSModule
 					//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
 					$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 					$result = true;
-					SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), true);
-					$this->SetTimerInterval("ConnectionStatus", 0);
 					$this->SetStatus(102);
 	   			}
 		}
 		else {
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
-			SetValueBoolean($this->GetIDForIdent("ConnectionStatus"), false);
-			$this->SetTimerInterval("ConnectionStatus", 60 * 1000);
 			$this->SetStatus(201);
 		}
 	return $result;
-	}
-	
-	public function ConnectionStatus()
-	{
-		//$this->ConnectionTest();
 	}
 	
 	private function InstanceArraySearch(String $SearchKey, Int $SearchValue)
