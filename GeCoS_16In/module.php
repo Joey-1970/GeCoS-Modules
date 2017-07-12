@@ -13,6 +13,7 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 16);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterTimer("GetInput", 0, 'GeCoS16In_GetInput($_IPS["TARGET"]);');
         }
  	
 	public function GetConfigurationForm() 
@@ -69,9 +70,11 @@
 				// Setup
 				$this->Setup();
 				$this->GetInput();
+				$this->SetTimerInterval("GetInput", 15 * 1000);
 			}
 			else {
 				$this->SetStatus(104);
+				$this->SetTimerInterval("GetInput", 0);
 			}	
 		}
 		else {
@@ -110,7 +113,7 @@
  	}
 	    
 	// Beginn der Funktionen
-	private function GetInput()
+	public function GetInput()
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
@@ -120,17 +123,18 @@
 				if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
 					$this->SendDebug("GetInput", "Keine gueltige Antwort:".$Result, 0);
 					IPS_SemaphoreLeave("GetInput");
-					return;
+
 				}
-				$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
+				else {
+					$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
 				
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Result & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Result & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
 					}
 				}
-				
 				IPS_SemaphoreLeave("GetInput");
 			}
 			else
