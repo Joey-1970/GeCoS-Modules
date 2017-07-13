@@ -128,7 +128,6 @@
 					If ($this->GetBuffer("ErrorCounter") <= 3) {
 						$this->GetInput();
 					}
-					IPS_SemaphoreLeave("GetInput");
 				}
 				else {
 					$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
@@ -141,7 +140,7 @@
 					}
 					$this->SetBuffer("ErrorCounter", 0);
 				}
-				IPS_SemaphoreLeave("GetInput");
+			IPS_SemaphoreLeave("GetInput");
 			}
 			else
 			{
