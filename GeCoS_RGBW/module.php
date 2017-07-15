@@ -113,7 +113,8 @@
 			   	break;
 			case "set_i2c_data":
 			  	If ($data->InstanceID == $this->InstanceID) {
-			  		$Output = array(); 
+			  		$this->SendDebug("set_i2c_data", "Ausfuehrung", 0);
+					$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
 					// Daten zur Kalibrierung
 			  		
