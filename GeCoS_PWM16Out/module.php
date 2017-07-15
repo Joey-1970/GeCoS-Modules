@@ -110,7 +110,8 @@
 			   	break;
 			case "set_i2c_data":
 			  	If ($data->InstanceID == $this->InstanceID) {
-			  		$Output = array(); 
+			  		$this->SendDebug("set_i2c_data", "Ausfuehrung", 0);
+					$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
 					// Daten zur Kalibrierung
 			  		If (($data->Register >= 6) AND ($data->Register < 70)) {
@@ -155,6 +156,7 @@
 	// Beginn der Funktionen
 	public function SetOutputPinValue(Int $Output, Int $Value)
 	{ 
+		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
 		$Output = min(15, max(0, $Output));
 		$Value = min(4095, max(0, $Value));
 		
@@ -180,6 +182,7 @@
 	
 	public function SetOutputPinStatus(Int $Output, Bool $Status)
 	{ 
+		$this->SendDebug("SetOutputPinStatus", "Ausfuehrung", 0);
 		$Output = min(15, max(0, $Output));
 		$Status = min(1, max(0, $Status));
 		
@@ -206,6 +209,7 @@
 	private function Setup()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("Setup", "Ausfuehrung", 0);
 			// Mode 1 in Sleep setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
 			IPS_Sleep(10);
