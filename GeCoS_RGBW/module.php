@@ -188,6 +188,7 @@
 	// Beginn der Funktionen
 	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
 	{ 
+		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
 		$Value = min(4095, max(0, $Value));
 		
@@ -226,6 +227,7 @@
 	
 	public function SetOutputPinStatus(Int $Group, String $Channel, Bool $Status)
 	{ 
+		$this->SendDebug("SetOutputPinStatus", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
 		$Status = min(1, max(0, $Status));
 				
@@ -285,6 +287,7 @@
 	    
 	public function SetOutputPinColor(Int $Group, Int $Color)
 	{
+		$this->SendDebug("SetOutputPinColor", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
 		
 		// Farbwerte aufsplitten
@@ -325,6 +328,7 @@
 	private function Setup()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("Setup", "Ausfuehrung", 0);
 			// Mode 1 in Sleep setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
 			IPS_Sleep(10);
