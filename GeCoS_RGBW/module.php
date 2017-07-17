@@ -331,16 +331,28 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("Setup", "Ausfuehrung", 0);
 			// Mode 1 in Sleep setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCF8591_Write", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Ausfuehrung in Sleep setzen fehlerhaft!", 0);
+			}
 			IPS_Sleep(10);
 			// Prescale einstellen
 			//$PreScale = round((25000000 / (4096 * $this->ReadPropertyInteger("Frequency"))) - 1);
 			$PreScale = 30;
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 254, "Value" => $PreScale)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCF8591_Write", "InstanceID" => $this->InstanceID, "Register" => 254, "Value" => $PreScale)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Prescale setzen fehlerhaft!", 0);
+			}
 			// Mode 1 in Sleep zurücksetzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 0)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCF8591_Write", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 0)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Mode 1 setzen fehlerhaft!", 0);
+			}
 			// Mode 2 auf Ausgänge setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 1, "Value" => 4)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCF8591_Write", "InstanceID" => $this->InstanceID, "Register" => 1, "Value" => 4)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Mode 2 setzen fehlerhaft!", 0);
+			}
 			// Ausgänge initial einlesen
 			for ($i = 6; $i < 70; $i = $i + 4) {
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
