@@ -2,6 +2,8 @@
     // Klassendefinition
     class GeCoS_RGBW extends IPSModule 
     {
+	// PCF8591
+	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
         {
@@ -355,7 +357,6 @@
 			}
 			// Ausgänge initial einlesen
 			for ($i = 6; $i < 70; $i = $i + 4) {
-				i2c_PCF8591_Read
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCF8591_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				$this->SendDebug("Setup", "Aktueller Zustand des Ausgangs ".($i - 6).": ".$Result, 0);
