@@ -472,6 +472,13 @@ class GeCoS_IO extends IPSModule
 					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
 				}
 		   		break;
+			case "i2c_PCF8591_Write":
+		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
+					$Result = $this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
+				}
+		   		break;
 			case "i2c_write_4_byte":
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
@@ -1111,15 +1118,13 @@ class GeCoS_IO extends IPSModule
 		            	break;
 			case "62":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("GeCoS_IO I2C Write Byte","Handle: ".$response[2]." Register: ".$response[3]." Value: ".$response[4]);
-		            		//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Value" => $response[4])));
-					$this->SendDebug("Befehl 62", "erfolgreich", 0);
+					//$this->SendDebug("Befehl 62", "erfolgreich", 0);
 					$Result = true;
 					
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO I2C Write Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
-					$this->SendDebug("Befehl 62", "nicht erfolgreich", 0);
+					$this->SendDebug("GeCoS_IO I2C Write Byte", "nicht erfolgreich", 0);
 					$Result = false;
            			}
 		            	break;
