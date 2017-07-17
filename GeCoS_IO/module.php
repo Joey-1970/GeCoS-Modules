@@ -1293,7 +1293,7 @@ class GeCoS_IO extends IPSModule
 			else {
 				$Year = $Year + 1900;	
 			}
-			$Timestamp = mktime($Hour, $Min, $Sec, $Month, $Date, $Year);
+			$Timestamp = mktime(intval($Hour), intval($Min), intval($Sec), intval($Month), intval($Date), intval($Year));
 			SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
 
 			$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
