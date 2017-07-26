@@ -119,10 +119,11 @@
 					$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
 					// Daten zur Kalibrierung
-			  		
+			  		$this->SendDebug("set_i2c_data", "Register: ".$data->Register, 0);
+					$this->SendDebug("set_i2c_data", "Wert: ".$data->Value, 0);
 					
 					If (($data->Register >= 6) AND ($data->Register < 70)) {
-			  			$Output[$data->Register] = $data->Value;
+						$Output[$data->Register] = $data->Value;
 			  		}
 					
 					If ($data->Register % 2 !=0) {
