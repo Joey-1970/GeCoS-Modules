@@ -364,7 +364,7 @@
 				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				$this->SendDebug("Setup", "Aktueller Zustand des Ausgangs ".((($i - 6)/4) + 1).": ".$Result, 0);
-				//$this->SetStatusVariables(((($i - 6)/4) + 1), $Result)
+				$this->SetStatusVariables(((($i - 6)/4) + 1), $Result)
 			}
 		}
 	}
@@ -372,8 +372,9 @@
 	private function SetStatusVariables(Int $Group, Int $Value)
 	{
 		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Group.": ".$Value, 0);
-		//$L_Byte = $Value
-		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Group.": ".$Value, 0);
+		$Intensity = $Value & 4095;
+		$Status = !boolval($Value & 4096); 
+		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
 	}
 	    
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
