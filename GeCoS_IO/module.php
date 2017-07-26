@@ -999,7 +999,7 @@ class GeCoS_IO extends IPSModule
 				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
 				$MessageArray = unpack("L*", $buf);
 				$Command = $MessageArray[1];
-				$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
+				//$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
 				If (in_array($Command, $CmdVarLen)) {
 					$Result = $this->ClientResponse($buf);
 					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
