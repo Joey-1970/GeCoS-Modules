@@ -964,7 +964,7 @@ class GeCoS_IO extends IPSModule
 				stream_set_timeout($this->Socket, 5);
 				stream_socket_sendto($this->Socket, $Data);
 				$buf = fread($this->Socket, $ResponseLen);
-				$this->SendDebug("CommandClientSocket", "Laenge der empfangenen Daten ".strlen($buf), 0);
+				$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
 				// Anfragen mit variabler Rückgabelänge
 				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
 				$MessageArray = unpack("L*", $buf);
