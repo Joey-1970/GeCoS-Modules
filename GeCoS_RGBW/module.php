@@ -372,7 +372,7 @@
 	private function SetStatusVariables(Int $Group, Int $Value)
 	{
 		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Group.": ".$Value, 0);
-		$L_Byte = $Value
+		//$L_Byte = $Value
 		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Group.": ".$Value, 0);
 	}
 	    
