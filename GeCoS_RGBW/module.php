@@ -364,7 +364,7 @@
 				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				$this->SendDebug("Setup", "Aktueller Zustand des Ausgangs ".((($i - 6)/4) + 1).": ".$Result, 0);
-				$this->SetStatusVariables(((($i - 6)/4) + 1), $Result)
+				$this->SetStatusVariables(((($i - 6)/4) + 1), $Result);
 			}
 		}
 	}
