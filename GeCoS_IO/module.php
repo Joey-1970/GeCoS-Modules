@@ -11,7 +11,7 @@ class GeCoS_IO extends IPSModule
 	public function __destruct()
 	{
 		if ($this->Socket)
-		    	fclose($this->Socket);
+		    	socket_close($this->Socket);
 	} 
 	
 	public function Create() 
