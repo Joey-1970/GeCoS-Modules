@@ -2,7 +2,7 @@
     // Klassendefinition
     class GeCoS_RGBW extends IPSModule 
     {
-	// PCF8591
+	// PCA9685
 	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
