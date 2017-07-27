@@ -211,6 +211,56 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("Setup", "Ausfuehrung", 0);
 			// Mode 1 in Sleep setzen
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Ausfuehrung in Sleep setzen fehlerhaft!", 0);
+			}
+			IPS_Sleep(10);
+			// Prescale einstellen
+			$PreScale = round((25000000 / (4096 * $this->ReadPropertyInteger("Frequency"))) - 1);
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 254, "Value" => $PreScale)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Prescale setzen fehlerhaft!", 0);
+			}
+			// Mode 1 in Sleep zurücksetzen
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 32)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Mode 1 setzen fehlerhaft!", 0);
+			}
+			// Mode 2 auf Ausgänge setzen
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 1, "Value" => 4)));
+			If (!$Result) {
+				$this->SendDebug("Setup", "Mode 2 setzen fehlerhaft!", 0);
+			}
+			// Ausgänge initial einlesen
+			for ($i = 6; $i < 70; $i = $i + 4) {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
+				$this->SetStatusVariables($i + 2, $Result);
+			}
+		}
+	}
+	
+	private function SetStatusVariables(Int $Register, Int $Value)
+	{
+		$Intensity = $Value & 4095;
+		$Status = !boolval($Value & 4096); 
+		
+		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
+		
+		If ($Intensity <> GetValueInteger($this->GetIDForIdent("Output_Int_X".$Number))) {
+			SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Intensity);
+		}
+		If ($Status <> GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number))) {
+			SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), $Status);
+		}				
+	}    
+	    
+	/*
+	private function Setup()
+	{
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("Setup", "Ausfuehrung", 0);
+			// Mode 1 in Sleep setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_byte", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
 			IPS_Sleep(10);
 			// Prescale einstellen
@@ -226,6 +276,8 @@
 			}
 		}
 	}
+	*/
+	    
 	
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 	{
