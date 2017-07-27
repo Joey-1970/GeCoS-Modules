@@ -286,7 +286,7 @@
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_12_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, 
 									  "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit_R, "Value_4" => $H_Bit_R, "Value_5" => 0, "Value_6" => 0, "Value_7" => $L_Bit_G, "Value_8" => $H_Bit_G, "Value_9" => 0, "Value_10" => 0, "Value_11" => $L_Bit_B, "Value_12" => $H_Bit_B)));
 				// Ausgang abfragen
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_6_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
+				//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_6_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
 				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read_Group", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
 				$this->SendDebug("SetOutputPinStatus", $Result, 0);
