@@ -360,8 +360,6 @@
 			}
 			// Ausgänge initial einlesen
 			for ($i = 6; $i < 70; $i = $i + 4) {
-				//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
-				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				$this->SetStatusVariables($i + 2, $Result);
 			}
@@ -381,17 +379,17 @@
 		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
 		
 		
-		If ($Value <> GetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group))) {
-			SetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group), $Value);
+		If ($Intensity <> GetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group))) {
+			SetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group), $Intensity);
 		}
 		If ($ChannelArray[$Channel] == "W") {
-			If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_W_".$Group))) {
-				SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), !$Status);
+			If ($Status <> GetValueBoolean($this->GetIDForIdent("Status_W_".$Group))) {
+				SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), $Status);
 			}
 		}
 		else {
-			If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group))) {
-				SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), !$Status);
+			If ($Status <> GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group))) {
+				SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), $Status);
 			}
 		}
 		// Farbrad setzen
