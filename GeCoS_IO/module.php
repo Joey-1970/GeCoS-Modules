@@ -494,7 +494,7 @@ class GeCoS_IO extends IPSModule
 					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
 					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
 					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-					$Result = serialize($Color[]);
+					$Result = serialize($Color);
 				}
 				break;  
 			case "i2c_write_4_byte":
