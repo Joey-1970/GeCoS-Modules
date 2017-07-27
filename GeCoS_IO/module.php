@@ -255,7 +255,7 @@ class GeCoS_IO extends IPSModule
 				If ($Handle >= 0) {
 					// I²C Bus 1 für RTC, Serielle Schnittstelle,
 					//Notify Pin 17 + 27 + 15= Bitmask 134381568
-					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
+					$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
 					$this->SetBuffer("NotifyCounter", 0);
 				}
 				
@@ -931,7 +931,7 @@ class GeCoS_IO extends IPSModule
 		If ($this->GetBuffer("Handle") >= 0) {
 			// I²C Bus 1 für RTC, Serielle Schnittstelle,
 			//Notify Pin 17 + 27 + 15= Bitmask 134381568
-			$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
+			$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
 			$this->SetBuffer("NotifyCounter", 0);
 		}
 		
