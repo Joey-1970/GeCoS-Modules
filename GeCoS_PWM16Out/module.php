@@ -229,7 +229,7 @@
 				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
 				IPS_LogMessage("GeCoS_PWM16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
 				If ($this->GetBuffer("ErrorCounter") <= 3) {
-					$this->GetOutput();
+					$this->GetOutput($Register);
 				}
 			}
 			else {
