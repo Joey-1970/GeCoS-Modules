@@ -363,18 +363,31 @@
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
-				$this->SendDebug("Setup", "Aktueller Zustand des Ausgangs ".((($i - 6)/4) + 1).": ".$Result, 0);
-				$this->SetStatusVariables(((($i - 6)/4) + 1), $Result);
+				//$this->SendDebug("Setup", "Aktueller Zustand des Ausgangs ".((($i - 6)/4) + 1).": ".$Result, 0);
+				$this->SetStatusVariables(((($i - 6)/4) + 1), $i + 2, $Result);
 			}
 		}
 	}
 	
-	private function SetStatusVariables(Int $Group, Int $Value)
+	private function SetStatusVariables(Int $Output, Int $Register, Int $Value)
 	{
-		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Group.": ".$Value, 0);
+		$ChannelArray = [
+			    0 => "R",
+			    4 => "G",
+			    8 => "B",
+			    12=> "W",
+
+			];
+		
+		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Output.": ".$Value, 0);
 		$Intensity = $Value & 4095;
 		$Status = !boolval($Value & 4096); 
 		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
+		$Group = intval(($Register - 8) / 16) + 1;
+		$Channel = ($Register - 8) - (($Group - 1) * 16);
+		$this->SendDebug("SetStatusVariables", "Gruppe: ".$Group."Kanal: ".$ChannelArray[$Channel], 0);
+		
+		
 	}
 	    
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
