@@ -109,7 +109,8 @@
 			   	}
 			   	break;
 			case "set_i2c_data":
-			  	If ($data->InstanceID == $this->InstanceID) {
+			  	/*
+				If ($data->InstanceID == $this->InstanceID) {
 			  		$this->SendDebug("set_i2c_data", "Ausfuehrung", 0);
 					$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
@@ -132,6 +133,7 @@
 					
 				}
 				$this->SetBuffer("Output", serialize($Output));
+				*/
 			  	break; 
 	 	}
  	}
@@ -176,7 +178,9 @@
 			// Ausgang setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
 			// Ausgang abfragen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
+			$this->SetStatusVariables($StartAddress + 2, $Result);
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
 		}
 	}
 	
@@ -202,7 +206,9 @@
 			// Ausgang setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
 			// Ausgang abfragen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
+			$this->SetStatusVariables($StartAddress + 2, $Result);
+			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
 		}
 	}     
 	    
@@ -244,6 +250,7 @@
 	{
 		$Intensity = $Value & 4095;
 		$Status = !boolval($Value & 4096); 
+		$Number = ($Register - 8) / 4;
 		
 		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
 		
