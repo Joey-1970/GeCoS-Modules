@@ -292,7 +292,7 @@
 				$this->SendDebug("SetOutputPinStatus", $Result, 0);
 				$RGB = unserialize($Result);
 				for($i = 0; $i < count($RGB); $i++) {
-					$this->SetStatusVariables(($StartAddress + 2) + $i * 4), $RGB[$i]);
+					$this->SetStatusVariables( ($StartAddress + 2) + ($i * 4), $RGB[$i]);
 					//Echo $RGB[$i]." ";
 				}
 			}
