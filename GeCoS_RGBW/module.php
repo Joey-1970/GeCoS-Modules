@@ -360,34 +360,45 @@
 			}
 			// Ausgänge initial einlesen
 			for ($i = 6; $i < 70; $i = $i + 4) {
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
+				//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_read_2_byte", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
 				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
-				//$this->SendDebug("Setup", "Aktueller Zustand des Ausgangs ".((($i - 6)/4) + 1).": ".$Result, 0);
-				$this->SetStatusVariables(((($i - 6)/4) + 1), $i + 2, $Result);
+				$this->SetStatusVariables($i + 2, $Result);
 			}
 		}
 	}
 	
-	private function SetStatusVariables(Int $Output, Int $Register, Int $Value)
+	private function SetStatusVariables(Int $Register, Int $Value)
 	{
-		$ChannelArray = [
-			    0 => "R",
-			    4 => "G",
-			    8 => "B",
-			    12=> "W",
-
-			];
-		
-		$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Output.": ".$Value, 0);
+		$ChannelArray = [0 => "R", 4 => "G", 8 => "B", 12=> "W"];
 		$Intensity = $Value & 4095;
 		$Status = !boolval($Value & 4096); 
-		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
 		$Group = intval(($Register - 8) / 16) + 1;
 		$Channel = ($Register - 8) - (($Group - 1) * 16);
-		$this->SendDebug("SetStatusVariables", "Gruppe: ".$Group."Kanal: ".$ChannelArray[$Channel], 0);
+		
+		//$this->SendDebug("SetStatusVariables", "Aktueller Zustand des Ausgangs ".$Output.": ".$Value, 0);
+		$this->SendDebug("SetStatusVariables", "Gruppe: ".$Group." Kanal: ".$ChannelArray[$Channel], 0);
+		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
 		
 		
+		If ($Value <> GetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group))) {
+			SetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group), $Value);
+		}
+		If ($ChannelArray[$Channel] == "W") {
+			If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_W_".$Group))) {
+				SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), !$Status);
+			}
+		}
+		else {
+			If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group))) {
+				SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), !$Status);
+			}
+		}
+		// Farbrad setzen
+		$Value_R = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group)));
+		$Value_G = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group)));
+		$Value_B = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group)));
+		SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));		
 	}
 	    
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
