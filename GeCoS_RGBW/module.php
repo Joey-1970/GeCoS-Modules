@@ -352,7 +352,7 @@
 			IPS_Sleep(10);
 			// Prescale einstellen
 			//$PreScale = round((25000000 / (4096 * $this->ReadPropertyInteger("Frequency"))) - 1);
-			$PreScale = 30;
+			$PreScale = 50;
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 254, "Value" => $PreScale)));
 			If (!$Result) {
 				$this->SendDebug("Setup", "Prescale setzen fehlerhaft!", 0);
