@@ -492,8 +492,8 @@ class GeCoS_IO extends IPSModule
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$Color = Array();
 					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
+					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0), 16);
+					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 0), 16);
 					$Result = serialize($Color);
 				}
 				break;  
