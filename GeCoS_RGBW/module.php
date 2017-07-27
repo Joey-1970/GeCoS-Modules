@@ -384,7 +384,7 @@
 		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $Register)));
-			if (($Result === NULL) OR ($Result < 0) OR ($Result > 4096)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65536)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
 				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
 				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
 				IPS_LogMessage("GeCoS_RGBW", "GetOutput: Keine gueltige Antwort: ".$Result);
