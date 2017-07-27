@@ -61,8 +61,8 @@
 		// Profil anlegen
 		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
 		
-		$Output = array(); 
-		$this->SetBuffer("Output", serialize($Output));
+		//$Output = array(); 
+		//$this->SetBuffer("Output", serialize($Output));
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
