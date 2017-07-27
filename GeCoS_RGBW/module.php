@@ -290,6 +290,11 @@
 				
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read_Group", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
 				$this->SendDebug("SetOutputPinStatus", $Result, 0);
+				$RGB = unserialize($Result);
+				for($i = 0; $i < count($RGB); $i++) {
+					$this->SetStatusVariables(($StartAddress + 2) + $i * 4), $RGB[$i]);
+					//Echo $RGB[$i]." ";
+				}
 			}
 		}		
 	}    	    
