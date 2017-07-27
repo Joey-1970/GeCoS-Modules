@@ -56,8 +56,8 @@
 		// Profil anlegen
 		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
 		
-		$Output = array(); 
-		$this->SetBuffer("Output", serialize($Output));
+		//$Output = array(); 
+		//$this->SetBuffer("Output", serialize($Output));
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 3; $i++) {
@@ -114,7 +114,8 @@
 			   	}
 			   	break;
 			case "set_i2c_data":
-			  	If ($data->InstanceID == $this->InstanceID) {
+			  	/*
+				If ($data->InstanceID == $this->InstanceID) {
 			  		$this->SendDebug("set_i2c_data", "Ausfuehrung", 0);
 					$Output = array(); 
 					$Output = unserialize($this->GetBuffer("Output"));
@@ -162,6 +163,7 @@
 					}
 					$this->SetBuffer("Output", serialize($Output));
 				}
+				*/
 			  	break; 
 	 	}
  	}
