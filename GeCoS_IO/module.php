@@ -472,22 +472,29 @@ class GeCoS_IO extends IPSModule
 					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
 				}
 		   		break;
-			case "i2c_PCA9685_Write":
+			case "i2c_PCA9685_Write": // Module PWM und RGBW
 		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$Result = $this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
 				}
 		   		break;
-			case "i2c_PCA9685_Read": // Module 16In und 16 Out
+			case "i2c_PCA9685_Read": // Module PWM und RGBW
 				// I2CRW h r - smb Read Word Data: read word from register
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					//$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
-								   //pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0), 32);
-
-					
 					$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
+				}
+				break;  
+			case "i2c_PCA9685_Read_Group": // Modul RGBW
+				// I2CRW h r - smb Read Word Data: read word from register
+				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
+					$Color = Array();
+					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
+					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
+					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
+					$Result = serialized($Color[]);
 				}
 				break;  
 			case "i2c_write_4_byte":
