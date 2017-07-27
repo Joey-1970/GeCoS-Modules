@@ -248,7 +248,8 @@ class GeCoS_IO extends IPSModule
 				
 				// Notify Starten
 				$this->SetBuffer("Handle", -1);
-				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
+				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				$this->SendDebug("Notify Handle", (int)$Handle, 0);
 				$this->SetBuffer("Handle", $Handle);
 				If ($Handle >= 0) {
@@ -1131,6 +1132,16 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Hardwareermittlung", "nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])), 0);
 				}
 				break;
+			case "18":
+           			If ($response[4] >= 0 ) {
+           				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
+           				$this->SendDebug("IO Handle", $response[4], 0);
+           			}
+           			else {
+           				IPS_LogMessage("GeCoS_IO Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+					$this->SendDebug("IO Handle", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+           			}
+		            	break;
            		case "19":
            			//IPS_LogMessage("GeCoS_IO Notify","gestartet");
 				$this->SendDebug("Notify", "gestartet", 0);
@@ -1341,11 +1352,11 @@ class GeCoS_IO extends IPSModule
 		        case "99":
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
-           				$this->SendDebug("IO Handle", $response[4], 0);
+           				$this->SendDebug("Notification Keep Alive", "gestartet", 0);
            			}
            			else {
-           				IPS_LogMessage("GeCoS_IO Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
-					$this->SendDebug("IO Handle", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+           				IPS_LogMessage("GeCoS_IO NOIB","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+					$this->SendDebug("Notification Keep Alive", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
            			}
            			break;
 		    }
