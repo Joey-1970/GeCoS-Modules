@@ -243,7 +243,7 @@ class GeCoS_IO extends IPSModule
 				
 				// Notify Stoppen
 				If ($this->GetBuffer("Handle") >= 0) {
-					$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
+					//$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
 				}
 				
 				// Notify Starten
