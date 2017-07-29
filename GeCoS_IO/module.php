@@ -945,7 +945,7 @@ class GeCoS_IO extends IPSModule
 
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
-		
+		/*
 		If ($this->GetBuffer("Handle") >= 0) {
 			// I²C Bus 1 für RTC, Serielle Schnittstelle,
 			//Notify Pin 17 + 27 + 15= Bitmask 134381568
@@ -953,6 +953,7 @@ class GeCoS_IO extends IPSModule
 			$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);
 			$this->SetBuffer("NotifyCounter", 0);
 		}
+		*/
 		
 	}
 	
