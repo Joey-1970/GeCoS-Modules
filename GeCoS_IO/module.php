@@ -298,12 +298,12 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
-				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				'//$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				If ($this->GetBuffer("Handle") >= 0) {
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
 					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
 					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);
-					$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);	
+					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);	
 				}
 				
 				$this->SetStatus(102);
