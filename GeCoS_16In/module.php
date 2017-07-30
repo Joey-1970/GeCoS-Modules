@@ -119,32 +119,24 @@
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			if (IPS_SemaphoreEnter("GetInput", 2))
-			{
-				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
-				if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-					$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
-					$this->SendDebug("GetInput", "Keine gueltige Antwort:".$Result, 0);
-					If ($this->GetBuffer("ErrorCounter") <= 3) {
-						$this->GetInput();
-					}
+			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
+			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
+				$this->SendDebug("GetInput", "Keine gueltige Antwort:".$Result, 0);
+				If ($this->GetBuffer("ErrorCounter") <= 3) {
+					$this->GetInput();
 				}
-				else {
-					$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
-				
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Result & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
-						}
-					}
-					$this->SetBuffer("ErrorCounter", 0);
-				}
-			IPS_SemaphoreLeave("GetInput");
 			}
-			else
-			{
-			    $this->SendDebug("GetInput", "Semaphore Abbruch: Eingang entprellt?", 0);			
+			else {
+				$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
+
+				for ($i = 0; $i <= 15; $i++) {
+					$Bitvalue = boolval($Result & pow(2, $i));					
+					If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+						SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+					}
+				}
+				$this->SetBuffer("ErrorCounter", 0);
 			}
 		}
 	}
