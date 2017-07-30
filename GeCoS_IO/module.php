@@ -280,12 +280,11 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
-				//$this->SendDebug("Notify Handle", (int)$Handle, 0);
 				$this->SetBuffer("Handle", $Handle);
 				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				If ($Handle >= 0) {
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
-					$this->CommandClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
+					$this->ClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
 				}
 				
 				$this->SetStatus(102);
@@ -926,26 +925,12 @@ class GeCoS_IO extends IPSModule
 
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
-		/*
-		If ($this->GetBuffer("Handle") >= 0) {
-			// I²C Bus 1 für RTC, Serielle Schnittstelle,
-			//Notify Pin 17 + 27 + 15= Bitmask 134381568
-			//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
-			$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);
-			$this->SetBuffer("NotifyCounter", 0);
-		}
-		*/
-		
 	}
 	
 	private function ClientSocket(String $message)
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			if (IPS_SemaphoreEnter("CommandClientSocket", 100))
-			{
-				$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message))));
-				IPS_SemaphoreLeave("CommandClientSocket");
-			}
+			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message))));
 		}
 	}
 	
@@ -953,83 +938,76 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -999;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			
-			if (IPS_SemaphoreEnter("CommandClientSocket", 500))
+			if (!$this->Socket)
 			{
-				
-				if (!$this->Socket)
-				{
-					// Socket erstellen
-					if(!($this->Socket = socket_create(AF_INET, SOCK_STREAM, 0))) {
-						$errorcode = socket_last_error();
-						$errormsg = socket_strerror($errorcode);
-						//IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
-						//$this->SendDebug("CommandClientSocket", "Fehler beim Erstellen ".$errorcode." ".$errormsg, 0);
-						return;
-					}
-					// Timeout setzen
-					socket_set_option($this->Socket, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>2, "usec"=>0));
-					// Verbindung aufbauen
-					if(!(socket_connect($this->Socket, $this->ReadPropertyString("IPAddress"), 8888))) {
-						$errorcode = socket_last_error();
-						$errormsg = socket_strerror($errorcode);
-						//IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
-						//$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg, 0);
-						return;
-					}
-					
-					
-					if (!$this->Socket) {
-						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
-						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
-						// Testballon an IPS-ClientSocket
-						$this->ClientSocket(pack("L*", 17, 0, 0, 0));						
-						$this->SetStatus(201);
-						IPS_SemaphoreLeave("CommandClientSocket");
-						return $Result;
-					}
-				}
-				
-				
-				// Message senden
-				if(!socket_send ($this->Socket, $message, strlen($message), 0))
-				{
+				// Socket erstellen
+				if(!($this->Socket = socket_create(AF_INET, SOCK_STREAM, 0))) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
-					$this->SendDebug("CommandClientSocket", "Fehler beim beim Senden ".$errorcode." ".$errormsg, 0);
+					//IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
+					//$this->SendDebug("CommandClientSocket", "Fehler beim Erstellen ".$errorcode." ".$errormsg, 0);
 					return;
 				}
-				//Now receive reply from server
-				if(socket_recv ($this->Socket, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
+				// Timeout setzen
+				socket_set_option($this->Socket, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>2, "usec"=>0));
+				// Verbindung aufbauen
+				if(!(socket_connect($this->Socket, $this->ReadPropertyString("IPAddress"), 8888))) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
-					$this->SendDebug("CommandClientSocket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg, 0);
+					//IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
+					//$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg, 0);
 					return;
 				}
-				// Anfragen mit variabler Rückgabelänge
-				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
-				$MessageArray = unpack("L*", $buf);
-				$Command = $MessageArray[1];
-				//$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
-				If (in_array($Command, $CmdVarLen)) {
-					$Result = $this->ClientResponse($buf);
-					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
+
+
+				if (!$this->Socket) {
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
+					$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
+					// Testballon an IPS-ClientSocket
+					$this->ClientSocket(pack("L*", 17, 0, 0, 0));						
+					$this->SetStatus(201);
+					return $Result;
 				}
-				// Standardantworten
-				elseIf ((strlen($buf) == 16) OR ((strlen($buf) / 16) == intval(strlen($buf) / 16))) {
-					$DataArray = str_split($buf, 16);
-					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
-					for ($i = 0; $i < Count($DataArray); $i++) {
-						$Result = $this->ClientResponse($DataArray[$i]);
-					}
+			}
+
+
+			// Message senden
+			if(!socket_send ($this->Socket, $message, strlen($message), 0))
+			{
+				$errorcode = socket_last_error();
+				$errormsg = socket_strerror($errorcode);
+				IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
+				$this->SendDebug("CommandClientSocket", "Fehler beim beim Senden ".$errorcode." ".$errormsg, 0);
+				return;
+			}
+			//Now receive reply from server
+			if(socket_recv ($this->Socket, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
+				$errorcode = socket_last_error();
+				$errormsg = socket_strerror($errorcode);
+				IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
+				$this->SendDebug("CommandClientSocket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg, 0);
+				return;
+			}
+			// Anfragen mit variabler Rückgabelänge
+			$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
+			$MessageArray = unpack("L*", $buf);
+			$Command = $MessageArray[1];
+			//$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
+			If (in_array($Command, $CmdVarLen)) {
+				$Result = $this->ClientResponse($buf);
+				//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
+			}
+			// Standardantworten
+			elseIf ((strlen($buf) == 16) OR ((strlen($buf) / 16) == intval(strlen($buf) / 16))) {
+				$DataArray = str_split($buf, 16);
+				//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
+				for ($i = 0; $i < Count($DataArray); $i++) {
+					$Result = $this->ClientResponse($DataArray[$i]);
 				}
-				else {
-					IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
-					$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
-				}
-				IPS_SemaphoreLeave("CommandClientSocket");
+			}
+			else {
+				IPS_LogMessage("GeCoS_IO ReceiveData", strlen($buf)." Zeichen - nicht differenzierbar!");
+				$this->SendDebug("CommandClientSocket", strlen($buf)." Zeichen - nicht differenzierbar!", 0);
 			}
 		}	
 	return $Result;
