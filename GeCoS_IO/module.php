@@ -297,8 +297,8 @@ class GeCoS_IO extends IPSModule
 				
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
-				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
-				'//$this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				//$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				If ($this->GetBuffer("Handle") >= 0) {
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
 					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
@@ -1052,61 +1052,6 @@ class GeCoS_IO extends IPSModule
 		}	
 	return $Result;
 	}
-	
-	
-	/*
-	private function CommandClientSocket(String $message, $ResponseLen = 16)
-	{
-		$Result = -999;
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			
-			if (IPS_SemaphoreEnter("CommandClientSocket", 1000))
-			{
-				$Host = $this->ReadPropertyString("IPAddress");
-				$Port = 8888;
-				$Data = $message;
-				
-				if (!$this->Socket)
-				{
-					$this->Socket = @stream_socket_client("tcp://".$Host.":".$Port, $errno, $errstr, 5);
-					if (!$this->Socket) {
-						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
-						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
-						// Testballon an IPS-ClientSocket
-						$this->ClientSocket(pack("L*", 17, 0, 0, 0));						
-						$this->SetStatus(201);
-						IPS_SemaphoreLeave("CommandClientSocket");
-						return $Result;
-					}
-				}
-								
-				stream_set_timeout($this->Socket, 5);
-				stream_socket_sendto($this->Socket, $Data);
-				$buf = fread($this->Socket, $ResponseLen);
-				$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
-				// Anfragen mit variabler Rückgabelänge
-				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
-				$MessageArray = unpack("L*", $buf);
-				$Command = $MessageArray[1];
-				If (in_array($Command, $CmdVarLen)) {
-					$Result = $this->ClientResponse($buf);
-				}
-				// Standardantworten
-				elseIf ((strlen($buf) == 16) OR ((strlen($buf) / 16) == intval(strlen($buf) / 16))) {
-					$DataArray = str_split($buf, 16);
-					for ($i = 0; $i < Count($DataArray); $i++) {
-						$Result = $this->ClientResponse($DataArray[$i]);
-					}
-				}
-				IPS_SemaphoreLeave("CommandClientSocket");
-			}
-			else {
-				$this->SendDebug("CommandClientSocket", "Semaphore Abbruch", 0);
-			}
-		}	
-	return $Result;
-	}
-	*/
 	
 	private function ClientResponse(String $Message)
 	{
