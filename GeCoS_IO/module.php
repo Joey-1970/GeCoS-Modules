@@ -241,28 +241,10 @@ class GeCoS_IO extends IPSModule
 				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
 				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
-				/*
 				// Notify Stoppen
 				If ($this->GetBuffer("Handle") >= 0) {
-					//$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
+					$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
 				}
-				
-				// Notify Starten
-				$this->SetBuffer("Handle", -1);
-				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
-				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				
-				$this->SendDebug("Notify Handle", (int)$Handle, 0);
-				$this->SetBuffer("Handle", $Handle);
-				
-				If ($Handle >= 0) {
-					// I²C Bus 1 für RTC, Serielle Schnittstelle,
-					//Notify Pin 17 + 27 + 15= Bitmask 134381568
-					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
-					$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);
-					$this->SetBuffer("NotifyCounter", 0);
-				}
-				*/
 				
 				// RTC einrichten
 				$RTC_Handle = $this->GetOnboardI2CHandle(104);
@@ -297,15 +279,13 @@ class GeCoS_IO extends IPSModule
 				
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
-				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				$this->SendDebug("Notify Handle", (int)$Handle, 0);
+				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
+				//$this->SendDebug("Notify Handle", (int)$Handle, 0);
 				$this->SetBuffer("Handle", $Handle);
-				//$this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				If ($Handle >= 0) {
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
-					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
-					$this->CommandClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);
-					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);	
+					$this->CommandClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
 				}
 				
 				$this->SetStatus(102);
@@ -1101,11 +1081,11 @@ class GeCoS_IO extends IPSModule
 			case "18":
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
-           				$this->SendDebug("IO Handle", $response[4], 0);
+           				$this->SendDebug("Notify Handle", (int)$response[4], 0);
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO Handle","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
-					$this->SendDebug("IO Handle", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+					$this->SendDebug("Notify Handle", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
            			}
 		            	break;
            		case "19":
