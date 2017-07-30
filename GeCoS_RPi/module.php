@@ -57,9 +57,9 @@
 		$this->DisableAction("Serial");
 		$this->RegisterVariableString("Software", "Software", "", 50);
 		$this->DisableAction("Software");
-		$this->RegisterVariableFloat("MemoryCPU", "Memory CPU", "megabyte.MB", 60);
+		$this->RegisterVariableFloat("MemoryCPU", "Memory CPU", "GeCoS.MB", 60);
 		$this->DisableAction("MemoryCPU");
-		$this->RegisterVariableFloat("MemoryGPU", "Memory GPU", "megabyte.MB", 70);
+		$this->RegisterVariableFloat("MemoryGPU", "Memory GPU", "GeCoS.MB", 70);
 		$this->DisableAction("MemoryGPU");
 		$this->RegisterVariableString("Hostname", "Hostname", "", 80);
 		$this->DisableAction("Hostname");
