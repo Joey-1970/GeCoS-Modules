@@ -298,11 +298,13 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$this->SendDebug("Notify Handle", (int)$Handle, 0);
+				$this->SetBuffer("Handle", $Handle);
 				//$this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				If ($this->GetBuffer("Handle") >= 0) {
+				If ($Handle >= 0) {
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
 					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), (pow(2, 15) + pow(2, 17) + pow(2, 27)), 0), 16);
-					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);
+					$this->CommandClientSocket(pack("L*", 19, $Handle, 134381568), 16);
 					//$this->ClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134381568), 16);	
 				}
 				
@@ -1107,8 +1109,14 @@ class GeCoS_IO extends IPSModule
            			}
 		            	break;
            		case "19":
-           			//IPS_LogMessage("GeCoS_IO Notify","gestartet");
-				$this->SendDebug("Notify", "gestartet", 0);
+				If ($response[4] >= 0 ) {
+           				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
+           				$this->SendDebug("Notify", "gestartet", 0);
+           			}
+           			else {
+           				IPS_LogMessage("GeCoS_IO Notify","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+					$this->SendDebug("Notify", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+           			}
 		            	break;
            		case "21":
            			//IPS_LogMessage("GeCoS_IO Notify","gestoppt");
