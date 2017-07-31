@@ -279,7 +279,7 @@ class GeCoS_IO extends IPSModule
 				
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
-				$Handle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
+				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				$this->SetBuffer("Handle", $Handle);
 				//$this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				If ($Handle >= 0) {
