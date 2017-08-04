@@ -125,13 +125,13 @@
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
 			If ($Result) {
 				$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
+				$this->GetOutput();
 			}
 			else {
 				$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
-				IPS_LogMessage("GeCoS_16Out", "SetOutputPin: Output ".$Output." Value: ".$Value." nicht erfolgreich!");
-				
+				IPS_LogMessage("GeCoS_16Out", "SetOutputPin: Output ".$Output." Value: ".$Value." nicht erfolgreich!");	
 			}
-			$this->GetOutput();
+
 		}
 	}	
 	
@@ -161,6 +161,7 @@
 				$this->SetBuffer("ErrorCounter", 0);
 			}
 		}
+	return $Result;
 	}
 	    
 	public function SetOutput(int $Value) 
@@ -170,12 +171,12 @@
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
 		If ($Result) {
 			$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
+			$this->GetOutput();
 		}
 		else {
 			$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
 			IPS_LogMessage("GeCoS_16Out", "SetOutput: "."Value: ".$Value." nicht erfolgreich!");
 		}
-		$this->GetOutput();
 	}    
 	    
 	private function Setup()
