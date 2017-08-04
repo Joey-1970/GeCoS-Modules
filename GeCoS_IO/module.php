@@ -235,7 +235,39 @@ class GeCoS_IO extends IPSModule
 				$this->ResetSerialHandle();
 				
 				// Modes setzen
-				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0) , 32);
+				/*
+				# GPIO modes
+				INPUT  = 0
+				OUTPUT = 1
+				ALT0   = 4
+				ALT1   = 5
+				ALT2   = 6
+				ALT3   = 7
+				ALT4   = 3
+				ALT5   = 2
+				*/
+				// Konfiguration der Interupt-Eingänge
+				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
+				// Konfiguration der I²C-Pin
+				$this->CommandClientSocket(pack("L*", 0, 2, 4, 0).pack("L*", 0, 3, 4, 0), 32);
+				// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
+				// Alle anderen = Alt0(Rxd0/TxD0) => 4
+				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
+					$this->CommandClientSocket(pack("L*", 0, 14, 4, 0).pack("L*", 0, 15, 4, 0), 32);
+				}
+				elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
+					// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
+					$this->CommandClientSocket(pack("L*", 0, 14, 2, 0).pack("L*", 0, 15, 2, 0), 32);
+				}
+				
+				// Pullup/Pulldown setzen
+				/*
+				# GPIO Pull Up Down
+				PUD_OFF  = 0
+				PUD_DOWN = 1
+				PUD_UP   = 2
+				*/
+				$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0) , 32);
 				
 				// GlitchFilter setzen
 				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
@@ -907,19 +939,6 @@ class GeCoS_IO extends IPSModule
 		$MUX_Handle = $this->GetBuffer("MUX_Handle");
 		$this->ResetI2CHandle($MUX_Handle + 1);
 				
-		// Konfiguration der I²C-Pin
-		$this->CommandClientSocket(pack("LLLL", 0, 2, 4, 0).pack("LLLL", 0, 3, 4, 0), 32);
-		
-		// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
-		// Alle anderen = Alt0(Rxd0/TxD0) => 4
-		If ($this->GetBuffer("Default_Serial_Bus") == 0) {
-			$this->CommandClientSocket(pack("LLLL", 0, 14, 4, 0).pack("LLLL", 0, 15, 4, 0), 32);
-		}
-		elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
-			// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
-			$this->CommandClientSocket(pack("LLLL", 0, 14, 2, 0).pack("LLLL", 0, 15, 2, 0), 32);
-		}
-		
 		// Starttrigger für 1-Wire-Instanzen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
 
@@ -1020,12 +1039,20 @@ class GeCoS_IO extends IPSModule
 		switch($response[1]) {
 		        case "0":
 		        	If ($response[4] == 0) {
-		        		//IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet");
-					$this->SendDebug("Set GPIO Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet" , 0);
+					$this->SendDebug("GPIO Mode", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet" , 0);
 		        	}
 		        	else {
-		        		$this->SendDebug("Set GPIO Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])) , 0);
+		        		$this->SendDebug("GPIO Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])) , 0);
 					IPS_LogMessage("GeCoS_IO Set Mode", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])));
+		        	}
+		        	break;
+			case "2":
+		        	If ($response[4] == 0) {
+					$this->SendDebug("GPIO Pull up/down", "Pin: ".$response[2]." Wert: ".$response[3]." erfolgreich gesendet" , 0);
+		        	}
+		        	else {
+		        		$this->SendDebug("GPIO Pull up/down", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])) , 0);
+					IPS_LogMessage("GeCoS_IO Pull up/down", "Pin: ".$response[2]." Wert: ".$response[3]." konnte nicht erfolgreich gesendet werden! Fehler:".$this->GetErrorText(abs($response[4])));
 		        	}
 		        	break;
 		        case "17":
