@@ -291,6 +291,8 @@ class GeCoS_IO extends IPSModule
 					// DS 2482 zurücksetzen
 					$this->DS2482Reset();
 					$this->OWSearchStart();
+					// Starttrigger für 1-Wire-Instanzen
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
 				}
 				// https://pastebin.com/0d93ZuRb
 				
@@ -301,14 +303,16 @@ class GeCoS_IO extends IPSModule
 				If ($MUX_Handle >= 0) {
 					// MUX setzen
 					$this->SetMUX(1);
+					// Ermitteln der genutzten I2C-Adressen
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 				}
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				
-				$this->Get_PinUpdate();
-				
+				//$this->Get_PinUpdate();
+
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
@@ -393,11 +397,6 @@ class GeCoS_IO extends IPSModule
 	 	
 		 switch ($data->Function) {
 		 // interne Kommunikation
-		
-		   	case "get_pinupdate":
-				$this->Get_PinUpdate();
-				break;
-		   
 		   	// I2C Kommunikation
 		   	case "set_used_i2c":		   	
 				// die genutzten Device Adressen anlegen
@@ -931,6 +930,7 @@ class GeCoS_IO extends IPSModule
 		 }
 	}
  
+	/*
 	// Aktualisierung der genutzten Pins und der Notifikation
 	private function Get_PinUpdate()
 	{
@@ -944,6 +944,7 @@ class GeCoS_IO extends IPSModule
 		// Ermitteln der genutzten I2C-Adressen
 		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 	}
+	*/
 	
 	private function ClientSocket(String $message)
 	{
