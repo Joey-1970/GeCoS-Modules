@@ -344,7 +344,7 @@ class GeCoS_IO extends IPSModule
 	
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
-		$this->SendDebug("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data), 0);
+		//$this->SendDebug("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data), 0);
 			
 		switch ($Message) {
 			case 10100:
