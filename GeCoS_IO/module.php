@@ -344,11 +344,10 @@ class GeCoS_IO extends IPSModule
 	
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
-		//$this->SendDebug("MessageSink", "Message from SenderID ".$SenderID." with Message ".$Message."\r\n Data: ".print_r($Data), 0);
-			
 		switch ($Message) {
 			case 10100:
 				If ($Data[0] == 10103) {
+					$this->SendDebug("MessageSink", "IPS-Kernel ist bereit und läuft", 0);
 					$this->ApplyChanges();
 				}
 				break;
@@ -373,11 +372,12 @@ class GeCoS_IO extends IPSModule
 				$this->UnregisterMessage($SenderID, 11102);
 				break;				
 			case 10505:
-				$this->SendDebug("MessageSink", "Uebergeordnete Instanz ".$SenderID." meldet Status ".$Data[0], 0);
 				If ($Data[0] == 102) {
+					$this->SendDebug("MessageSink", "Uebergeordnete Instanz ".$SenderID." meldet Status OK", 0);
 					$this->ApplyChanges();
 				}
-				elseif (($Data[0] == 200) AND ($this->ReadPropertyBoolean("Open") == true)) {
+				elseif (($Data[0] >= 200) AND ($this->ReadPropertyBoolean("Open") == true)) {
+					$this->SendDebug("MessageSink", "Uebergeordnete Instanz ".$SenderID." meldet Status fehlerhaft", 0);
 					$this->ConnectionTest();
 				}
 				break;
