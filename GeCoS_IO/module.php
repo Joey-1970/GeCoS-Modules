@@ -24,7 +24,6 @@ class GeCoS_IO extends IPSModule
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
 		$this->RegisterPropertyString("I2C_Devices", "");
-		//$this->RegisterPropertyInteger("TimeCorrection", 100);
 		$this->RegisterPropertyString("OW_Devices", "");
 		$this->RegisterPropertyString("Raspi_Config", "");
 		$this->RegisterPropertyInteger("Baud", 9600);
@@ -102,8 +101,6 @@ class GeCoS_IO extends IPSModule
 			$this->OWSearchStart();
 			$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 			If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
-				//$arrayElements[] = array("type" => "Label", "label" => "Lesezeit der 1-Wire-Devices verändern:");
-				//$arrayElements[] = array("type" => "NumberSpinner", "name" => "TimeCorrection", "caption" => "Zeitkorrektur (%)");
 				$arrayOWValues = array();
 				for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 					$arrayOWValues[] = array("DeviceTyp" => $OWDeviceArray[$i][0], "DeviceSerial" => $OWDeviceArray[$i][1], "InstanceID" => $OWDeviceArray[$i][2], "DeviceStatus" => $OWDeviceArray[$i][3], "rowColor" => $OWDeviceArray[$i][4]);
@@ -617,7 +614,6 @@ class GeCoS_IO extends IPSModule
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0x44); //start conversion
-								//$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
 								IPS_Sleep($data->Time); //Wait for conversion
 
 								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
@@ -654,7 +650,6 @@ class GeCoS_IO extends IPSModule
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0x44); //start conversion
-								//$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
 								IPS_Sleep($data->Time); //Wait for conversion
 
 								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
