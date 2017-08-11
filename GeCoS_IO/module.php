@@ -23,7 +23,7 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
-		$this->RegisterPropertyInteger("GlitchFilter", 100);
+		//$this->RegisterPropertyInteger("GlitchFilter", 100);
 		$this->RegisterPropertyString("I2C_Devices", "");
 		$this->RegisterPropertyInteger("TimeCorrection", 100);
 		$this->RegisterPropertyString("OW_Devices", "");
@@ -68,8 +68,8 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "List", "name" => "Raspi_Config", "caption" => "Konfiguration", "rowCount" => 4, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
-		$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
+		//$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
+		//$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
 		//$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		
 		$arrayColumns = array();
@@ -270,8 +270,8 @@ class GeCoS_IO extends IPSModule
 				$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0) , 32);
 				
 				// GlitchFilter setzen
-				$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
-				$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
+				//$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
+				//$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
 				// Notify Stoppen
 				If ($this->GetBuffer("Handle") >= 0) {
