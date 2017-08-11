@@ -23,9 +23,8 @@ class GeCoS_IO extends IPSModule
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
-		//$this->RegisterPropertyInteger("GlitchFilter", 100);
 		$this->RegisterPropertyString("I2C_Devices", "");
-		$this->RegisterPropertyInteger("TimeCorrection", 100);
+		//$this->RegisterPropertyInteger("TimeCorrection", 100);
 		$this->RegisterPropertyString("OW_Devices", "");
 		$this->RegisterPropertyString("Raspi_Config", "");
 		$this->RegisterPropertyInteger("Baud", 9600);
@@ -68,9 +67,6 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "List", "name" => "Raspi_Config", "caption" => "Konfiguration", "rowCount" => 4, "add" => false, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		//$arrayElements[] = array("type" => "Label", "label" => "Filter zum Entprellen angeschlossener Taster und Schalter setzen (0-5000ms):");
-		//$arrayElements[] = array("type" => "NumberSpinner", "name" => "GlitchFilter", "caption" => "Glitchfilter (ms)");
-		//$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		
 		$arrayColumns = array();
 		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "120px", "add" => "");
@@ -106,8 +102,8 @@ class GeCoS_IO extends IPSModule
 			$this->OWSearchStart();
 			$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 			If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
-				$arrayElements[] = array("type" => "Label", "label" => "Lesezeit der 1-Wire-Devices verändern:");
-				$arrayElements[] = array("type" => "NumberSpinner", "name" => "TimeCorrection", "caption" => "Zeitkorrektur (%)");
+				//$arrayElements[] = array("type" => "Label", "label" => "Lesezeit der 1-Wire-Devices verändern:");
+				//$arrayElements[] = array("type" => "NumberSpinner", "name" => "TimeCorrection", "caption" => "Zeitkorrektur (%)");
 				$arrayOWValues = array();
 				for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 					$arrayOWValues[] = array("DeviceTyp" => $OWDeviceArray[$i][0], "DeviceSerial" => $OWDeviceArray[$i][1], "InstanceID" => $OWDeviceArray[$i][2], "DeviceStatus" => $OWDeviceArray[$i][3], "rowColor" => $OWDeviceArray[$i][4]);
@@ -117,7 +113,6 @@ class GeCoS_IO extends IPSModule
 			else {
 				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine 1-Wire-Devices gefunden.");
 			}
-			//$arrayElements[] = array("type" => "Button", "label" => "I²C-Devices einlesen", "onClick" => 'GeCoSIO_SearchI2CDevices($id);');
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 			$arrayElements[] = array("type" => "Label", "label" => "Führt einen Restart des PIGPIO aus:");
 			$arrayElements[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
@@ -268,10 +263,6 @@ class GeCoS_IO extends IPSModule
 				PUD_UP   = 2
 				*/
 				$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0) , 32);
-				
-				// GlitchFilter setzen
-				//$GlitchFilter = min(5000, max(0, $this->ReadPropertyInteger('GlitchFilter')));
-				//$this->CommandClientSocket(pack("L*", 97, 17, $GlitchFilter, 0).pack("L*", 97, 27, $GlitchFilter, 0) , 32);
 				
 				// Notify Stoppen
 				If ($this->GetBuffer("Handle") >= 0) {
@@ -626,8 +617,8 @@ class GeCoS_IO extends IPSModule
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0x44); //start conversion
-								$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
-								IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+								//$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;
+								IPS_Sleep($data->Time); //Wait for conversion
 
 								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 								$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -663,8 +654,8 @@ class GeCoS_IO extends IPSModule
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
 								$this->OWWriteByte(0x44); //start conversion
-								$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
-								IPS_Sleep($data->Time * $TimeCorrection); //Wait for conversion
+								//$TimeCorrection = $this->ReadPropertyInteger("TimeCorrection") / 100;	
+								IPS_Sleep($data->Time); //Wait for conversion
 
 								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 								$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
@@ -1302,16 +1293,6 @@ class GeCoS_IO extends IPSModule
 					IPS_LogMessage("GeCoS_IO Check Bytes Serial","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
           			}
   		            	break;
-		        case "97":
-           			If ($response[4] >= 0) {
-					$this->SendDebug("Glitch Filter", "Glitch Filter Pin ".$response[2]." wurde erfolgreich gesetzt", 0);
-           			}
-           			else {
-           				$this->SendDebug("Glitch Filter", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
-					IPS_LogMessage("GeCoS_IO GlitchFilter","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
-           			}
-         
-		            	break;
 		        case "99":
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
