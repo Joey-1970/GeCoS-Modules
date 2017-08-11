@@ -403,6 +403,12 @@ class GeCoS_IO extends IPSModule
 				$I2CInstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
 				$I2CInstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
 				$I2CInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+				If (($data->DeviceAddress >= 16) AND ($data->DeviceAddress <= 23)) {
+					$I2CInstanceArray[$data->InstanceID]["Notification"] = 1;
+				}
+				else {
+					$I2CInstanceArray[$data->InstanceID]["Notification"] = 0;
+				}
 				// MUX auf den erforderlichen Channel stellen
 				$this->SetMUX($data->DeviceBus);
 				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
@@ -859,6 +865,8 @@ class GeCoS_IO extends IPSModule
 		 $SerialRead = false;
 		 $Bit17Read = false;
 		 $Bit27Read = false;
+		 $I2CInstanceArray = Array();
+		 $I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 		 
 		 //$this->SendDebug("ReceiveData","Dateneingang Laenge: ".$MessageLen, 0);
 		 
