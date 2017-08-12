@@ -113,6 +113,7 @@
 				break;	
 			case "interrupt_with_result":
 				If (($this->ReadPropertyBoolean("Open") == true) AND ($data->InstanceID == $this->InstanceID)) {
+					$this->SendDebug("interrupt_with_result", "Ausfuehrung", 0);
 					for ($i = 0; $i <= 15; $i++) {
 						$Bitvalue = boolval(intval($data->Value) & pow(2, $i));					
 						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
