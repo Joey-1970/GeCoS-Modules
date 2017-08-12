@@ -114,7 +114,7 @@
 			case "interrupt_with_result":
 				If (($this->ReadPropertyBoolean("Open") == true) AND ($data->InstanceID == $this->InstanceID)) {
 					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Result & pow(2, $i));					
+						$Bitvalue = boolval(intval($data->Result) & pow(2, $i));					
 						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
 							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
 						}
