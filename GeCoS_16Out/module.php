@@ -45,7 +45,7 @@
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "keine Aktion/Status erhalten", "value" => -1);
 		$arrayOptions[] = array("label" => "alle Ausgänge aus", "value" => 0);
-		$arrayOptions[] = array("label" => "alle Ausgänge aus", "value" => 65535);
+		$arrayOptions[] = array("label" => "alle Ausgänge ein", "value" => 65535);
 		$arrayElements[] = array("type" => "Select", "name" => "StartOption", "caption" => "Start-Status", "options" => $arrayOptions );
 
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
