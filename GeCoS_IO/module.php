@@ -895,6 +895,7 @@ class GeCoS_IO extends IPSModule
 										$this->SetMUX(4);
 										$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
 										$this->SendDebug("Datenanalyse", "Inputwert: ".$Result, 0);
+										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type], "Value" => $Result)));
 									}
 								}
 							}
@@ -915,6 +916,7 @@ class GeCoS_IO extends IPSModule
 										$this->SetMUX(5);
 										$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
 										$this->SendDebug("Datenanalyse", "Inputwert: ".$Result, 0);
+										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type], "Value" => $Result)));
 									}
 								}
 							}
