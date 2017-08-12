@@ -892,6 +892,9 @@ class GeCoS_IO extends IPSModule
 								foreach ($I2CInstanceArray as $Type => $Properties) {
 									If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 4)) {
 									    	$this->SendDebug("Datenanalyse", "Quelle: ".$I2CInstanceArray[$Type]." DeviceBus: ".$I2CInstanceArray[$Type]["DeviceBus"]." Handle: ".$I2CInstanceArray[$Type]["Handle"], 0);
+										$this->SetMUX(4);
+										$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
+										$this->SendDebug("Datenanalyse", "Inputwert: ".$Result, 0);
 									}
 								}
 							}
@@ -909,6 +912,9 @@ class GeCoS_IO extends IPSModule
 								foreach ($I2CInstanceArray as $Type => $Properties) {
 									If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 5)) {
 									    	$this->SendDebug("Datenanalyse", "Quelle: ".$I2CInstanceArray[$Type]." DeviceBus: ".$I2CInstanceArray[$Type]["DeviceBus"]." Handle: ".$I2CInstanceArray[$Type]["Handle"], 0);
+										$this->SetMUX(5);
+										$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
+										$this->SendDebug("Datenanalyse", "Inputwert: ".$Result, 0);
 									}
 								}
 							}
