@@ -13,6 +13,7 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 25);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterPropertyInteger("StartOption", -1);
         }
  	
 	public function GetConfigurationForm() 
@@ -39,6 +40,16 @@
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Ausgänge nach der Initialisierung setzen:");
+
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "keine Aktion/Status erhalten", "value" => -1);
+		$arrayOptions[] = array("label" => "alle Ausgänge aus", "value" => 0);
+		$arrayOptions[] = array("label" => "alle Ausgänge aus", "value" => 65535);
+		$arrayElements[] = array("type" => "Select", "name" => "StartOption", "caption" => "Start-Status", "options" => $arrayOptions );
+
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+	
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
 		$arrayActions = array();
@@ -197,7 +208,7 @@
 	    
 	public function SetOutput(int $Value) 
 	{
-		$Value = min(65536, max(0, $Value));
+		$Value = min(65535, max(0, $Value));
 		$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
 		If ($Result) {
@@ -218,6 +229,9 @@
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 0 )));
 			If ($Result) {
 				$this->SendDebug("Setup", "erfolgreich", 0);
+				If ($this->ReadPropertyInteger("StartOption") >= 0) {
+					$this->SetOutput($this->ReadPropertyInteger("StartOption"));
+				}
 			}
 			else {
 				$this->SendDebug("Setup", "nicht erfolgreich!", 0);
