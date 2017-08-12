@@ -14,6 +14,7 @@
  	    	$this->RegisterPropertyInteger("DeviceAddress", 25);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
 		$this->RegisterPropertyInteger("StartOption", -1);
+		$this->RegisterPropertyInteger("StartValue", 0);
         }
  	
 	public function GetConfigurationForm() 
@@ -40,14 +41,15 @@
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Label", "label" => "Ausgänge nach der Initialisierung setzen:");
+		$arrayElements[] = array("type" => "Label", "label" => "Ausgänge nach der Initialisierung setzen");
 
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "keine Aktion/Status erhalten", "value" => -1);
+		$arrayOptions[] = array("label" => "Status erhalten", "value" => -1);
 		$arrayOptions[] = array("label" => "alle Ausgänge aus", "value" => 0);
 		$arrayOptions[] = array("label" => "alle Ausgänge ein", "value" => 65535);
+		$arrayOptions[] = array("label" => "bestimmter Status", "value" => -2);
 		$arrayElements[] = array("type" => "Select", "name" => "StartOption", "caption" => "Start-Status", "options" => $arrayOptions );
-
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "StartValue", "caption" => "Startwert");	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 	
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -231,6 +233,10 @@
 				$this->SendDebug("Setup", "erfolgreich", 0);
 				If ($this->ReadPropertyInteger("StartOption") >= 0) {
 					$this->SetOutput($this->ReadPropertyInteger("StartOption"));
+				}
+				elseif ($this->ReadPropertyInteger("StartOption") == -2) {
+					$Value = min(65535, max(0, $this->ReadPropertyInteger("StartValue")));
+					$this->SetOutput($Value);
 				}
 			}
 			else {
