@@ -887,6 +887,15 @@ class GeCoS_IO extends IPSModule
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
 						If (($Bit17Read == false) AND ($Bitvalue_17 == 0)) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
+							
+							If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+								foreach ($I2CInstanceArray as $Type => $Properties) {
+									If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 4)) {
+									    	$this->SendDebug("Datenanalyse", "Quelle: ".$I2CInstanceArray[$Type]." DeviceBus: ".$I2CInstanceArray[$Type]["DeviceBus"]." Handle: ".$I2CInstanceArray[$Type]["Handle"], 0);
+									}
+								}
+							}
+							
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 							$Bit17Read = true;
 						}
@@ -895,6 +904,15 @@ class GeCoS_IO extends IPSModule
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
 						If (($Bit27Read == false) AND ($Bitvalue_27 == 0)) {
 							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
+							
+							If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+								foreach ($I2CInstanceArray as $Type => $Properties) {
+									If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 5)) {
+									    	$this->SendDebug("Datenanalyse", "Quelle: ".$I2CInstanceArray[$Type]." DeviceBus: ".$I2CInstanceArray[$Type]["DeviceBus"]." Handle: ".$I2CInstanceArray[$Type]["Handle"], 0);
+									}
+								}
+							}
+							
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 							$Bit27Read = true;	
 						}
