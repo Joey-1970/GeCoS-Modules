@@ -170,6 +170,10 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("RTC_Timestamp");
 			IPS_SetHidden($this->GetIDForIdent("RTC_Timestamp"), false);
 			
+			$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 60);
+			$this->DisableAction("LastKeepAlive");
+			IPS_SetHidden($this->GetIDForIdent("LastKeepAlive"), false);
+			
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
 			$this->SetBuffer("MUX_Channel", 1);
@@ -880,6 +884,7 @@ class GeCoS_IO extends IPSModule
 
 					If ($KeepAlive == 1) {
 						$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
+						SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time);
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
