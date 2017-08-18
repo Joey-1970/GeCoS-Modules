@@ -306,6 +306,8 @@ class GeCoS_IO extends IPSModule
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
+				// WatchDog setzen
+				$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				
 				//$this->Get_PinUpdate();
 
