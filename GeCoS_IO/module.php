@@ -317,7 +317,7 @@ class GeCoS_IO extends IPSModule
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
 					//$this->ClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
 					
-					// Notify Pin 17 + 27= Bitmask 134381568
+					// Notify Pin 17 + 27= Bitmask 134348800
 					$this->ClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);	
 				}
 				
@@ -1120,6 +1120,16 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Hardwareermittlung", "nicht erfolgreich! Fehler:".$this->GetErrorText(abs($response[4])), 0);
 				}
 				break;
+			case "9":
+           			If ($response[4] >= 0 ) {
+           				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
+           				$this->SendDebug("WatchDog", "gesetzt", 0);
+           			}
+           			else {
+           				IPS_LogMessage("GeCoS_IO WatchDog","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+					$this->SendDebug("WatchDog", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+           			}
+		            	break;
 			case "18":
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
