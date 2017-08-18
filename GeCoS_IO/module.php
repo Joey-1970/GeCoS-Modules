@@ -1649,12 +1649,14 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = 0;
 		$I2CInstanceArray = Array();
-		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
-			foreach ($I2CInstanceArray as $Type => $Properties) {
-				foreach ($Properties as $Property => $Value) {
-					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
-						$Result = $Type;
+		If (isset($this->GetBuffer("I2CInstanceArray"))) {
+			$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+			If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+				foreach ($I2CInstanceArray as $Type => $Properties) {
+					foreach ($Properties as $Property => $Value) {
+						If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+							$Result = $Type;
+						}
 					}
 				}
 			}
@@ -1666,11 +1668,13 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -1;
 		$I2CInstanceArray = Array();
-		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
-			foreach ($I2CInstanceArray as $Type => $Properties) {
-				If (($I2CInstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($I2CInstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
-				    $Result = $I2CInstanceArray[$Type]["Handle"];
+		If (isset($this->GetBuffer("I2CInstanceArray"))) {
+			$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
+			If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+				foreach ($I2CInstanceArray as $Type => $Properties) {
+					If (($I2CInstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($I2CInstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
+					    $Result = $I2CInstanceArray[$Type]["Handle"];
+					}
 				}
 			}
 		}
