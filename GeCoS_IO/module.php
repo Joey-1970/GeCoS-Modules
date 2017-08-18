@@ -899,6 +899,7 @@ class GeCoS_IO extends IPSModule
 						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 					}
 					elseif ($WatchDog == 1) {
+						$Bitvalue_15 = boolval($Level & pow(2, 15));	
 						$this->SendDebug("Datenanalyse", "Event: WatchDog - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
 						IPS_Sleep(75);
 						$this->CheckSerial();
