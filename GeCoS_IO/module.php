@@ -890,7 +890,7 @@ class GeCoS_IO extends IPSModule
 					$SeqNo = $MessageArray[$i] & 65535;
 					$Flags = $MessageArray[$i] >> 16;
 					$KeepAlive = (int)boolval($Flags & 64);
-					$WatchDog = (int)boolval($Flags & 16);
+					$WatchDog = (int)boolval($Flags & 32);
 					$Tick = $MessageArray[$i + 1];
 					$Level = $MessageArray[$i + 2];
 
