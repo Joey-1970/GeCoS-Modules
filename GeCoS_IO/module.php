@@ -1679,7 +1679,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = 0;
 		$I2CInstanceArray = Array();
-		If (isset($this->GetBuffer("I2CInstanceArray"))) {
+		//If (isset($this->GetBuffer("I2CInstanceArray"))) {
 			$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 			If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
 				foreach ($I2CInstanceArray as $Type => $Properties) {
@@ -1690,7 +1690,7 @@ class GeCoS_IO extends IPSModule
 					}
 				}
 			}
-		}
+		//}
 	return $Result;
 	}
 	
@@ -1698,7 +1698,7 @@ class GeCoS_IO extends IPSModule
 	{
 		$Result = -1;
 		$I2CInstanceArray = Array();
-		If (isset($this->GetBuffer("I2CInstanceArray"))) {
+		//If (isset($this->GetBuffer("I2CInstanceArray"))) {
 			$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 			If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
 				foreach ($I2CInstanceArray as $Type => $Properties) {
@@ -1707,7 +1707,7 @@ class GeCoS_IO extends IPSModule
 					}
 				}
 			}
-		}
+		//}
 	return $Result;
 	}
 	
