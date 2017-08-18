@@ -1662,7 +1662,7 @@ class GeCoS_IO extends IPSModule
 	return $Result;
 	}
 	
-	private function InstanceArrayHandleSearch(String $DeviceBus, Int $DeviceAddress)
+	private function InstanceArrayHandleSearch(Int $DeviceBus, Int $DeviceAddress)
 	{
 		$Result = -1;
 		$I2CInstanceArray = Array();
@@ -1705,7 +1705,7 @@ class GeCoS_IO extends IPSModule
 	return $Status;
 	}
   	
-	private function SetMUX($Port)
+	private function SetMUX(Int $Port)
 	{
 		// PCA9542
 		// 0 = No Channel selected
@@ -1722,7 +1722,7 @@ class GeCoS_IO extends IPSModule
 	return;
 	}
 	
-	private function GetOnboardI2CHandle($DeviceAddress)
+	private function GetOnboardI2CHandle(Int $DeviceAddress)
 	{
 		// Handle ermitteln
 		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $DeviceAddress, 4, 0), 16);	
