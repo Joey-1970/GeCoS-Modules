@@ -190,6 +190,9 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("owTripletSecondBit", 0);
 			$this->SetBuffer("owDeviceAddress_0", 0);
 			$this->SetBuffer("owDeviceAddress_1", 0);
+			
+			$I2CInstanceArray = Array();
+			$this->SetBuffer("I2CInstanceArray", $I2CInstanceArray);
 
 			$ParentID = $this->GetParentID();
 			
