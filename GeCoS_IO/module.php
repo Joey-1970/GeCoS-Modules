@@ -250,10 +250,14 @@ class GeCoS_IO extends IPSModule
 				// Alle anderen = Alt0(Rxd0/TxD0) => 4
 				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
 					$this->CommandClientSocket(pack("L*", 0, 14, 4, 0).pack("L*", 0, 15, 4, 0), 32);
+					// WatchDog setzen
+					$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				}
 				elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
 					// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
 					$this->CommandClientSocket(pack("L*", 0, 14, 2, 0).pack("L*", 0, 15, 2, 0), 32);
+					// WatchDog setzen	-
+					$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				}
 				
 				// Pullup/Pulldown setzen
@@ -311,7 +315,10 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("Handle", $Handle);
 				If ($Handle >= 0) {
 					// Notify Pin 17 + 27 + 15= Bitmask 134381568
-					$this->ClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
+					//$this->ClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
+					
+					// Notify Pin 17 + 27= Bitmask 134381568
+					$this->ClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);	
 				}
 				
 				$this->SetStatus(102);
@@ -879,6 +886,7 @@ class GeCoS_IO extends IPSModule
 					$SeqNo = $MessageArray[$i] & 65535;
 					$Flags = $MessageArray[$i] >> 16;
 					$KeepAlive = (int)boolval($Flags & 64);
+					$WatchDog = (int)boolval($Flags & 16);
 					$Tick = $MessageArray[$i + 1];
 					$Level = $MessageArray[$i + 2];
 
@@ -887,6 +895,15 @@ class GeCoS_IO extends IPSModule
 						SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+						// WatchDog setzen
+						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
+					}
+					elseif ($WatchDog == 1) {
+						$this->SendDebug("Datenanalyse", "Event: WatchDog - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
+						IPS_Sleep(75);
+						$this->CheckSerial();
+						// WatchDog setzen
+						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 					}
 					else {
 						// Wert von Pin 17
