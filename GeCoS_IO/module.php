@@ -30,6 +30,8 @@ class GeCoS_IO extends IPSModule
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
+		$I2CInstanceArray = Array();
+		$this->SetBuffer("I2CInstanceArray", $I2CInstanceArray);
 	}
   
 	public function GetConfigurationForm() 
@@ -190,9 +192,6 @@ class GeCoS_IO extends IPSModule
 			$this->SetBuffer("owTripletSecondBit", 0);
 			$this->SetBuffer("owDeviceAddress_0", 0);
 			$this->SetBuffer("owDeviceAddress_1", 0);
-			
-			$I2CInstanceArray = Array();
-			$this->SetBuffer("I2CInstanceArray", $I2CInstanceArray);
 
 			$ParentID = $this->GetParentID();
 			
