@@ -29,6 +29,7 @@ class GeCoS_IO extends IPSModule
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
+		$this->RegisterTimer("CheckSerial", 0, 'GeCoSIO_CheckSerial($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 		$I2CInstanceArray = Array();
 		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
@@ -231,6 +232,7 @@ class GeCoS_IO extends IPSModule
 				
 				// Serial-Handle zurücksetzen
 				$this->ResetSerialHandle();
+				$this->SetTimerInterval("CheckSerial", 0);
 				
 				// Modes setzen
 				/*
@@ -308,8 +310,7 @@ class GeCoS_IO extends IPSModule
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
-				// WatchDog setzen
-				$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
+				$this->SetTimerInterval("CheckSerial", 3 * 1000);
 				
 				//$this->Get_PinUpdate();
 
@@ -568,6 +569,8 @@ class GeCoS_IO extends IPSModule
 			case "serial_write":
 				$Message = utf8_decode($data->Message);
 				$this->WriteSerial($Message);
+				IPS_Sleep(75);
+				$this->CheckSerial();
 				break;
 			
 		    
@@ -902,6 +905,7 @@ class GeCoS_IO extends IPSModule
 						// WatchDog setzen
 						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 					}
+					/*
 					elseif ($WatchDog == 1) {
 						$Bitvalue_15 = boolval($Level & pow(2, 15));	
 						$this->SendDebug("Datenanalyse", "Event: WatchDog - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
@@ -910,6 +914,7 @@ class GeCoS_IO extends IPSModule
 						// WatchDog setzen
 						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 					}
+					*/
 					else {
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
@@ -948,6 +953,7 @@ class GeCoS_IO extends IPSModule
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 							$Bit27Read = true;	
 						}
+						/*
 
 						// Wert von Pin 15
 						$Bitvalue_15 = boolval($Level & pow(2, 15));			
@@ -957,6 +963,7 @@ class GeCoS_IO extends IPSModule
 							IPS_Sleep(75);
 							$this->CheckSerial();
 						}
+						*/
 					}
 					$this->SetBuffer("NotifyCounter", $SeqNo + 1);
 					$i = $i + 2;
@@ -971,22 +978,6 @@ class GeCoS_IO extends IPSModule
 			}
 		 }
 	}
- 
-	/*
-	// Aktualisierung der genutzten Pins und der Notifikation
-	private function Get_PinUpdate()
-	{
-		// I2C-Handle zurücksetzen
-		$MUX_Handle = $this->GetBuffer("MUX_Handle");
-		$this->ResetI2CHandle($MUX_Handle + 1);
-				
-		// Starttrigger für 1-Wire-Instanzen
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
-
-		// Ermitteln der genutzten I2C-Adressen
-		$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
-	}
-	*/
 	
 	private function ClientSocket(String $message)
 	{
@@ -1460,7 +1451,7 @@ class GeCoS_IO extends IPSModule
 		}
 	}
 	
-	private function CheckSerial()
+	public function CheckSerial()
 	{
 		$Result = $this->CommandClientSocket(pack("L*", 82, $this->GetBuffer("Serial_Handle"), 0, 0), 16);
 		//IPS_LogMessage("GeCoS_IO CheckSerial", $Result);
