@@ -569,7 +569,7 @@ class GeCoS_IO extends IPSModule
 			case "serial_write":
 				$Message = utf8_decode($data->Message);
 				$this->WriteSerial($Message);
-				IPS_Sleep(75);
+				IPS_Sleep(100);
 				$this->CheckSerial();
 				break;
 			
