@@ -255,13 +255,13 @@ class GeCoS_IO extends IPSModule
 				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
 					$this->CommandClientSocket(pack("L*", 0, 14, 4, 0).pack("L*", 0, 15, 4, 0), 32);
 					// WatchDog setzen
-					$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
+					//$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				}
 				elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
 					// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
 					$this->CommandClientSocket(pack("L*", 0, 14, 2, 0).pack("L*", 0, 15, 2, 0), 32);
 					// WatchDog setzen	-
-					$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
+					//$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				}
 				
 				// Pullup/Pulldown setzen
