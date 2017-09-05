@@ -892,8 +892,11 @@ class GeCoS_IO extends IPSModule
 				if (array_key_exists($i + 2, $MessageArray)) {
 					$SeqNo = $MessageArray[$i] & 65535;
 					$Flags = $MessageArray[$i] >> 16;
+					$Event = (int)boolval($Flags & 128);
+					$EventNumber = $Flags & 31;
 					$KeepAlive = (int)boolval($Flags & 64);
 					$WatchDog = (int)boolval($Flags & 32);
+					$WatchDogNumber = $Flags & 31;
 					$Tick = $MessageArray[$i + 1];
 					$Level = $MessageArray[$i + 2];
 
@@ -905,16 +908,12 @@ class GeCoS_IO extends IPSModule
 						// WatchDog setzen
 						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 					}
-					/*
 					elseif ($WatchDog == 1) {
-						$Bitvalue_15 = boolval($Level & pow(2, 15));	
-						$this->SendDebug("Datenanalyse", "Event: WatchDog - Bit 15 (RS232): ".(int)$Bitvalue_15, 0);	
-						IPS_Sleep(75);
-						$this->CheckSerial();
-						// WatchDog setzen
-						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
+						$this->SendDebug("Datenanalyse", "WatchDog-Nummer: ".$WatchDogNumber, 0);
 					}
-					*/
+					elseif ($Event == 1) {
+						$this->SendDebug("Datenanalyse", "Event-Nummer: ".$EventNumber, 0);	
+					}
 					else {
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
