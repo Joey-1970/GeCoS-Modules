@@ -29,7 +29,6 @@ class GeCoS_IO extends IPSModule
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
-		$this->RegisterTimer("CheckSerial", 0, 'GeCoSIO_CheckSerial($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 		$I2CInstanceArray = Array();
 		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
