@@ -177,6 +177,7 @@ class GeCoS_IO extends IPSModule
 			$this->DisableAction("LastKeepAlive");
 			IPS_SetHidden($this->GetIDForIdent("LastKeepAlive"), false);
 			
+			$this->SetBuffer("ModuleReady", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
 			$this->SetBuffer("MUX_Channel", 1);
@@ -254,14 +255,10 @@ class GeCoS_IO extends IPSModule
 				// Alle anderen = Alt0(Rxd0/TxD0) => 4
 				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
 					$this->CommandClientSocket(pack("L*", 0, 14, 4, 0).pack("L*", 0, 15, 4, 0), 32);
-					// WatchDog setzen
-					//$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				}
 				elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
 					// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
 					$this->CommandClientSocket(pack("L*", 0, 14, 2, 0).pack("L*", 0, 15, 2, 0), 32);
-					// WatchDog setzen	-
-					//$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 				}
 				
 				// Pullup/Pulldown setzen
@@ -312,19 +309,30 @@ class GeCoS_IO extends IPSModule
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				$this->SetTimerInterval("CheckSerial", 3 * 1000);
 				
-				//$this->Get_PinUpdate();
+				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
+				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
+				$this->SetBuffer("SerialScriptID", $SerialScriptID );
+				$Parameter = array();
+				$Parameter = array(32768, 50, 1);
+				$this->SendDebug("Serial Skript ID", "SerialScriptID: ".(int)$SerialScriptID, 0);
+				If ($this->GetBuffer("SerialScriptID") >= 0) {
+					$Result = $this->StartProc((int)$SerialScriptID, serialize($Parameter));
+				}
 
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				$this->SetBuffer("Handle", $Handle);
-				If ($Handle >= 0) {
-					// Notify Pin 17 + 27 + 15= Bitmask 134381568
-					//$this->ClientSocket(pack("L*", 19, $Handle, 134381568, 0), 16);	
-					
-					// Notify Pin 17 + 27= Bitmask 134348800
-					$this->CommandClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);	
+				If ($Handle >= 0) {					
+					// Notify GPIO 17 + 27= Bitmask 134348800
+					$this->CommandClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);
+					// Event für GPIO 15 TxD
+					$this->CommandClientSocket(pack("L*", 115, $Handle, 1, 0), 16);
 				}
+				
+				// Vorbereitung beendet
+				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
+				$this->SetBuffer("ModuleReady", 1);
 				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
@@ -1164,6 +1172,26 @@ class GeCoS_IO extends IPSModule
            				IPS_LogMessage("GeCoS_IO PIGPIO Software Version","Fehler: ".$this->GetErrorText(abs($response[4])));
            			}
 		            	break;
+			case "38":
+           			If ($response[4] >= 0) {
+					$this->SendDebug("Skript", "Registrierung mit Skript-ID: ".(int)$Result, 0);
+           				$Result = $response[4]; // SkriptID
+           			}
+           			else {
+           				$Result = -1;
+					$this->SendDebug("Skript", "Registrierung mit Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+					IPS_LogMessage("GeCoS_IO","Skriptregistrierung mit Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           			}
+		            	break;
+			case "40":
+           			If ($response[4] >= 0) {
+           				$Result = $response[4]; // Skriptstatus
+           			}
+           			else {
+           				$Result = -1;
+					$this->SendDebug("Skript", "Start mit Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
+           			}
+		            	break;
 		        case "54":
 		        	If ($response[4] >= 0 ) {
  					//IPS_LogMessage("IPS2GPIO I2C Handle",$response[4]." für Device ".$response[3]);
@@ -1348,6 +1376,16 @@ class GeCoS_IO extends IPSModule
 					$this->SendDebug("Notification Keep Alive", "Fehlermeldung: ".$this->GetErrorText(abs($response[4])), 0);
            			}
            			break;
+			case "115":
+           			If ($response[4] >= 0) {
+           				$this->SendDebug("Event Monitor", "gesetzt", 0);
+           			}
+           			else {
+           				$this->SendDebug("Event Monitor", "Fehler beim Setzen: ".$this->GetErrorText(abs($response[4])), 0);
+					IPS_LogMessage("GeCoS_IO Event Monitor","Fehler beim Setzen: ".$this->GetErrorText(abs($response[4])));
+           			}
+         
+		            	break;
 		    }
 	return $Result;
 	}
@@ -1439,6 +1477,33 @@ class GeCoS_IO extends IPSModule
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 6, 4, hexdec($Year)), 16);
 
 			$this->GetRTC_Data();
+		}
+	}
+	
+	private function StartProc(Int $ScriptID, String $Parameter)
+	{
+		// Startet ein PIGPIO-Skript32768, 50, 1
+		$ParameterArray = array();
+		$ParameterArray = unserialize($Parameter);
+		$Result = $this->CommandClientSocket(pack("L*", 40, $ScriptID, 0, 4 * count($ParameterArray)).pack("L*", ...$ParameterArray), 16);
+
+		If ($Result < 0) {
+			//$this->SendDebug("Skript", "Start Skript-ID: ".(int)$ScriptID." Anzahl Parameter: ".count($ParameterArray), 0);
+			$this->SendDebug("Skript", "Start Fehlgeschlagen!", 0);
+			return -1;
+		}
+		else {
+			$StatusArray = array("wird initialisiert", "angehalten", "laeuft", "wartet", "fehlerhaft");
+			$this->SendDebug("Skript", "Start Skript-ID: ".(int)$ScriptID. " Status: ".($StatusArray[(int)$Result]), 0);
+			/*
+			0	being initialised
+			1	halted
+			2	running
+			3	waiting
+			4	failed
+			*/
+			
+			return $Result;
 		}
 	}
 	
