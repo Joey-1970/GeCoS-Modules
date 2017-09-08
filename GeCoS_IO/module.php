@@ -320,12 +320,6 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				$this->SetBuffer("Handle", $Handle);
-				If ($Handle >= 0) {					
-					// Notify GPIO 17 + 27= Bitmask 134348800
-					$this->CommandClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);
-					// Event für GPIO 15 TxD
-					$this->CommandClientSocket(pack("L*", 115, $Handle, 1, 0), 16);
-				}
 				
 				// Vorbereitung beendet
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
