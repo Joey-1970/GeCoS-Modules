@@ -906,7 +906,7 @@ class GeCoS_IO extends IPSModule
 					$Level = $MessageArray[$i + 2];
 
 					If ($KeepAlive == 1) {
-						$this->SendDebug("Datenanalyse", "Event: KeepAlive", 0);
+						$this->SendDebug("Datenanalyse", "KeepAlive", 0);
 						SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
@@ -923,7 +923,7 @@ class GeCoS_IO extends IPSModule
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
 						If (($Bit17Read == false) AND ($Bitvalue_17 == 0)) {
-							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
+							$this->SendDebug("Datenanalyse", "Interrupt - Bit 17 (I2C-Bus 0): ".(int)$Bitvalue_17, 0);
 							
 							If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
 								foreach ($I2CInstanceArray as $Type => $Properties) {
@@ -942,7 +942,7 @@ class GeCoS_IO extends IPSModule
 						// Wert von Pin 27
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
 						If (($Bit27Read == false) AND ($Bitvalue_27 == 0)) {
-							$this->SendDebug("Datenanalyse", "Event: Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
+							$this->SendDebug("Datenanalyse", "Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
 							
 							If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
 								foreach ($I2CInstanceArray as $Type => $Properties) {
