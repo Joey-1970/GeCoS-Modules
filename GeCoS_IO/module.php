@@ -910,8 +910,6 @@ class GeCoS_IO extends IPSModule
 						SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-						// WatchDog setzen
-						$this->CommandClientSocket(pack("L*", 9, 15, 60000, 0), 16);
 					}
 					elseif ($WatchDog == 1) {
 						$this->SendDebug("Datenanalyse", "WatchDog-Nummer: ".$WatchDogNumber, 0);
@@ -1367,6 +1365,10 @@ class GeCoS_IO extends IPSModule
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("Notification Keep Alive", "gestartet", 0);
+					// Notify GPIO 17 + 27= Bitmask 134348800
+					$this->CommandClientSocket(pack("L*", 19, $response[4], 134348800, 0), 16);
+					// Event für GPIO 15 TxD
+					$this->CommandClientSocket(pack("L*", 115, $response[4], 1, 0), 16);
            			}
            			else {
            				IPS_LogMessage("GeCoS_IO NOIB","Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
