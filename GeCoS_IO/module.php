@@ -232,7 +232,6 @@ class GeCoS_IO extends IPSModule
 				
 				// Serial-Handle zurücksetzen
 				$this->ResetSerialHandle();
-				$this->SetTimerInterval("CheckSerial", 0);
 				
 				// Modes setzen
 				/*
@@ -306,7 +305,6 @@ class GeCoS_IO extends IPSModule
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
-				$this->SetTimerInterval("CheckSerial", 3 * 1000);
 				
 				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
 				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
