@@ -1038,8 +1038,8 @@ class GeCoS_IO extends IPSModule
 				{
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Senden ".$errorcode." ".$errormsg);
-					$this->SendDebug("CommandClientSocket", "Fehler beim beim Senden ".$errorcode." ".$errormsg, 0);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Senden ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim Senden ".$errorcode." ".$errormsg, 0);
 					IPS_SemaphoreLeave("ClientSocket");
 					return;
 				}
@@ -1047,8 +1047,10 @@ class GeCoS_IO extends IPSModule
 				if(socket_recv ($this->Socket, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
 					$errorcode = socket_last_error();
 					$errormsg = socket_strerror($errorcode);
-					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg);
-					$this->SendDebug("CommandClientSocket", "Fehler beim beim Empfangen ".$errorcode." ".$errormsg, 0);
+					IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Empfangen ".$errorcode." ".$errormsg);
+					$this->SendDebug("CommandClientSocket", "Fehler beim Empfangen ".$errorcode." ".$errormsg, 0);
+					$MessageCommand = unpack("L*", $message);
+					$this->SendDebug("CommandClientSocket", "Gesendeter Befehl: ".$MessageCommand[1], 0);
 					IPS_SemaphoreLeave("ClientSocket");
 					return;
 				}
