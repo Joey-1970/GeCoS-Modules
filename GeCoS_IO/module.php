@@ -286,8 +286,6 @@ class GeCoS_IO extends IPSModule
 					// DS 2482 zurücksetzen
 					$this->DS2482Reset();
 					$this->OWSearchStart();
-					// Starttrigger für 1-Wire-Instanzen
-					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
 				}
 				// https://pastebin.com/0d93ZuRb
 				
@@ -298,8 +296,6 @@ class GeCoS_IO extends IPSModule
 				If ($MUX_Handle >= 0) {
 					// MUX setzen
 					$this->SetMUX(1);
-					// Ermitteln der genutzten I2C-Adressen
-					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 				}
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
@@ -324,6 +320,13 @@ class GeCoS_IO extends IPSModule
 				// Vorbereitung beendet
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
 				$this->SetBuffer("ModuleReady", 1);
+				
+				// Ermitteln der genutzten I2C-Adressen
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
+				
+				// Starttrigger für 1-Wire-Instanzen
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
+
 				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
