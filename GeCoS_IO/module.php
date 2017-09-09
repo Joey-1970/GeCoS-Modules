@@ -308,7 +308,8 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("Handle", $Handle);
 				
 				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
-				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
+				//$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
+				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).$Script, 16);
 				$this->SetBuffer("SerialScriptID", $SerialScriptID );
 				$Parameter = array();
 				$Parameter = array(32768, 50, 1);
