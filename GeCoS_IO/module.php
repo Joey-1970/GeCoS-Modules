@@ -285,7 +285,7 @@ class GeCoS_IO extends IPSModule
 				If ($OW_Handle >= 0) {
 					// DS 2482 zurücksetzen
 					$this->DS2482Reset();
-					$this->OWSearchStart();
+					//$this->OWSearchStart();
 				}
 				// https://pastebin.com/0d93ZuRb
 				
