@@ -273,6 +273,16 @@ class GeCoS_IO extends IPSModule
 					$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
 				}
 				
+				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
+				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
+				$this->SetBuffer("SerialScriptID", $SerialScriptID );
+				$Parameter = array();
+				$Parameter = array(32768, 50, 1);
+				$this->SendDebug("Serial Skript ID", "SerialScriptID: ".(int)$SerialScriptID, 0);
+				If ($this->GetBuffer("SerialScriptID") >= 0) {
+					$Result = $this->StartProc((int)$SerialScriptID, serialize($Parameter));
+				}
+				
 				// RTC einrichten
 				$RTC_Handle = $this->GetOnboardI2CHandle(104);
 				$this->SetBuffer("RTC_Handle", $RTC_Handle);
@@ -302,16 +312,6 @@ class GeCoS_IO extends IPSModule
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				
-				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
-				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
-				$this->SetBuffer("SerialScriptID", $SerialScriptID );
-				$Parameter = array();
-				$Parameter = array(32768, 50, 1);
-				$this->SendDebug("Serial Skript ID", "SerialScriptID: ".(int)$SerialScriptID, 0);
-				If ($this->GetBuffer("SerialScriptID") >= 0) {
-					$Result = $this->StartProc((int)$SerialScriptID, serialize($Parameter));
-				}
-
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
