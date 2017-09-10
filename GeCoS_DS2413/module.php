@@ -127,17 +127,19 @@
 				$Filter = '(.*"Function":"status".*|.*"InstanceID":'.$this->InstanceID.'.*)';
 				$this->SetReceiveDataFilter($Filter);
 				
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
-				If (($this->ReadPropertyInteger("DeviceFunction_0") == 1) OR ($this->ReadPropertyInteger("DeviceFunction_1") == 1)) {
-					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
+				If ($Result == true) {
+					If (($this->ReadPropertyInteger("DeviceFunction_0") == 1) OR ($this->ReadPropertyInteger("DeviceFunction_1") == 1)) {
+						$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
+					}
+					else {
+						$this->SetTimerInterval("Messzyklus", 0);
+					}
+					$this->Setup();
+					$this->Measurement();
+					$this->SetStatus(102);
+					$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 				}
-				else {
-					$this->SetTimerInterval("Messzyklus", 0);
-				}
-				$this->Setup();
-				$this->Measurement();
-				$this->SetStatus(102);
-				$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 			}
 			else {
 				$this->SetTimerInterval("Messzyklus", 0);
