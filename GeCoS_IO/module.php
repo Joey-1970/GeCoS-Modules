@@ -604,7 +604,11 @@ class GeCoS_IO extends IPSModule
 						}
 					}
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
-				 }
+				 	$Result = true;
+				}
+				else {
+					$Result = false;
+				}
 				 break;
 		  	case "set_OWDevices":
 				If ($this->GetBuffer("ModuleReady") == 1) {
