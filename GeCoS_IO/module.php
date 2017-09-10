@@ -607,30 +607,32 @@ class GeCoS_IO extends IPSModule
 				 }
 				 break;
 		  	case "set_OWDevices":
-				// die genutzten Device Adressen anlegen
-				$OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
-				 
-				$OWDeviceArray = array();
-				$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-				If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
-					for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-						If ($OWDeviceArray[$i][1] == $data->DeviceSerial) {
-							$OWInstanceArray[$data->InstanceID]["Address_0"] = $OWDeviceArray[$i][5];
-				 			$OWInstanceArray[$data->InstanceID]["Address_1"] = $OWDeviceArray[$i][6];
+				If ($this->GetBuffer("ModuleReady") == 1) {
+					// die genutzten Device Adressen anlegen
+					$OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
+
+					$OWDeviceArray = array();
+					$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+					If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
+						for ($i = 0; $i < Count($OWDeviceArray); $i++) {
+							If ($OWDeviceArray[$i][1] == $data->DeviceSerial) {
+								$OWInstanceArray[$data->InstanceID]["Address_0"] = $OWDeviceArray[$i][5];
+								$OWInstanceArray[$data->InstanceID]["Address_1"] = $OWDeviceArray[$i][6];
+							}
 						}
 					}
+					else {
+						$OWInstanceArray[$data->InstanceID]["Address_0"] = 0;
+						$OWInstanceArray[$data->InstanceID]["Address_1"] = 0;	
+					}
+
+					 $OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+					 $this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
+					 // Messages einrichten
+					 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
+					 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
 				}
-				else {
-				 	$OWInstanceArray[$data->InstanceID]["Address_0"] = 0;
-				 	$OWInstanceArray[$data->InstanceID]["Address_1"] = 0;	
-				}
-				
-				 $OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
-				 $this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
-				 // Messages einrichten
-				 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
-				 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
-				 break;
+				break;
 			case "get_DS18S20Temperature":
 				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 					 if (IPS_SemaphoreEnter("OW", 3000))
