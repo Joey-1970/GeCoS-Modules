@@ -2011,13 +2011,15 @@ class GeCoS_IO extends IPSModule
 	private function OWInstanceArraySearch(String $SearchKey, String $SearchValue)
 	{
 		$Result = 0;
-		$OWInstanceArray = Array();
-		$OWInstanceArray = unserialize($this->GetBuffer("OWInstanceArray"));
-		If (count($OWInstanceArray, COUNT_RECURSIVE) >= 4) {
-			foreach ($OWInstanceArray as $Type => $Properties) {
-				foreach ($Properties as $Property => $Value) {
-					If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
-						$Result = $Type;
+		If (is_array(unserialize($this->GetBuffer("OWInstanceArray"))) == true) {
+			$OWInstanceArray = Array();
+			$OWInstanceArray = unserialize($this->GetBuffer("OWInstanceArray"));
+			If (count($OWInstanceArray, COUNT_RECURSIVE) >= 4) {
+				foreach ($OWInstanceArray as $Type => $Properties) {
+					foreach ($Properties as $Property => $Value) {
+						If (($Property == $SearchKey) AND ($Value == $SearchValue)) {
+							$Result = $Type;
+						}
 					}
 				}
 			}
