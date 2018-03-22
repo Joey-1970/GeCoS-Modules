@@ -101,6 +101,21 @@
 		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
 
+		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "~Intensity.255", 120);
+	        $this->DisableAction("Intensity_W");
+		IPS_SetHidden($this->GetIDForIdent("Intensity_W"), false);
+		
+		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "~Intensity.255", 130);
+	        $this->DisableAction("Intensity_R");
+		IPS_SetHidden($this->GetIDForIdent("Intensity_R"), false);
+		
+		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "~Intensity.255", 140);
+	        $this->DisableAction("Intensity_G");
+		IPS_SetHidden($this->GetIDForIdent("Intensity_G"), false);
+		
+		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "~Intensity.255", 150);
+	        $this->DisableAction("Intensity_B");
+		IPS_SetHidden($this->GetIDForIdent("Intensity_B"), false);
 		
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
@@ -124,11 +139,22 @@
 	{
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
-	 	
+	 	$this->SendDebug("ReceiveData", $JSONString, 0);
 	
 	 	}
  	}
-	    
+	
+	public function GetData()
+	{
+		
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("GetData", "Ausfuehrung", 0);
+			//Daten: {"DataID":"{E310B701-4AE7-458E-B618-EC13A1A6F6A8}","Function":3,"Address":100,"Quantity":1,"Data":""}
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 3, "Address" => 100, "Quantity" => 1, "Data" => "")));
+	
+		}
+	}
+
 	// Beginn der Funktionen
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 	{
