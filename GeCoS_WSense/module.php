@@ -40,7 +40,66 @@
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
             	
+		$this->RegisterProfileFloat("GeCoS.gm3", "Drops", "", " g/m³", 0, 1000, 0.1, 1);
+		
+		$this->RegisterProfileInteger("GeCoS.AirQuality", "Information", "", "", 0, 6, 1);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 0, "Kalibrierung", "Information", -1);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 1, "gut", "Information", 0x58FA58);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 2, "durchschnittlich", "Information", 0xF7FE2E);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 3, "etwas schlecht", "Information", 0xFE9A2E);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 4, "schlecht", "Information", 0xFF0000);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 5, "schlechter", "Information", 0x61380B);
+		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 6, "sehr schlecht", "Information", 0x000000);
+		
 		//Status-Variablen anlegen
+		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
+		$this->DisableAction("Temperature");
+		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
+		
+		$this->RegisterVariableFloat("Pressure", "Luftdruck (abs)", "~AirPressure.F", 20);
+		$this->DisableAction("Pressure");
+		IPS_SetHidden($this->GetIDForIdent("Pressure"), false);
+		
+		$this->RegisterVariableFloat("PressureRel", "Luftdruck (rel)", "~AirPressure.F", 30);
+		$this->DisableAction("PressureRel");
+		IPS_SetHidden($this->GetIDForIdent("PressureRel"), false);
+		
+		$this->RegisterVariableFloat("HumidityAbs", "Luftfeuchtigkeit (abs)", "IPS2GPIO.gm3", 40);
+		$this->DisableAction("HumidityAbs");
+		IPS_SetHidden($this->GetIDForIdent("HumidityAbs"), false);
+		
+		$this->RegisterVariableFloat("Humidity", "Luftfeuchtigkeit (rel)", "~Humidity.F", 50);
+		$this->DisableAction("Humidity");
+		IPS_SetHidden($this->GetIDForIdent("Humidity"), false);
+		
+		$this->RegisterVariableFloat("DewPointTemperature", "Taupunkt Temperatur", "~Temperature", 60);
+		$this->DisableAction("DewPointTemperature");
+		IPS_SetHidden($this->GetIDForIdent("DewPointTemperature"), false);
+		
+		$this->RegisterVariableFloat("PressureTrend1h", "Luftdruck 1h-Trend", "~AirPressure.F", 70);
+		$this->DisableAction("PressureTrend1h");
+		IPS_SetHidden($this->GetIDForIdent("PressureTrend1h"), false);
+		SetValueFloat($this->GetIDForIdent("PressureTrend1h"), 0);
+		
+		$this->RegisterVariableFloat("PressureTrend3h", "Luftdruck 3h-Trend", "~AirPressure.F", 80);
+		$this->DisableAction("PressureTrend3h");
+		IPS_SetHidden($this->GetIDForIdent("PressureTrend3h"), false);
+		SetValueFloat($this->GetIDForIdent("PressureTrend3h"), 0);
+		
+		$this->RegisterVariableFloat("PressureTrend12h", "Luftdruck 12h-Trend", "~AirPressure.F", 90);
+		$this->DisableAction("PressureTrend12h");
+		IPS_SetHidden($this->GetIDForIdent("PressureTrend12h"), false);
+		SetValueFloat($this->GetIDForIdent("PressureTrend12h"), 0);
+		
+		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 100);
+		$this->DisableAction("PressureTrend24h");
+		IPS_SetHidden($this->GetIDForIdent("PressureTrend24h"), false);
+		SetValueFloat($this->GetIDForIdent("PressureTrend24h"), 0);
+		
+		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "IPS2GPIO.AirQuality", 110);
+		$this->DisableAction("AirQuality");
+		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
+		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
 
 		
 		
@@ -71,8 +130,40 @@
  	}
 	    
 	// Beginn der Funktionen
-
-
+	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
+	{
+	        if (!IPS_VariableProfileExists($Name))
+	        {
+	            IPS_CreateVariableProfile($Name, 1);
+	        }
+	        else
+	        {
+	            $profile = IPS_GetVariableProfile($Name);
+	            if ($profile['ProfileType'] != 1)
+	                throw new Exception("Variable profile type does not match for profile " . $Name);
+	        }
+	        IPS_SetVariableProfileIcon($Name, $Icon);
+	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);        
+	}
+	
+	private function RegisterProfileFloat($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize, $Digits)
+	{
+	        if (!IPS_VariableProfileExists($Name))
+	        {
+	            IPS_CreateVariableProfile($Name, 2);
+	        }
+	        else
+	        {
+	            $profile = IPS_GetVariableProfile($Name);
+	            if ($profile['ProfileType'] != 2)
+	                throw new Exception("Variable profile type does not match for profile " . $Name);
+	        }
+	        IPS_SetVariableProfileIcon($Name, $Icon);
+	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
+	        IPS_SetVariableProfileDigits($Name, $Digits);
+	}
 	    
 	private function HasActiveParent()
     	{
