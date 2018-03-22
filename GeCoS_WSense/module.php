@@ -152,7 +152,7 @@
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
 			$this->SendDebug("GetData", $Result, 0);
 			$Result = (unpack("n*", substr($Result,2)));
-			$this->SendDebug("GetData", $Result, 0);
+			$this->SendDebug("GetData", serialize($Result), 0);
 		}
 	}
 
