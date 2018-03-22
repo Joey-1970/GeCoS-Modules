@@ -127,7 +127,7 @@
 			}
 			else {
 				$this->SetStatus(104);
-				$this->SetTimerInterval("GetInput", 0);
+				
 			}	
 		}
 		else {
