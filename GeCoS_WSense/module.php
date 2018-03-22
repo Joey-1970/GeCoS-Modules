@@ -143,13 +143,13 @@
 	
  	}
 	
-	public function GetData()
+	public function GetData(Int $Function, Int $Address, Int $Quantity)
 	{
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetData", "Ausfuehrung", 0);
 			//Daten: {"DataID":"{E310B701-4AE7-458E-B618-EC13A1A6F6A8}","Function":3,"Address":100,"Quantity":1,"Data":""}
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 3, "Address" => 100, "Quantity" => 1, "Data" => "")));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
 	
 		}
 	}
