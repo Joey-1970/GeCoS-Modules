@@ -141,7 +141,6 @@
 	    	$data = json_decode($JSONString);
 	 	$this->SendDebug("ReceiveData", $JSONString, 0);
 	
-	 	}
  	}
 	
 	public function GetData()
