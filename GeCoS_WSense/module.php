@@ -2,18 +2,14 @@
     // Klassendefinition
     class GeCoS_WSense extends IPSModule 
     {
-	// PCA9655E
-	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
         {
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
-		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 16);
-		$this->RegisterPropertyInteger("DeviceBus", 4);
-		$this->RegisterTimer("GetInput", 0, 'GeCoS16In_GetInput($_IPS["TARGET"]);');
+		$this->ConnectParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
+ 	   
         }
  	
 	public function GetConfigurationForm() 
@@ -28,17 +24,6 @@
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		
-		$arrayOptions = array();
-		for ($i = 16; $i <= 23; $i++) {
-		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
-		}
-		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
-		
-		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
-		
-		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
@@ -56,10 +41,7 @@
             	parent::ApplyChanges();
             	
 		//Status-Variablen anlegen
-		for ($i = 0; $i <= 15; $i++) {
-			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
-			$this->DisableAction("Input_X".$i);	
-		}
+
 		
 		$this->SetBuffer("ErrorCounter", 0);
 		
