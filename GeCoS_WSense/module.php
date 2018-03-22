@@ -138,7 +138,8 @@
 	public function ReceiveData($JSONString) 
 	{
 	    	// Empfangene Daten vom Gateway/Splitter
-	    	$data = json_decode($JSONString);
+	    	$this->SendDebug("ReceiveData", "Ausfuehrung", 0);
+		$data = json_decode($JSONString);
 	 	$this->SendDebug("ReceiveData", $JSONString, 0);
 	
  	}
@@ -147,8 +148,7 @@
 	{
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDebug("GetData", "Ausfuehrung", 0);
-			//Daten: {"DataID":"{E310B701-4AE7-458E-B618-EC13A1A6F6A8}","Function":3,"Address":100,"Quantity":1,"Data":""}
+			$this->SendDebug("GetData", "Ausfuehrung - Funktion: ".$Function." Adresse: ".$Address." Menge: ".$Quantity, 0);
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
 	
 		}
