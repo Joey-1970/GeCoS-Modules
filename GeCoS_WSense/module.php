@@ -154,6 +154,54 @@
 			}
 			$Temp = (unpack("n*", substr($Temp,2)));
 			
+			// Luftfeuchtigkeit ermitteln
+			$Humidity = GetData(3, 121, 1);
+			if($Humidity === false) {
+				return;
+			}
+			$Humidity = (unpack("n*", substr($Humidity,2)));
+			
+			// Luftdruck ermitteln
+			$Pressure = GetData(3, 122, 1);
+			if($Pressure === false) {
+				return;
+			}
+			$Pressure = (unpack("n*", substr($Pressure,2)));
+			
+			// Luftdruck ermitteln
+			$IAQ = GetData(3, 123, 1);
+			if($IAQ === false) {
+				return;
+			}
+			$IAQ = (unpack("n*", substr($IAQ,2)));
+			
+			// Weißwert ermitteln
+			$Ambient = GetData(3, 125, 1);
+			if($Ambient === false) {
+				return;
+			}
+			$Ambient = (unpack("n*", substr($Ambient,2)));
+			
+			// Rotwert ermitteln
+			$Red = GetData(3, 126, 1);
+			if($Red === false) {
+				return;
+			}
+			$Red = (unpack("n*", substr($Red,2)));
+			
+			// Grünwert ermitteln
+			$Green = GetData(3, 127, 1);
+			if($Green === false) {
+				return;
+			}
+			$Green = (unpack("n*", substr($Green,2)));
+			
+			// Blauwert ermitteln
+			$Blue = GetData(3, 128, 1);
+			if($Blue === false) {
+				return;
+			}
+			$Blue = (unpack("n*", substr($Blue,2)));
 		}
 	}
 	    
