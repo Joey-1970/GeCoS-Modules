@@ -132,7 +132,7 @@
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
 				$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
-				
+				$this->RequestData();
 				$this->SetStatus(102);
 			}
 			else {
@@ -146,14 +146,7 @@
 		}	
 	}
 	
-	public function ReceiveData($JSONString) 
-	{
-	    	// Empfangene Daten vom Gateway/Splitter
-	    	$this->SendDebug("ReceiveData", "Ausfuehrung", 0);
-		$data = json_decode($JSONString);
-	 	$this->SendDebug("ReceiveData", $JSONString, 0);
-	
- 	}
+
 	
 	public function RequestData()
 	{
