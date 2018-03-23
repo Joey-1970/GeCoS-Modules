@@ -2,6 +2,13 @@
     // Klassendefinition
     class GeCoS_WSense extends IPSModule 
     {
+	public function Destroy() 
+	{
+		//Never delete this line!
+		parent::Destroy();
+		$this->SetTimerInterval("Timer_1", 0);
+	}
+	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
         {
@@ -9,6 +16,8 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
+		$this->RegisterPropertyInteger("Timer_1", 60);
+		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSense_RequestData($_IPS["TARGET"]);');
  	   
         }
  	
@@ -23,6 +32,7 @@
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -121,11 +131,12 @@
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
-				
+				$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
 				
 				$this->SetStatus(102);
 			}
 			else {
+				$this->SetTimerInterval("Timer_1", 0);
 				$this->SetStatus(104);
 				
 			}	
@@ -211,9 +222,9 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetData", "Ausfuehrung - Funktion: ".$Function." Adresse: ".$Address." Menge: ".$Quantity, 0);
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
-			$this->SendDebug("GetData", $Result, 0);
 			$Result = (unpack("n*", substr($Result,2)));
-			$this->SendDebug("GetData", serialize($Result), 0);
+			return $Result[1];
+			//$this->SendDebug("GetData", serialize($Result), 0);
 		}
 	}
 
