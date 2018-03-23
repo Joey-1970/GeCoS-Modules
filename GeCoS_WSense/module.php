@@ -131,6 +131,11 @@
 		$this->DisableAction("AirQuality");
 		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
+		
+		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 115);
+		$this->DisableAction("AirQualityIndex");
+		IPS_SetHidden($this->GetIDForIdent("AirQualityIndex"), false);
+		SetValueInteger($this->GetIDForIdent("AirQualityIndex"), 0);
 
 		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 120);
 	        $this->DisableAction("Intensity_W");
@@ -244,6 +249,7 @@
 			SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
 			$Humidity = $Humidity / 100;
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
+			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
 			
 			// Berechnung von Taupunkt und absoluter Luftfeuchtigkeit
 			if ($Temp < 0) {
