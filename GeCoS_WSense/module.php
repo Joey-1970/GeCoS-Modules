@@ -241,10 +241,11 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_R"), $R);
 			SetValueInteger($this->GetIDForIdent("Intensity_G"), $G);
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), $B);
-			
-			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp / 100, 2));
+			$Temp = $Temp / 100;
+			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
-			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity / 100, 2));
+			$Humidity = $Humidity / 100;
+			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
 			
 			// Berechnung von Taupunkt und absoluter Luftfeuchtigkeit
 			if ($Temp < 0) {
