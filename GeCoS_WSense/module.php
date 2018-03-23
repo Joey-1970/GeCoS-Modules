@@ -18,6 +18,7 @@
 		$this->ConnectParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSense_RequestData($_IPS["TARGET"]);');
+		$this->RegisterPropertyInteger("Altitude", 0);
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
