@@ -323,10 +323,15 @@
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetData", "Ausfuehrung - Funktion: ".$Function." Adresse: ".$Address." Menge: ".$Quantity, 0);
+			$Response = false;
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
 			$Result = (unpack("n*", substr($Result,2)));
-			return $Result[1];
-			//$this->SendDebug("GetData", serialize($Result), 0);
+			If (is_array($Result)) {
+				If (count($Result) == 1) {
+					$Response = $Result[1];
+				}
+			]
+			return $Response;	
 		}
 	}
 	    
