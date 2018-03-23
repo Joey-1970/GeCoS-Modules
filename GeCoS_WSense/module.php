@@ -18,7 +18,12 @@
 		$this->ConnectParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSense_RequestData($_IPS["TARGET"]);');
- 	   
+ 	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
+ 	    	$this->RegisterPropertyBoolean("LoggingHum", false);
+ 	    	$this->RegisterPropertyBoolean("LoggingPres", false);
+		$this->RegisterPropertyBoolean("LoggingGas", false);
+		$this->RegisterPropertyInteger("Temperature_ID", 0);
+		$this->RegisterPropertyInteger("Humidity_ID", 0);
         }
  	
 	public function GetConfigurationForm() 
@@ -33,7 +38,20 @@
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
- 		
+ 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+
+		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
+		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von Quellen");
+		$arrayElements[] = array("type" => "SelectVariable", "name" => "Temperature_ID", "caption" => "Temperatur (extern)");
+		$arrayElements[] = array("type" => "SelectVariable", "name" => "Humidity_ID", "caption" => "Luftfeuchtigkeit (extern)");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingTemp", "caption" => "Logging Temperatur aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingHum", "caption" => "Logging Luftfeuchtigkeit aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAirQuality", "caption" => "Logging Luftqualität aktivieren");
+		
+		
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
@@ -49,7 +67,7 @@
         {
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
-            	
+            	// Profile erstellen		
 		$this->RegisterProfileFloat("GeCoS.gm3", "Drops", "", " g/m³", 0, 1000, 0.1, 1);
 		
 		$this->RegisterProfileInteger("GeCoS.AirQuality", "Information", "", "", 0, 6, 1);
@@ -129,6 +147,13 @@
 		
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
+			// Logging setzen
+			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
+			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), $this->ReadPropertyBoolean("LoggingPres"));
+			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
+			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("AirQuality"), $this->ReadPropertyBoolean("LoggingAirQuality"));
+			IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
+
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
 				$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
@@ -147,7 +172,7 @@
 	}
 	
 
-	
+	// Beginn der Funktionen
 	public function RequestData()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
@@ -156,60 +181,117 @@
 			if($Temp === false) {
 				return;
 			}
-			//$Temp = (unpack("n*", substr($Temp,2)));
 			
 			// Luftfeuchtigkeit ermitteln
 			$Humidity = $this->GetData(3, 121, 1);
 			if($Humidity === false) {
 				return;
 			}
-			//$Humidity = (unpack("n*", substr($Humidity,2)));
 			
 			// Luftdruck ermitteln
 			$Pressure = $this->GetData(3, 122, 1);
 			if($Pressure === false) {
 				return;
 			}
-			//$Pressure = (unpack("n*", substr($Pressure,2)));
 			
 			// Luftdruck ermitteln
 			$IAQ = $this->GetData(3, 123, 1);
 			if($IAQ === false) {
 				return;
 			}
-			//$IAQ = (unpack("n*", substr($IAQ,2)));
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
 			if($Ambient === false) {
 				return;
 			}
-			//$Ambient = (unpack("n*", substr($Ambient,2)));
 			
 			// Rotwert ermitteln
 			$Red = $this->GetData(3, 126, 1);
 			if($Red === false) {
 				return;
 			}
-			//$Red = (unpack("n*", substr($Red,2)));
 			
 			// Grünwert ermitteln
 			$Green = $this->GetData(3, 127, 1);
 			if($Green === false) {
 				return;
 			}
-			//$Green = (unpack("n*", substr($Green,2)));
 			
 			// Blauwert ermitteln
 			$Blue = $this->GetData(3, 128, 1);
 			if($Blue === false) {
 				return;
 			}
-			//$Blue = (unpack("n*", substr($Blue,2)));
 			
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp / 100, 2));
 			SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity / 100, 2));
+			
+			// Berechnung von Taupunkt und absoluter Luftfeuchtigkeit
+			if ($Temp < 0) {
+				$a = 7.6; 
+				$b = 240.7;
+			}  
+			elseif ($Temp >= 0) {
+				$a = 7.5;
+				$b = 237.3;
+			}
+			$sdd = 6.1078 * pow(10.0, (($a * $Temp) / ($b + $Temp)));
+			$dd = $Hum/100.0 * $sdd;
+			$v = log10($dd/6.1078);
+			$td = $b * $v / ($a - $v);
+			$af = pow(10,5) * 18.016 / 8314.3 * $dd / ($Temp + 273.15);
+			// Taupunkttemperatur
+			SetValueFloat($this->GetIDForIdent("DewPointTemperature"), round($td, 2));
+			// Absolute Feuchtigkeit
+			SetValueFloat($this->GetIDForIdent("HumidityAbs"), round($af, 2));
+			
+			// Relativen Luftdruck
+			$Altitude = $this->ReadPropertyInteger("Altitude");
+			If ($this->ReadPropertyInteger("Temperature_ID") > 0) {
+				// Wert der Variablen zur Berechnung nutzen
+				$Temperature = GetValueInteger($this->ReadPropertyInteger("Temperature_ID"));
+			}
+			else {
+				// Wert dieses BME680 verwenden
+				$Temperature = $Temp;
+			}
+			If ($this->ReadPropertyInteger("Humidity_ID") > 0) {
+				// Wert der Variablen zur Berechnung nutzen
+				$Humidity = GetValueInteger($this->ReadPropertyInteger("Humidity_ID"));
+			}
+			
+			$g_n = 9.80665; // Erdbeschleunigung (m/s^2)
+			$gam = 0.0065; // Temperaturabnahme in K pro geopotentiellen Metern (K/gpm)
+			$R = 287.06; // Gaskonstante für trockene Luft (R = R_0 / M)
+			$M = 0.0289644; // Molare Masse trockener Luft (J/kgK)
+			$R_0 = 8.314472; // allgemeine Gaskonstante (J/molK)
+			$T_0 = 273.15; // Umrechnung von °C in K
+			$C = 0.11; // DWD-Beiwert für die Berücksichtigung der Luftfeuchte
+			$E_0 = 6.11213; // (hPa)
+			$f_rel = $Humidity / 100; // relative Luftfeuchte (0-1.0)
+			// momentaner Stationsdampfdruck (hPa)
+			$e_d = $f_rel * $E_0 * exp((17.5043 * $Temperature) / (241.2 + $Temperature));
+			$PressureRel = $Pressure * exp(($g_n * $Altitude) / ($R * ($Temperature + $T_0 + $C * $e_d + (($gam * $Altitude) / 2))));
+			SetValueFloat($this->GetIDForIdent("PressureRel"), round($PressureRel / 100, 2));
+
+			// Luftdruck Trends
+			If ($this->ReadPropertyBoolean("LoggingPres") == true) {
+				SetValueFloat($this->GetIDForIdent("PressureTrend1h"), $this->PressureTrend(1));
+				SetValueFloat($this->GetIDForIdent("PressureTrend3h"), $this->PressureTrend(3));
+				SetValueFloat($this->GetIDForIdent("PressureTrend12h"), $this->PressureTrend(12));
+				SetValueFloat($this->GetIDForIdent("PressureTrend24h"), $this->PressureTrend(24));
+			}
+			
+			// Umrechnung für die Air-Qualität-Anzeige
+			$air_quality_score = max(0, min(500, $IAQ));
+			$IAQ_Index = array(50, 100, 150, 200, 300, 500);
+			$i = 0;
+			while ($air_quality_score > $IAQ_Index[$i]) {
+			    $i++;  
+			}
+			SetValueInteger($this->GetIDForIdent("AirQuality"), ($i + 1));
 		}
 	}
 	    
@@ -224,8 +306,15 @@
 			//$this->SendDebug("GetData", serialize($Result), 0);
 		}
 	}
-
-	// Beginn der Funktionen
+	    
+	private function PressureTrend(int $interval)
+	{
+		$Result = 0;
+		$LoggingArray = AC_GetLoggedValues(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), time()- (3600 * $interval), time(), 0); 
+		$Result = @($LoggingArray[0]['Value'] - end($LoggingArray)['Value']); 
+	return $Result;
+	}   
+	    
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 	{
 	        if (!IPS_VariableProfileExists($Name))
