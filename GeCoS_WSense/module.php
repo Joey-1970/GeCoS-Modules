@@ -290,7 +290,7 @@
 			// momentaner Stationsdampfdruck (hPa)
 			$e_d = $f_rel * $E_0 * exp((17.5043 * $Temperature) / (241.2 + $Temperature));
 			$PressureRel = $Pressure * exp(($g_n * $Altitude) / ($R * ($Temperature + $T_0 + $C * $e_d + (($gam * $Altitude) / 2))));
-			SetValueFloat($this->GetIDForIdent("PressureRel"), round($PressureRel / 100, 2));
+			SetValueFloat($this->GetIDForIdent("PressureRel"), round($PressureRel, 2));
 
 			// Luftdruck Trends
 			If ($this->ReadPropertyBoolean("LoggingPres") == true) {
