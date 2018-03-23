@@ -213,6 +213,10 @@
 				return;
 			}
 			$Blue = (unpack("n*", substr($Blue,2)));
+			
+			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp / 100, 2));
+			SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure / 100, 2));
+			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity / 100, 2));
 		}
 	}
 	    
