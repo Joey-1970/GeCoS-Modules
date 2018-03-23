@@ -230,6 +230,14 @@
 			if($Blue === false) {
 				return;
 			}
+			$W = $Ambient / 65535 * 255;
+			$R = $Red / 65535 * 255;
+			$G = $Green / 65535 * 255;
+			$B = $Blue / 65535 * 255;
+			SetValueInteger($this->GetIDForIdent("Intensity_W"), $W);
+			SetValueInteger($this->GetIDForIdent("Intensity_R"), $R);
+			SetValueInteger($this->GetIDForIdent("Intensity_G"), $G);
+			SetValueInteger($this->GetIDForIdent("Intensity_B"), $B);
 			
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp / 100, 2));
 			SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
