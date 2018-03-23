@@ -80,6 +80,8 @@
 		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 5, "schlechter", "Information", 0x61380B);
 		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 6, "sehr schlecht", "Information", 0x000000);
 		
+		$this->RegisterProfileInteger("GeCoS.Lux", "Bulb", "", " lx", 0, 65535, 1);
+		
 		//Status-Variablen anlegen
 		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
 		$this->DisableAction("Temperature");
@@ -130,19 +132,19 @@
 		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
 
-		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "~Intensity.255", 120);
+		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 120);
 	        $this->DisableAction("Intensity_W");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_W"), false);
 		
-		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "~Intensity.255", 130);
+		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 130);
 	        $this->DisableAction("Intensity_R");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_R"), false);
 		
-		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "~Intensity.255", 140);
+		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 140);
 	        $this->DisableAction("Intensity_G");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_G"), false);
 		
-		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "~Intensity.255", 150);
+		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 150);
 	        $this->DisableAction("Intensity_B");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_B"), false);
 		
