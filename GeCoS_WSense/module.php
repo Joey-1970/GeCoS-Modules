@@ -188,6 +188,7 @@
 			if($Temp === false) {
 				return;
 			}
+			$this->SendDebug("RequestData", "TempOffset: ".$TempOffset." Temp: ".$Temp, 0);
 			$Temp = $Temp + $TempOffset;
 			
 			// Luftfeuchtigkeit ermitteln
@@ -231,6 +232,7 @@
 			if($Blue === false) {
 				return;
 			}
+			$this->SendDebug("RequestData", "Weiß: ".$Ambient." Rot: ".$Red, 0);
 			$W = $Ambient / 65535 * 255;
 			$R = $Red / 65535 * 255;
 			$G = $Green / 65535 * 255;
