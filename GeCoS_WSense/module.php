@@ -176,11 +176,18 @@
 	public function RequestData()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			// TemperaturOffset ermitteln
+			$TempOffset = $this->GetData(3, 101, 1);
+			if($TempOffset === false) {
+				return;
+			}
+			
 			// Temperatur ermitteln
 			$Temp = $this->GetData(3, 120, 1);
 			if($Temp === false) {
 				return;
 			}
+			$Temp = $Temp + $TempOffset;
 			
 			// Luftfeuchtigkeit ermitteln
 			$Humidity = $this->GetData(3, 121, 1);
