@@ -144,6 +144,19 @@
 	
  	}
 	
+	public function RequestData()
+	{
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			// Temperatur ermitteln
+			$Temp = GetData(3, 120, 1);
+			if($Temp === false) {
+				return;
+			}
+			$Temp = (unpack("n*", substr($Temp,2)));
+			
+		}
+	}
+	    
 	public function GetData(Int $Function, Int $Address, Int $Quantity)
 	{
 		
