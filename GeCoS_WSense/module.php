@@ -22,7 +22,7 @@
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
-		$this->RegisterPropertyBoolean("LoggingGas", false);
+		$this->RegisterPropertyBoolean("LoggingAirQuality", false);
 		$this->RegisterPropertyInteger("Temperature_ID", 0);
 		$this->RegisterPropertyInteger("Humidity_ID", 0);
         }
