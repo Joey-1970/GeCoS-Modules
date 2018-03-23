@@ -254,7 +254,7 @@
 				$b = 237.3;
 			}
 			$sdd = 6.1078 * pow(10.0, (($a * $Temp) / ($b + $Temp)));
-			$dd = $Humidity / 100.0 * $sdd;
+			$dd = $Humidity / 10000 * $sdd;
 			$v = log10($dd/6.1078);
 			$td = $b * $v / ($a - $v);
 			$af = pow(10,5) * 18.016 / 8314.3 * $dd / ($Temp + 273.15);
