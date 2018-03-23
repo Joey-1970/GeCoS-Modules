@@ -95,7 +95,7 @@
 		$this->DisableAction("PressureRel");
 		IPS_SetHidden($this->GetIDForIdent("PressureRel"), false);
 		
-		$this->RegisterVariableFloat("HumidityAbs", "Luftfeuchtigkeit (abs)", "IPS2GPIO.gm3", 40);
+		$this->RegisterVariableFloat("HumidityAbs", "Luftfeuchtigkeit (abs)", "GeCoS.gm3", 40);
 		$this->DisableAction("HumidityAbs");
 		IPS_SetHidden($this->GetIDForIdent("HumidityAbs"), false);
 		
@@ -127,7 +127,7 @@
 		IPS_SetHidden($this->GetIDForIdent("PressureTrend24h"), false);
 		SetValueFloat($this->GetIDForIdent("PressureTrend24h"), 0);
 		
-		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "IPS2GPIO.AirQuality", 110);
+		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "GeCoS.AirQuality", 110);
 		$this->DisableAction("AirQuality");
 		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
