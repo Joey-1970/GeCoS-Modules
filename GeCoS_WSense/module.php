@@ -330,7 +330,7 @@
 				If (count($Result) == 1) {
 					$Response = $Result[1];
 				}
-			]
+			}
 			return $Response;	
 		}
 	}
