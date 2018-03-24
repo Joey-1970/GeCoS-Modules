@@ -184,6 +184,13 @@
 	public function RequestData()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
+			// AQ ermitteln
+			$IAQ = $this->GetData(3, 123, 1);
+			if($IAQ === false) {
+				return;
+			}
+			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
+			
 			// TemperaturOffset ermitteln
 			$TempOffset = $this->GetData(3, 101, 1);
 			if($TempOffset === false) {
@@ -212,12 +219,7 @@
 			}
 			$this->SendDebug("RequestData", "Pressure: ".$Pressure, 0);
 			
-			// AQ ermitteln
-			$IAQ = $this->GetData(3, 123, 1);
-			if($IAQ === false) {
-				return;
-			}
-			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
+			
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
