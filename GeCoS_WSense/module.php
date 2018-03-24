@@ -191,6 +191,15 @@
 			}
 			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
 			
+			IPS_Sleep(150);
+			
+			// AQ ermitteln
+			$IAQ = $this->GetData(3, 123, 1);
+			if($IAQ === false) {
+				return;
+			}
+			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
+			
 			// TemperaturOffset ermitteln
 			$TempOffset = $this->GetData(3, 101, 1);
 			if($TempOffset === false) {
