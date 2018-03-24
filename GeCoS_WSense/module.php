@@ -203,14 +203,16 @@
 			if($Humidity === false) {
 				return;
 			}
+			$this->SendDebug("RequestData", "Humidity: ".$Humidity, 0);
 			
 			// Luftdruck ermitteln
 			$Pressure = $this->GetData(3, 122, 1);
 			if($Pressure === false) {
 				return;
 			}
+			$this->SendDebug("RequestData", "Pressure: ".$Pressure, 0);
 			
-			// Luftdruck ermitteln
+			// AQ ermitteln
 			$IAQ = $this->GetData(3, 123, 1);
 			if($IAQ === false) {
 				return;
