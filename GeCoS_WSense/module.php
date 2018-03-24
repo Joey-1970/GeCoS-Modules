@@ -217,6 +217,7 @@
 			if($IAQ === false) {
 				return;
 			}
+			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
