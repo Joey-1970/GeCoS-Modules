@@ -154,7 +154,7 @@
 		IPS_SetHidden($this->GetIDForIdent("Intensity_B"), false);
 		
 		
-		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
+		If (IPS_GetKernelRunlevel() == 10103) {			
 			// Logging setzen
 			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
 			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), $this->ReadPropertyBoolean("LoggingPres"));
@@ -183,7 +183,7 @@
 	// Beginn der Funktionen
 	public function RequestData()
 	{
-		If ($this->ReadPropertyBoolean("Open") == true) {
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
 			// TemperaturOffset ermitteln
 			$TempOffset = $this->GetData(3, 101, 1);
 			if($TempOffset === false) {
