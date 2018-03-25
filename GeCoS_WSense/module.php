@@ -256,7 +256,7 @@
 			$Temp = $Temp + $TempOffset;
 			
 			
-			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen. ".$Green." Blau: ".$Blue, 0);
+			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen: ".$Green." Blau: ".$Blue, 0);
 			
 			$this->SetStatus(102);
 			
