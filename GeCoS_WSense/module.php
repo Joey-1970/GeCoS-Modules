@@ -35,6 +35,7 @@
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
 		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
 		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Device konnte nicht gefunden werden");
+		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "ModBus-Kommunikationfehler!");
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
@@ -187,73 +188,72 @@
 			// AQ ermitteln
 			$IAQ = $this->GetData(3, 123, 1);
 			if($IAQ === false) {
+				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
-			
-			IPS_Sleep(150);
-			
-			// AQ ermitteln
-			$IAQ = $this->GetData(3, 123, 1);
-			if($IAQ === false) {
-				return;
-			}
-			$this->SendDebug("RequestData", "iAQ: ".$IAQ, 0);
 			
 			// TemperaturOffset ermitteln
 			$TempOffset = $this->GetData(3, 101, 1);
 			if($TempOffset === false) {
+				$this->SetStatus(202);
 				return;
 			}
 			
 			// Temperatur ermitteln
 			$Temp = $this->GetData(3, 120, 1);
 			if($Temp === false) {
+				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "TempOffset: ".$TempOffset." Temp: ".$Temp, 0);
-			$Temp = $Temp + $TempOffset;
 			
 			// Luftfeuchtigkeit ermitteln
 			$Humidity = $this->GetData(3, 121, 1);
 			if($Humidity === false) {
+				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "Humidity: ".$Humidity, 0);
 			
 			// Luftdruck ermitteln
 			$Pressure = $this->GetData(3, 122, 1);
 			if($Pressure === false) {
+				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "Pressure: ".$Pressure, 0);
 			
-			
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
+			$Temp = $Temp + $TempOffset;
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
 			if($Ambient === false) {
+				$this->SetStatus(202);
 				return;
 			}
 			
 			// Rotwert ermitteln
 			$Red = $this->GetData(3, 126, 1);
 			if($Red === false) {
+				$this->SetStatus(202);
 				return;
 			}
 			
 			// Grünwert ermitteln
 			$Green = $this->GetData(3, 127, 1);
 			if($Green === false) {
+				$this->SetStatus(202);
 				return;
 			}
 			
 			// Blauwert ermitteln
 			$Blue = $this->GetData(3, 128, 1);
 			if($Blue === false) {
+				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "Weiß: ".$Ambient." Rot: ".$Red, 0);
+			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen. ".$green." Blau: ".$Blue, 0);
+			
+			$this->SetStatus(102);
+			
 			SetValueInteger($this->GetIDForIdent("Intensity_W"), $Ambient);
 			SetValueInteger($this->GetIDForIdent("Intensity_R"), $Red);
 			SetValueInteger($this->GetIDForIdent("Intensity_G"), $Green);
@@ -336,7 +336,7 @@
 	{
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDebug("GetData", "Ausfuehrung - Funktion: ".$Function." Adresse: ".$Address." Menge: ".$Quantity, 0);
+			//$this->SendDebug("GetData", "Ausfuehrung - Funktion: ".$Function." Adresse: ".$Address." Menge: ".$Quantity, 0);
 			$Response = false;
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
 			$Result = (unpack("n*", substr($Result,2)));
