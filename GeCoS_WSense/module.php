@@ -180,11 +180,13 @@
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
 			// AQ ermitteln
+			/*
 			$IAQ = $this->GetData(3, 123, 1);
 			if($IAQ === false) {
 				$this->SetStatus(202);
 				return;
 			}
+			*/
 			
 			// TemperaturOffset ermitteln
 			$TempOffset = $this->GetData(3, 101, 1);
@@ -214,8 +216,7 @@
 				return;
 			}
 			
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
-			$Temp = $Temp + $TempOffset;
+			
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
@@ -244,6 +245,17 @@
 				$this->SetStatus(202);
 				return;
 			}
+			
+			// AQ ermitteln
+			$IAQ = $this->GetData(3, 123, 1);
+			if($IAQ === false) {
+				$this->SetStatus(202);
+				return;
+			}
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
+			$Temp = $Temp + $TempOffset;
+			
+			
 			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen. ".$Green." Blau: ".$Blue, 0);
 			
 			$this->SetStatus(102);
