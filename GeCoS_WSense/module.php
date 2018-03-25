@@ -250,7 +250,7 @@
 				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen. ".$green." Blau: ".$Blue, 0);
+			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen. ".$Green." Blau: ".$Blue, 0);
 			
 			$this->SetStatus(102);
 			
