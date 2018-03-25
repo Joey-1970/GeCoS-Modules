@@ -155,28 +155,22 @@
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
             			
-		If (IPS_GetKernelRunlevel() == 10103) {			
-			// Logging setzen
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), $this->ReadPropertyBoolean("LoggingPres"));
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
-			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("AirQuality"), $this->ReadPropertyBoolean("LoggingAirQuality"));
-			IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
+		// Logging setzen
+		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
+		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), $this->ReadPropertyBoolean("LoggingPres"));
+		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
+		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("AirQuality"), $this->ReadPropertyBoolean("LoggingAirQuality"));
+		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 
-			If ($this->ReadPropertyBoolean("Open") == true) {	
-				//ReceiveData-Filter setzen
-				$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
-				$this->RequestData();
-				$this->SetStatus(102);
-			}
-			else {
-				$this->SetTimerInterval("Timer_1", 0);
-				$this->SetStatus(104);
-				
-			}	
+		If ($this->ReadPropertyBoolean("Open") == true) {	
+			//ReceiveData-Filter setzen
+			$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
+			$this->RequestData();
+			$this->SetStatus(102);
 		}
 		else {
-			$this->SendDebug("ApplyChanges", "Startrestriktionen nicht erfuellt!", 0);
+			$this->SetTimerInterval("Timer_1", 0);
+			$this->SetStatus(104);
 		}	
 	}
 	
