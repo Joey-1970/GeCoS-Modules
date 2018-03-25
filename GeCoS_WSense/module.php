@@ -254,7 +254,9 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), $Blue);
 			$Temp = $Temp / 100;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
-			SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
+			If (($Pressure > 800) AND ($Pressure < 1200)) {
+				SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
+			}
 			$Humidity = $Humidity / 100;
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
 			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
@@ -388,7 +390,7 @@
 	    
 	private function HasActiveParent()
     	{
-		$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
+		//$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
 		$Instance = @IPS_GetInstance($this->InstanceID);
 		if ($Instance['ConnectionID'] > 0)
 		{
