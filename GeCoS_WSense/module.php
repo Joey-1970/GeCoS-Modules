@@ -25,51 +25,8 @@
 		$this->RegisterPropertyBoolean("LoggingAirQuality", false);
 		$this->RegisterPropertyInteger("Temperature_ID", 0);
 		$this->RegisterPropertyInteger("Humidity_ID", 0);
-        }
- 	
-	public function GetConfigurationForm() 
-	{ 
-		$arrayStatus = array(); 
-		$arrayStatus[] = array("code" => 101, "icon" => "inactive", "caption" => "Instanz wird erstellt"); 
-		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
-		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
-		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
-		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Device konnte nicht gefunden werden");
-		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "ModBus-Kommunikationfehler!");
 		
-		$arrayElements = array(); 
-		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
-		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
- 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-
-		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
-		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
-		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von Quellen");
-		$arrayElements[] = array("type" => "SelectVariable", "name" => "Temperature_ID", "caption" => "Temperatur (extern)");
-		$arrayElements[] = array("type" => "SelectVariable", "name" => "Humidity_ID", "caption" => "Luftfeuchtigkeit (extern)");
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingTemp", "caption" => "Logging Temperatur aktivieren");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingHum", "caption" => "Logging Luftfeuchtigkeit aktivieren");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAirQuality", "caption" => "Logging Luftqualität aktivieren");
-		
-		
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
-	
-		$arrayActions = array();
-		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
-		
-		
- 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
- 	}           
-	  
-        // Überschreibt die intere IPS_ApplyChanges($id) Funktion
-        public function ApplyChanges() 
-        {
-            	// Diese Zeile nicht löschen
-            	parent::ApplyChanges();
-            	// Profile erstellen		
+		// Profile erstellen		
 		$this->RegisterProfileFloat("GeCoS.gm3", "Drops", "", " g/m³", 0, 1000, 0.1, 1);
 		
 		$this->RegisterProfileInteger("GeCoS.AirQuality", "Information", "", "", 0, 6, 1);
@@ -133,28 +90,71 @@
 		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
 		
-		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 115);
+		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 120);
 		$this->DisableAction("AirQualityIndex");
 		IPS_SetHidden($this->GetIDForIdent("AirQualityIndex"), false);
 		SetValueInteger($this->GetIDForIdent("AirQualityIndex"), 0);
 
-		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 120);
+		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 130);
 	        $this->DisableAction("Intensity_W");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_W"), false);
 		
-		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 130);
+		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 140);
 	        $this->DisableAction("Intensity_R");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_R"), false);
 		
-		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 140);
+		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 150);
 	        $this->DisableAction("Intensity_G");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_G"), false);
 		
-		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 150);
+		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 160);
 	        $this->DisableAction("Intensity_B");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_B"), false);
+        }
+ 	
+	public function GetConfigurationForm() 
+	{ 
+		$arrayStatus = array(); 
+		$arrayStatus[] = array("code" => 101, "icon" => "inactive", "caption" => "Instanz wird erstellt"); 
+		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
+		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
+		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
+		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Device konnte nicht gefunden werden");
+		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "ModBus-Kommunikationfehler!");
+		
+		$arrayElements = array(); 
+		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
+ 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+
+		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
+		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von Quellen");
+		$arrayElements[] = array("type" => "SelectVariable", "name" => "Temperature_ID", "caption" => "Temperatur (extern)");
+		$arrayElements[] = array("type" => "SelectVariable", "name" => "Humidity_ID", "caption" => "Luftfeuchtigkeit (extern)");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingTemp", "caption" => "Logging Temperatur aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingHum", "caption" => "Logging Luftfeuchtigkeit aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAirQuality", "caption" => "Logging Luftqualität aktivieren");
 		
 		
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
+	
+		$arrayActions = array();
+		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
+		
+		
+ 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
+ 	}           
+	  
+        // Überschreibt die intere IPS_ApplyChanges($id) Funktion
+        public function ApplyChanges() 
+        {
+            	// Diese Zeile nicht löschen
+            	parent::ApplyChanges();
+            			
 		If (IPS_GetKernelRunlevel() == 10103) {			
 			// Logging setzen
 			AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
