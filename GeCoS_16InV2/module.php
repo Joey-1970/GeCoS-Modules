@@ -152,18 +152,110 @@
 			}
 		}
 	}
+	
 	private function Setup()
 	{
-		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 65535 )));
-			If ($Result) {
-				$this->SendDebug("Setup", "erfolgreich", 0);
-			}
-			else {
-				$this->SendDebug("Setup", "nicht erfolgreich!", 0);
-				IPS_LogMessage("GeCoS_16In", "Setup: nicht erfolgreich!");
-			}
+			$this->SendDebug("Setup", "Ausfuehrung", 0);
+			$Config = 0;
+			// Bit 0: irrelevant
+			// Bit 1: INTPOL Polarität des Interrupts
+			$INTPOL = 0;
+			$Config = $Config | ($INTPOL << 1);
+			// Bit 2: ODR Open-Drain oder aktiver Treiber beim Interrupt
+			$ODR = 0;
+			$Config = $Config | ($ODR << 2);
+			// Bit 3: irrelvant, nur bei der SPI-Version nutzbar
+			// Bit 4: DISSLW Defaultwert = 0
+			// Bit 5: SEQOP Defaultwert = 0, automatische Adress-Zeiger inkrement
+			// Bit 6: MIRROR Interrupt-Konfiguration
+			$MIRROR = 1;
+			$Config = $Config | ($MIRROR << 6);
+			// Bit 7: BANK Defaultwert = 0 Register sind in derselben Bank
+			
+			// ConfigByte senden!
+			$this->SendDebug("Setup", "Config-Byte: ".$Config, 0);
+			$ConfigArray = array();
+			$ConfigArray[0] = $Config;
+			$ConfigArray[1] = $Config;
+			// Adressen 0A 0B
+			$tries = 5;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "InstanceID" => $this->InstanceID, "Register" => hexdec("A0"), 
+											  "Parameter" => serialize($ConfigArray) )));
+				If (!$Result) {
+					$this->SendDebug("Setup", "Basis-Konfigurations-Byte setzen fehlerhaft!", 0);
+					$this->SetStatus(202);
+				}
+				else {
+					$this->SendDebug("Setup", "Basis-Konfigurations-Byte erfolgreich gesetzt", 0);
+					$this->SetStatus(102);
+					break;
+				}
+			$tries--;
+			} while ($tries);  
+			
+			$ConfigArray = array();
+			// IO-Bytes ermitteln
+			$GPAIODIR = $this->GetConfigByte("GPAIODIR");
+			$ConfigArray[0] = $GPAIODIR; // Adresse 00
+			$this->SetBuffer("GPAIODIR", $GPAIODIR);
+			
+			$GPBIODIR = $this->GetConfigByte("GPBIODIR");
+			$ConfigArray[1] = $GPBIODIR; // Adresse 01
+			$this->SetBuffer("GPBIODIR", $GPBIODIR);
+			$this->SendDebug("Setup", "IO-Byte A: ".$GPAIODIR." IO-Byte B: ".$GPBIODIR, 0);
+			
+			// Polariät des Eingangs ermitteln
+			$GPAIPOL = $this->GetConfigByte("GPAIPOL");
+			$ConfigArray[2] = $GPAIPOL; // Adresse 02
+			
+			$GPBIPOL = $this->GetConfigByte("GPBIPOL");
+			$ConfigArray[3] = $GPBIPOL; // Adresse 03
+			$this->SendDebug("Setup", "Polaritaets-Byte A: ".$GPAIPOL." Polaritaets-Byte B: ".$GPBIPOL, 0);
+			
+			// Interrupt enable ermitteln
+			$GPAINTEN = $this->GetConfigByte("GPAINTEN");
+			$ConfigArray[4] = $GPAINTEN; // Adresse 04
+			
+			$GPBINTEN = $this->GetConfigByte("GPBINTEN");
+			$ConfigArray[5] = $GPBINTEN; // Adresse 05
+			$this->SendDebug("Setup", "Interrupt-Byte A: ".$GPAINTEN." Interrupt-Byte B: ".$GPBINTEN, 0);
+			
+			// Referenzwert-Byte ermitteln
+			$ConfigArray[6] = 0; // Adresse 06
+			$ConfigArray[7] = 0; // Adresse 07
+			$this->SendDebug("Setup", "Referenzwert-Byte A/B = 0", 0);
+			
+			// Interrupt-Referenz-Byte ermitteln
+			$ConfigArray[8] = 0; // Adresse 08
+			$ConfigArray[9] = 0; // Adresse 09
+			$this->SendDebug("Setup", "Interrupt-Referenzwert-Byte A/B = 0", 0);
+			
+			// Pull-Up-Byte ermitteln
+			$GPAPU = $this->GetConfigByte("GPAPU");
+			$ConfigArray[10] = $GPAPU; // Adresse 0C
+			
+			$GPBPU = $this->GetConfigByte("GPBPU");
+			$ConfigArray[11] = $GPBPU; // Adresse 0D
+			$this->SendDebug("Setup", "Pull-up-Byte A: ".$GPAPU." Pull-up-Byte B: ".$GPBPU, 0);
+			$tries = 5;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "InstanceID" => $this->InstanceID, "Register" => hexdec("00"), 
+											  "Parameter" => serialize($ConfigArray) )));
+				If (!$Result) {
+					$this->SendDebug("Setup", "Konfigurations-Byte setzen fehlerhaft!", 0);
+					$this->SetTimerInterval("Messzyklus", 0);
+					$this->SetStatus(202);
+				}
+				else {
+					$this->SendDebug("Setup", "Konfigurations-Byte erfolgreich gesetzt", 0);
+					$this->SetStatus(102);
+					$this->GetOutput();
+					break;
+				}
+			$tries--;
+			} while ($tries);  
 		}
 	}    
 	    
