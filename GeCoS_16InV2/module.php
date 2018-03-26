@@ -304,7 +304,7 @@
 											  "Parameter" => serialize($ConfigArray) )));
 				If (!$Result) {
 					$this->SendDebug("Setup", "Konfigurations-Byte setzen fehlerhaft!", 0);
-					$this->SetTimerInterval("Messzyklus", 0);
+					$this->SetTimerInterval("GetInput", 0);
 					$this->SetStatus(202);
 				}
 				else {
