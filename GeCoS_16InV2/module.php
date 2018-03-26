@@ -137,7 +137,7 @@
 			
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => hexdec("12"), "Count" => 4)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 4)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
@@ -196,7 +196,7 @@
 			// Adressen 12 13
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "Register" => hexdec("0E"), "Count" => 4)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("0E"), "Count" => 4)));
 				If ($Result < 0) {
 					$this->SendDebug("Interrupt", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
@@ -268,7 +268,7 @@
 			// Adressen 0A 0B
 			$tries = 5;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "InstanceID" => $this->InstanceID, "Register" => hexdec("A0"), 
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => hexdec("A0"), 
 											  "Parameter" => serialize($ConfigArray) )));
 				If (!$Result) {
 					$this->SendDebug("Setup", "Basis-Konfigurations-Byte setzen fehlerhaft!", 0);
@@ -328,7 +328,7 @@
 			$this->SendDebug("Setup", "Pull-up-Byte A: ".$GPAPU." Pull-up-Byte B: ".$GPBPU, 0);
 			$tries = 5;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "DeviceIdent" => $this->GetBuffer("DeviceIdent"), "InstanceID" => $this->InstanceID, "Register" => hexdec("00"), 
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => hexdec("00"), 
 											  "Parameter" => serialize($ConfigArray) )));
 				If (!$Result) {
 					$this->SendDebug("Setup", "Konfigurations-Byte setzen fehlerhaft!", 0);
