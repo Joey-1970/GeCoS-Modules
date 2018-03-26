@@ -215,10 +215,10 @@
 			$this->SendDebug("Setup", "Polaritaets-Byte A: ".$GPAIPOL." Polaritaets-Byte B: ".$GPBIPOL, 0);
 			
 			// Interrupt enable ermitteln
-			$GPAINTEN = $this->GetConfigByte("GPAINTEN");
+			$GPAINTEN = 255;
 			$ConfigArray[4] = $GPAINTEN; // Adresse 04
 			
-			$GPBINTEN = $this->GetConfigByte("GPBINTEN");
+			$GPBINTEN = 255;
 			$ConfigArray[5] = $GPBINTEN; // Adresse 05
 			$this->SendDebug("Setup", "Interrupt-Byte A: ".$GPAINTEN." Interrupt-Byte B: ".$GPBINTEN, 0);
 			
@@ -233,10 +233,10 @@
 			$this->SendDebug("Setup", "Interrupt-Referenzwert-Byte A/B = 0", 0);
 			
 			// Pull-Up-Byte ermitteln
-			$GPAPU = $this->GetConfigByte("GPAPU");
+			$GPAPU = 255;
 			$ConfigArray[10] = $GPAPU; // Adresse 0C
 			
-			$GPBPU = $this->GetConfigByte("GPBPU");
+			$GPBPU = 255;
 			$ConfigArray[11] = $GPBPU; // Adresse 0D
 			$this->SendDebug("Setup", "Pull-up-Byte A: ".$GPAPU." Pull-up-Byte B: ".$GPBPU, 0);
 			$tries = 5;
