@@ -1333,25 +1333,24 @@ class GeCoS_IO extends IPSModule
 					//IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Count: ".$response[4]." DeviceSign: ".$this->GetI2C_HandleDevice($response[2]));
 					$ByteMessage = substr($Message, -($response[4]));
 					$ByteResponse = unpack("C*", $ByteMessage);
-					$this->SendDebug("Case 67", "Wert 1: ".$ByteResponse[1]." Wert 2: ".$ByteResponse[2], 0);
+					//$this->SendDebug("Case 67", "Wert 1: ".$ByteResponse[1]." Wert 2: ".$ByteResponse[2], 0);
 					$ByteArray = serialize($ByteResponse);
 					
 					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_byte_block", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Count" => $response[4], "ByteArray" => $ByteArray)));
-					$Result =  $ByteArray; 				}
+					$Result = serialize($ByteResponse);
+					//$Result =  $ByteArray; 				}
 				else {
 		            		IPS_LogMessage("GeCoS_IO I2C Read Block Byte","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
 		            	}
 				break;
 			case "68":
            			If ($response[4] >= 0) {
-           				//IPS_LogMessage("GeCoS_IO I2C Write Bytes","Handle: ".$response[2]." Value: ".$response[4]);
-		            		//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "DeviceIdent" => $this->GetI2C_HandleDevice($response[2]), "Value" => $response[4])));
-           			}
-           			else {
-           				IPS_LogMessage("GeCoS_IO I2C Write Bytes Register","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
-           			}
+					$Result = true;
+				}
+				else {
+					$Result = false;
+				}
 		            	break;
-			
 			case "76":
            			If ($response[4] >= 0) {
            				//IPS_LogMessage("GeCoS_IO Serial Handle","Serial Handle: ".$response[4]);
