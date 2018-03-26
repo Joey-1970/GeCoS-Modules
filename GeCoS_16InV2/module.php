@@ -11,7 +11,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 16);
+ 	    	$this->RegisterPropertyInteger("DeviceAddress", 32);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
 		$this->RegisterTimer("GetInput", 0, 'GeCoS16InV2_GetInput($_IPS["TARGET"]);');
         }
@@ -111,18 +111,7 @@
 			case "interrupt":
 				If ($this->ReadPropertyBoolean("Open") == true) {
 					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
-						$this->GetInput();
-					}
-				}
-				break;	
-			case "interrupt_with_result":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($data->InstanceID == $this->InstanceID)) {
-					$this->SendDebug("interrupt_with_result", "Ausfuehrung", 0);
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval(intval($data->Value) & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
-						}
+						$this->Interrupt();
 					}
 				}
 				break;		
@@ -178,8 +167,8 @@
 							else {
 								$Value = $OLATB & pow(2, $i);
 							}
-							If (GetValueBoolean($this->GetIDForIdent("GPB".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("GPB".$i), $Value);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 							}
 						}
 						break;
@@ -220,15 +209,15 @@
 							// Port A
 							If (boolval($GPAIODIR & (1 << $i))) {
 								$Value = $INTCAPA & pow(2, $i);
-								If (GetValueBoolean($this->GetIDForIdent("GPA".$i)) == !$Value) {
-									SetValueBoolean($this->GetIDForIdent("GPA".$i), $Value);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 								}
 							}
 							// Port B
 							If (boolval($GPBIODIR & (1 << $i))) {
 								$Value = $INTCAPB & pow(2, $i);
-								If (GetValueBoolean($this->GetIDForIdent("GPB".$i)) == !$Value) {
-									SetValueBoolean($this->GetIDForIdent("GPB".$i), $Value);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 								}
 							}
 						}
