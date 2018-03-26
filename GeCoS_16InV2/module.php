@@ -197,20 +197,20 @@
 			
 			$ConfigArray = array();
 			// IO-Bytes ermitteln
-			$GPAIODIR = $this->GetConfigByte("GPAIODIR");
+			$GPAIODIR = 255; 
 			$ConfigArray[0] = $GPAIODIR; // Adresse 00
 			$this->SetBuffer("GPAIODIR", $GPAIODIR);
 			
-			$GPBIODIR = $this->GetConfigByte("GPBIODIR");
+			$GPBIODIR = 255;
 			$ConfigArray[1] = $GPBIODIR; // Adresse 01
 			$this->SetBuffer("GPBIODIR", $GPBIODIR);
 			$this->SendDebug("Setup", "IO-Byte A: ".$GPAIODIR." IO-Byte B: ".$GPBIODIR, 0);
 			
 			// Polariät des Eingangs ermitteln
-			$GPAIPOL = $this->GetConfigByte("GPAIPOL");
+			$GPAIPOL = 0;
 			$ConfigArray[2] = $GPAIPOL; // Adresse 02
 			
-			$GPBIPOL = $this->GetConfigByte("GPBIPOL");
+			$GPBIPOL = 0;
 			$ConfigArray[3] = $GPBIPOL; // Adresse 03
 			$this->SendDebug("Setup", "Polaritaets-Byte A: ".$GPAIPOL." Polaritaets-Byte B: ".$GPBIPOL, 0);
 			
