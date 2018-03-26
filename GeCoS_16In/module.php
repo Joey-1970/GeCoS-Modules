@@ -164,14 +164,14 @@
 			$tries = 3;
 			do {
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 65535 )));
-				If ($Result) {
-					$this->SetStatus(102);
-					$this->SendDebug("Setup", "erfolgreich", 0);
-				}
-				else {
+				If (!$Result) {
 					$this->SetStatus(202);
 					$this->SendDebug("Setup", "nicht erfolgreich!", 0);
-					IPS_LogMessage("GeCoS_16In", "Setup: nicht erfolgreich!");
+				}
+				else {
+					$this->SetStatus(102);
+					$this->SendDebug("Setup", "erfolgreich", 0);
+					break;
 				}
 			$tries--;
 			} while ($tries); 
