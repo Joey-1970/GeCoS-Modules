@@ -304,7 +304,7 @@
 				else {
 					$this->SendDebug("Setup", "Konfigurations-Byte erfolgreich gesetzt", 0);
 					$this->SetStatus(102);
-					$this->GetOutput();
+					$this->GetInput();
 					break;
 				}
 			$tries--;
