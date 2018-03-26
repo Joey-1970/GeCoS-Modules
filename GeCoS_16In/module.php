@@ -20,6 +20,13 @@
  	    	$this->RegisterPropertyInteger("DeviceAddress", 16);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
 		$this->RegisterTimer("GetInput", 0, 'GeCoS16In_GetInput($_IPS["TARGET"]);');
+		
+		//Status-Variablen anlegen
+		for ($i = 0; $i <= 15; $i++) {
+			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
+			$this->DisableAction("Input_X".$i);	
+		}
+		
         }
  	
 	public function GetConfigurationForm() 
@@ -61,15 +68,7 @@
         {
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
-            	
-		//Status-Variablen anlegen
-		for ($i = 0; $i <= 15; $i++) {
-			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
-			$this->DisableAction("Input_X".$i);	
-		}
-		
-		$this->SetBuffer("ErrorCounter", 0);
-		
+            			
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
