@@ -583,14 +583,14 @@ class GeCoS_IO extends IPSModule
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$ParameterArray = array();
 					$ParameterArray = unserialize($data->Parameter);
-					$Result = $this->CommandClientSocket(pack("LLLLC*", 68, $this->GetI2C_DeviceHandle(intval($data->DeviceIdent)), $data->Register, count($ParameterArray), 
+					$Result = $this->CommandClientSocket(pack("LLLLC*", 68, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, count($ParameterArray), 
 										  ...$ParameterArray), 16);
 				}
 				break;
 			case "i2c_MCP23017_read":
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
 					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 67, $this->GetI2C_DeviceHandle(intval($data->DeviceIdent)), $data->Register, 4, $data->Count), 16 + ($data->Count));
+					$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 16 + ($data->Count));
 				}
 				break;  
 			// Serielle Kommunikation
