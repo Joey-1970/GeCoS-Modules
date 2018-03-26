@@ -155,8 +155,8 @@
 							}
 							// Port B
 							$Value = $GPIOB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
 							}
 						}
 						break;
@@ -198,8 +198,8 @@
 							
 							// Port B
 							$Value = $INTCAPB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
 							}
 							
 						}
