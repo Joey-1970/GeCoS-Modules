@@ -3,6 +3,12 @@
     class GeCoS_16In extends IPSModule 
     {
 	// PCA9655E
+	public function Destroy() 
+	{
+		//Never delete this line!
+		parent::Destroy();
+		$this->SetTimerInterval("GetInput", 0);
+	}
 	    
 	// Überschreibt die interne IPS_Create($id) Funktion
         public function Create() 
