@@ -24,6 +24,7 @@
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
 		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
 		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Device konnte nicht gefunden werden");
+		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "I²C-Kommunikationfehler!");
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
@@ -82,7 +83,8 @@
 			}	
 		}
 		else {
-			$this->SendDebug("ApplyChanges", "Startrestriktionen nicht erfuellt!", 0);
+			$this->SetStatus(104);
+			$this->SetTimerInterval("GetInput", 0);
 		}	
 	}
 	
@@ -132,25 +134,26 @@
 	{
 		$this->SendDebug("GetInput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
-			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
-				$this->SendDebug("GetInput", "Keine gueltige Antwort:".$Result, 0);
-				If ($this->GetBuffer("ErrorCounter") <= 3) {
-					$this->GetInput();
+			$tries = 3;
+			do {
+				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
+				If ($Result < 0) {
+					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
+					$this->SetStatus(202);
 				}
-			}
-			else {
-				$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
-
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Result & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+				else {
+					$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
+					$this->SetStatus(102);
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Result & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
 					}
+					break;
 				}
-				$this->SetBuffer("ErrorCounter", 0);
-			}
+			$tries--;
+			} while ($tries);  
 		}
 	}
 
@@ -158,14 +161,20 @@
 	{
 		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 65535 )));
-			If ($Result) {
-				$this->SendDebug("Setup", "erfolgreich", 0);
-			}
-			else {
-				$this->SendDebug("Setup", "nicht erfolgreich!", 0);
-				IPS_LogMessage("GeCoS_16In", "Setup: nicht erfolgreich!");
-			}
+			$tries = 3;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 65535 )));
+				If ($Result) {
+					$this->SetStatus(102);
+					$this->SendDebug("Setup", "erfolgreich", 0);
+				}
+				else {
+					$this->SetStatus(202);
+					$this->SendDebug("Setup", "nicht erfolgreich!", 0);
+					IPS_LogMessage("GeCoS_16In", "Setup: nicht erfolgreich!");
+				}
+			$tries--;
+			} while ($tries); 
 		}
 	}    
 	    
