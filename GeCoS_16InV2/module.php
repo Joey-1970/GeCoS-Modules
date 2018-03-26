@@ -62,8 +62,6 @@
 			$this->DisableAction("Input_X".$i);	
 		}
 		
-		$this->SetBuffer("ErrorCounter", 0);
-		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
@@ -127,7 +125,7 @@
 			
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 4)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 2)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
@@ -136,37 +134,21 @@
 					If (is_array(unserialize($Result))) {
 						$this->SetStatus(102);
 						$OutputArray = array();
-						// für Ausgänge LAT benutzen für Eingänge PORT 
+						// für Eingänge PORT benutzen
 						$OutputArray = unserialize($Result);
-						// Ergebnis sichern
-						$this->SetBuffer("GPA", $OutputArray[1]);
-						$this->SetBuffer("GPB", $OutputArray[2]);
-						$GPAIODIR = intval($this->GetBuffer("GPAIODIR"));
-						$GPBIODIR = intval($this->GetBuffer("GPBIODIR"));
 						$GPIOA = $OutputArray[1];
 						$GPIOB = $OutputArray[2];
-						$OLATA = $OutputArray[3];
-						$OLATB = $OutputArray[4];
-						$this->SendDebug("GetOutput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB." OLATA: ".$OLATA." OLATB: ".$OLATB, 0);
+						
+						$this->SendDebug("GetOutput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
 							// Port A
-							If (boolval($GPAIODIR & (1 << $i))) {
-								$Value = $GPIOA & pow(2, $i);
-							}
-							else {
-								$Value = $OLATA & pow(2, $i);
-							}
-							If (GetValueBoolean($this->GetIDForIdent("GPA".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("GPA".$i), $Value);
+							$Value = $GPIOA & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 							}
 							// Port B
-							If (boolval($GPBIODIR & (1 << $i))) {
-								$Value = $GPIOB & pow(2, $i);
-							}
-							else {
-								$Value = $OLATB & pow(2, $i);
-							}
+							$Value = $GPIOB & pow(2, $i);
 							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
 								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 							}
@@ -186,7 +168,7 @@
 			// Adressen 12 13
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("0E"), "Count" => 4)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("10"), "Count" => 2)));
 				If ($Result < 0) {
 					$this->SendDebug("Interrupt", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
@@ -197,31 +179,25 @@
 						$OutputArray = array();
 						// für Ausgänge LAT benutzen für Eingänge PORT 
 						$OutputArray = unserialize($Result);
-						$GPAIODIR = intval($this->GetBuffer("GPAIODIR"));
-						$GPBIODIR = intval($this->GetBuffer("GPBIODIR"));
-						$INTFA = $OutputArray[1]; // INTFA Interrupt Flag Register (zeigt welcher Eingang den Interrupt ausgelöst hat)
-						$INTFB = $OutputArray[2]; // INTFB Interrupt Flag Register (zeigt welcher Eingang den Interrupt ausgelöst hat)
-						$INTCAPA = $OutputArray[3]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-						$INTCAPB = $OutputArray[4]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-						$this->SendDebug("Interrupt", "INTFA: ".$INTFA." INTFB: ".$INTFB." INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
+						$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
 							// Port A
-							If (boolval($GPAIODIR & (1 << $i))) {
-								$Value = $INTCAPA & pow(2, $i);
-								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
-								}
+							$Value = $INTCAPA & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 							}
+							
 							// Port B
-							If (boolval($GPBIODIR & (1 << $i))) {
-								$Value = $INTCAPB & pow(2, $i);
-								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
-								}
+							$Value = $INTCAPB & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 							}
+							
 						}
-						$this->GetOutput();
+						$this->GetInput();
 						break;
 					}
 				}
