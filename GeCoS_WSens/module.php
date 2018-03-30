@@ -239,7 +239,7 @@
 			}
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".($Temp / 100)."°C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure."hPa", 0);
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".($Temp / 100)."C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure."hPa", 0);
 			$Temp = $Temp + $TempOffset;
 			
 			
@@ -336,11 +336,13 @@
 			$Result = (unpack("n*", substr($Result,2)));
 			If (is_array($Result)) {
 				If (count($Result) == 1) {
+					$this->SetStatus(102);
 					$Response = $Result[1];
 				}
 			}
 			else {
 				$this->SendDebug("GetData", "Lesen fehlerhaft bei Adresse ".$Address, 0);
+				$this->SetStatus(202);
 			}
 			return $Response;	
 		}
