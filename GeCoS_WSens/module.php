@@ -203,6 +203,13 @@
 				return;
 			}
 			
+			// AQ ermitteln
+			$IAQ = $this->GetData(3, 123, 1);
+			if($IAQ === false) {
+				$this->SetStatus(202);
+				return;
+			}
+			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
 			if($Ambient === false) {
@@ -231,27 +238,19 @@
 				return;
 			}
 			
-			// AQ ermitteln
-			$IAQ = $this->GetData(3, 123, 1);
-			if($IAQ === false) {
-				$this->SetStatus(202);
-				return;
-			}
+			
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".($Temp / 100)."C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure."hPa", 0);
-			$Temp = $Temp + $TempOffset;
-			
-			
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".($Temp / 100)." C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure." hPa", 0);		
 			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
 			
 			$this->SetStatus(102);
 			
-			SetValueInteger($this->GetIDForIdent("Intensity_W"), $Ambient * $IntensityOffset);
-			SetValueInteger($this->GetIDForIdent("Intensity_R"), $Red * $IntensityOffset);
-			SetValueInteger($this->GetIDForIdent("Intensity_G"), $Green * $IntensityOffset);
-			SetValueInteger($this->GetIDForIdent("Intensity_B"), $Blue * $IntensityOffset);
-			$Temp = $Temp / 100;
+			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * $IntensityOffset));
+			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * $IntensityOffset));
+			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * $IntensityOffset));
+			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * $IntensityOffset));
+			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
 				SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
