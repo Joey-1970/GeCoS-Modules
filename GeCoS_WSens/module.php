@@ -20,6 +20,7 @@
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
 		$this->RegisterPropertyInteger("Altitude", 0);
 		$this->RegisterPropertyFloat("TempOffset", 0);
+		$this->RegisterPropertyFloat("IntensityOffset", 30);
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
@@ -128,6 +129,9 @@
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Temperatur");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "TempOffset", "caption" => "Kelvin", "digits" => 1);
+		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Intensity");
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "IntensityOffset", "caption" => "%", "digits" => 1);
+
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
 		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von Quellen");
@@ -200,8 +204,6 @@
 				return;
 			}
 			
-			
-			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
 			if($Ambient === false) {
@@ -237,18 +239,19 @@
 				return;
 			}
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
+			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".($Temp / 100). "°C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure."hPa", 0);
 			$Temp = $Temp + $TempOffset;
 			
 			
-			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." Rot: ".$Red." Gruen: ".$Green." Blau: ".$Blue, 0);
+			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient."lx Rot: ".$Red."lx Gruen: ".$Green."lx Blau: ".$Blue."lx", 0);
 			
 			$this->SetStatus(102);
 			
-			SetValueInteger($this->GetIDForIdent("Intensity_W"), $Ambient);
-			SetValueInteger($this->GetIDForIdent("Intensity_R"), $Red);
-			SetValueInteger($this->GetIDForIdent("Intensity_G"), $Green);
-			SetValueInteger($this->GetIDForIdent("Intensity_B"), $Blue);
+			SetValueInteger($this->GetIDForIdent("Intensity_W"), $Ambient * $IntensityOffset);
+			SetValueInteger($this->GetIDForIdent("Intensity_R"), $Red * $IntensityOffset);
+			SetValueInteger($this->GetIDForIdent("Intensity_G"), $Green * $IntensityOffset);
+			SetValueInteger($this->GetIDForIdent("Intensity_B"), $Blue * $IntensityOffset);
 			$Temp = $Temp / 100;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
