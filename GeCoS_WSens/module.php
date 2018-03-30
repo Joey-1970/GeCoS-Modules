@@ -129,9 +129,8 @@
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Temperatur");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "TempOffset", "caption" => "Kelvin", "digits" => 1);
-		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Intensity");
+		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Intensität");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "IntensityOffset", "caption" => "%", "digits" => 1);
-
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
 		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von Quellen");
@@ -240,11 +239,11 @@
 			}
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".($Temp / 100). "°C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure."hPa", 0);
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".($Temp / 100)."°C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure."hPa", 0);
 			$Temp = $Temp + $TempOffset;
 			
 			
-			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient."lx Rot: ".$Red."lx Gruen: ".$Green."lx Blau: ".$Blue."lx", 0);
+			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
 			
 			$this->SetStatus(102);
 			
