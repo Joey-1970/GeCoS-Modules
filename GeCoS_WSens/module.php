@@ -246,10 +246,10 @@
 			
 			$this->SetStatus(102);
 			
-			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * $IntensityOffset));
-			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * $IntensityOffset));
-			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * $IntensityOffset));
-			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * $IntensityOffset));
+			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * (1 + $IntensityOffset)));
+			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
+			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
+			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
 			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
