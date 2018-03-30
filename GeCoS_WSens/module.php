@@ -15,7 +15,7 @@
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
-		$this->ConnectParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
+		$this->RequireParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
 		$this->RegisterPropertyInteger("Altitude", 0);
