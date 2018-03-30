@@ -162,8 +162,9 @@
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("AirQuality"), $this->ReadPropertyBoolean("LoggingAirQuality"));
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
+		
 		If ($this->ReadPropertyBoolean("Open") == true) {	
-			//ReceiveData-Filter setzen
+			$this->TempOffsetReset();
 			$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
 			$this->RequestData();
 			$this->SetStatus(102);
@@ -235,8 +236,8 @@
 				$this->SetStatus(202);
 				return;
 			}
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
 			$Temp = $Temp + $TempOffset;
 			
 			
