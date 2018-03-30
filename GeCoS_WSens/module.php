@@ -19,6 +19,7 @@
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
 		$this->RegisterPropertyInteger("Altitude", 0);
+		$this->RegisterPropertyFloat("TempOffset", 0);
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
@@ -125,6 +126,8 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Temperatur");
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "TempOffset", "caption" => "Kelvin", "digits" => 1);
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
 		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von Quellen");
@@ -175,22 +178,6 @@
 	public function RequestData()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
-			// AQ ermitteln
-			/*
-			$IAQ = $this->GetData(3, 123, 1);
-			if($IAQ === false) {
-				$this->SetStatus(202);
-				return;
-			}
-			*/
-			
-			// TemperaturOffset ermitteln
-			$TempOffset = $this->GetData(3, 101, 1);
-			if($TempOffset === false) {
-				$this->SetStatus(202);
-				return;
-			}
-			
 			// Temperatur ermitteln
 			$Temp = $this->GetData(3, 120, 1);
 			if($Temp === false) {
@@ -249,6 +236,7 @@
 				return;
 			}
 			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." Temp: ".$Temp. " Luftfeuchte: ".$Humidity." Luftdruck: ".$Pressure, 0);
+			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$Temp = $Temp + $TempOffset;
 			
 			
@@ -349,6 +337,21 @@
 				}
 			}
 			return $Response;	
+		}
+	}
+	
+	private function TempOffsetReset()
+	{
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
+			// TemperaturOffset ermitteln
+			$TempOffset = $this->GetData(3, 101, 1);
+			if($TempOffset === false) {
+				$this->SetStatus(202);
+				return;
+			}
+			elseif ($TempOffset <> 0) {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => $Quantity, "Data" => "\u0000\u0000")));
+			}
 		}
 	}
 	    
