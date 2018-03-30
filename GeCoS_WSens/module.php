@@ -351,7 +351,7 @@
 				return;
 			}
 			elseif ($TempOffset <> 0) {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => $Quantity, "Data" => "\u0000\u0000")));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
 			}
 		}
 	}
