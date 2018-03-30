@@ -214,7 +214,13 @@ class GeCoS_IO extends IPSModule
 				}
 				if(IPS_HasChanges($ParentID))
 				{
-				    IPS_ApplyChanges($ParentID);
+				    	$Result = @IPS_ApplyChanges($ParentID);
+					If ($Result) {
+						$this->SendDebug("ApplyChanges", "Einrichtung des Client Socket erfolgreich", 0);
+					}
+					else {
+						$this->SendDebug("ApplyChanges", "Einrichtung des Client Socket nicht erfolgreich!", 0);
+					}
 				}
 			}
 						
