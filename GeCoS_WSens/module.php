@@ -43,72 +43,80 @@
 		$this->RegisterProfileInteger("GeCoS.Lux", "Bulb", "", " lx", 0, 65535, 1);
 		
 		//Status-Variablen anlegen
-		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
+		$this->RegisterVariableFloat("Hardware", "Hardware-Version", "", 10);
+		$this->DisableAction("Hardware");
+		IPS_SetHidden($this->GetIDForIdent("Hardware"), true);
+		
+		$this->RegisterVariableFloat("Firmware", "Firmware-Version", "", 20);
+		$this->DisableAction("Firmware");
+		IPS_SetHidden($this->GetIDForIdent("Firmware"), true);
+		
+		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 30);
 		$this->DisableAction("Temperature");
 		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
 		
-		$this->RegisterVariableFloat("Pressure", "Luftdruck (abs)", "~AirPressure.F", 20);
+		$this->RegisterVariableFloat("Pressure", "Luftdruck (abs)", "~AirPressure.F", 40);
 		$this->DisableAction("Pressure");
 		IPS_SetHidden($this->GetIDForIdent("Pressure"), false);
 		
-		$this->RegisterVariableFloat("PressureRel", "Luftdruck (rel)", "~AirPressure.F", 30);
+		$this->RegisterVariableFloat("PressureRel", "Luftdruck (rel)", "~AirPressure.F", 50);
 		$this->DisableAction("PressureRel");
 		IPS_SetHidden($this->GetIDForIdent("PressureRel"), false);
 		
-		$this->RegisterVariableFloat("HumidityAbs", "Luftfeuchtigkeit (abs)", "GeCoS.gm3", 40);
+		$this->RegisterVariableFloat("HumidityAbs", "Luftfeuchtigkeit (abs)", "GeCoS.gm3", 60);
 		$this->DisableAction("HumidityAbs");
 		IPS_SetHidden($this->GetIDForIdent("HumidityAbs"), false);
 		
-		$this->RegisterVariableFloat("Humidity", "Luftfeuchtigkeit (rel)", "~Humidity.F", 50);
+		$this->RegisterVariableFloat("Humidity", "Luftfeuchtigkeit (rel)", "~Humidity.F", 70);
 		$this->DisableAction("Humidity");
 		IPS_SetHidden($this->GetIDForIdent("Humidity"), false);
 		
-		$this->RegisterVariableFloat("DewPointTemperature", "Taupunkt Temperatur", "~Temperature", 60);
+		$this->RegisterVariableFloat("DewPointTemperature", "Taupunkt Temperatur", "~Temperature", 80);
 		$this->DisableAction("DewPointTemperature");
 		IPS_SetHidden($this->GetIDForIdent("DewPointTemperature"), false);
 		
-		$this->RegisterVariableFloat("PressureTrend1h", "Luftdruck 1h-Trend", "~AirPressure.F", 70);
+		$this->RegisterVariableFloat("PressureTrend1h", "Luftdruck 1h-Trend", "~AirPressure.F", 90);
 		$this->DisableAction("PressureTrend1h");
 		IPS_SetHidden($this->GetIDForIdent("PressureTrend1h"), false);
 		SetValueFloat($this->GetIDForIdent("PressureTrend1h"), 0);
 		
-		$this->RegisterVariableFloat("PressureTrend3h", "Luftdruck 3h-Trend", "~AirPressure.F", 80);
+		$this->RegisterVariableFloat("PressureTrend3h", "Luftdruck 3h-Trend", "~AirPressure.F", 100);
 		$this->DisableAction("PressureTrend3h");
 		IPS_SetHidden($this->GetIDForIdent("PressureTrend3h"), false);
 		SetValueFloat($this->GetIDForIdent("PressureTrend3h"), 0);
 		
-		$this->RegisterVariableFloat("PressureTrend12h", "Luftdruck 12h-Trend", "~AirPressure.F", 90);
+		$this->RegisterVariableFloat("PressureTrend12h", "Luftdruck 12h-Trend", "~AirPressure.F", 110);
 		$this->DisableAction("PressureTrend12h");
 		IPS_SetHidden($this->GetIDForIdent("PressureTrend12h"), false);
 		SetValueFloat($this->GetIDForIdent("PressureTrend12h"), 0);
 		
-		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 100);
+		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 120);
 		$this->DisableAction("PressureTrend24h");
 		IPS_SetHidden($this->GetIDForIdent("PressureTrend24h"), false);
 		SetValueFloat($this->GetIDForIdent("PressureTrend24h"), 0);
 		
-		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "GeCoS.AirQuality", 110);
+		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "GeCoS.AirQuality", 130);
 		$this->DisableAction("AirQuality");
 		IPS_SetHidden($this->GetIDForIdent("AirQuality"), false);
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
 		
-		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 120);
+		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 140);
 		$this->DisableAction("AirQualityIndex");
 		IPS_SetHidden($this->GetIDForIdent("AirQualityIndex"), false);
 		SetValueInteger($this->GetIDForIdent("AirQualityIndex"), 0);
-		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 130);
+		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 150);
 	        $this->DisableAction("Intensity_W");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_W"), false);
 		
-		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 140);
+		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 160);
 	        $this->DisableAction("Intensity_R");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_R"), false);
 		
-		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 150);
+		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 170);
 	        $this->DisableAction("Intensity_G");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_G"), false);
 		
-		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 160);
+		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 180);
 	        $this->DisableAction("Intensity_B");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_B"), false);
         }
