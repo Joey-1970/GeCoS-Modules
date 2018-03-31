@@ -176,7 +176,7 @@
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {	
-			$this->TempOffsetReset();
+			$this->Setup();
 			$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
 			$this->RequestData();
 			$this->SetStatus(102);
@@ -194,56 +194,48 @@
 			// Temperatur ermitteln
 			$Temp = $this->GetData(3, 120, 1);
 			if($Temp === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// Luftfeuchtigkeit ermitteln
 			$Humidity = $this->GetData(3, 121, 1);
 			if($Humidity === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// Luftdruck ermitteln
 			$Pressure = $this->GetData(3, 122, 1);
 			if($Pressure === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// AQ ermitteln
 			$IAQ = $this->GetData(3, 123, 1);
 			if($IAQ === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
 			if($Ambient === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// Rotwert ermitteln
 			$Red = $this->GetData(3, 126, 1);
 			if($Red === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// Grünwert ermitteln
 			$Green = $this->GetData(3, 127, 1);
 			if($Green === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
 			// Blauwert ermitteln
 			$Blue = $this->GetData(3, 128, 1);
 			if($Blue === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			
@@ -356,7 +348,7 @@
 		}
 	}
 	
-	private function TempOffsetReset()
+	private function Setup()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
 			// TemperaturOffset ermitteln
@@ -368,6 +360,20 @@
 			elseif ($TempOffset <> 0) {
 				//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
 			}
+			
+			// Hardwareversion ermitteln
+			$Hardware = $this->GetData(3, 102, 1);
+			if($Hardware === false) {
+				return;
+			}
+			SetValueFloat($this->GetIDForIdent("Hardware"), ($Hardware / 10));
+			
+			// Firmwareversion ermitteln
+			$Firmware = $this->GetData(3, 103, 1);
+			if($Firmware === false) {
+				return;
+			}
+			SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware / 10));
 		}
 	}
 	    
