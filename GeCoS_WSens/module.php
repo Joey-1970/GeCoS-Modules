@@ -104,6 +104,7 @@
 		$this->DisableAction("AirQualityIndex");
 		IPS_SetHidden($this->GetIDForIdent("AirQualityIndex"), false);
 		SetValueInteger($this->GetIDForIdent("AirQualityIndex"), 0);
+		
 		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 150);
 	        $this->DisableAction("Intensity_W");
 		IPS_SetHidden($this->GetIDForIdent("Intensity_W"), false);
