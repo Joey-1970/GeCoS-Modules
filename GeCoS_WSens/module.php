@@ -345,9 +345,9 @@
 				}
 				else {
 					$this->SendDebug("GetData", "Lesen fehlerhaft bei Adresse ".$Address, 0);
+					IPS_Sleep(100);
 					$this->SetStatus(202);
-				}
-				
+				}	
 			$tries--;
 			} while ($tries);  
 			return $Response;
@@ -360,7 +360,6 @@
 			// TemperaturOffset ermitteln
 			$TempOffset = $this->GetData(3, 101, 1);
 			if($TempOffset === false) {
-				$this->SetStatus(202);
 				return;
 			}
 			elseif ($TempOffset <> 0) {
