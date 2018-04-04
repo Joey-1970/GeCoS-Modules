@@ -256,6 +256,7 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
 			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
+			$Pressure = $Pressure / 100;
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
 				SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
 			}
