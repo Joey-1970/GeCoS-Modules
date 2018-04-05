@@ -260,7 +260,7 @@
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
 				SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
 			}
-			$Humidity = $Humidity / 100;
+			$Humidity = $Humidity / 10;
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
 			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
 			
