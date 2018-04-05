@@ -245,7 +245,7 @@
 			
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".($Temp / 100)." C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".$Pressure." hPa", 0);		
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".($Temp / 100)." C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".($Pressure / 10)." hPa", 0);		
 			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
 			
 			$this->SetStatus(102);
@@ -256,11 +256,11 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
 			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
-			$Pressure = $Pressure / 100;
+			$Pressure = $Pressure / 10;
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
 				SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
 			}
-			$Humidity = $Humidity / 10;
+			$Humidity = $Humidity / 100;
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
 			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
 			
