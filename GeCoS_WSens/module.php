@@ -256,12 +256,16 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
 			
 			$SignBit = ($Temp & 32768) >> 15;
+			$this->SendDebug("RequestData", "Vorzeichen: ".$SignBit, 0);		
+			/*
 			If ($SignBit == 0) {
 				$Temp = ($Temp / 100) + $TempOffset;
 			}
 			else {
 				$Temp = -($this->bitflip($Temp) / 100) + $TempOffset;
 			}
+			*/
+			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			$Pressure = $Pressure / 10;
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
