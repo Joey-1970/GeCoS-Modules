@@ -257,14 +257,13 @@
 			
 			$SignBit = ($Temp & 32768) >> 15;
 			$this->SendDebug("RequestData", "Vorzeichen: ".$SignBit, 0);		
-			/*
 			If ($SignBit == 0) {
 				$Temp = ($Temp / 100) + $TempOffset;
 			}
 			else {
-				$Temp = -($this->bitflip($Temp) / 100) + $TempOffset;
+				$Temp = -($this->bitflip($Temp));
+				$Temp = ($Temp / 100) + $TempOffset;
 			}
-			*/
 			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			$Pressure = $Pressure / 10;
@@ -378,7 +377,7 @@
 				return;
 			}
 			elseif ($TempOffset <> 0) {
-				//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
 			}
 			
 			// Hardwareversion ermitteln
