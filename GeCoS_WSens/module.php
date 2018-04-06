@@ -254,7 +254,14 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
 			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
-			$Temp = ($Temp / 100) + $TempOffset;
+			
+			$SignBit = ($Temp & 32768) >> 15;
+			If ($SignBit == 0) {
+				$Temp = ($Temp / 100) + $TempOffset;
+			}
+			else {
+				$Temp = -($this->bitflip($Temp) / 100) + $TempOffset;
+			}
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			$Pressure = $Pressure / 10;
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
@@ -394,6 +401,21 @@
 	return $Result;
 	}   
 	    
+	private function bitflip($Value)
+	{
+	   	// Umwandlung in einen Binär-String
+		$bin = decbin($Value);
+	   	$not = "";
+	   	// Umstellung der Binär-Strings
+		for ($i = 0; $i < strlen($bin); $i++)
+	   		{
+	      		if($bin[$i] == 0) { $not .= '1'; }
+	      		if($bin[$i] == 1) { $not .= '0'; }
+	   	}
+		// Rückgabe als Integer
+	return bindec($not);
+	}
+	 
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 	{
 	        if (!IPS_VariableProfileExists($Name))
