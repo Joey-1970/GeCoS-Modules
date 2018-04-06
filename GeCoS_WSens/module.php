@@ -264,7 +264,6 @@
 				$Temp = -($this->bitflip($Temp));
 				$Temp = ($Temp / 100) + $TempOffset;
 			}
-			$Temp = ($Temp / 100) + $TempOffset;
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			$Pressure = $Pressure / 10;
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
