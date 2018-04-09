@@ -197,49 +197,49 @@
 			// Temperatur ermitteln
 			$Temp = $this->GetData(3, 120, 1);
 			if($Temp === false) {
-				return;
+				return false;
 			}
 			
 			// Luftfeuchtigkeit ermitteln
 			$Humidity = $this->GetData(3, 121, 1);
 			if($Humidity === false) {
-				return;
+				return false;
 			}
 			
 			// Luftdruck ermitteln
 			$Pressure = $this->GetData(3, 122, 1);
 			if($Pressure === false) {
-				return;
+				return false;
 			}
 			
 			// AQ ermitteln
 			$IAQ = $this->GetData(3, 123, 1);
 			if($IAQ === false) {
-				return;
+				return false;
 			}
 			
 			// Weißwert ermitteln
 			$Ambient = $this->GetData(3, 125, 1);
 			if($Ambient === false) {
-				return;
+				return false;
 			}
 			
 			// Rotwert ermitteln
 			$Red = $this->GetData(3, 126, 1);
 			if($Red === false) {
-				return;
+				return false;
 			}
 			
 			// Grünwert ermitteln
 			$Green = $this->GetData(3, 127, 1);
 			if($Green === false) {
-				return;
+				return false;
 			}
 			
 			// Blauwert ermitteln
 			$Blue = $this->GetData(3, 128, 1);
 			if($Blue === false) {
-				return;
+				return false;
 			}
 			
 			
@@ -336,10 +336,14 @@
 			    $i++;  
 			}
 			SetValueInteger($this->GetIDForIdent("AirQuality"), ($i + 1));
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 	    
-	public function GetData(Int $Function, Int $Address, Int $Quantity)
+	private function GetData(Int $Function, Int $Address, Int $Quantity)
 	{
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {
