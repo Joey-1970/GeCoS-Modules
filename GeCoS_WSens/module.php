@@ -296,7 +296,7 @@
 			$Altitude = $this->ReadPropertyInteger("Altitude");
 			If ($this->ReadPropertyInteger("Temperature_ID") > 0) {
 				// Wert der Variablen zur Berechnung nutzen
-				$Temperature = GetValueInteger($this->ReadPropertyInteger("Temperature_ID"));
+				$Temperature = GetValueFloat($this->ReadPropertyInteger("Temperature_ID"));
 			}
 			else {
 				// Wert dieses BME680 verwenden
@@ -304,7 +304,7 @@
 			}
 			If ($this->ReadPropertyInteger("Humidity_ID") > 0) {
 				// Wert der Variablen zur Berechnung nutzen
-				$Humidity = GetValueInteger($this->ReadPropertyInteger("Humidity_ID"));
+				$Humidity = GetValueFloat($this->ReadPropertyInteger("Humidity_ID"));
 			}
 			
 			$g_n = 9.80665; // Erdbeschleunigung (m/s^2)
@@ -376,7 +376,7 @@
 				return;
 			}
 			elseif ($TempOffset <> 0) {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
+				$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
 			}
 			
 			// Hardwareversion ermitteln
