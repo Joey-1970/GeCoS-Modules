@@ -256,7 +256,7 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
 			
 			$SignBit = ($Temp & 32768) >> 15;
-			$this->SendDebug("RequestData", "Vorzeichen: ".$SignBit, 0);		
+			//$this->SendDebug("RequestData", "Vorzeichen: ".$SignBit, 0);		
 			If ($SignBit == 0) {
 				$Temp = ($Temp / 100) + $TempOffset;
 			}
