@@ -296,7 +296,7 @@
 			$Altitude = $this->ReadPropertyInteger("Altitude");
 			If ($this->ReadPropertyInteger("Temperature_ID") > 0) {
 				// Wert der Variablen zur Berechnung nutzen
-				$Temperature = GetValueFloat($this->ReadPropertyInteger("Temperature_ID"));
+				$Temperature = GetValue($this->ReadPropertyInteger("Temperature_ID"));
 			}
 			else {
 				// Wert dieses BME680 verwenden
@@ -304,7 +304,7 @@
 			}
 			If ($this->ReadPropertyInteger("Humidity_ID") > 0) {
 				// Wert der Variablen zur Berechnung nutzen
-				$Humidity = GetValueFloat($this->ReadPropertyInteger("Humidity_ID"));
+				$Humidity = GetValue($this->ReadPropertyInteger("Humidity_ID"));
 			}
 			
 			$g_n = 9.80665; // Erdbeschleunigung (m/s^2)
