@@ -295,10 +295,10 @@
 				// Wert der Variablen zur Berechnung nutzen
 				$VaribleID = $this->ReadPropertyInteger("Humidity_ID");
 				$VariableType = IPS_GetVariable($VaribleID)['VariableType'];
-				If ($VariableType == 1] {
+				If ($VariableType == 1) {
 					$Humidity = GetValueInteger($VaribleID);
 				}
-				elseif ($VariableType == 2] {
+				elseif ($VariableType == 2) {
 					$Humidity = GetValueFloat($VaribleID);
 				}
 			}
