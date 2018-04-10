@@ -392,6 +392,7 @@
 				return;
 			}
 			SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware / 10));
+			$this->SetSummary("HW-Version: ".($Hardware / 10)." SW-Version: ".($Firmware / 10));
 		}
 	}
 	    
