@@ -70,19 +70,15 @@
 		
 		$this->RegisterVariableFloat("PressureTrend1h", "Luftdruck 1h-Trend", "~AirPressure.F", 90);
 		$this->DisableAction("PressureTrend1h");
-		SetValueFloat($this->GetIDForIdent("PressureTrend1h"), 0);
 		
 		$this->RegisterVariableFloat("PressureTrend3h", "Luftdruck 3h-Trend", "~AirPressure.F", 100);
 		$this->DisableAction("PressureTrend3h");
-		SetValueFloat($this->GetIDForIdent("PressureTrend3h"), 0);
 		
 		$this->RegisterVariableFloat("PressureTrend12h", "Luftdruck 12h-Trend", "~AirPressure.F", 110);
 		$this->DisableAction("PressureTrend12h");
-		SetValueFloat($this->GetIDForIdent("PressureTrend12h"), 0);
 		
 		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 120);
 		$this->DisableAction("PressureTrend24h");
-		SetValueFloat($this->GetIDForIdent("PressureTrend24h"), 0);
 		
 		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "GeCoS.AirQuality", 130);
 		$this->DisableAction("AirQuality");
@@ -90,7 +86,6 @@
 		
 		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 140);
 		$this->DisableAction("AirQualityIndex");
-		SetValueInteger($this->GetIDForIdent("AirQualityIndex"), 0);
 		
 		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 150);
 	        $this->DisableAction("Intensity_W");
@@ -280,10 +275,10 @@
 				// Wert der Variablen zur Berechnung nutzen
 				$VaribleID = $this->ReadPropertyInteger("Temperature_ID");
 				$VariableType = IPS_GetVariable($VaribleID)['VariableType'];
-				If ($VariableType == 1] {
+				If ($VariableType == 1) {
 					$Temperature = GetValueInteger($VaribleID);
 				}
-				elseif ($VariableType == 2] {
+				elseif ($VariableType == 2) {
 					$Temperature = GetValueFloat($VaribleID);
 				}
 				else {
