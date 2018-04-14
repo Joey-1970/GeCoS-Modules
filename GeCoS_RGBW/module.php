@@ -13,6 +13,27 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 88);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
+		
+		// Profil anlegen
+		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
+		
+		//Status-Variablen anlegen
+		for ($i = 0; $i <= 3; $i++) {
+			$this->RegisterVariableBoolean("Status_RGB_".($i + 1), "Status RGB ".($i + 1), "~Switch", 10 + ($i * 70));
+			$this->EnableAction("Status_RGB_".($i + 1));
+			$this->RegisterVariableInteger("Color_RGB_".($i + 1), "Farbe ".($i + 1), "~HexColor", 20 + ($i * 70));
+			$this->EnableAction("Color_RGB_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096", 30 + ($i * 70) );
+			$this->EnableAction("Intensity_R_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 40 + ($i * 70));
+			$this->EnableAction("Intensity_G_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 50 + ($i * 70));
+			$this->EnableAction("Intensity_B_".($i + 1));
+			$this->RegisterVariableBoolean("Status_W_".($i + 1), "Status Weiß ".($i + 1), "~Switch", 60 + ($i * 70));
+			$this->EnableAction("Status_W_".($i + 1));
+			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensity Weiß ".($i + 1), "Intensity.4096", 70 + ($i * 70));
+			$this->EnableAction("Intensity_W_".($i + 1));			
+		}
         }
  	
 	public function GetConfigurationForm() 
@@ -52,30 +73,6 @@
         {
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
-
-		// Profil anlegen
-		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
-		
-		//$Output = array(); 
-		//$this->SetBuffer("Output", serialize($Output));
-		
-		//Status-Variablen anlegen
-		for ($i = 0; $i <= 3; $i++) {
-			$this->RegisterVariableBoolean("Status_RGB_".($i + 1), "Status RGB ".($i + 1), "~Switch", 10 + ($i * 70));
-			$this->EnableAction("Status_RGB_".($i + 1));
-			$this->RegisterVariableInteger("Color_RGB_".($i + 1), "Farbe ".($i + 1), "~HexColor", 20 + ($i * 70));
-			$this->EnableAction("Color_RGB_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096", 30 + ($i * 70) );
-			$this->EnableAction("Intensity_R_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 40 + ($i * 70));
-			$this->EnableAction("Intensity_G_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 50 + ($i * 70));
-			$this->EnableAction("Intensity_B_".($i + 1));
-			$this->RegisterVariableBoolean("Status_W_".($i + 1), "Status Weiß ".($i + 1), "~Switch", 60 + ($i * 70));
-			$this->EnableAction("Status_W_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensity Weiß ".($i + 1), "Intensity.4096", 70 + ($i * 70));
-			$this->EnableAction("Intensity_W_".($i + 1));			
-		}
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
