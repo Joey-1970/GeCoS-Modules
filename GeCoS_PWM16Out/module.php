@@ -14,6 +14,17 @@
  	    	$this->RegisterPropertyInteger("DeviceAddress", 80);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
 		$this->RegisterPropertyInteger("Frequency", 100);
+		
+		// Profil anlegen
+		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
+		
+		//Status-Variablen anlegen
+		for ($i = 0; $i <= 15; $i++) {
+			$this->RegisterVariableBoolean("Output_Bln_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
+			$this->EnableAction("Output_Bln_X".$i);	
+			$this->RegisterVariableInteger("Output_Int_X".$i, "Ausgang X".$i, "Intensity.4096", (($i + 1) * 10) + 5);
+			$this->EnableAction("Output_Int_X".$i);	
+		}
         }
  	
 	public function GetConfigurationForm() 
@@ -58,18 +69,7 @@
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
 
-		// Profil anlegen
-		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
-		
 		$this->SetBuffer("ErrorCounter", 0);
-				
-		//Status-Variablen anlegen
-		for ($i = 0; $i <= 15; $i++) {
-			$this->RegisterVariableBoolean("Output_Bln_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
-			$this->EnableAction("Output_Bln_X".$i);	
-			$this->RegisterVariableInteger("Output_Int_X".$i, "Ausgang X".$i, "Intensity.4096", (($i + 1) * 10) + 5);
-			$this->EnableAction("Output_Int_X".$i);	
-		}
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
