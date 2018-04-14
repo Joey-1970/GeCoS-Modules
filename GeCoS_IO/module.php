@@ -30,6 +30,23 @@ class GeCoS_IO extends IPSModule
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIO_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
+		
+		// Statusvariablen anlegen
+		$this->RegisterVariableString("Hardware", "Hardware", "", 20);
+		$this->DisableAction("Hardware");
+			
+		$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
+		$this->DisableAction("SoftwareVersion");
+			
+		$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 40);
+		$this->DisableAction("RTC_Temperature");
+			
+		$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 50);
+		$this->DisableAction("RTC_Timestamp");
+			
+		$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 60);
+		$this->DisableAction("LastKeepAlive");
+		
 		$I2CInstanceArray = Array();
 		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 		
@@ -158,27 +175,7 @@ class GeCoS_IO extends IPSModule
 		// Kernel
 	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
 		
-		If (IPS_GetKernelRunlevel() == 10103) {		
-			$this->RegisterVariableString("Hardware", "Hardware", "", 20);
-			$this->DisableAction("Hardware");
-			IPS_SetHidden($this->GetIDForIdent("Hardware"), true);
-			
-			$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
-			$this->DisableAction("SoftwareVersion");
-			IPS_SetHidden($this->GetIDForIdent("SoftwareVersion"), true);
-			
-			$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 40);
-			$this->DisableAction("RTC_Temperature");
-			IPS_SetHidden($this->GetIDForIdent("RTC_Temperature"), false);
-			
-			$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 50);
-			$this->DisableAction("RTC_Timestamp");
-			IPS_SetHidden($this->GetIDForIdent("RTC_Timestamp"), false);
-			
-			$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 60);
-			$this->DisableAction("LastKeepAlive");
-			IPS_SetHidden($this->GetIDForIdent("LastKeepAlive"), false);
-			
+		If (IPS_GetKernelRunlevel() == 10103) {				
 			$this->SetBuffer("ModuleReady", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
