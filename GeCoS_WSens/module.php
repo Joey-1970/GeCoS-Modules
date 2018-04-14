@@ -15,6 +15,7 @@
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
+		$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RequireParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
@@ -129,7 +130,9 @@
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAirQuality", "caption" => "Logging Luftqualität aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAmbient", "caption" => "Logging Weiß-Wert aktivieren");
-		
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Experimentell:");
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
 		
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -171,6 +174,8 @@
 	public function RequestData()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
+			// Datenermittlung über ModBus
+			
 			// Temperatur ermitteln
 			$Temp = $this->GetData(3, 120, 1);
 			if($Temp === false) {
@@ -219,6 +224,45 @@
 				return false;
 			}
 			
+			/*
+			// Datenermittlung über JSON
+			$IP = $this->ReadPropertyString("IPAddress");
+			$contents = file_get_contents('http://'.$IP.'/json');
+			$contents = utf8_encode($contents); 
+			$data = json_decode($contents);
+			$Temp = floatval($data->Temperatur);
+			$Pressure = floatval($data->Luftdruck); 
+			$Humidity = floatval($data->Luftfeuchtigkeit); 
+			$IAQ = floatval($data->Luftqualitaet-Index); 
+			
+			$Hardware = floatval($data->Hardware-Version);
+			If (GetValueFloat($this->GetIDForIdent("Hardware")) <> $Hardware) {
+				SetValueFloat($this->GetIDForIdent("Hardware"), ($Hardware));
+				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
+			}
+			$Firmware = floatval($data->Firmware-Version);
+			If (GetValueFloat($this->GetIDForIdent("Firmware")) <> $Firmware) {
+				SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware));
+				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
+			}
+			
+			$Ambient = intval($data->Intensitaet-Weiss);
+    			$Red = intval($data->Intensitaet-Rot);
+			$Green = intval($data->Intensitaet-Gruen);
+			$Blue = intval($data->Intensitaet-Blau);
+			
+			$TempOffset = $this->ReadPropertyFloat("TempOffset");
+			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
+			
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
+			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
+			
+			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * (1 + $IntensityOffset)));
+			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
+			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
+			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
+			
+			*/
 			
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
