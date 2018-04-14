@@ -370,15 +370,6 @@
 	private function Setup()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
-			// TemperaturOffset ermitteln
-			$TempOffset = $this->GetData(3, 101, 1);
-			if($TempOffset === false) {
-				return;
-			}
-			elseif ($TempOffset <> 0) {
-				$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
-			}
-			
 			// Hardwareversion ermitteln
 			$Hardware = $this->GetData(3, 102, 1);
 			if($Hardware === false) {
@@ -393,6 +384,15 @@
 			}
 			SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware / 10));
 			$this->SetSummary("HW-Version: ".($Hardware / 10)." SW-Version: ".($Firmware / 10));
+			
+			// TemperaturOffset ermitteln
+			$TempOffset = $this->GetData(3, 101, 1);
+			if($TempOffset === false) {
+				return;
+			}
+			elseif ($TempOffset <> 0) {
+				@$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
+			}
 		}
 	}
 	    
