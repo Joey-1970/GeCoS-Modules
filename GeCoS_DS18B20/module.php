@@ -16,6 +16,10 @@
 		$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
+		
+		//Status-Variablen anlegen
+		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
+          	$this->DisableAction("Temperature");
         }
  	
 	public function GetConfigurationForm() 
@@ -86,11 +90,6 @@
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
             	
-		//Status-Variablen anlegen
-		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
-          	$this->DisableAction("Temperature");
-		IPS_SetHidden($this->GetIDForIdent("Temperature"), false);
-		
 		$OWDeviceArray = Array();
 		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 		
