@@ -25,6 +25,15 @@
 		$this->RegisterPropertyBoolean("Active_2", true);
 		$this->RegisterPropertyBoolean("Active_3", true);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoS4AnalogIn_GetInput($_IPS["TARGET"]);');
+		
+		// Profil anlegen
+	    	$this->RegisterProfileFloat("GeCoS.V", "Electricity", "", " V", -100000, +100000, 0.1, 3);
+		
+		//Status-Variablen anlegen
+		for ($i = 0; $i <= 3; $i++) {
+			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "GeCoS.V", ($i + 1) * 10);
+			$this->DisableAction("Input_X".$i);
+		}
         }
  	
 	public function GetConfigurationForm() 
@@ -89,16 +98,6 @@
         {
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
-            	
-		// Profil anlegen
-	    	$this->RegisterProfileFloat("GeCoS.V", "Electricity", "", " V", -100000, +100000, 0.1, 3);
-		
-		//Status-Variablen anlegen
-		for ($i = 0; $i <= 3; $i++) {
-			$this->RegisterVariableFloat("Input_X".$i, "Eingang X".$i, "GeCoS.V", ($i + 1) * 10);
-			$this->DisableAction("Input_X".$i);
-			IPS_SetHidden($this->GetIDForIdent("Input_X".$i), false);
-		}
 		
 		$MeasurementData = array();
 		$this->SetBuffer("MeasurementData", serialize($MeasurementData));
