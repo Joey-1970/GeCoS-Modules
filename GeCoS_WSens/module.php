@@ -16,7 +16,6 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->RegisterPropertyString("IPAddress", "127.0.0.1");
-		$this->RequireParent("{A5F663AB-C400-4FE5-B207-4D67CC030564}");
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
 		$this->RegisterPropertyInteger("Altitude", 0);
@@ -109,10 +108,12 @@
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
 		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
 		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Device konnte nicht gefunden werden");
-		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "ModBus-Kommunikationfehler!");
+		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "Kommunikationfehler!");
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
+		$arrayElements[] = array("type" => "Label", "label" => "IP");
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Temperatur");
@@ -132,8 +133,8 @@
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAmbient", "caption" => "Logging Weiß-Wert aktivieren");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		/*
-		$arrayElements[] = array("type" => "Label", "label" => "Experimentell:");
-		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
+		
+		
 		*/
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
@@ -160,7 +161,6 @@
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {	
-			$this->Setup();
 			$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
 			$this->RequestData();
 			$this->SetStatus(102);
@@ -174,58 +174,7 @@
 	// Beginn der Funktionen
 	public function RequestData()
 	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
-			// Datenermittlung über ModBus
-			
-			// Temperatur ermitteln
-			$Temp = $this->GetData(3, 120, 1);
-			if($Temp === false) {
-				return false;
-			}
-			
-			// Luftfeuchtigkeit ermitteln
-			$Humidity = $this->GetData(3, 121, 1);
-			if($Humidity === false) {
-				return false;
-			}
-			
-			// Luftdruck ermitteln
-			$Pressure = $this->GetData(3, 122, 1);
-			if($Pressure === false) {
-				return false;
-			}
-			
-			// AQ ermitteln
-			$IAQ = $this->GetData(3, 123, 1);
-			if($IAQ === false) {
-				return false;
-			}
-			
-			// Weißwert ermitteln
-			$Ambient = $this->GetData(3, 125, 1);
-			if($Ambient === false) {
-				return false;
-			}
-			
-			// Rotwert ermitteln
-			$Red = $this->GetData(3, 126, 1);
-			if($Red === false) {
-				return false;
-			}
-			
-			// Grünwert ermitteln
-			$Green = $this->GetData(3, 127, 1);
-			if($Green === false) {
-				return false;
-			}
-			
-			// Blauwert ermitteln
-			$Blue = $this->GetData(3, 128, 1);
-			if($Blue === false) {
-				return false;
-			}
-			
-			/*
+		If ($this->ReadPropertyBoolean("Open") == true)  {
 			// Datenermittlung über JSON
 			$IP = $this->ReadPropertyString("IPAddress");
 			$contents = file_get_contents('http://'.$IP.'/json');
@@ -262,36 +211,17 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
 			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
-			
-			*/
-			
-			$TempOffset = $this->ReadPropertyFloat("TempOffset");
-			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".($Temp / 100)." C Luftfeuchte: ".($Humidity / 100)."% Luftdruck: ".($Pressure / 10)." hPa", 0);		
-			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
-			
+						
 			$this->SetStatus(102);
 			
-			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
+			$Temp = ($Temp) + $TempOffset;
 			
-			$SignBit = ($Temp & 32768) >> 15;
-			//$this->SendDebug("RequestData", "Vorzeichen: ".$SignBit, 0);		
-			If ($SignBit == 0) {
-				$Temp = ($Temp / 100) + $TempOffset;
-			}
-			else {
-				$Temp = -($this->bitflip($Temp));
-				$Temp = ($Temp / 100) + $TempOffset;
-			}
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
-			$Pressure = $Pressure / 10;
+			
 			If (($Pressure > 800) AND ($Pressure < 1200)) {
 				SetValueFloat($this->GetIDForIdent("Pressure"), round($Pressure, 2));
 			}
-			$Humidity = $Humidity / 100;
+			
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
 			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
 			
@@ -384,63 +314,6 @@
 		}
 	}
 	    
-	private function GetData(Int $Function, Int $Address, Int $Quantity)
-	{
-		
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			//$this->SendDebug("GetData", "Ausfuehrung - Funktion: ".$Function." Adresse: ".$Address." Menge: ".$Quantity, 0);
-			$tries = 3;
-			do {
-				$Response = false;
-				$Result = @$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => $Function, "Address" => $Address, "Quantity" => $Quantity, "Data" => "")));
-				$Result = (unpack("n*", substr($Result,2)));
-				If (is_array($Result)) {
-					If (count($Result) == 1) {
-						$this->SetStatus(102);
-						$Response = $Result[1];
-						break;
-					}
-				}
-				else {
-					$this->SendDebug("GetData", "Lesen fehlerhaft bei Adresse ".$Address, 0);
-					IPS_Sleep(100);
-					$this->SetStatus(202);
-				}	
-			$tries--;
-			} while ($tries);  
-			return $Response;
-		}
-	}
-	
-	private function Setup()
-	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->HasActiveParent() == true)) {
-			// Hardwareversion ermitteln
-			$Hardware = $this->GetData(3, 102, 1);
-			if($Hardware === false) {
-				return;
-			}
-			SetValueFloat($this->GetIDForIdent("Hardware"), ($Hardware / 10));
-			
-			// Firmwareversion ermitteln
-			$Firmware = $this->GetData(3, 103, 1);
-			if($Firmware === false) {
-				return;
-			}
-			SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware / 10));
-			$this->SetSummary("HW-Version: ".($Hardware / 10)." SW-Version: ".($Firmware / 10));
-			
-			// TemperaturOffset ermitteln
-			$TempOffset = $this->GetData(3, 101, 1);
-			if($TempOffset === false) {
-				return;
-			}
-			elseif ($TempOffset <> 0) {
-				@$this->SendDataToParent(json_encode(Array("DataID"=> "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}", "Function" => 16, "Address" => 101, "Quantity" => 1, "Data" => "\u0000\u0000")));
-			}
-		}
-	}
-	    
 	private function PressureTrend(int $interval)
 	{
 		$Result = 0;
@@ -448,21 +321,6 @@
 		$Result = @($LoggingArray[0]['Value'] - end($LoggingArray)['Value']); 
 	return $Result;
 	}   
-	    
-	private function bitflip($Value)
-	{
-	   	// Umwandlung in einen Binär-String
-		$bin = decbin($Value);
-	   	$not = "";
-	   	// Umstellung der Binär-Strings
-		for ($i = 0; $i < strlen($bin); $i++)
-	   		{
-	      		if($bin[$i] == 0) { $not .= '1'; }
-	      		if($bin[$i] == 1) { $not .= '0'; }
-	   	}
-		// Rückgabe als Integer
-	return bindec($not);
-	}
 	 
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 	{
@@ -498,18 +356,5 @@
 	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
 	        IPS_SetVariableProfileDigits($Name, $Digits);
 	}
-	    
-	private function HasActiveParent()
-    	{
-		//$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
-		$Instance = @IPS_GetInstance($this->InstanceID);
-		if ($Instance['ConnectionID'] > 0)
-		{
-			$Parent = IPS_GetInstance($Instance['ConnectionID']);
-			if ($Parent['InstanceStatus'] == 102)
-			return true;
-		}
-        return false;
-    	}  
 }
 ?>
