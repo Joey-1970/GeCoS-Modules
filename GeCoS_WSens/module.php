@@ -112,7 +112,7 @@
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
-		$arrayElements[] = array("type" => "Label", "label" => "IP");
+		$arrayElements[] = array("type" => "Label", "label" => "IP oder Hostname");
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
@@ -183,23 +183,23 @@
 			$Temp = floatval($data->Temperatur);
 			$Pressure = floatval($data->Luftdruck); 
 			$Humidity = floatval($data->Luftfeuchtigkeit); 
-			$IAQ = floatval($data->Luftqualitaet-Index); 
+			$IAQ = floatval($data->"Luftqualitaet-Index"); 
 			
-			$Hardware = floatval($data->Hardware-Version);
+			$Hardware = floatval($data->"Hardware-Version");
 			If (GetValueFloat($this->GetIDForIdent("Hardware")) <> $Hardware) {
 				SetValueFloat($this->GetIDForIdent("Hardware"), ($Hardware));
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
 			}
-			$Firmware = floatval($data->Firmware-Version);
+			$Firmware = floatval($data->"Firmware-Version");
 			If (GetValueFloat($this->GetIDForIdent("Firmware")) <> $Firmware) {
 				SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware));
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
 			}
 			
-			$Ambient = intval($data->Intensitaet-Weiss);
-    			$Red = intval($data->Intensitaet-Rot);
-			$Green = intval($data->Intensitaet-Gruen);
-			$Blue = intval($data->Intensitaet-Blau);
+			$Ambient = intval($data->"Intensitaet-Weiss");
+    			$Red = intval($data->"Intensitaet-Rot");
+			$Green = intval($data->"Intensitaet-Gruen");
+			$Blue = intval($data->"Intensitaet-Blau");
 			
 			$TempOffset = $this->ReadPropertyFloat("TempOffset");
 			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
