@@ -177,7 +177,14 @@
 		If ($this->ReadPropertyBoolean("Open") == true)  {
 			// Datenermittlung über JSON
 			$IP = $this->ReadPropertyString("IPAddress");
-			$contents = file_get_contents('http://'.$IP.'/json');
+			$contents = @file_get_contents('http://'.$IP.'/json');
+			If ($contents === false) {
+				$this->SendDebug("RequestData", "Fehler bei der Datenermittlung!", 0);		
+				$this->SetStatus(104);
+				return false;
+			}
+			
+			$this->SetStatus(102);
 			$contents = utf8_encode($contents); 
 			$data = json_decode($contents);
 			$Temp = floatval($data->Temperatur);
@@ -211,8 +218,6 @@
 			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
 			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
 			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
-						
-			$this->SetStatus(102);
 			
 			$Temp = ($Temp) + $TempOffset;
 			
