@@ -186,11 +186,11 @@
 			$IAQ = floatval($data->{'Luftqualitaet-Index'}); 
 			
 			$Hardware = floatval($data->{'Hardware-Version'});
+			$Firmware = floatval($data->{'Firmware-Version'});
 			If (GetValueFloat($this->GetIDForIdent("Hardware")) <> $Hardware) {
 				SetValueFloat($this->GetIDForIdent("Hardware"), ($Hardware));
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
 			}
-			$Firmware = floatval($data->{'Firmware-Version'});
 			If (GetValueFloat($this->GetIDForIdent("Firmware")) <> $Firmware) {
 				SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware));
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
