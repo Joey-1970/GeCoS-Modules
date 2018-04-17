@@ -19,8 +19,6 @@
 		$this->RegisterPropertyInteger("Timer_1", 60);
 		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
 		$this->RegisterPropertyInteger("Altitude", 0);
-		$this->RegisterPropertyFloat("TempOffset", 0);
-		$this->RegisterPropertyFloat("IntensityOffset", 30);
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
@@ -116,10 +114,6 @@
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Temperatur");
-		$arrayElements[] = array("type" => "NumberSpinner", "name" => "TempOffset", "caption" => "Kelvin", "digits" => 1);
-		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Intensität");
-		$arrayElements[] = array("type" => "NumberSpinner", "name" => "IntensityOffset", "caption" => "%", "digits" => 1);
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
 		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von externen Quellen");
@@ -131,11 +125,6 @@
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAirQuality", "caption" => "Logging Luftqualität aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAmbient", "caption" => "Logging Weiß-Wert aktivieren");
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		/*
-		
-		
-		*/
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
@@ -208,18 +197,13 @@
 			$Green = intval($data->{'Intensitaet-Gruen'});
 			$Blue = intval($data->{'Intensitaet-Blau'});
 			
-			$TempOffset = $this->ReadPropertyFloat("TempOffset");
-			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
+			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
 			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
 			
-			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
-			
-			$Temp = ($Temp) + $TempOffset;
+			SetValueInteger($this->GetIDForIdent("Intensity_W"), $Ambient);
+			SetValueInteger($this->GetIDForIdent("Intensity_R"), $Red);
+			SetValueInteger($this->GetIDForIdent("Intensity_G"), $Green);
+			SetValueInteger($this->GetIDForIdent("Intensity_B"), $Blue);
 			
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			
