@@ -112,6 +112,7 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
 		$arrayElements[] = array("type" => "Label", "label" => "IP oder Hostname");
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
+		$arrayElements[] = array("type" => "Label", "label" => "Miniumum 5 Sekunden, 0 => Aus");
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
@@ -149,8 +150,12 @@
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Intensity_W"), $this->ReadPropertyBoolean("LoggingAmbient"));
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 		
-		If ($this->ReadPropertyBoolean("Open") == true) {	
-			$this->SetTimerInterval("Timer_1", ($this->ReadPropertyInteger("Timer_1") * 1000));
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Timer_1 = $this->ReadPropertyInteger("Timer_1");
+			If (($Timer_1 > 0) AND ($Timer_1 < 4)) {
+				$Timer_1 = 5;
+			}
+			$this->SetTimerInterval("Timer_1", ($Timer_1 * 1000));
 			$this->RequestData();
 			$this->SetStatus(102);
 		}
