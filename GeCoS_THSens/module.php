@@ -17,31 +17,18 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyInteger("Timer_1", 60);
-		$this->RegisterTimer("Timer_1", 0, 'GeCoSWSens_RequestData($_IPS["TARGET"]);');
+		$this->RegisterTimer("Timer_1", 0, 'GeCoSTHSens_RequestData($_IPS["TARGET"]);');
 		$this->RegisterPropertyInteger("Altitude", 0);
 		$this->RegisterPropertyFloat("TempOffset", 0);
 		$this->RegisterPropertyFloat("IntensityOffset", 30);
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
-		$this->RegisterPropertyBoolean("LoggingAirQuality", false);
-		$this->RegisterPropertyBoolean("LoggingAmbient", false);
 		$this->RegisterPropertyInteger("Temperature_ID", 0);
 		$this->RegisterPropertyInteger("Humidity_ID", 0);
 		
 		// Profile erstellen		
 		$this->RegisterProfileFloat("GeCoS.gm3", "Drops", "", " g/m³", 0, 1000, 0.1, 1);
-		
-		$this->RegisterProfileInteger("GeCoS.AirQuality", "Information", "", "", 0, 6, 1);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 0, "Kalibrierung", "Information", -1);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 1, "gut", "Information", 0x58FA58);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 2, "durchschnittlich", "Information", 0xF7FE2E);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 3, "etwas schlecht", "Information", 0xFE9A2E);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 4, "schlecht", "Information", 0xFF0000);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 5, "schlechter", "Information", 0x61380B);
-		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 6, "sehr schlecht", "Information", 0x000000);
-		
-		$this->RegisterProfileInteger("GeCoS.Lux", "Bulb", "", " lx", 0, 65535, 1);
 		
 		//Status-Variablen anlegen
 		$this->RegisterVariableFloat("Hardware", "Hardware-Version", "", 10);
@@ -79,25 +66,6 @@
 		
 		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 120);
 		$this->DisableAction("PressureTrend24h");
-		
-		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "GeCoS.AirQuality", 130);
-		$this->DisableAction("AirQuality");
-		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
-		
-		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 140);
-		$this->DisableAction("AirQualityIndex");
-		
-		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 150);
-	        $this->DisableAction("Intensity_W");
-		
-		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 160);
-	        $this->DisableAction("Intensity_R");
-		
-		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 170);
-	        $this->DisableAction("Intensity_G");
-		
-		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 180);
-	        $this->DisableAction("Intensity_B");
         }
  	
 	public function GetConfigurationForm() 
@@ -116,10 +84,6 @@
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "IPAddress", "caption" => "IP");
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Timer_1", "caption" => "Sekunden");
  		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Temperatur");
-		$arrayElements[] = array("type" => "NumberSpinner", "name" => "TempOffset", "caption" => "Kelvin", "digits" => 1);
-		$arrayElements[] = array("type" => "Label", "label" => "Korrektur der Intensität");
-		$arrayElements[] = array("type" => "NumberSpinner", "name" => "IntensityOffset", "caption" => "%", "digits" => 1);
 		$arrayElements[] = array("type" => "Label", "label" => "Korrektur des Luftdrucks nach Hohenangabe");
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Altitude", "caption" => "Höhe über NN (m)");
 		$arrayElements[] = array("type" => "Label", "label" => "Optionale Angabe von externen Quellen");
@@ -129,13 +93,6 @@
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingTemp", "caption" => "Logging Temperatur aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingHum", "caption" => "Logging Luftfeuchtigkeit aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAirQuality", "caption" => "Logging Luftqualität aktivieren");
-		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAmbient", "caption" => "Logging Weiß-Wert aktivieren");
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		/*
-		
-		
-		*/
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
@@ -156,8 +113,6 @@
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), $this->ReadPropertyBoolean("LoggingPres"));
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
-		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("AirQuality"), $this->ReadPropertyBoolean("LoggingAirQuality"));
-		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Intensity_W"), $this->ReadPropertyBoolean("LoggingAmbient"));
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 		
 		If ($this->ReadPropertyBoolean("Open") == true) {	
@@ -190,7 +145,6 @@
 			$Temp = floatval($data->Temperatur);
 			$Pressure = floatval($data->Luftdruck); 
 			$Humidity = floatval($data->Luftfeuchtigkeit); 
-			$IAQ = floatval($data->{'Luftqualitaet-Index'}); 
 			
 			$Hardware = floatval($data->{'Hardware-Version'});
 			$Firmware = floatval($data->{'Firmware-Version'});
@@ -203,23 +157,8 @@
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
 			}
 			
-			$Ambient = intval($data->{'Intensitaet-Weiss'});
-    			$Red = intval($data->{'Intensitaet-Rot'});
-			$Green = intval($data->{'Intensitaet-Gruen'});
-			$Blue = intval($data->{'Intensitaet-Blau'});
 			
-			$TempOffset = $this->ReadPropertyFloat("TempOffset");
-			$IntensityOffset = $this->ReadPropertyFloat("IntensityOffset") / 100;
-			
-			$this->SendDebug("RequestData", "BME680 - iAQ: ".$IAQ." TempOffset: ".$TempOffset." K Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
-			$this->SendDebug("RequestData", "APDS9960 - Weiss: ".$Ambient." lx Rot: ".$Red." lx Gruen: ".$Green." lx Blau: ".$Blue." lx", 0);
-			
-			SetValueInteger($this->GetIDForIdent("Intensity_W"), ($Ambient * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_R"), ($Red * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_G"), ($Green * (1 + $IntensityOffset)));
-			SetValueInteger($this->GetIDForIdent("Intensity_B"), ($Blue * (1 + $IntensityOffset)));
-			
-			$Temp = ($Temp) + $TempOffset;
+			$this->SendDebug("RequestData", "BME280 - Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
 			
 			SetValueFloat($this->GetIDForIdent("Temperature"), round($Temp, 2));
 			
@@ -228,7 +167,6 @@
 			}
 			
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
-			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
 			
 			// Berechnung von Taupunkt und absoluter Luftfeuchtigkeit
 			if ($Temp < 0) {
@@ -303,15 +241,6 @@
 				SetValueFloat($this->GetIDForIdent("PressureTrend12h"), $this->PressureTrend(12));
 				SetValueFloat($this->GetIDForIdent("PressureTrend24h"), $this->PressureTrend(24));
 			}
-			
-			// Umrechnung für die Air-Qualität-Anzeige
-			$air_quality_score = max(0, min(500, $IAQ));
-			$IAQ_Index = array(50, 100, 150, 200, 300, 500);
-			$i = 0;
-			while ($air_quality_score > $IAQ_Index[$i]) {
-			    $i++;  
-			}
-			SetValueInteger($this->GetIDForIdent("AirQuality"), ($i + 1));
 			return true;
 		}
 		else {
