@@ -135,7 +135,7 @@
 			$contents = @file_get_contents('http://'.$IP.'/json');
 			If ($contents === false) {
 				$this->SendDebug("RequestData", "Fehler bei der Datenermittlung!", 0);		
-				$this->SetStatus(104);
+				$this->SetStatus(202);
 				return false;
 			}
 			
