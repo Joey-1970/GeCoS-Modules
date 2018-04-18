@@ -1,14 +1,14 @@
 {
   "id": "{1C320F53-4A20-443A-AC9E-A96E49CF892A}",
-  "name": "GeCoS_THSens",
+  "name": "GeCoS_WTH",
   "type": 3,
   "vendor": "GeCoS-Modules",
   "aliases":
   [
-    "GeCoS_THSens"
+    "GeCoS_WTH"
   ],
   "parentRequirements": [],
   "childRequirements": [],
   "implemented": [],
-  "prefix": "GeCoSTHSens"
+  "prefix": "GeCoSWTH"
 }
