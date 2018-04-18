@@ -1,0 +1,14 @@
+{
+  "id": "{1C320F53-4A20-443A-AC9E-A96E49CF892A}",
+  "name": "GeCoS_THSens",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_THSens"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "GeCoSTHSens"
+}
