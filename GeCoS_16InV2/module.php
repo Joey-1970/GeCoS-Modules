@@ -266,10 +266,10 @@
 			$this->SendDebug("Setup", "IO-Byte A: ".$GPAIODIR." IO-Byte B: ".$GPBIODIR, 0);
 			
 			// Polariät des Eingangs ermitteln
-			$GPAIPOL = 0;
+			$GPAIPOL = 255;
 			$ConfigArray[2] = $GPAIPOL; // Adresse 02
 			
-			$GPBIPOL = 0;
+			$GPBIPOL = 255;
 			$ConfigArray[3] = $GPBIPOL; // Adresse 03
 			$this->SendDebug("Setup", "Polaritaets-Byte A: ".$GPAIPOL." Polaritaets-Byte B: ".$GPBIPOL, 0);
 			
