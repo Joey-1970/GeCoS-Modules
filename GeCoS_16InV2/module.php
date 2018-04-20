@@ -292,10 +292,10 @@
 			$this->SendDebug("Setup", "Interrupt-Referenzwert-Byte A/B = 0", 0);
 			
 			// Pull-Up-Byte ermitteln
-			$GPAPU = 255;
+			$GPAPU = 0;
 			$ConfigArray[10] = $GPAPU; // Adresse 0C
 			
-			$GPBPU = 255;
+			$GPBPU = 0;
 			$ConfigArray[11] = $GPBPU; // Adresse 0D
 			$this->SendDebug("Setup", "Pull-up-Byte A: ".$GPAPU." Pull-up-Byte B: ".$GPBPU, 0);
 			$tries = 5;
