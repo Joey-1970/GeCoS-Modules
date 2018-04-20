@@ -145,7 +145,7 @@
 						$GPIOA = $OutputArray[1];
 						$GPIOB = $OutputArray[2];
 						
-						$this->SendDebug("GetOutput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
+						$this->SendDebug("GetInput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
 							// Port A
