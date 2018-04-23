@@ -131,7 +131,7 @@
 			
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 2)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 4)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
@@ -146,6 +146,7 @@
 						$GPIOB = $OutputArray[2];
 						
 						$this->SendDebug("GetInput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
+						$this->SendDebug("GetInput", "OLATA: ".$OutputArray[3]." OLATB: ".$OutputArray[4], 0);
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
 							// Port A
@@ -255,7 +256,7 @@
 			} while ($tries);  
 			
 			$ConfigArray = array();
-			// IO-Bytes ermitteln
+			// IO-Bytes festlegen
 			$GPAIODIR = 255; 
 			$ConfigArray[0] = $GPAIODIR; // Adresse 00
 			$this->SetBuffer("GPAIODIR", $GPAIODIR);
@@ -265,11 +266,11 @@
 			$this->SetBuffer("GPBIODIR", $GPBIODIR);
 			$this->SendDebug("Setup", "IO-Byte A: ".$GPAIODIR." IO-Byte B: ".$GPBIODIR, 0);
 			
-			// Polariät des Eingangs ermitteln
-			$GPAIPOL = 255;
+			// Polariät des Eingangs festlegen
+			$GPAIPOL = 0;
 			$ConfigArray[2] = $GPAIPOL; // Adresse 02
 			
-			$GPBIPOL = 255;
+			$GPBIPOL = 0;
 			$ConfigArray[3] = $GPBIPOL; // Adresse 03
 			$this->SendDebug("Setup", "Polaritaets-Byte A: ".$GPAIPOL." Polaritaets-Byte B: ".$GPBIPOL, 0);
 			
