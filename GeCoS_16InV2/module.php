@@ -299,6 +299,7 @@
 			$GPBPU = 0;
 			$ConfigArray[11] = $GPBPU; // Adresse 0D
 			$this->SendDebug("Setup", "Pull-up-Byte A: ".$GPAPU." Pull-up-Byte B: ".$GPBPU, 0);
+			/*
 			$tries = 5;
 			do {
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => hexdec("00"), 
@@ -316,6 +317,7 @@
 				}
 			$tries--;
 			} while ($tries);  
+			*/
 		}
 	}    
 	    
