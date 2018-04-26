@@ -77,8 +77,6 @@
 				If ($Result == true) {
 					// Setup
 					$this->Setup();
-					$this->SetTimerInterval("GetInput", 15 * 1000);
-					$this->GetInput();
 				}
 			}
 			else {
@@ -257,30 +255,19 @@
 			
 			$ConfigArray = array();
 			// IO-Bytes festlegen
-			$GPAIODIR = 255; 
-			$ConfigArray[0] = $GPAIODIR; // Adresse 00
-			$this->SetBuffer("GPAIODIR", $GPAIODIR);
-			
-			$GPBIODIR = 255;
-			$ConfigArray[1] = $GPBIODIR; // Adresse 01
-			$this->SetBuffer("GPBIODIR", $GPBIODIR);
-			$this->SendDebug("Setup", "IO-Byte A: ".$GPAIODIR." IO-Byte B: ".$GPBIODIR, 0);
+			$ConfigArray[0] = 255; // Adresse 00
+			$ConfigArray[1] = 255; // Adresse 01
+			$this->SendDebug("Setup", "IO-Byte A: 255 IO-Byte B: 255", 0);
 			
 			// Polariät des Eingangs festlegen
-			$GPAIPOL = 0;
-			$ConfigArray[2] = $GPAIPOL; // Adresse 02
-			
-			$GPBIPOL = 0;
-			$ConfigArray[3] = $GPBIPOL; // Adresse 03
-			$this->SendDebug("Setup", "Polaritaets-Byte A: ".$GPAIPOL." Polaritaets-Byte B: ".$GPBIPOL, 0);
+			$ConfigArray[2] = 0; // Adresse 02
+			$ConfigArray[3] = 0; // Adresse 03
+			$this->SendDebug("Setup", "Polaritaets-Byte A: 0 Polaritaets-Byte B: 0", 0);
 			
 			// Interrupt enable ermitteln
-			$GPAINTEN = 255;
-			$ConfigArray[4] = $GPAINTEN; // Adresse 04
-			
-			$GPBINTEN = 255;
-			$ConfigArray[5] = $GPBINTEN; // Adresse 05
-			$this->SendDebug("Setup", "Interrupt-Byte A: ".$GPAINTEN." Interrupt-Byte B: ".$GPBINTEN, 0);
+			$ConfigArray[4] = 255; // Adresse 04
+			$ConfigArray[5] = 255; // Adresse 05
+			$this->SendDebug("Setup", "Interrupt-Byte A: 255 Interrupt-Byte B: 255", 0);
 			
 			// Referenzwert-Byte ermitteln
 			$ConfigArray[6] = 0; // Adresse 06
@@ -293,13 +280,9 @@
 			$this->SendDebug("Setup", "Interrupt-Referenzwert-Byte A/B = 0", 0);
 			
 			// Pull-Up-Byte ermitteln
-			$GPAPU = 0;
-			$ConfigArray[10] = $GPAPU; // Adresse 0C
-			
-			$GPBPU = 0;
-			$ConfigArray[11] = $GPBPU; // Adresse 0D
-			$this->SendDebug("Setup", "Pull-up-Byte A: ".$GPAPU." Pull-up-Byte B: ".$GPBPU, 0);
-			/*
+			$ConfigArray[10] = 0; // Adresse 0C
+			$ConfigArray[11] = 0; // Adresse 0D
+			$this->SendDebug("Setup", "Pull-up-Byte A: 0 Pull-up-Byte B: 0", 0);
 			$tries = 5;
 			do {
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => hexdec("00"), 
@@ -312,12 +295,12 @@
 				else {
 					$this->SendDebug("Setup", "Konfigurations-Byte erfolgreich gesetzt", 0);
 					$this->SetStatus(102);
+					$this->SetTimerInterval("GetInput", 15 * 1000);
 					$this->GetInput();
 					break;
 				}
 			$tries--;
 			} while ($tries);  
-			*/
 		}
 	}    
 	    
