@@ -116,6 +116,9 @@
             	// Diese Zeile nicht löschen
             	parent::ApplyChanges();
 		
+		// Summary setzen
+		$this->SetSummary("SC: ".$this->ReadPropertyString("DeviceAddress"));
+		
 		$OWDeviceArray = Array();
 		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 		
