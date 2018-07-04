@@ -116,6 +116,9 @@
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 		
+		// Summary setzen
+		$this->SetSummary($this->ReadPropertyString('IPAddress'));
+		
 		If ($this->ReadPropertyBoolean("Open") == true) {	
 			$Timer_1 = $this->ReadPropertyInteger("Timer_1");
 			If (($Timer_1 > 0) AND ($Timer_1 < 5)) {
