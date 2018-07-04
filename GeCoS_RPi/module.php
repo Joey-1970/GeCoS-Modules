@@ -165,6 +165,7 @@
 								// Hostname
 								$Result = trim($ResultArray[key($ResultArray)]);
 								SetValueString($this->GetIDForIdent("Hostname"), $Result);
+								$this->SetSummary($Result);
 								break;
 							
 						}
