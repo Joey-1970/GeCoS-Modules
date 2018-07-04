@@ -69,7 +69,7 @@
             	parent::ApplyChanges();
 		
 		// Summary setzen
-		$this->SetSummary("0x".dechex($this->ReadPropertyInteger("DeviceAddress"))." - I²C-Bus ".($this->ReadPropertyInteger("DeviceAddress") - 4));
+		$this->SetSummary("0x".dechex($this->ReadPropertyInteger("DeviceAddress"))." - I²C-Bus ".($this->ReadPropertyInteger("DeviceBus") - 4));
             	
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
