@@ -228,6 +228,7 @@ class GeCoS_IO extends IPSModule
 		        $this->RegisterMessage($ParentID, 10505); // Status hat sich geändert
 						
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
+				$this->SetSummary($this->ReadPropertyString('IPAddress'));
 				$this->SendDebug("ApplyChangges", "Starte Vorbereitung", 0);
 				$this->CheckConfig();
 				// Hardware und Softwareversion feststellen
