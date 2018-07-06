@@ -114,11 +114,107 @@
 	 	}
  	}
 	    
+	public function RequestAction($Ident, $Value) 
+	{
+		$Number = intval(substr($Ident, 8, 2));
+		$this->SetOutputPin($Number, $Value);
+	}
+	    
 	// Beginn der Funktionen
-
+	public function SetOutputPin(Int $Output, Bool $Value)
+	{
+		$Output = min(15, max(0, $Output));
+		$Value = min(1, max(0, $Value));
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Bitmask = $this->GetBuffer("OutputBank");
+			If ($Value == true) {
+				$Bitmask = $this->setBit($Bitmask, $Output);
+			}
+			else {
+				$Bitmask = $this->unsetBit($Bitmask, $Output);
+			}
+			$tries = 3;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
+				If ($Result) {
+					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Bitmask & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+						}
+					}
+					$this->GetOutput();
+					$this->SetStatus(102);
+					break;
+				}
+				else {
+					$this->SetStatus(202);
+					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
+				}
+			$tries--;
+			} while ($tries);  
+		}
+	}	
 	
-
+	public function GetOutput()
+	{
+		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
+			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
+				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
+				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
+				If ($this->GetBuffer("ErrorCounter") <= 3) {
+					$this->GetOutput();
+				}
+			}
+			else {
+				$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
+				$this->SetBuffer("OutputBank", $Result);
+				for ($i = 0; $i <= 15; $i++) {
+					$Bitvalue = boolval($Result & pow(2, $i));					
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+					}
+				}
+				$this->SetBuffer("ErrorCounter", 0);
+			}
+		}
+	return $Result;
+	}
 	
+	public function GetOutputPin(Int $Output)
+	{
+		$Output = min(15, max(0, $Output));
+		
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
+			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
+				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
+				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
+				If ($this->GetBuffer("ErrorCounter") <= 3) {
+					$this->GetOutput();
+				}
+			}
+			else {
+				$this->SendDebug("GetOutputPin", "Ergebnis: ".$Result, 0);
+				$this->SetBuffer("OutputBank", $Result);
+				for ($i = 0; $i <= 15; $i++) {
+					$Bitvalue = boolval($Result & pow(2, $i));					
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+					}
+				}
+				$this->SetBuffer("ErrorCounter", 0);
+			}
+		}
+		
+	return boolval($Result & pow(2, $Output));
+	}    
+
 	private function Setup()
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
