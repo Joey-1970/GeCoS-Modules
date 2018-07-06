@@ -7,7 +7,6 @@
 	{
 		//Never delete this line!
 		parent::Destroy();
-		$this->SetTimerInterval("GetInput", 0);
 	}
 	    
 	// Überschreibt die interne IPS_Create($id) Funktion
@@ -19,12 +18,13 @@
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 32);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
-		$this->RegisterTimer("GetInput", 0, 'GeCoS16InV2_GetInput($_IPS["TARGET"]);');
+		$this->RegisterPropertyInteger("StartOption", -1);
+		$this->RegisterPropertyInteger("StartValue", 0);
 		
 		//Status-Variablen anlegen
 		for ($i = 0; $i <= 15; $i++) {
-			$this->RegisterVariableBoolean("Input_X".$i, "Eingang X".$i, "~Switch", ($i + 1) * 10);
-			$this->DisableAction("Input_X".$i);	
+			$this->RegisterVariableBoolean("Output_X".$i, "Ausgang X".$i, "~Switch", ($i + 1) * 10);
+			$this->EnableAction("Output_X".$i);	
 		}
         }
  	
@@ -74,7 +74,7 @@
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
-				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
+				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|.*"Function":"status".*)';
 				$this->SetReceiveDataFilter($Filter);
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
 				If ($Result == true) {
@@ -84,12 +84,10 @@
 			}
 			else {
 				$this->SetStatus(104);
-				$this->SetTimerInterval("GetInput", 0);
 			}	
 		}
 		else {
 			$this->SetStatus(104);
-			$this->SetTimerInterval("GetInput", 0);
 		}	
 	}
 	
@@ -112,107 +110,14 @@
 						$this->SetStatus(104);
 					}	
 			   	}
-			   	break;
-			case "interrupt":
-				If ($this->ReadPropertyBoolean("Open") == true) {
-					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
-						$this->Interrupt();
-					}
-				}
-				break;		
+			   	break;	
 	 	}
  	}
 	    
 	// Beginn der Funktionen
-	public function GetInput()
-	{
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDebug("GetInput", "Ausfuehrung", 0);
-			// Adressen 12 13
-			
-			$tries = 3;
-			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 4)));
-				If ($Result < 0) {
-					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
-					$this->SetStatus(202);
-				}
-				else {
-					If (is_array(unserialize($Result))) {
-						$this->SetStatus(102);
-						$OutputArray = array();
-						// für Eingänge PORT benutzen
-						$OutputArray = unserialize($Result);
-						$GPIOA = $OutputArray[1];
-						$GPIOB = $OutputArray[2];
-						
-						$this->SendDebug("GetInput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
-						$this->SendDebug("GetInput", "OLATA: ".$OutputArray[3]." OLATB: ".$OutputArray[4], 0);
-						// Statusvariablen setzen
-						for ($i = 0; $i <= 7; $i++) {
-							// Port A
-							$Value = $GPIOA & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
-							}
-							// Port B
-							$Value = $GPIOB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
-							}
-						}
-						break;
-					}
-				}
-			$tries--;
-			} while ($tries);  
-		}
-	}
+
 	
-	private function Interrupt()
-	{
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDebug("Interrupt", "Ausfuehrung", 0);
-			// Adressen 12 13
-			$tries = 3;
-			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("10"), "Count" => 2)));
-				If ($Result < 0) {
-					$this->SendDebug("Interrupt", "Einlesen der Werte fehlerhaft!", 0);
-					$this->SetStatus(202);
-				}
-				else {
-					If (is_array(unserialize($Result))) {
-						$this->SetStatus(102);
-						$OutputArray = array();
-						// für Ausgänge LAT benutzen für Eingänge PORT 
-						$OutputArray = unserialize($Result);
-						$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-						$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-						$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
-						// Statusvariablen setzen
-						for ($i = 0; $i <= 7; $i++) {
-							// Port A
-							$Value = $INTCAPA & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
-							}
-							
-							// Port B
-							$Value = $INTCAPB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
-							}
-							
-						}
-						$this->GetInput();
-						break;
-					}
-				}
-			$tries--;
-			} while ($tries);  
-		}
-	}   
+
 	
 	private function Setup()
 	{
@@ -230,7 +135,7 @@
 			// Bit 4: DISSLW Defaultwert = 0
 			// Bit 5: SEQOP Defaultwert = 0, automatische Adress-Zeiger inkrement
 			// Bit 6: MIRROR Interrupt-Konfiguration
-			$MIRROR = 1;
+			$MIRROR = 0;
 			$Config = $Config | ($MIRROR << 6);
 			// Bit 7: BANK Defaultwert = 0 Register sind in derselben Bank
 			
@@ -258,9 +163,9 @@
 			
 			$ConfigArray = array();
 			// IO-Bytes festlegen
-			$ConfigArray[0] = 255; // Adresse 00
-			$ConfigArray[1] = 255; // Adresse 01
-			$this->SendDebug("Setup", "IO-Byte A: 255 IO-Byte B: 255", 0);
+			$ConfigArray[0] = 0; // Adresse 00
+			$ConfigArray[1] = 0; // Adresse 01
+			$this->SendDebug("Setup", "IO-Byte A: 0 IO-Byte B: 0", 0);
 			
 			// Polariät des Eingangs festlegen
 			$ConfigArray[2] = 0; // Adresse 02
@@ -268,9 +173,9 @@
 			$this->SendDebug("Setup", "Polaritaets-Byte A: 0 Polaritaets-Byte B: 0", 0);
 			
 			// Interrupt enable ermitteln
-			$ConfigArray[4] = 255; // Adresse 04
-			$ConfigArray[5] = 255; // Adresse 05
-			$this->SendDebug("Setup", "Interrupt-Byte A: 255 Interrupt-Byte B: 255", 0);
+			$ConfigArray[4] = 0; // Adresse 04
+			$ConfigArray[5] = 0; // Adresse 05
+			$this->SendDebug("Setup", "Interrupt-Byte A: 0 Interrupt-Byte B: 0", 0);
 			
 			// Referenzwert-Byte ermitteln
 			$ConfigArray[6] = 0; // Adresse 06
@@ -292,14 +197,11 @@
 											  "Parameter" => serialize($ConfigArray) )));
 				If (!$Result) {
 					$this->SendDebug("Setup", "Konfigurations-Byte setzen fehlerhaft!", 0);
-					$this->SetTimerInterval("GetInput", 0);
 					$this->SetStatus(202);
 				}
 				else {
 					$this->SendDebug("Setup", "Konfigurations-Byte erfolgreich gesetzt", 0);
 					$this->SetStatus(102);
-					$this->SetTimerInterval("GetInput", 15 * 1000);
-					$this->GetInput();
 					break;
 				}
 			$tries--;
