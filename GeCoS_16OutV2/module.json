@@ -1,0 +1,14 @@
+{
+  "id": "{1F91F4D9-9EF5-4BF0-A71E-2CAF767A7212}",
+  "name": "GeCoS_16OutV2",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_16OutV2"
+  ],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "childRequirements": [],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "prefix": "GeCoS16OutV2"
+}
