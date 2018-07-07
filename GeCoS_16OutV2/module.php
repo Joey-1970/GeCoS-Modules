@@ -159,32 +159,51 @@
 	
 	public function GetOutput()
 	{
-		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
-			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
-				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
-				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
-				If ($this->GetBuffer("ErrorCounter") <= 3) {
-					$this->GetOutput();
+			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
+			// Adressen 12 13
+			
+			$tries = 3;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("14"), "Count" => 2)));
+				If ($Result < 0) {
+					$this->SendDebug("GetOutput", "Einlesen der Werte fehlerhaft!", 0);
+					$this->SetStatus(202);
+					//return;
 				}
-			}
-			else {
-				$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
-				$this->SetBuffer("OutputBank", $Result);
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Result & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+				else {
+					If (is_array(unserialize($Result))) {
+						$this->SetStatus(102);
+						$OutputArray = array();
+						// für Ausgänge LAT benutzen für Eingänge PORT 
+						$OutputArray = unserialize($Result);
+						// Ergebnis sichern
+						$this->SetBuffer("GPA", $OutputArray[1]);
+						$this->SetBuffer("GPB", $OutputArray[2]);
+						$OLATA = $OutputArray[3];
+						$OLATB = $OutputArray[4];
+						$this->SendDebug("GetOutput", "OLATA: ".$OLATA." OLATB: ".$OLATB, 0);
+						// Statusvariablen setzen
+						for ($i = 0; $i <= 7; $i++) {
+							// OLATA A
+							$Value = $OLATA & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Value);
+							}
+							// Port B
+							$Value = $OLATB & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $Value);
+							}
+						}					
+						break;
 					}
 				}
-				$this->SetBuffer("ErrorCounter", 0);
-			}
+			$tries--;
+			} while ($tries);  
 		}
-	return $Result;
 	}
-	
+	    
 	public function GetOutputPin(Int $Output)
 	{
 		$Output = min(15, max(0, $Output));
