@@ -1879,6 +1879,11 @@ class GeCoS_IO extends IPSModule
 			$SearchArray[] = $i;
 			$DeviceName[] = "16 Input V2";
 		}
+		// 16OutV2
+		for ($i = 36; $i <= 39; $i++) {
+			$SearchArray[] = $i;
+			$DeviceName[] = "16 Output V2";
+		}
 		// 4CurrentSense
 		for ($i = 76; $i <= 79; $i++) {
 			$SearchArray[] = $i;
