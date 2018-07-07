@@ -16,7 +16,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 32);
+ 	    	$this->RegisterPropertyInteger("DeviceAddress", 36);
 		$this->RegisterPropertyInteger("DeviceBus", 4);
 		$this->RegisterPropertyInteger("StartOption", -1);
 		$this->RegisterPropertyInteger("StartValue", 0);
@@ -42,7 +42,7 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		
 		$arrayOptions = array();
-		for ($i = 32; $i <= 35; $i++) {
+		for ($i = 36; $i <= 39; $i++) {
 		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
