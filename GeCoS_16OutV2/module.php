@@ -80,6 +80,7 @@
 				If ($Result == true) {
 					// Setup
 					$this->Setup();
+					$this->GetOutput();
 				}
 			}
 			else {
@@ -204,10 +205,12 @@
 		}
 	}
 	    
+	/*
 	public function GetOutputPin(Int $Output)
 	{
-		$Output = min(15, max(0, $Output));
 		
+		$Output = min(15, max(0, $Output));
+	
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
 			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
@@ -232,7 +235,8 @@
 		}
 		
 	return boolval($Result & pow(2, $Output));
-	}    
+	}   
+	*/
 
 	private function Setup()
 	{
