@@ -127,23 +127,35 @@
 		$Output = min(15, max(0, $Output));
 		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Bitmask = $this->GetBuffer("OutputBank");
+			// Bank ermitteln
+			If ($Output <=7) {
+				$Bitmask = $this->GetBuffer("OLATA");
+				$Register = 0x14;
+			}
+			else {
+				$Bitmask = $this->GetBuffer("OLATB");
+				$Register = 0x15;
+			}
+			// Bit setzen bzw. löschen
 			If ($Value == true) {
 				$Bitmask = $this->setBit($Bitmask, $Output);
 			}
 			else {
 				$Bitmask = $this->unsetBit($Bitmask, $Output);
 			}
+			// Neuen Wert senden
+			$OutputArray = Array();
+			$OutputArray[0] = $Bitmask;
+
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => $Register, 
+											  "Parameter" => serialize($OutputArray) )));
+
 				If ($Result) {
 					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Bitmask & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-						}
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$Output)) <> $Value) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$Output), $Value);
 					}
 					$this->GetOutput();
 					$this->SetStatus(102);
@@ -179,8 +191,8 @@
 						// für Ausgänge LAT benutzen für Eingänge PORT 
 						$OutputArray = unserialize($Result);
 						// Ergebnis sichern
-						$this->SetBuffer("GPA", $OutputArray[1]);
-						$this->SetBuffer("GPB", $OutputArray[2]);
+						$this->SetBuffer("OLATA", $OutputArray[1]);
+						$this->SetBuffer("OLATB", $OutputArray[2]);
 						$OLATA = $OutputArray[1];
 						$OLATB = $OutputArray[2];
 						$this->SendDebug("GetOutput", "OLATA: ".$OLATA." OLATB: ".$OLATB, 0);
