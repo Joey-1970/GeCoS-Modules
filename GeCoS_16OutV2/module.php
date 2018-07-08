@@ -181,8 +181,8 @@
 						// Ergebnis sichern
 						$this->SetBuffer("GPA", $OutputArray[1]);
 						$this->SetBuffer("GPB", $OutputArray[2]);
-						$OLATA = $OutputArray[3];
-						$OLATB = $OutputArray[4];
+						$OLATA = $OutputArray[1];
+						$OLATB = $OutputArray[2];
 						$this->SendDebug("GetOutput", "OLATA: ".$OLATA." OLATB: ".$OLATB, 0);
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
