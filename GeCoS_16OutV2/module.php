@@ -127,6 +127,7 @@
 		$Output = min(15, max(0, $Output));
 		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$SetPort = $Output;
 			// Bank ermitteln
 			If ($Output <=7) {
 				$Bitmask = $this->GetBuffer("OLATA");
@@ -154,9 +155,9 @@
 											  "Parameter" => serialize($OutputArray) )));
 
 				If ($Result) {
-					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
-					If (GetValueBoolean($this->GetIDForIdent("Output_X".$Output)) <> $Value) {
-						SetValueBoolean($this->GetIDForIdent("Output_X".$Output), $Value);
+					$this->SendDebug("SetOutputPin", "Output ".$SetPort." Value: ".$Value." erfolgreich", 0);
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$SetPort)) <> $Value) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$SetPort), $Value);
 					}
 					$this->GetOutput();
 					$this->SetStatus(102);
