@@ -135,6 +135,7 @@
 			else {
 				$Bitmask = $this->GetBuffer("OLATB");
 				$Register = 0x15;
+				$Output = $Output - 8;
 			}
 			// Bit setzen bzw. löschen
 			If ($Value == true) {
