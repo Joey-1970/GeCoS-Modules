@@ -219,38 +219,25 @@
 		}
 	}
 	    
-	/*
+	
 	public function GetOutputPin(Int $Output)
 	{
-		
 		$Output = min(15, max(0, $Output));
 	
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
-			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
-				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
-				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
-				If ($this->GetBuffer("ErrorCounter") <= 3) {
-					$this->GetOutput();
-				}
+			$this->GetOutput();
+			If ($Output <=7) {
+				$Bitmask = $this->GetBuffer("OLATA");
 			}
 			else {
-				$this->SendDebug("GetOutputPin", "Ergebnis: ".$Result, 0);
-				$this->SetBuffer("OutputBank", $Result);
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Result & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-					}
-				}
-				$this->SetBuffer("ErrorCounter", 0);
+				$Bitmask = $this->GetBuffer("OLATB");
+				$Output = $Output - 8;
 			}
+			$Result = $Bitmask & pow(2, $Output);
 		}
 		
-	return boolval($Result & pow(2, $Output));
+	return boolval($Result);
 	}   
-	*/
 
 	private function Setup()
 	{
