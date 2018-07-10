@@ -126,6 +126,7 @@
 	// Beginn der Funktionen
 	public function GetInput()
 	{
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetInput", "Ausfuehrung", 0);
 			// Adressen 12 13
@@ -135,7 +136,6 @@
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 2)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
-					$Result = -1;
 					$this->SetStatus(202);
 				}
 				else {
