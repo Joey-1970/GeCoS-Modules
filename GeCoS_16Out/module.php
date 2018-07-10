@@ -135,6 +135,7 @@
 	{
 		$Output = min(15, max(0, $Output));
 		$Value = min(1, max(0, $Value));
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Bitmask = $this->GetBuffer("OutputBank");
 			If ($Value == true) {
@@ -156,21 +157,25 @@
 					}
 					$this->GetOutput();
 					$this->SetStatus(102);
+					$Result = true;
 					break;
 				}
 				else {
 					$this->SetStatus(202);
+					$Result = false;
 					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
 				}
 			$tries--;
 			} while ($tries);  
 		}
+	return $Result;
 	}	
 	
 	public function GetOutput()
 	{
-		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
 			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
 				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
@@ -199,7 +204,7 @@
 	public function GetOutputPin(Int $Output)
 	{
 		$Output = min(15, max(0, $Output));
-		
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
 			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
