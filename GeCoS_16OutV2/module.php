@@ -184,7 +184,7 @@
 				If ($Result < 0) {
 					$this->SendDebug("GetOutput", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
-					//return;
+					$Result = false;
 				}
 				else {
 					If (is_array(unserialize($Result))) {
@@ -210,13 +210,15 @@
 							If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$Value) {
 								SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $Value);
 							}
-						}					
+						}
+						$Result = true;
 						break;
 					}
 				}
 			$tries--;
 			} while ($tries);  
 		}
+	Return $Result;
 	}
 	    
 	
@@ -235,9 +237,56 @@
 			}
 			$Result = $Bitmask & pow(2, $Output);
 		}
-		
 	return boolval($Result);
-	}   
+	}  
+	    
+	public function SetOutput(int $Value) 
+	{
+		$Value = min(65535, max(0, $Value));
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
+			// Neuen Wert senden
+			$OLATA = $Value & 255;
+			$OLATB = ($Value >> 8) & 255;
+			$OutputArray = Array();
+			$OutputArray[0] = $OLATA;
+			$OutputArray[1] = $OLATB;
+
+			$tries = 3;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => 0x14, 
+											  "Parameter" => serialize($OutputArray) )));
+
+				If ($Result) {
+					$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
+					
+					for ($i = 0; $i <= 7; $i++) {
+						// OLATA A
+						$SetPort = $OLATA & pow(2, $i);
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$SetPort) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $SetPort);
+						}
+						// Port B
+						$SetPort = $OLATB & pow(2, $i);
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$SetPort) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $SetPort);
+						}
+					}	
+					$this->GetOutput();
+					$this->SetStatus(102);
+					$Result = true;
+					break;
+				}
+				else {
+					$this->SetStatus(202);
+					$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
+					$Result = false;
+				}
+			$tries--;
+			} while ($tries); 
+		}
+	Return $Result;
+	}        
 
 	private function Setup()
 	{
