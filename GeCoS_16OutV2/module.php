@@ -134,6 +134,7 @@
 	// Beginn der Funktionen
 	public function SetOutputPin(Int $Output, Bool $Value)
 	{
+		$Result = -1;
 		$Output = min(15, max(0, $Output));
 		$Value = min(1, max(0, $Value));
 		If ($this->ReadPropertyBoolean("Open") == true) {
@@ -171,19 +172,23 @@
 					}
 					$this->GetOutput();
 					$this->SetStatus(102);
+					$Result = true;
 					break;
 				}
 				else {
 					$this->SetStatus(202);
+					$Result = false;
 					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
 				}
 			$tries--;
 			} while ($tries);  
 		}
+	return $Result;
 	}	
 	
 	public function GetOutput()
 	{
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 			// Adressen 12 13
@@ -228,14 +233,14 @@
 			$tries--;
 			} while ($tries);  
 		}
-	Return $Result;
+	return $Result;
 	}
 	    
 	
 	public function GetOutputPin(Int $Output)
 	{
 		$Output = min(15, max(0, $Output));
-	
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->GetOutput();
 			If ($Output <=7) {
@@ -253,6 +258,7 @@
 	public function SetOutput(int $Value) 
 	{
 		$Value = min(65535, max(0, $Value));
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
 			// Neuen Wert senden
@@ -295,7 +301,7 @@
 			$tries--;
 			} while ($tries); 
 		}
-	Return $Result;
+	return $Result;
 	}        
 
 	private function Setup()
