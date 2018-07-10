@@ -147,6 +147,7 @@
 				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
+					$Result = -1;
 					$this->SetStatus(202);
 				}
 				else {
@@ -163,6 +164,7 @@
 			$tries--;
 			} while ($tries);  
 		}
+	Return $Result;
 	}
 
 	private function Setup()
