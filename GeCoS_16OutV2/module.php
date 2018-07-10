@@ -53,6 +53,16 @@
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Ausgänge nach der Initialisierung setzen");
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "Status erhalten", "value" => -1);
+		$arrayOptions[] = array("label" => "alle Ausgänge aus", "value" => 0);
+		$arrayOptions[] = array("label" => "alle Ausgänge ein", "value" => 65535);
+		$arrayOptions[] = array("label" => "bestimmter Status", "value" => -2);
+		$arrayElements[] = array("type" => "Select", "name" => "StartOption", "caption" => "Start-Status", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "StartValue", "caption" => "Startwert");	
+
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
 		$arrayActions = array();
@@ -370,6 +380,13 @@
 				}
 				else {
 					$this->SendDebug("Setup", "Konfigurations-Byte erfolgreich gesetzt", 0);
+					If ($this->ReadPropertyInteger("StartOption") >= 0) {
+						$this->SetOutput($this->ReadPropertyInteger("StartOption"));
+					}
+					elseif ($this->ReadPropertyInteger("StartOption") == -2) {
+						$Value = min(65535, max(0, $this->ReadPropertyInteger("StartValue")));
+						$this->SetOutput($Value);
+					}
 					$this->SetStatus(102);
 					break;
 				}
