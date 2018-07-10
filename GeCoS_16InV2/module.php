@@ -135,6 +135,7 @@
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 2)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
+					$Result = -1;
 					$this->SetStatus(202);
 				}
 				else {
@@ -145,6 +146,7 @@
 						$OutputArray = unserialize($Result);
 						$GPIOA = $OutputArray[1];
 						$GPIOB = $OutputArray[2];
+						$Result = ($GPIOB << 8) | $GPIOA;
 						
 						$this->SendDebug("GetInput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
 						// Statusvariablen setzen
@@ -166,6 +168,7 @@
 			$tries--;
 			} while ($tries);  
 		}
+	Return $Result;
 	}
 	
 	private function Interrupt()
