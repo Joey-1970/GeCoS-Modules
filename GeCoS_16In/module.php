@@ -140,14 +140,14 @@
 	// Beginn der Funktionen
 	public function GetInput()
 	{
-		$this->SendDebug("GetInput", "Ausfuehrung", 0);
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("GetInput", "Ausfuehrung", 0);
 			$tries = 3;
 			do {
 				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
 				If ($Result < 0) {
 					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
-					$Result = -1;
 					$this->SetStatus(202);
 				}
 				else {
@@ -169,8 +169,8 @@
 
 	private function Setup()
 	{
-		$this->SendDebug("Setup", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("Setup", "Ausfuehrung", 0);
 			$tries = 3;
 			do {
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 6, "Value" => 65535 )));
