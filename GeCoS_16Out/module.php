@@ -235,24 +235,76 @@
 	public function SetOutput(int $Value) 
 	{
 		$Value = min(65535, max(0, $Value));
+		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
-			If ($Result) {
-				$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Value & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+			If ($this->ReadPropertyInteger("DeviceAddress") >= 36) {
+				// 16OutV2
+				$OLATA = $Value & 255;
+				$OLATB = ($Value >> 8) & 255;
+				$OutputArray = Array();
+				$OutputArray[0] = $OLATA;
+				$OutputArray[1] = $OLATB;
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => 0x14, 
+												  "Parameter" => serialize($OutputArray) )));
+					If ($Result) {
+						$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
+
+						for ($i = 0; $i <= 7; $i++) {
+							// OLATA A
+							$SetPort = $OLATA & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$SetPort) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $SetPort);
+							}
+							// Port B
+							$SetPort = $OLATB & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$SetPort) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $SetPort);
+							}
+						}	
+						$this->GetOutput();
+						$this->SetStatus(102);
+						$Result = true;
+						break;
 					}
-				}
-				$this->GetOutput();
+					else {
+						$this->SetStatus(202);
+						$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
+						$Result = false;
+					}
+				$tries--;
+				} while ($tries); 
 			}
 			else {
-				$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
-				IPS_LogMessage("GeCoS_16Out", "SetOutput: "."Value: ".$Value." nicht erfolgreich!");
+				// 16OutV1
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
+					If ($Result) {
+						$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
+						for ($i = 0; $i <= 15; $i++) {
+							$Bitvalue = boolval($Value & pow(2, $i));					
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+							}
+						}
+						$this->GetOutput();
+						$this->SetStatus(102);
+						$Result = true;
+						break;
+					}
+					else {
+						$this->SetStatus(202);
+						$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
+						$Result = false;
+					}
+				$tries--;
+				} while ($tries); 
 			}
 		}
+	return $Result;
 	}    
 	    
 	private function Setup()
