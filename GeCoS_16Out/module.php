@@ -40,7 +40,11 @@
 		for ($i = 25; $i <= 31; $i++) {
 		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
 		}
+		for ($i = 36; $i <= 39; $i++) {
+		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
+		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Label", "label" => "Adresse 25 bis 31 Version 1.x, Adresse 36 bis 39 Version 2.x");
 		
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
@@ -137,36 +141,85 @@
 		$Value = min(1, max(0, $Value));
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Bitmask = $this->GetBuffer("OutputBank");
-			If ($Value == true) {
-				$Bitmask = $this->setBit($Bitmask, $Output);
-			}
-			else {
-				$Bitmask = $this->unsetBit($Bitmask, $Output);
-			}
-			$tries = 3;
-			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
-				If ($Result) {
-					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Bitmask & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-						}
-					}
-					$this->GetOutput();
-					$this->SetStatus(102);
-					$Result = true;
-					break;
+			$this->SendDebug("SetOutputPin", "Value: ".$Value, 0);
+			If ($this->ReadPropertyInteger("DeviceAddress") >= 36) {
+				// 16OutV2
+				$SetPort = $Output;
+				// Bank ermitteln
+				If ($Output <=7) {
+					$Bitmask = $this->GetBuffer("OLATA");
+					$Register = 0x14;
 				}
 				else {
-					$this->SetStatus(202);
-					$Result = false;
-					$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
+					$Bitmask = $this->GetBuffer("OLATB");
+					$Register = 0x15;
+					$Output = $Output - 8;
 				}
-			$tries--;
-			} while ($tries);  
+				// Bit setzen bzw. löschen
+				If ($Value == true) {
+					$Bitmask = $this->setBit($Bitmask, $Output);
+				}
+				else {
+					$Bitmask = $this->unsetBit($Bitmask, $Output);
+				}
+				// Neuen Wert senden
+				$OutputArray = Array();
+				$OutputArray[0] = $Bitmask;
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => $Register, 
+												  "Parameter" => serialize($OutputArray) )));
+					If ($Result) {
+						$this->SendDebug("SetOutputPin", "Output ".$SetPort." Value: ".$Value." erfolgreich", 0);
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$SetPort)) <> $Value) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$SetPort), $Value);
+						}
+						$this->GetOutput();
+						$this->SetStatus(102);
+						$Result = true;
+						break;
+					}
+					else {
+						$this->SetStatus(202);
+						$Result = false;
+						$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
+					}
+				$tries--;
+				} while ($tries);  
+			}
+			else {
+				// 16OutV1
+				$Bitmask = $this->GetBuffer("OutputBank");
+				If ($Value == true) {
+					$Bitmask = $this->setBit($Bitmask, $Output);
+				}
+				else {
+					$Bitmask = $this->unsetBit($Bitmask, $Output);
+				}
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
+					If ($Result) {
+						$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
+						for ($i = 0; $i <= 15; $i++) {
+							$Bitvalue = boolval($Bitmask & pow(2, $i));					
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+							}
+						}
+						$this->GetOutput();
+						$this->SetStatus(102);
+						$Result = true;
+						break;
+					}
+					else {
+						$this->SetStatus(202);
+						$Result = false;
+						$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
+					}
+				$tries--;
+				} while ($tries); 
+			}
 		}
 	return $Result;
 	}	
