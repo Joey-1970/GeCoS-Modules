@@ -229,31 +229,74 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
-			
-			$tries = 3;
-			do {
-				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
-				if ($Result < 0) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-					$this->SendDebug("GetOutput", "Einlesen der Werte fehlerhaft!", 0);
-					$this->SetStatus(202);
-					$Result = false;
-
-				}
-				else {
-					$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
-					$this->SetBuffer("OutputBank", $Result);
-
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Result & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+			If ($this->ReadPropertyInteger("DeviceAddress") >= 36) {
+				// 16OutV2
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("14"), "Count" => 2)));
+					If ($Result < 0) {
+						$this->SendDebug("GetOutput", "Einlesen der Werte fehlerhaft!", 0);
+						$this->SetStatus(202);
+						$Result = false;
+					}
+					else {
+						If (is_array(unserialize($Result))) {
+							$this->SetStatus(102);
+							$OutputArray = array();
+							// für Ausgänge LAT benutzen für Eingänge PORT 
+							$OutputArray = unserialize($Result);
+							// Ergebnis sichern
+							$this->SetBuffer("OLATA", $OutputArray[1]);
+							$this->SetBuffer("OLATB", $OutputArray[2]);
+							$OLATA = $OutputArray[1];
+							$OLATB = $OutputArray[2];
+							$this->SendDebug("GetOutput", "OLATA: ".$OLATA." OLATB: ".$OLATB, 0);
+							// Statusvariablen setzen
+							for ($i = 0; $i <= 7; $i++) {
+								// OLATA A
+								$Value = $OLATA & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Value);
+								}
+								// Port B
+								$Value = $OLATB & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $Value);
+								}
+							}
+							$Result = true;
+							break;
 						}
 					}
-					$Result = true;
-					break;
-				}
-			$tries--;
-			} while ($tries); 
+				$tries--;
+				} while ($tries);  
+			}
+			else {
+				// 16OutV1
+				$tries = 3;
+				do {
+					$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
+					if ($Result < 0) {
+						$this->SendDebug("GetOutput", "Einlesen der Werte fehlerhaft!", 0);
+						$this->SetStatus(202);
+						$Result = false;
+					}
+					else {
+						$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
+						$this->SetBuffer("OutputBank", $Result);
+
+						for ($i = 0; $i <= 15; $i++) {
+							$Bitvalue = boolval($Result & pow(2, $i));					
+							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+							}
+						}
+						$Result = true;
+						break;
+					}
+				$tries--;
+				} while ($tries); 
+			}
 		}
 	return $Result;
 	}
