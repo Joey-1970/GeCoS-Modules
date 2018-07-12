@@ -322,7 +322,7 @@
 			else {
 				// 16OutV1
 				$Result = $this->GetBuffer("OutputBank");
-				$Result = $Result & pow(2, $Output)
+				$Result = $Result & pow(2, $Output);
 			}
 		}
 		
