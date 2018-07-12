@@ -229,27 +229,31 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
-			$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
-			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65535)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
-				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
-				IPS_LogMessage("GeCoS_16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
-				If ($this->GetBuffer("ErrorCounter") <= 3) {
-					$this->GetOutput();
-				}
-			}
-			else {
-				$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
-				$this->SetBuffer("OutputBank", $Result);
+			
+			$tries = 3;
+			do {
+				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 2)));
+				if ($Result < 0) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
+					$this->SendDebug("GetOutput", "Einlesen der Werte fehlerhaft!", 0);
+					$this->SetStatus(202);
+					$Result = false;
 
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Result & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-					}
 				}
-				$this->SetBuffer("ErrorCounter", 0);
-			}
+				else {
+					$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
+					$this->SetBuffer("OutputBank", $Result);
+
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Result & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+						}
+					}
+					$Result = true;
+					break;
+				}
+			$tries--;
+			} while ($tries); 
 		}
 	return $Result;
 	}
