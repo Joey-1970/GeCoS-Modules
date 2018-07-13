@@ -147,26 +147,71 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetInput", "Ausfuehrung", 0);
-			$tries = 3;
-			do {
-				$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
-				If ($Result < 0) {
-					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
-					$this->SetStatus(202);
-				}
-				else {
-					$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
-					$this->SetStatus(102);
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Result & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+			
+			If ($this->ReadPropertyInteger("DeviceAddress") >= 32) {
+				// 16OutV2
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("12"), "Count" => 2)));
+					If ($Result < 0) {
+						$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
+						$this->SetStatus(202);
+					}
+					else {
+						If (is_array(unserialize($Result))) {
+							$this->SetStatus(102);
+							$OutputArray = array();
+							// für Eingänge PORT benutzen
+							$OutputArray = unserialize($Result);
+							$GPIOA = $OutputArray[1];
+							$GPIOB = $OutputArray[2];
+							$Result = ($GPIOB << 8) | $GPIOA;
+
+							$this->SendDebug("GetInput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
+							// Statusvariablen setzen
+							for ($i = 0; $i <= 7; $i++) {
+								// Port A
+								$Value = $GPIOA & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+								}
+								// Port B
+								$Value = $GPIOB & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
+								}
+							}
+							break;
 						}
 					}
-					break;
-				}
-			$tries--;
-			} while ($tries);  
+				$tries--;
+				} while ($tries);  
+			}
+			else {
+				// 16OutV2
+				$tries = 3;
+				do {
+					$Result= $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Read", "InstanceID" => $this->InstanceID, "Register" => 0)));
+					If ($Result < 0) {
+						$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
+						$this->SetStatus(202);
+						$Result = false;
+					}
+					else {
+						$this->SendDebug("GetInput", "Ergebnis: ".$Result, 0);
+						$this->SetStatus(102);
+						for ($i = 0; $i <= 15; $i++) {
+							$Bitvalue = boolval($Result & pow(2, $i));					
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+							}
+						}
+						$Result = true;
+						break;
+					}
+				$tries--;
+				} while ($tries);  
+			}
 		}
 	Return $Result;
 	}
