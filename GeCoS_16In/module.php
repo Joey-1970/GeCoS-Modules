@@ -161,6 +161,7 @@
 					If ($Result < 0) {
 						$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
 						$this->SetStatus(202);
+						$Result = false;
 					}
 					else {
 						If (is_array(unserialize($Result))) {
@@ -211,7 +212,6 @@
 								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
 							}
 						}
-						$Result = true;
 						break;
 					}
 				$tries--;
