@@ -38,10 +38,10 @@
  		
 		$arrayOptions = array();
 		for ($i = 25; $i <= 31; $i++) {
-		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." V 1.x", "value" => $i);
+		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." - V1.x", "value" => $i);
 		}
 		for ($i = 36; $i <= 39; $i++) {
-		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." V 2.x", "value" => $i);
+		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." - V2.x", "value" => $i);
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
