@@ -38,13 +38,12 @@
  		
 		$arrayOptions = array();
 		for ($i = 25; $i <= 31; $i++) {
-		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
+		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." V 1.x", "value" => $i);
 		}
 		for ($i = 36; $i <= 39; $i++) {
-		    	$arrayOptions[] = array("label" => $i." dez. / 0x".strtoupper(dechex($i))."h", "value" => $i);
+		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." V 2.x", "value" => $i);
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
-		$arrayElements[] = array("type" => "Label", "label" => "Adresse 25 bis 31 Version 1.x, Adresse 36 bis 39 Version 2.x");
 		
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
