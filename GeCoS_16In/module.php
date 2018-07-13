@@ -44,10 +44,10 @@
  		
 		$arrayOptions = array();
 		for ($i = 16; $i <= 23; $i++) {
-		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." V 1.x", "value" => $i);
+		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." - V1.x", "value" => $i);
 		}
 		for ($i = 32; $i <= 35; $i++) {
-		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." V 2.x", "value" => $i);
+		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." - V2.x", "value" => $i);
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
