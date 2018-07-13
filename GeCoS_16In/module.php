@@ -123,7 +123,14 @@
 			case "interrupt":
 				If ($this->ReadPropertyBoolean("Open") == true) {
 					If ($this->ReadPropertyInteger("DeviceBus") == $data->DeviceBus) {
-						$this->GetInput();
+						If ($this->ReadPropertyInteger("DeviceAddress") >= 32) {
+							// 16OutV2
+							$this->Interrupt();
+						}
+						else {
+							// 16OutV1
+							$this->GetInput();
+						}
 					}
 				}
 				break;	
@@ -212,8 +219,53 @@
 				} while ($tries);  
 			}
 		}
-	Return $Result;
+	return $Result;
 	}
+	    
+	private function Interrupt()
+	{
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			$this->SendDebug("Interrupt", "Ausfuehrung", 0);
+			// Adressen 12 13
+			$tries = 3;
+			do {
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("10"), "Count" => 2)));
+				If ($Result < 0) {
+					$this->SendDebug("Interrupt", "Einlesen der Werte fehlerhaft!", 0);
+					$this->SetStatus(202);
+				}
+				else {
+					If (is_array(unserialize($Result))) {
+						$this->SetStatus(102);
+						$OutputArray = array();
+						// für Ausgänge LAT benutzen für Eingänge PORT 
+						$OutputArray = unserialize($Result);
+						$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
+						// Statusvariablen setzen
+						for ($i = 0; $i <= 7; $i++) {
+							// Port A
+							$Value = $INTCAPA & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+							}
+							
+							// Port B
+							$Value = $INTCAPB & pow(2, $i);
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
+							}
+							
+						}
+						$this->GetInput();
+						break;
+					}
+				}
+			$tries--;
+			} while ($tries);  
+		}
+	}   
 
 	private function Setup()
 	{
