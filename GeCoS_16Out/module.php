@@ -263,7 +263,7 @@
 									SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $Value);
 								}
 							}
-							$Result = true;
+							$Result = ($OLATB << 8) | $OLATA;
 							break;
 						}
 					}
@@ -290,7 +290,6 @@
 								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 							}
 						}
-						$Result = true;
 						break;
 					}
 				$tries--;
@@ -306,22 +305,9 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
-			$this->GetOutput();
-			If ($this->ReadPropertyInteger("DeviceAddress") >= 36) {
-				// 16OutV2
-				If ($Output <=7) {
-					$Bitmask = $this->GetBuffer("OLATA");
-				}
-				else {
-					$Bitmask = $this->GetBuffer("OLATB");
-					$Output = $Output - 8;
-				}
+			$Result = $this->GetOutput();
+			If ($Result >= 0) {
 				$Result = $Bitmask & pow(2, $Output);
-				}
-			else {
-				// 16OutV1
-				$Result = $this->GetBuffer("OutputBank");
-				$Result = $Result & pow(2, $Output);
 			}
 		}
 		
