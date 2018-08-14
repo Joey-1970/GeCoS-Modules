@@ -9,7 +9,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyString("DeviceSerial", "");
+ 	    	//$this->RegisterPropertyString("DeviceSerial", "");
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
 		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
 		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
