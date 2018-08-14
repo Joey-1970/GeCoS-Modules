@@ -74,7 +74,7 @@ class GeCoS_IO extends IPSModule
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Analyse der Raspberry Pi Konfiguration:");
 		$arraySort = array();
-		$arraySort[] = array("column" => "Typ", "direction" => "ascending");
+		$arraySort[] = array("column" => "Service", "direction" => "ascending");
 		$arrayColumns = array();
 		$arrayColumns[] = array("label" => "Service", "name" => "ServiceTyp", "width" => "200px", "add" => "");
 		$arrayColumns[] = array("label" => "Status", "name" => "ServiceStatus", "width" => "auto", "add" => "");
@@ -89,6 +89,8 @@ class GeCoS_IO extends IPSModule
 	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		
+		$arraySort = array();
+		$arraySort[] = array("column" => "Typ", "direction" => "ascending");
 		$arrayColumns = array();
 		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "120px", "add" => "");
 		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "60px", "add" => "");
