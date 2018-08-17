@@ -660,6 +660,7 @@ class GeCoS_IO extends IPSModule
 					 // Messages einrichten
 					 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 					 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
+					 $Result = true;
 				}
 				break;
 			case "get_DS18S20Temperature":
