@@ -332,7 +332,7 @@
 	
 	public function PiShutdown()
 	{
-		$Command = "sudo shutdown –h";
+		$Command = "sudo shutdown –h 0";
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_RPi_connect", "InstanceID" => $this->InstanceID,  "Command" => $Command, "CommandNumber" => 3, "IsArray" => false )));
 	}       
 	    
