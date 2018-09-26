@@ -203,8 +203,12 @@
 				SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware));
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
 			}
-			$FailureCode = 0;
-			$FailureCode = @intval($data->{'BME-Error'});
+			if (isset($data->{'BME-Error'})) {
+				$FailureCode = intval($data->{'BME-Error'});
+			}
+			else {
+				$FailureCode = 0;
+			}
 			If (GetValueInteger($this->GetIDForIdent("FailureCode")) <> $FailureCode) {
 				SetValueInteger($this->GetIDForIdent("FailureCode"), ($FailureCode));
 				
