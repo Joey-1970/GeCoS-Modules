@@ -96,6 +96,10 @@
 		
 		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 180);
 	        $this->DisableAction("Intensity_B");
+		
+		$this->RegisterVariableInteger("FailureCode", "Fehlercode", "", 190);
+		$this->DisableAction("FailureCode");
+		SetValueInteger($this->GetIDForIdent("FailureCode"), 0);
         }
  	
 	public function GetConfigurationForm() 
@@ -199,6 +203,13 @@
 				SetValueFloat($this->GetIDForIdent("Firmware"), ($Firmware));
 				$this->SetSummary("HW-Version: ".$Hardware." SW-Version: ".$Firmware);
 			}
+			$FailureCode = 0;
+			$FailureCode = @intval($data->{'BME-Error'});
+			If (GetValueInteger($this->GetIDForIdent("FailureCode")) <> $FailureCode) {
+				SetValueInteger($this->GetIDForIdent("FailureCode"), ($FailureCode));
+				
+			}
+			
 			
 			$Ambient = intval($data->{'Intensitaet-Weiss'});
     			$Red = intval($data->{'Intensitaet-Rot'});
@@ -221,6 +232,8 @@
 			
 			SetValueFloat($this->GetIDForIdent("Humidity"), round($Humidity, 2));
 			SetValueInteger($this->GetIDForIdent("AirQualityIndex"), $IAQ);
+			
+			
 			
 			// Berechnung von Taupunkt und absoluter Luftfeuchtigkeit
 			if ($Temp < 0) {
