@@ -29,6 +29,8 @@
 		
 		// Profile erstellen		
 		$this->RegisterProfileFloat("GeCoS.gm3", "Drops", "", " g/m³", 0, 1000, 0.1, 1);
+		$this->RegisterProfileInteger("GeCoS.ppm", "Gauge", "", " ppm", 0, 6000, 1);
+		$this->RegisterProfileInteger("GeCoS.ppb", "Gauge", "", " ppb", 0, 6000, 1);
 		
 		//Status-Variablen anlegen
 		$this->RegisterVariableFloat("Hardware", "Hardware-Version", "", 10);
@@ -67,10 +69,10 @@
 		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 120);
 		$this->DisableAction("PressureTrend24h");
     
-    $this->RegisterVariableFloat("CO2", "CO2", "", 130);
+    		$this->RegisterVariableInteger("CO2", "CO2", "GeCoS.ppm", 130);
 		$this->DisableAction("CO2");
 		
-		$this->RegisterVariableFloat("TVOC", "TVOC", "", 140);
+		$this->RegisterVariableInteger("TVOC", "TVOC", "GeCoS.ppb", 140);
 		$this->DisableAction("TVOC");
         }
  	
@@ -303,6 +305,23 @@
 	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
 	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);
 	        IPS_SetVariableProfileDigits($Name, $Digits);
+	}
+	    
+	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
+	{
+	        if (!IPS_VariableProfileExists($Name))
+	        {
+	            IPS_CreateVariableProfile($Name, 1);
+	        }
+	        else
+	        {
+	            $profile = IPS_GetVariableProfile($Name);
+	            if ($profile['ProfileType'] != 1)
+	                throw new Exception("Variable profile type does not match for profile " . $Name);
+	        }
+	        IPS_SetVariableProfileIcon($Name, $Icon);
+	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);        
 	}
 }
 ?>
