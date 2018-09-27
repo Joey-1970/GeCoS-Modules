@@ -161,6 +161,15 @@
 			$Temp = floatval($data->Temperatur);
 			$Pressure = floatval($data->Luftdruck); 
 			$Humidity = floatval($data->Luftfeuchtigkeit); 
+			$CO2 = intval($data->CO2);
+			$TVOC = intval($data->TVOC);
+			
+			If (GetValueInteger($this->GetIDForIdent("CO2")) <> $CO2) {
+				SetValueInteger($this->GetIDForIdent("CO2"), ($CO2));
+			}
+			If (GetValueInteger($this->GetIDForIdent("TVOC")) <> $TVOC) {
+				SetValueInteger($this->GetIDForIdent("TVOC"), ($TVOC));
+			}
 			
 			$Hardware = floatval($data->{'Hardware-Version'});
 			$Firmware = floatval($data->{'Firmware-Version'});
