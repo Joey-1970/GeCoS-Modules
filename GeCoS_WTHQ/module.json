@@ -1,0 +1,14 @@
+{
+  "id": "{08A4558A-C351-48CC-AFDC-42D93AC7253B}",
+  "name": "GeCoS_WTHQ",
+  "type": 3,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_WTHQ"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "GeCoSWTHQ"
+}
