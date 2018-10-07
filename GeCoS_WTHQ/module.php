@@ -24,6 +24,7 @@
  	   	$this->RegisterPropertyBoolean("LoggingTemp", false);
  	    	$this->RegisterPropertyBoolean("LoggingHum", false);
  	    	$this->RegisterPropertyBoolean("LoggingPres", false);
+		$this->RegisterPropertyBoolean("LoggingAir", false);
 		$this->RegisterPropertyInteger("Temperature_ID", 0);
 		$this->RegisterPropertyInteger("Humidity_ID", 0);
 		
@@ -102,6 +103,7 @@
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingTemp", "caption" => "Logging Temperatur aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingHum", "caption" => "Logging Luftfeuchtigkeit aktivieren");
 		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingPres", "caption" => "Logging Luftdruck aktivieren");
+		$arrayElements[] = array("type" => "CheckBox", "name" => "LoggingAir", "caption" => "Logging Luftqualität aktivieren");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
@@ -122,6 +124,8 @@
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Temperature"), $this->ReadPropertyBoolean("LoggingTemp"));
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Pressure"), $this->ReadPropertyBoolean("LoggingPres"));
 		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("Humidity"), $this->ReadPropertyBoolean("LoggingHum"));
+		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("CO2"), $this->ReadPropertyBoolean("LoggingAir"));
+		AC_SetLoggingStatus(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0], $this->GetIDForIdent("TVOC"), $this->ReadPropertyBoolean("LoggingAir"));
 		IPS_ApplyChanges(IPS_GetInstanceListByModuleID("{43192F0B-135B-4CE7-A0A7-1475603F3060}")[0]);
 		
 		// Summary setzen
