@@ -1,0 +1,14 @@
+{
+  "id": "{5F1C0403-4A74-4F14-829F-9A217CFB2D05}",
+  "name": "GeCoS_IO_V2",
+  "type": 2,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_IO_V2"
+  ],
+  "parentRequirements": ["{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}"],
+  "childRequirements": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "implemented": ["{018EF6B5-AB94-40C6-AA53-46943E824ACF}", "{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "prefix": "GeCoSIOV2"
+}
