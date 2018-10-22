@@ -1611,8 +1611,8 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {			
 			//set_include_path(__DIR__.'/libs');
-			set_include_path(__DIR__);
-			require_once (__DIR__ . '/libs/Net/SFTP.php');
+			//set_include_path(__DIR__);
+			require_once (__DIR__ .'/../libs/Net/SFTP.php');
 			
 			$sftp = new Net_SFTP($this->ReadPropertyString("IPAddress"));
 			$login = @$sftp->login($this->ReadPropertyString("User"), $this->ReadPropertyString("Password"));
