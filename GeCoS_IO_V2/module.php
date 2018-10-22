@@ -136,10 +136,10 @@ class GeCoS_IO_V2 extends IPSModule
 			}
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 			$arrayElements[] = array("type" => "Label", "label" => "Führt einen Restart des PIGPIO aus:");
-			$arrayElements[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIO_PIGPIOD_Restart($id);');
+			$arrayElements[] = array("type" => "Button", "label" => "PIGPIO Restart", "onClick" => 'GeCoSIOV2_PIGPIOD_Restart($id);');
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 			$arrayElements[] = array("type" => "Label", "label" => "Setzen der Real-Time-Clock auf IPS-Zeit:");
-			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIO_SetRTC_Data($id);');		
+			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIOV2_SetRTC_Data($id);');		
 		}
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Definition der seriellen Schnittstelle (RS232):");
