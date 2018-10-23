@@ -33,19 +33,16 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		// Statusvariablen anlegen
 		$this->RegisterVariableString("Hardware", "Hardware", "", 20);
-		$this->DisableAction("Hardware");
+		
+		$this->RegisterVariableString("Boardversion", "Boardversion", "", 25);
 			
 		$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
-		$this->DisableAction("SoftwareVersion");
 			
 		$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 40);
-		$this->DisableAction("RTC_Temperature");
 			
 		$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 50);
-		$this->DisableAction("RTC_Timestamp");
 			
 		$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 60);
-		$this->DisableAction("LastKeepAlive");
 		
 		$I2CInstanceArray = Array();
 		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
@@ -253,10 +250,15 @@ class GeCoS_IO_V2 extends IPSModule
 				ALT4   = 3
 				ALT5   = 2
 				*/
-				// Konfiguration der Interupt-Eingänge
-				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
 				// Konfiguration der I²C-Pin
 				$this->CommandClientSocket(pack("L*", 0, 2, 4, 0).pack("L*", 0, 3, 4, 0), 32);
+				
+				
+				
+				
+				// Konfiguration der Interupt-Eingänge
+				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
+				
 				// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
 				// Alle anderen = Alt0(Rxd0/TxD0) => 4
 				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
