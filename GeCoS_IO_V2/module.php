@@ -1833,6 +1833,40 @@ class GeCoS_IO_V2 extends IPSModule
 	return $Handle;
 	}
 	
+	/*
+	private function SearchI2CMUX()
+	{
+		$DeviceArray = Array();
+		$DeviceName = Array();
+		$SearchArray = Array();
+		// Board-Version 1 0x70
+		$SearchArray[] = 0x70;
+		$DeviceName[] = 1;
+		// Board-Version 2 0x71
+		$SearchArray[] = 0x71;
+		$DeviceName[] = 2;
+		
+		$k = 0;	
+		
+		for ($i = 0; $i < count($SearchArray); $i++) {
+			// Handle ermitteln
+			$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
+			if ($Handle >= 0) {
+				// Testweise lesen
+				$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+				If ($Result >= 0) {
+					$this->SendDebug("SearchI2CDevices", "Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4), 0);
+				}
+				// Handle löschen
+				$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+				}
+			}	
+		}
+		
+	return serialize($DeviceArray);
+	}
+	*/
+	
   	private function SearchI2CDevices()
 	{
 		$DeviceArray = Array();
