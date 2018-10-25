@@ -31,10 +31,15 @@ class GeCoS_IO_V2 extends IPSModule
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIOV2_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 		
+		// profile anlegen
+		$this->RegisterProfileInteger("IPS2CeCoSIO.Boardversion", "Information", "", "", 0, 1, 1);
+		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 0, "Version 1", "Information", -1);
+		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 1, "Version 2", "Information", -1);
+		
 		// Statusvariablen anlegen
 		$this->RegisterVariableString("Hardware", "Hardware", "", 20);
 		
-		$this->RegisterVariableString("Boardversion", "Boardversion", "", 25);
+		$this->RegisterVariableInteger("Boardversion", "Boardversion", "IPS2CeCoSIO.Boardversion", 25);
 			
 		$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
 			
@@ -1836,6 +1841,21 @@ class GeCoS_IO_V2 extends IPSModule
 	/*
 	private function SearchI2CMUX()
 	{
+		// Board-Version 2 0x71
+		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, 0x71, 4, 0), 16);
+			if ($Handle >= 0) {
+				// Testweise lesen
+				$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+				If ($Result >= 0) {
+					// Lesen erfolgreich, Board Version 2
+					
+					SetValueInteger($this->GetIDForIdent("Boardversion"), 1);
+				}
+				// Handle löschen
+				$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+				}
+			}
+		
 		$DeviceArray = Array();
 		$DeviceName = Array();
 		$SearchArray = Array();
