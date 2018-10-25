@@ -258,8 +258,14 @@ class GeCoS_IO_V2 extends IPSModule
 				// Konfiguration der I²C-Pin
 				$this->CommandClientSocket(pack("L*", 0, 2, 4, 0).pack("L*", 0, 3, 4, 0), 32);
 				
-				
-				
+				// MUX identifizieren zur Differenzierung der Boardversion
+				$MUX_Handle = $this->getMUXHandle();
+				$this->SetBuffer("MUX_Handle", $MUX_Handle);
+				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
+				If ($MUX_Handle >= 0) {
+					// MUX setzen
+					$this->SetMUX(1);
+				}
 				
 				// Konfiguration der Interupt-Eingänge
 				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
@@ -304,14 +310,7 @@ class GeCoS_IO_V2 extends IPSModule
 				}
 				// https://pastebin.com/0d93ZuRb
 				
-				// MUX einrichten
-				$MUX_Handle = $this->GetOnboardI2CHandle(112);
-				$this->SetBuffer("MUX_Handle", $MUX_Handle);
-				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
-				If ($MUX_Handle >= 0) {
-					// MUX setzen
-					$this->SetMUX(1);
-				}
+				
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
@@ -1838,54 +1837,40 @@ class GeCoS_IO_V2 extends IPSModule
 	return $Handle;
 	}
 	
-	/*
-	private function SearchI2CMUX()
+	private function getMUXHandle()
 	{
 		// Board-Version 2 0x71
 		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, 0x71, 4, 0), 16);
-			if ($Handle >= 0) {
-				// Testweise lesen
-				$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
-				If ($Result >= 0) {
-					// Lesen erfolgreich, Board Version 2
-					
-					SetValueInteger($this->GetIDForIdent("Boardversion"), 1);
-				}
-				// Handle löschen
+		if ($Handle >= 0) {
+			// Testweise lesen
+			$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+			If ($Result >= 0) {
+				// Lesen erfolgreich, Board Version 2
+				SetValueInteger($this->GetIDForIdent("Boardversion"), 1);
+			}
+			else {
+				// Handle für Boardversion 2 löschen
 				$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+				
+				// Board-Version 1 0x70
+				$Handle = $this->CommandClientSocket(pack("L*", 54, 1, 0x70, 4, 0), 16);
+				if ($Handle >= 0) {
+					// Testweise lesen
+					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
+					If ($Result >= 0) {
+						// Lesen erfolgreich, Board Version 2
+						SetValueInteger($this->GetIDForIdent("Boardversion"), 0);
+					}
+					else {
+						// Handle für Boardversion 1 löschen
+						$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
+						$this->SendDebug("SearchI2CMUX", "Es konnte kein MUX indentifiziert werden!", 0);
+					}
 				}
 			}
-		
-		$DeviceArray = Array();
-		$DeviceName = Array();
-		$SearchArray = Array();
-		// Board-Version 1 0x70
-		$SearchArray[] = 0x70;
-		$DeviceName[] = 1;
-		// Board-Version 2 0x71
-		$SearchArray[] = 0x71;
-		$DeviceName[] = 2;
-		
-		$k = 0;	
-		
-		for ($i = 0; $i < count($SearchArray); $i++) {
-			// Handle ermitteln
-			$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $SearchArray[$i], 4, 0), 16);
-			if ($Handle >= 0) {
-				// Testweise lesen
-				$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
-				If ($Result >= 0) {
-					$this->SendDebug("SearchI2CDevices", "Ergebnis: ".$DeviceName[$i]." DeviceAddresse: ".$SearchArray[$i]." an Bus: ".($j - 4), 0);
-				}
-				// Handle löschen
-				$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
-				}
-			}	
 		}
-		
-	return serialize($DeviceArray);
+	return $Handle;
 	}
-	*/
 	
   	private function SearchI2CDevices()
 	{
@@ -2731,5 +2716,22 @@ class GeCoS_IO_V2 extends IPSModule
 		$this->SendDebug("OWRead_2438", "OneWire Device Address = ".$SerialNumber." Temperatur = ".$Celsius." Spannung = ".$Voltage." Strom = ".$Current, 0);
 	return array($Celsius, $Voltage, $Current);
 	}
+	
+	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
+	{
+	        if (!IPS_VariableProfileExists($Name))
+	        {
+	            IPS_CreateVariableProfile($Name, 1);
+	        }
+	        else
+	        {
+	            $profile = IPS_GetVariableProfile($Name);
+	            if ($profile['ProfileType'] != 1)
+	                throw new Exception("Variable profile type does not match for profile " . $Name);
+	        }
+	        IPS_SetVariableProfileIcon($Name, $Icon);
+	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
+	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);    
+	}    
 }
 ?>
