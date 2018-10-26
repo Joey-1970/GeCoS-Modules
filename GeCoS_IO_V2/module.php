@@ -1831,12 +1831,12 @@ class GeCoS_IO_V2 extends IPSModule
 			}
 		}
 		elseif ($Board == 1) {
-			//
+			// PCA9544A
 			// 0 = No Channel selected
-			// 0x04 = Channel 0
-			// 0x05 = Channel 1 
-			// 0x06 = Channel 2
-			// 0x07 = Channel 3 (RTC, 1Wire)
+			// 4 = Channel 0
+			// 5 = Channel 1 
+			// 6 = Channel 2
+			// 7 = Channel 3 (RTC, 1Wire)
 			
 		}
 	return;
