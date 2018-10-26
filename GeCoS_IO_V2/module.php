@@ -1815,17 +1815,29 @@ class GeCoS_IO_V2 extends IPSModule
   	
 	private function SetMUX(Int $Port)
 	{
-		// PCA9542
-		// 0 = No Channel selected
-		// 4 = Channel 0
-		// 5 = Channel 1
+		$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 		$this->SetBuffer("MUX_Channel", $Port);
 		$MUX_Handle = $this->GetBuffer("MUX_Handle");
-		If ($Port == 1) {
-			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
+		If ($Board == 0) {
+			// PCA9542
+			// 0 = No Channel selected
+			// 4 = Channel 0
+			// 5 = Channel 1
+			If ($Port == 1) {
+				$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
+			}
+			else {
+				$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
+			}
 		}
-		else {
-			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
+		elseif ($Board == 1) {
+			//
+			// 0 = No Channel selected
+			// 0x04 = Channel 0
+			// 0x05 = Channel 1 
+			// 0x06 = Channel 2
+			// 0x07 = Channel 3 (RTC, 1Wire)
+			
 		}
 	return;
 	}
