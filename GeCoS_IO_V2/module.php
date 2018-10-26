@@ -39,7 +39,7 @@ class GeCoS_IO_V2 extends IPSModule
 		// Statusvariablen anlegen
 		$this->RegisterVariableString("Hardware", "Hardware", "", 20);
 		
-		$this->RegisterVariableInteger("Boardversion", "Boardversion", "IPS2CeCoSIO.Boardversion", 25);
+		$this->RegisterVariableInteger("Boardversion", "GeCoS-Server", "IPS2CeCoSIO.Boardversion", 25);
 			
 		$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
 			
@@ -1462,7 +1462,7 @@ class GeCoS_IO_V2 extends IPSModule
 			$Century = ($Month >> 7) & 1;
 			$Month = str_pad(dechex($Month & 31), 2 ,'0', STR_PAD_LEFT);
 			$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
-			$Year = str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT);
+			$Year = intval(str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT));
 			If ($Century == 1) {
 				$Year = $Year + 2000;
 			}
