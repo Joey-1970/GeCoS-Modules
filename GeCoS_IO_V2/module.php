@@ -267,9 +267,54 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetMUX(1);
 				}
 				
-				// Konfiguration der Interupt-Eingänge
-				$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
+				$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 				
+				// Pullup/Pulldown setzen
+				/*
+				# GPIO Pull Up Down
+				PUD_OFF  = 0
+				PUD_DOWN = 1
+				PUD_UP   = 2
+				*/
+				
+				If ($Board == 0) {
+					// Konfiguration der Interupt-Eingänge
+					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
+					// Setzen der Pull-Up
+					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0), 32);
+					// RTC einrichten
+					$RTC_Handle = $this->GetOnboardI2CHandle(104);
+					$this->SetBuffer("RTC_Handle", $RTC_Handle);
+					// 1-Wire einrichten
+					$OW_Handle = $this->GetOnboardI2CHandle(24);
+					$this->SetBuffer("OW_Handle", $OW_Handle);
+					If ($OW_Handle >= 0) {
+						// DS 2482 zurücksetzen
+						$this->DS2482Reset();
+					}
+					// https://pastebin.com/0d93ZuRb
+				}
+				elseif (($Board == 1) {
+					// Konfiguration der Interupt-Eingänge
+					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 18, 0, 0).pack("L*", 0, 27, 0, 0), 48);
+					// Setzen der Pull-Up
+					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
+					// RTC einrichten
+					$this->SetMUX(7);
+					$RTC_Handle = $this->GetOnboardI2CHandle(104);
+					$this->SetBuffer("RTC_Handle", $RTC_Handle);
+					// 1-Wire einrichten
+					$OW_Handle = $this->GetOnboardI2CHandle(24);
+					$this->SetBuffer("OW_Handle", $OW_Handle);
+					If ($OW_Handle >= 0) {
+						// DS 2482 zurücksetzen
+						$this->DS2482Reset();
+					}
+				}
+				$this->SendDebug("RTC Handle", $RTC_Handle, 0);	
+				$this->SendDebug("OW_Handle", $OW_Handle, 0);
+				
+					
 				// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
 				// Alle anderen = Alt0(Rxd0/TxD0) => 4
 				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
@@ -280,37 +325,10 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->CommandClientSocket(pack("L*", 0, 14, 2, 0).pack("L*", 0, 15, 2, 0), 32);
 				}
 				
-				// Pullup/Pulldown setzen
-				/*
-				# GPIO Pull Up Down
-				PUD_OFF  = 0
-				PUD_DOWN = 1
-				PUD_UP   = 2
-				*/
-				$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0) , 32);
-				
 				// Notify Stoppen
 				If ($this->GetBuffer("Handle") >= 0) {
 					$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
 				}
-				
-				// RTC einrichten
-				$RTC_Handle = $this->GetOnboardI2CHandle(104);
-				$this->SetBuffer("RTC_Handle", $RTC_Handle);
-				$this->SendDebug("RTC Handle", $RTC_Handle, 0);
-				
-				// 1-Wire einrichten
-				$OW_Handle = $this->GetOnboardI2CHandle(24);
-				$this->SetBuffer("OW_Handle", $OW_Handle);
-				$this->SendDebug("OW_Handle", $OW_Handle, 0);
-				If ($OW_Handle >= 0) {
-					// DS 2482 zurücksetzen
-					$this->DS2482Reset();
-					//$this->OWSearchStart();
-				}
-				// https://pastebin.com/0d93ZuRb
-				
-				
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
@@ -321,6 +339,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				$this->SetBuffer("Handle", $Handle);
 				
+				/*
 				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
 				//$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
 				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).$Script, 16);
@@ -331,7 +350,8 @@ class GeCoS_IO_V2 extends IPSModule
 				If ($this->GetBuffer("SerialScriptID") >= 0) {
 					$Result = $this->StartProc((int)$SerialScriptID, serialize($Parameter));
 				}
-				
+				*/
+					
 				// Vorbereitung beendet
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
 				$this->SetBuffer("ModuleReady", 1);
@@ -1815,29 +1835,24 @@ class GeCoS_IO_V2 extends IPSModule
   	
 	private function SetMUX(Int $Port)
 	{
-		$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 		$this->SetBuffer("MUX_Channel", $Port);
 		$MUX_Handle = $this->GetBuffer("MUX_Handle");
-		If ($Board == 0) {
-			// PCA9542
-			// 0 = No Channel selected
-			// 4 = Channel 0
-			// 5 = Channel 1
-			If ($Port == 1) {
-				$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
-			}
-			else {
-				$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
-			}
+		// Version 1: PCA9542
+		// 0 = No Channel selected
+		// 4 = Channel 0
+		// 5 = Channel 1
+		// Version 2: PCA9544A
+		// 0 = No Channel selected
+		// 4 = Channel 0
+		// 5 = Channel 1 
+		// 6 = Channel 2
+		// 7 = Channel 3 (RTC, 1Wire)
+		
+		If ($Port == 1) {
+			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
 		}
-		elseif ($Board == 1) {
-			// PCA9544A
-			// 0 = No Channel selected
-			// 4 = Channel 0
-			// 5 = Channel 1 
-			// 6 = Channel 2
-			// 7 = Channel 3 (RTC, 1Wire)
-			
+		else {
+			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
 		}
 	return;
 	}
