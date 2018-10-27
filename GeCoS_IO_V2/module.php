@@ -294,7 +294,7 @@ class GeCoS_IO_V2 extends IPSModule
 					}
 					// https://pastebin.com/0d93ZuRb
 				}
-				elseif (($Board == 1) {
+				elseif ($Board == 1) {
 					// Konfiguration der Interupt-Eingänge
 					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 18, 0, 0).pack("L*", 0, 27, 0, 0), 48);
 					// Setzen der Pull-Up
