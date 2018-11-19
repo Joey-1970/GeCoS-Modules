@@ -1857,6 +1857,19 @@ class GeCoS_IO_V2 extends IPSModule
 	return;
 	}
 	
+	private function SetMUXforInternal()
+	{
+		$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
+		If ($Board == 0) {
+			// Deaktivierung des weiteren MUX Channels
+			$this->SetMUX(0);
+		}
+		elseif ($Board == 1) {
+			// neues Board erfordert Umschaltung des MUX
+			$this->SetMUX(7);
+		} 
+	}
+	
 	private function GetOnboardI2CHandle(Int $DeviceAddress)
 	{
 		// Handle ermitteln
