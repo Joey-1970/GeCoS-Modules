@@ -1872,7 +1872,7 @@ class GeCoS_IO_V2 extends IPSModule
 		$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 		If ($Board == 0) {
 			// Deaktivierung des weiteren MUX Channels
-			$this->SetMUX(0);
+			$this->SetMUX(1);
 		}
 		elseif ($Board == 1) {
 			// neues Board erfordert Umschaltung des MUX
