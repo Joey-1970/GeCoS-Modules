@@ -35,6 +35,7 @@ class GeCoS_IO_V2 extends IPSModule
 		$this->RegisterProfileInteger("IPS2CeCoSIO.Boardversion", "Information", "", "", 0, 1, 1);
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 0, "Version 1", "Information", -1);
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 1, "Version 2", "Information", -1);
+		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 99, "Unbekannter Fehler!", "Alert", -1);
 		
 		// Statusvariablen anlegen
 		$this->RegisterVariableString("Hardware", "Hardware", "", 20);
@@ -266,7 +267,10 @@ class GeCoS_IO_V2 extends IPSModule
 					// MUX setzen
 					$this->SetMUX(1);
 				}
-				
+				else {
+					$this->SendDebug("ApplyChangges", "Fehler bei der MUX-Erkennung!", 0);
+					return;
+				}
 				$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 				
 				// Pullup/Pulldown setzen
@@ -1889,6 +1893,7 @@ class GeCoS_IO_V2 extends IPSModule
 	
 	private function getMUXHandle()
 	{
+		SetValueInteger($this->GetIDForIdent("Boardversion"), 99);
 		// Board-Version 2 0x71
 		$Handle = $this->CommandClientSocket(pack("L*", 54, 1, 0x71, 4, 0), 16);
 		if ($Handle >= 0) {
@@ -1908,7 +1913,7 @@ class GeCoS_IO_V2 extends IPSModule
 					// Testweise lesen
 					$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
 					If ($Result >= 0) {
-						// Lesen erfolgreich, Board Version 2
+						// Lesen erfolgreich, Board Version 1
 						SetValueInteger($this->GetIDForIdent("Boardversion"), 0);
 					}
 					else {
