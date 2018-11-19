@@ -1463,6 +1463,7 @@ class GeCoS_IO_V2 extends IPSModule
 	public function GetRTC_Data()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			$this->SetMUXforInternal();
 			$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
 			$Sec = str_pad(dechex($Sec & 127), 2 ,'0', STR_PAD_LEFT);
 			$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
@@ -1511,6 +1512,7 @@ class GeCoS_IO_V2 extends IPSModule
 	public function SetRTC_Data()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			$this->SetMUXforInternal();
 			// Sekunden
 			$Sec = date("s");
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
@@ -1841,24 +1843,26 @@ class GeCoS_IO_V2 extends IPSModule
   	
 	private function SetMUX(Int $Port)
 	{
-		$this->SetBuffer("MUX_Channel", $Port);
-		$MUX_Handle = $this->GetBuffer("MUX_Handle");
-		// Version 1: PCA9542
-		// 0 = No Channel selected
-		// 4 = Channel 0
-		// 5 = Channel 1
-		// Version 2: PCA9544A
-		// 0 = No Channel selected
-		// 4 = Channel 0
-		// 5 = Channel 1 
-		// 6 = Channel 2
-		// 7 = Channel 3 (RTC, 1Wire)
-		
-		If ($Port == 1) {
-			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
-		}
-		else {
-			$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
+		If (intval($this->GetBuffer("MUX_Channel")) <> $Port) {
+			$this->SetBuffer("MUX_Channel", $Port);
+			$MUX_Handle = $this->GetBuffer("MUX_Handle");
+			// Version 1: PCA9542
+			// 0 = No Channel selected
+			// 4 = Channel 0
+			// 5 = Channel 1
+			// Version 2: PCA9544A
+			// 0 = No Channel selected
+			// 4 = Channel 0
+			// 5 = Channel 1 
+			// 6 = Channel 2
+			// 7 = Channel 3 (RTC, 1Wire)
+
+			If ($Port == 1) {
+				$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, 0, 0), 16);
+			}
+			else {
+				$this->CommandClientSocket(pack("L*", 60, $MUX_Handle, $Port, 0), 16);
+			}
 		}
 	return;
 	}
