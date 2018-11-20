@@ -260,7 +260,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->CommandClientSocket(pack("L*", 0, 2, 4, 0).pack("L*", 0, 3, 4, 0), 32);
 				
 				// MUX identifizieren zur Differenzierung der Boardversion
-				$MUX_Handle = $this->getMUXHandle();
+				$MUX_Handle = $this->GetMUXHandle();
 				$this->SetBuffer("MUX_Handle", $MUX_Handle);
 				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
 				If ($MUX_Handle >= 0) {
@@ -268,6 +268,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetMUX(1);
 				}
 				else {
+					$this->SetStatus(201);
 					$this->SendDebug("ApplyChangges", "Fehler bei der MUX-Erkennung!", 0);
 					return;
 				}
@@ -1891,7 +1892,7 @@ class GeCoS_IO_V2 extends IPSModule
 	return $Handle;
 	}
 	
-	private function getMUXHandle()
+	private function GetMUXHandle()
 	{
 		SetValueInteger($this->GetIDForIdent("Boardversion"), 99);
 		// Board-Version 2 0x71
@@ -1920,6 +1921,7 @@ class GeCoS_IO_V2 extends IPSModule
 						// Handle für Boardversion 1 löschen
 						$Result = $this->CommandClientSocket(pack("L*", 55, $Handle, 0, 0), 16);
 						$this->SendDebug("SearchI2CMUX", "Es konnte kein MUX indentifiziert werden!", 0);
+						$Handle = -1;
 					}
 				}
 			}
