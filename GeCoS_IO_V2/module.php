@@ -1978,7 +1978,17 @@ class GeCoS_IO_V2 extends IPSModule
 		}		
 		$k = 0;	
 		
-		for ($j = 4; $j <= 5; $j++) {
+		$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
+		If ($Board == 0) {
+			// Channels 4 und 5
+			$MaxChannelNum = 5;
+		}
+		elseif ($Board == 1) {
+			// Channels 4, 5 und 6
+			$MaxChannelNum = 5;
+		} 
+		
+		for ($j = 4; $j <= $MaxChannelNum; $j++) {
 			$this->SetMUX($j);
 			for ($i = 0; $i < count($SearchArray); $i++) {
 				// Prüfen ob diese Device Addresse schon registriert wurde
