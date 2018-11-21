@@ -980,14 +980,6 @@ class GeCoS_IO_V2 extends IPSModule
 						// GeDaD-Channel 2 -> Pin 27 -> MUX 6
 						
 						$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
-						If ($Board == 0) {
-							// Deaktivierung des weiteren MUX Channels
-							$this->SetMUX(1);
-						}
-						elseif ($Board == 1) {
-							// neues Board erfordert Umschaltung des MUX
-							$this->SetMUX(7);
-						} 
 						
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
@@ -1006,6 +998,25 @@ class GeCoS_IO_V2 extends IPSModule
 							
 							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 							$Bit17Read = true;
+						}
+						// Wert von Pin 18
+						If ($Board == 1) {
+							If (($Bit18Read == false) AND ($Bitvalue_18 == 0)) {
+								$this->SendDebug("Datenanalyse", "Interrupt - Bit 18 (I2C-Bus 1): ".(int)$Bitvalue_18, 0);
+
+								If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+									foreach ($I2CInstanceArray as $Type => $Properties) {
+										If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 5)) {
+											$this->SetMUX(5);
+											$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
+										}
+									}
+								}
+
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+								$Bit18Read = true;
+							}
 						}
 						// Wert von Pin 27
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
