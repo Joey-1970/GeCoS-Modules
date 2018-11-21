@@ -1020,26 +1020,41 @@ class GeCoS_IO_V2 extends IPSModule
 						}
 						// Wert von Pin 27
 						$Bitvalue_27 = boolval($Level & pow(2, 27));
-						If (($Bit27Read == false) AND ($Bitvalue_27 == 0)) {
-							$this->SendDebug("Datenanalyse", "Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
-							
-							If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
-								foreach ($I2CInstanceArray as $Type => $Properties) {
-									If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 5)) {
-										If ($Board == 0) {
+						If ($Board == 0) {
+							If (($Bit27Read == false) AND ($Bitvalue_27 == 0)) {
+								$this->SendDebug("Datenanalyse", "Interrupt - Bit 27 (I2C-Bus 1): ".(int)$Bitvalue_27, 0);
+
+								If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+									foreach ($I2CInstanceArray as $Type => $Properties) {
+										If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 5)) {
 											$this->SetMUX(5);
+											$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
 										}
-										elseif ($Board == 1) {
-											$this->SetMUX(6);
-										} 
-										$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
-										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
 									}
 								}
+
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+								$Bit27Read = true;	
 							}
-							
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
-							$Bit27Read = true;	
+						}
+						elseIf ($Board == 1) {
+							If (($Bit27Read == false) AND ($Bitvalue_27 == 0)) {
+								$this->SendDebug("Datenanalyse", "Interrupt - Bit 27 (I2C-Bus 2): ".(int)$Bitvalue_27, 0);
+
+								If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+									foreach ($I2CInstanceArray as $Type => $Properties) {
+										If (($I2CInstanceArray[$Type]["Notification"] == 1) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 6)) {
+											$this->SetMUX(6);
+											$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
+										}
+									}
+								}
+
+								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 6)));
+								$Bit27Read = true;	
+							}
 						}
 						/*
 						// Wert von Pin 15
