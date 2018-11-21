@@ -1903,6 +1903,7 @@ class GeCoS_IO_V2 extends IPSModule
 			If ($Result >= 0) {
 				// Lesen erfolgreich, Board Version 2
 				SetValueInteger($this->GetIDForIdent("Boardversion"), 1);
+				$this->SendDebug("SearchI2CMUX", "Board-Version 2 identifiziert", 0);
 			}
 			else {
 				// Handle für Boardversion 2 löschen
@@ -1916,6 +1917,7 @@ class GeCoS_IO_V2 extends IPSModule
 					If ($Result >= 0) {
 						// Lesen erfolgreich, Board Version 1
 						SetValueInteger($this->GetIDForIdent("Boardversion"), 0);
+						$this->SendDebug("SearchI2CMUX", "Board-Version 1 identifiziert", 0);
 					}
 					else {
 						// Handle für Boardversion 1 löschen
