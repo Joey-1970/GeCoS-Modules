@@ -2035,8 +2035,11 @@ class GeCoS_IO_V2 extends IPSModule
 		}
 		elseif ($Board == 1) {
 			// Channels 4, 5 und 6
-			$MaxChannelNum = 5;
-		} 
+			$MaxChannelNum = 6;
+		}
+		else {
+			$MaxChannelNum = 4;
+		}
 		
 		for ($j = 4; $j <= $MaxChannelNum; $j++) {
 			$this->SetMUX($j);
