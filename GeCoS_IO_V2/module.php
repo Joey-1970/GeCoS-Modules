@@ -26,12 +26,13 @@ class GeCoS_IO_V2 extends IPSModule
 		$this->RegisterPropertyString("I2C_Devices", "");
 		$this->RegisterPropertyString("OW_Devices", "");
 		$this->RegisterPropertyString("Raspi_Config", "");
+		$this->RegisterPropertyInteger("SerialDevice", 1);
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIOV2_GetRTC_Data($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 		
-		// profile anlegen
+		// Profile anlegen
 		$this->RegisterProfileInteger("IPS2CeCoSIO.Boardversion", "Information", "", "", 0, 1, 1);
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 0, "Version 1", "Information", -1);
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 1, "Version 2", "Information", -1);
@@ -74,6 +75,24 @@ class GeCoS_IO_V2 extends IPSModule
 		$arrayElements[] = array("type" => "Label", "label" => "Zugriffsdaten des Raspberry Pi SSH:");
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "User", "caption" => "User");
 		$arrayElements[] = array("type" => "PasswordTextBox", "name" => "Password", "caption" => "Password");
+		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "label" => "Funktion der Seriellen Schnittstelle:");
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "DMX", "value" => 1);
+		$arrayOptions[] = array("label" => "ModBus", "value" => 2);
+		$arrayOptions[] = array("label" => "RS232", "value" => 3);
+		$arrayElements[] = array("type" => "Select", "name" => "SerialDevice", "caption" => "Nutzung", "options" => $arrayOptions );
+		$arrayOptions = array();
+		$arrayOptions[] = array("label" => "2400", "value" => 2400);
+		$arrayOptions[] = array("label" => "4800", "value" => 4800);
+		$arrayOptions[] = array("label" => "9600", "value" => 9600);
+		$arrayOptions[] = array("label" => "19200", "value" => 19200);
+		$arrayOptions[] = array("label" => "38400", "value" => 38400);
+		$arrayOptions[] = array("label" => "57600", "value" => 57600);
+		$arrayOptions[] = array("label" => "115200", "value" => 115200);
+		$arrayElements[] = array("type" => "Select", "name" => "Baud", "caption" => "Baud", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Label", "label" => "Connection String der seriellen Schnittstelle (z.B. /dev/serial0):");
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "ConnectionString", "caption" => "Connection String");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Label", "label" => "Analyse der Raspberry Pi Konfiguration:");
 		$arraySort = array();
@@ -144,19 +163,6 @@ class GeCoS_IO_V2 extends IPSModule
 			$arrayElements[] = array("type" => "Label", "label" => "Setzen der Real-Time-Clock auf IPS-Zeit:");
 			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIOV2_SetRTC_Data($id);');		
 		}
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Label", "label" => "Definition der seriellen Schnittstelle (RS232):");
-		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "2400", "value" => 2400);
-		$arrayOptions[] = array("label" => "4800", "value" => 4800);
-		$arrayOptions[] = array("label" => "9600", "value" => 9600);
-		$arrayOptions[] = array("label" => "19200", "value" => 19200);
-		$arrayOptions[] = array("label" => "38400", "value" => 38400);
-		$arrayOptions[] = array("label" => "57600", "value" => 57600);
-		$arrayOptions[] = array("label" => "115200", "value" => 115200);
-		$arrayElements[] = array("type" => "Select", "name" => "Baud", "caption" => "Baud", "options" => $arrayOptions );
-		$arrayElements[] = array("type" => "Label", "label" => "Connection String der seriellen Schnittstelle (z.B. /dev/serial0):");
-		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "ConnectionString", "caption" => "Connection String");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 		
