@@ -1478,8 +1478,15 @@ class GeCoS_IO_V2 extends IPSModule
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("Notification Keep Alive", "gestartet", 0);
-					// Notify GPIO 17 + 27= Bitmask 134348800
-					$this->CommandClientSocket(pack("L*", 19, $response[4], 134348800, 0), 16);
+					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
+					If ($Board = 0) {
+						// Notify GPIO 17 + 27= Bitmask 134348800
+						$this->CommandClientSocket(pack("L*", 19, $response[4], 134348800, 0), 16);
+					}
+					elseIf ($Board = 1) {
+						// Notify GPIO 17 + 18 + 27= Bitmask 134610944
+						$this->CommandClientSocket(pack("L*", 19, $response[4], 134610944, 0), 16);
+					}
 					// Event für GPIO 15 TxD
 					$this->CommandClientSocket(pack("L*", 115, $response[4], 1, 0), 16);
            			}
