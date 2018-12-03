@@ -374,8 +374,8 @@ class GeCoS_IO_V2 extends IPSModule
 				
 				// Starttrigger für 1-Wire-Instanzen
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
-				/*
-				If ($Handle >= 0) {
+				
+				If ($this->GetBuffer("Handle") >= 0) {
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
 						$this->CommandClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);
@@ -385,7 +385,7 @@ class GeCoS_IO_V2 extends IPSModule
 						$this->CommandClientSocket(pack("L*", 19, $Handle, 134610944, 0), 16);
 					}
 				}
-				*/
+				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
 			}
