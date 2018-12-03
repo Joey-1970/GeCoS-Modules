@@ -367,6 +367,17 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
 				$this->SetBuffer("ModuleReady", 1);
 				
+				If ($Handle >= 0) {
+					If ($Board = 0) {
+						// Notify GPIO 17 + 27= Bitmask 134348800
+						$this->CommandClientSocket(pack("L*", 19, $response[4], 134348800, 0), 16);
+					}
+					elseIf ($Board = 1) {
+						// Notify GPIO 17 + 18 + 27= Bitmask 134610944
+						$this->CommandClientSocket(pack("L*", 19, $response[4], 134610944, 0), 16);
+					}
+				}
+				
 				// Ermitteln der genutzten I2C-Adressen
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
 				
