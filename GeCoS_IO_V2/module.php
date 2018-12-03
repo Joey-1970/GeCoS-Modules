@@ -955,6 +955,7 @@ class GeCoS_IO_V2 extends IPSModule
 				// I tick: the number of microseconds since system boot. It wraps around after 1h12m. 
 				// I level: indicates the level of each GPIO. If bit 1<<x is set then GPIO x is high. 
 				if (array_key_exists($i + 2, $MessageArray)) {
+					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 					$SeqNo = $MessageArray[$i] & 65535;
 					$Flags = $MessageArray[$i] >> 16;
 					$Event = (int)boolval($Flags & 128);
@@ -969,6 +970,9 @@ class GeCoS_IO_V2 extends IPSModule
 						SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
 						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+						If ($Board = 1) {
+							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 6)));
+						}
 					}
 					elseif ($WatchDog == 1) {
 						$this->SendDebug("Datenanalyse", "WatchDog-Nummer: ".$WatchDogNumber, 0);
@@ -984,8 +988,6 @@ class GeCoS_IO_V2 extends IPSModule
 						// GeDaD-Channel 0 -> Pin 17 -> MUX 4
 						// GeDaD-Channel 1 -> Pin 18 -> MUX 5
 						// GeDaD-Channel 2 -> Pin 27 -> MUX 6
-						
-						$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 						
 						// Wert von Pin 17
 						$Bitvalue_17 = boolval($Level & pow(2, 17));
@@ -1551,6 +1553,7 @@ class GeCoS_IO_V2 extends IPSModule
 				// 24 Stunden Anzeige
 				$Hour = str_pad(dechex($Hour & 63), 2 ,'0', STR_PAD_LEFT);
 			}
+			$this->SetMUXforInternal();
 			$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
 			$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
 			$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
@@ -1564,6 +1567,7 @@ class GeCoS_IO_V2 extends IPSModule
 			else {
 				$Year = $Year + 1900;	
 			}
+			$this->SetMUXforInternal();
 			$Timestamp = mktime(intval($Hour), intval($Min), intval($Sec), intval($Month), intval($Date), intval($Year));
 			SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
 			$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
