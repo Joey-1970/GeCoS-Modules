@@ -309,7 +309,7 @@ class GeCoS_IO_V2 extends IPSModule
 					// Konfiguration der Interupt-Eingänge
 					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 18, 0, 0).pack("L*", 0, 27, 0, 0), 48);
 					// Setzen der Pull-Up
-					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
+					//$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
 					// RTC einrichten
 					$this->SetMUX(7);
 					$RTC_Handle = $this->GetOnboardI2CHandle(104);
