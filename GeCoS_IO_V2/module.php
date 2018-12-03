@@ -254,7 +254,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("NotifyCounter", 0);
 				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
 				$this->SetBuffer("Handle", $Handle);
-				$NotifyHandle = $this->ClientSocket(pack("L*", 18, 0, 0, 0));
+				$NotifyHandle = $this->CommandClientSocket(pack("L*", 18, 0, 0, 0));
 				$this->SetBuffer("NotifyHandle", $NotifyHandle);
 				// Modes setzen
 				/*
@@ -1268,6 +1268,7 @@ class GeCoS_IO_V2 extends IPSModule
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("Notify Handle", (int)$response[4], 0);
 					$this->SetBuffer("NotifyHandle", (int)$response[4]);
+					$this->CommandClientSocket(pack("L*", 19, $response[4], 134610944, 0), 16);
 					$Result = $response[4];
            			}
            			else {
@@ -1503,6 +1504,7 @@ class GeCoS_IO_V2 extends IPSModule
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("Notification Keep Alive", "gestartet, Handle: ".$response[4], 0);
 					$this->SetBuffer("Handle", $response[4]);
+					/*
 					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
@@ -1512,6 +1514,7 @@ class GeCoS_IO_V2 extends IPSModule
 						// Notify GPIO 17 + 18 + 27= Bitmask 134610944
 						$this->CommandClientSocket(pack("L*", 19, $response[4], 134610944, 0), 16);
 					}
+					*/
 					// Event für GPIO 15 TxD
 					$this->CommandClientSocket(pack("L*", 115, $response[4], 1, 0), 16);
            			}
