@@ -299,7 +299,7 @@ class GeCoS_IO_V2 extends IPSModule
 					// Setzen der Pull-Up
 					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0), 32);
 					// Notify GPIO 17 + 27= Bitmask 134348800
-					$this->CommandClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);
+					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134348800, 0), 16);
 					// RTC einrichten
 					$RTC_Handle = $this->GetOnboardI2CHandle(104);
 					$this->SetBuffer("RTC_Handle", $RTC_Handle);
@@ -318,7 +318,7 @@ class GeCoS_IO_V2 extends IPSModule
 					// Setzen der Pull-Up
 					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
 					// Notify GPIO 17 + 18 + 27= Bitmask 134610944
-					$this->CommandClientSocket(pack("L*", 19, $Handle, 134610944, 0), 16);
+					$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("Handle"), 134610944, 0), 16);
 					// RTC einrichten
 					$this->SetMUX(7);
 					$RTC_Handle = $this->GetOnboardI2CHandle(104);
@@ -1498,7 +1498,8 @@ class GeCoS_IO_V2 extends IPSModule
 		        case "99":
            			If ($response[4] >= 0 ) {
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
-           				$this->SendDebug("Notification Keep Alive", "gestartet", 0);
+           				$this->SendDebug("Notification Keep Alive", "gestartet, Handle: ".$response[4], 0);
+					$this->SetBuffer("Handle", $response[4]);
 					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
