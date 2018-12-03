@@ -250,6 +250,11 @@ class GeCoS_IO_V2 extends IPSModule
 				// Serial-Handle zurücksetzen
 				$this->ResetSerialHandle();
 				
+				$this->SetBuffer("Handle", -1);
+				$this->SetBuffer("NotifyCounter", 0);
+				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$this->SetBuffer("Handle", $Handle);
+				
 				// Modes setzen
 				/*
 				# GPIO modes
@@ -345,10 +350,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				
-				$this->SetBuffer("Handle", -1);
-				$this->SetBuffer("NotifyCounter", 0);
-				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				$this->SetBuffer("Handle", $Handle);
+				
 				
 				/*
 				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
