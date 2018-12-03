@@ -309,7 +309,7 @@ class GeCoS_IO_V2 extends IPSModule
 					// Konfiguration der Interupt-Eingänge
 					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 18, 0, 0).pack("L*", 0, 27, 0, 0), 48);
 					// Setzen der Pull-Up
-					//$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
+					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
 					// RTC einrichten
 					$this->SetMUX(7);
 					$RTC_Handle = $this->GetOnboardI2CHandle(104);
@@ -338,7 +338,7 @@ class GeCoS_IO_V2 extends IPSModule
 				
 				// Notify Stoppen
 				If ($this->GetBuffer("Handle") >= 0) {
-					$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
+					//$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
 				}
 				
 				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
@@ -374,7 +374,7 @@ class GeCoS_IO_V2 extends IPSModule
 				
 				// Starttrigger für 1-Wire-Instanzen
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
-				
+				/*
 				If ($Handle >= 0) {
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
@@ -385,7 +385,7 @@ class GeCoS_IO_V2 extends IPSModule
 						$this->CommandClientSocket(pack("L*", 19, $Handle, 134610944, 0), 16);
 					}
 				}
-				
+				*/
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
 			}
