@@ -361,7 +361,32 @@
 						break;
 					}
 				$tries--;
-				} while ($tries);  
+				} while ($tries);
+				
+				$tries = 3;
+				do {
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("10"), "Count" => 2)));
+					If ($Result < 0) {
+						$this->SendDebug("Setup", "Einlesen der IntCap-Werte fehlerhaft!", 0);
+						$this->SetStatus(202);
+					}
+					else {
+						If (is_array(unserialize($Result))) {
+							$this->SetStatus(102);
+							$OutputArray = array(); 
+							$OutputArray = unserialize($Result);
+							$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+							$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+							$this->SendDebug("Setup", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
+							$this->SetBuffer("INTCAPA", $INTCAPA);
+							$this->SetBuffer("INTCAPB", $INTCAPB);
+							break;
+						}
+					}
+				$tries--;
+				} while ($tries); 
+				
+				
 			}
 			else {
 				// 16OutV1
