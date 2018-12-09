@@ -296,7 +296,7 @@
 				// Adressen 0A 0B
 				$tries = 5;
 				do {
-					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => hexdec("0A"), 
+					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => 0x0A, 
 												  "Parameter" => serialize($ConfigArray) )));
 					If (!$Result) {
 						$this->SendDebug("Setup", "Basis-Konfigurations-Byte setzen fehlerhaft!", 0);
@@ -336,9 +336,13 @@
 				$ConfigArray[9] = 0; // Adresse 09
 				$this->SendDebug("Setup", "Interrupt-Referenzwert-Byte A/B = 0", 0);
 
+				// Erneunt Basiskonfig-Byte mit übertragen
+				$ConfigArray[10] = 64; // Adresse 0A
+				$ConfigArray[11] = 64; // Adresse 0B
+				
 				// Pull-Up-Byte ermitteln
-				$ConfigArray[10] = 0; // Adresse 0C
-				$ConfigArray[11] = 0; // Adresse 0D
+				$ConfigArray[12] = 0; // Adresse 0C
+				$ConfigArray[13] = 0; // Adresse 0D
 				$this->SendDebug("Setup", "Pull-up-Byte A: 0 Pull-up-Byte B: 0", 0);
 				$tries = 5;
 				do {
