@@ -242,21 +242,30 @@
 						$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
 						$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
 						$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
+						
+						$INTCAPAold = intval($this->GetBuffer("INTCAPA"));
+						$INTCAPBold = intval($this->GetBuffer("INTCAPB"));
+						
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
-							// Port A
-							$Value = $INTCAPA & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+							If ($INTCAPA <> $INTCAPAold) {
+								// Port A
+								$Value = $INTCAPA & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+								}
 							}
 							
-							// Port B
-							$Value = $INTCAPB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
+							If ($INTCAPB <> $INTCAPBold) {
+								// Port B
+								$Value = $INTCAPB & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
+								}
 							}
-							
 						}
+						$this->SetBuffer("INTCAPA", $INTCAPA);
+						$this->SetBuffer("INTCAPB", $INTCAPB);
 						$this->GetInput();
 						break;
 					}
@@ -357,7 +366,6 @@
 						$this->SendDebug("Setup", "Konfigurations-Byte erfolgreich gesetzt", 0);
 						$this->SetStatus(102);
 						$this->SetTimerInterval("GetInput", 15 * 1000);
-						$this->GetInput();
 						break;
 					}
 				$tries--;
@@ -380,6 +388,7 @@
 							$this->SendDebug("Setup", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
 							$this->SetBuffer("INTCAPA", $INTCAPA);
 							$this->SetBuffer("INTCAPB", $INTCAPB);
+							$this->GetInput();
 							break;
 						}
 					}
