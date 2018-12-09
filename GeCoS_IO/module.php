@@ -944,8 +944,8 @@ class GeCoS_IO extends IPSModule
 					If ($KeepAlive == 1) {
 						$this->SendDebug("Datenanalyse", "KeepAlive", 0);
 						SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
-						$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
+						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 4)));
+						//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt", "DeviceBus" => 5)));
 					}
 					elseif ($WatchDog == 1) {
 						$this->SendDebug("Datenanalyse", "WatchDog-Nummer: ".$WatchDogNumber, 0);
