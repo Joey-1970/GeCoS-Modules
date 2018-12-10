@@ -228,7 +228,7 @@
 			// Adressen 12 13
 			$tries = 3;
 			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("10"), "Count" => 2)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => 0x0E, "Count" => 4)));
 				If ($Result < 0) {
 					$this->SendDebug("Interrupt", "Einlesen der Werte fehlerhaft!", 0);
 					$this->SetStatus(202);
@@ -239,8 +239,12 @@
 						$OutputArray = array();
 						// für Ausgänge LAT benutzen für Eingänge PORT 
 						$OutputArray = unserialize($Result);
-						$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-						$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$INTFA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$INTFB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$this->SendDebug("Interrupt", "INTFA: ".$INTFA." INTFB: ".$INTFB, 0);
+						
+						$INTCAPA = $OutputArray[3]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+						$INTCAPB = $OutputArray[4]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
 						$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
 						
 						$INTCAPAold = intval($this->GetBuffer("INTCAPA"));
