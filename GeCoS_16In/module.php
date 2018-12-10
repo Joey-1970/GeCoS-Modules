@@ -252,6 +252,23 @@
 						
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
+							If (pow(2, $i) AND $INTFA) {
+								// Port A
+								$Value = $INTCAPA & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+								}
+							}
+							If (pow(2, $i) AND $INTFB) {
+								 // Port B
+								$Value = $INTCAPB & pow(2, $i);
+								If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
+								}
+							}
+							
+							
+							/*
 							If ($INTCAPA <> $INTCAPAold) {
 								// Port A
 								$Value = $INTCAPA & pow(2, $i);
@@ -267,6 +284,7 @@
 									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
 								}
 							}
+							*/
 						}
 						$this->SetBuffer("INTCAPA", $INTCAPA);
 						$this->SetBuffer("INTCAPB", $INTCAPB);
