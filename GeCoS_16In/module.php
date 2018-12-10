@@ -252,16 +252,16 @@
 						
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
-							If (pow(2, $i) AND $INTFA) {
+							If (((pow(2, $i) & $INTFA) >> $i) == true) {
 								// Port A
-								$Value = $INTCAPA & pow(2, $i);
+								$Value = boolval($INTCAPA & pow(2, $i));
 								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
 									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
 								}
 							}
-							If (pow(2, $i) AND $INTFB) {
+							If (((pow(2, $i) & $INTFB) >> $i) == true) {
 								 // Port B
-								$Value = $INTCAPB & pow(2, $i);
+								$Value = boolval($INTCAPB & pow(2, $i));
 								If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
 									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
 								}
