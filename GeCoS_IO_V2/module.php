@@ -1564,8 +1564,10 @@ class GeCoS_IO_V2 extends IPSModule
 			$this->SetMUXforInternal();
 			$Sec = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 0, 0), 16);
 			$Sec = str_pad(dechex($Sec & 127), 2 ,'0', STR_PAD_LEFT);
+			$this->SetMUXforInternal();
 			$Min = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 1, 0), 16);
 			$Min = str_pad(dechex($Min & 127), 2 ,'0', STR_PAD_LEFT);
+			$this->SetMUXforInternal();
 			$Hour = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 2, 0), 16);
 			If(($Hour & 64) > 0) {
 				// 12 Stunden Anzeige
@@ -1584,9 +1586,11 @@ class GeCoS_IO_V2 extends IPSModule
 			$this->SetMUXforInternal();
 			$Date = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 4, 0), 16);
 			$Date = str_pad(dechex($Date & 63), 2 ,'0', STR_PAD_LEFT);
+			$this->SetMUXforInternal();
 			$Month = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 5, 0), 16);
 			$Century = ($Month >> 7) & 1;
 			$Month = str_pad(dechex($Month & 31), 2 ,'0', STR_PAD_LEFT);
+			$this->SetMUXforInternal();
 			$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
 			$Year = intval(str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT));
 			If ($Century == 1) {
@@ -1598,6 +1602,7 @@ class GeCoS_IO_V2 extends IPSModule
 			$this->SetMUXforInternal();
 			$Timestamp = mktime(intval($Hour), intval($Min), intval($Sec), intval($Month), intval($Date), intval($Year));
 			SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
+			$this->SetMUXforInternal();
 			$MSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 17, 0), 16);
 			$LSBofTemp = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 18, 0), 16);
 			$MSBofTemp = ($MSBofTemp & 127);
@@ -1615,16 +1620,22 @@ class GeCoS_IO_V2 extends IPSModule
 			$this->SetMUXforInternal();
 			// Sekunden
 			$Sec = date("s");
+			$this->SetMUXforInternal();
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 0, 4, hexdec($Sec)), 16);
 			$Min = date("i");
+			$this->SetMUXforInternal();
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 1, 4, hexdec($Min)), 16);
 			$Hour = date("H");
+			$this->SetMUXforInternal();
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 2, 4, hexdec($Hour)), 16);
 			$Date = date("d");
+			$this->SetMUXforInternal();
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 4, 4, hexdec($Date)), 16);
 			$Month = date("m");
+			$this->SetMUXforInternal();
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 5, 4, (hexdec($Month) | 128) ), 16);
 			$Year = date("y");
+			$this->SetMUXforInternal();
 			$this->CommandClientSocket(pack("L*", 62, $this->GetBuffer("RTC_Handle"), 6, 4, hexdec($Year)), 16);
 			$this->GetRTC_Data();
 		}
