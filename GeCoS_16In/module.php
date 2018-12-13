@@ -143,7 +143,42 @@
 						}
 					}
 				}
-				break;		
+				break;
+			case "interrupt_with_result_2":
+				If (($this->ReadPropertyBoolean("Open") == true) AND ($data->InstanceID == $this->InstanceID)) {
+					$this->SendDebug("interrupt_with_result_2", "Ausfuehrung", 0);
+					
+					$OutputArray = array();
+					// für Ausgänge LAT benutzen für Eingänge PORT 
+					$OutputArray = unserialize($data->Value);
+					$INTFA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+					$INTFB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+					$this->SendDebug("Interrupt", "INTFA: ".$INTFA." INTFB: ".$INTFB, 0);
+
+					$INTCAPA = $OutputArray[3]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+					$INTCAPB = $OutputArray[4]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
+					$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
+
+					// Statusvariablen setzen
+					for ($i = 0; $i <= 7; $i++) {
+						If (((pow(2, $i) & $INTFA) >> $i) == true) {
+							// Port A
+							$Value = boolval($INTCAPA & pow(2, $i));
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
+							}
+						}
+						If (((pow(2, $i) & $INTFB) >> $i) == true) {
+							 // Port B
+							$Value = boolval($INTCAPB & pow(2, $i));
+							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
+								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
+							}
+						}
+					}
+					$this->GetInput();
+				}
+				break;	
 	 	}
  	}
 	    
