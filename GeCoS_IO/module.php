@@ -424,6 +424,9 @@ class GeCoS_IO extends IPSModule
 					If (($data->DeviceAddress >= 16) AND ($data->DeviceAddress <= 23)) {
 						$I2CInstanceArray[$data->InstanceID]["Notification"] = 1;
 					}
+					elseIf (($data->DeviceAddress >= 32) AND ($data->DeviceAddress <= 35)) {
+						$I2CInstanceArray[$data->InstanceID]["Notification"] = 2;
+					}
 					else {
 						$I2CInstanceArray[$data->InstanceID]["Notification"] = 0;
 					}
