@@ -247,9 +247,6 @@
 						$INTCAPB = $OutputArray[4]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
 						$this->SendDebug("Interrupt", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
 						
-						$INTCAPAold = intval($this->GetBuffer("INTCAPA"));
-						$INTCAPBold = intval($this->GetBuffer("INTCAPB"));
-						
 						// Statusvariablen setzen
 						for ($i = 0; $i <= 7; $i++) {
 							If (((pow(2, $i) & $INTFA) >> $i) == true) {
@@ -266,28 +263,7 @@
 									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
 								}
 							}
-							
-							
-							/*
-							If ($INTCAPA <> $INTCAPAold) {
-								// Port A
-								$Value = $INTCAPA & pow(2, $i);
-								If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-									SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
-								}
-							}
-							
-							If ($INTCAPB <> $INTCAPBold) {
-								// Port B
-								$Value = $INTCAPB & pow(2, $i);
-								If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
-									SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
-								}
-							}
-							*/
 						}
-						$this->SetBuffer("INTCAPA", $INTCAPA);
-						$this->SetBuffer("INTCAPB", $INTCAPB);
 						$this->GetInput();
 						break;
 					}
@@ -392,32 +368,6 @@
 					}
 				$tries--;
 				} while ($tries);
-				
-				$tries = 3;
-				do {
-					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_read", "InstanceID" => $this->InstanceID, "Register" => hexdec("10"), "Count" => 2)));
-					If ($Result < 0) {
-						$this->SendDebug("Setup", "Einlesen der IntCap-Werte fehlerhaft!", 0);
-						$this->SetStatus(202);
-					}
-					else {
-						If (is_array(unserialize($Result))) {
-							$this->SetStatus(102);
-							$OutputArray = array(); 
-							$OutputArray = unserialize($Result);
-							$INTCAPA = $OutputArray[1]; // INTCAPA Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-							$INTCAPB = $OutputArray[2]; // INTCAPB Interrupt Captured Value (zeigt den Zustand des GPIO wo der Interrupt eintrat)
-							$this->SendDebug("Setup", "INTCAPA: ".$INTCAPA." INTCAPB: ".$INTCAPB, 0);
-							$this->SetBuffer("INTCAPA", $INTCAPA);
-							$this->SetBuffer("INTCAPB", $INTCAPB);
-							$this->GetInput();
-							break;
-						}
-					}
-				$tries--;
-				} while ($tries); 
-				
-				
 			}
 			else {
 				// 16OutV1
