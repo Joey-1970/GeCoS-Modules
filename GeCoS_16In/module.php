@@ -285,7 +285,7 @@
 				$INTPOL = 0;
 				$Config = $Config | ($INTPOL << 1);
 				// Bit 2: ODR Open-Drain oder aktiver Treiber beim Interrupt
-				$ODR = 0;
+				$ODR = 1;
 				$Config = $Config | ($ODR << 2);
 				// Bit 3: irrelvant, nur bei der SPI-Version nutzbar
 				// Bit 4: DISSLW Defaultwert = 0
@@ -294,6 +294,8 @@
 				$MIRROR = 1;
 				$Config = $Config | ($MIRROR << 6);
 				// Bit 7: BANK Defaultwert = 0 Register sind in derselben Bank
+				
+				$BaseConfig = $Config;
 
 				// ConfigByte senden!
 				$this->SendDebug("Setup", "Config-Byte: ".$Config, 0);
@@ -344,8 +346,8 @@
 				$this->SendDebug("Setup", "Interrupt-Referenzwert-Byte A/B = 0", 0);
 
 				// Erneunt Basiskonfig-Byte mit übertragen
-				$ConfigArray[10] = 64; // Adresse 0A
-				$ConfigArray[11] = 64; // Adresse 0B
+				$ConfigArray[10] = $BaseConfig; // Adresse 0A
+				$ConfigArray[11] = $BaseConfig; // Adresse 0B
 				
 				// Pull-Up-Byte ermitteln
 				$ConfigArray[12] = 0; // Adresse 0C
