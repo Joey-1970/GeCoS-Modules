@@ -702,7 +702,6 @@ class GeCoS_IO_V2 extends IPSModule
 					 {
 						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						$this->SetMUXforInternal();
 						if ($this->OWVerify()) {
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
@@ -735,7 +734,6 @@ class GeCoS_IO_V2 extends IPSModule
 					{
 						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						$this->SetMUXforInternal();
 						if ($this->OWVerify()) {
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
@@ -768,7 +766,6 @@ class GeCoS_IO_V2 extends IPSModule
 					{
 						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						$this->SetMUXforInternal();
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(78); 
@@ -789,7 +786,6 @@ class GeCoS_IO_V2 extends IPSModule
 					{
 						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						$this->SetMUXforInternal();
 						if ($this->OWVerify()) {
 							if ($this->OWReset()) { //Reset was successful
 								$this->OWSelect();
@@ -815,7 +811,6 @@ class GeCoS_IO_V2 extends IPSModule
 					{
 						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						$this->SetMUXforInternal();
 						if ($this->OWReset()) { //Reset was successful
 							$this->OWSelect();
 							$this->OWWriteByte(0x5A); //PIO ACCESS WRITE
@@ -836,7 +831,6 @@ class GeCoS_IO_V2 extends IPSModule
 					{
 						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
 						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						$this->SetMUXforInternal();
 						if ($this->OWVerify()) {
 							// Erster Schritt: VDD ermitteln
 							if ($this->OWReset()) { //Reset was successful
@@ -2255,7 +2249,6 @@ class GeCoS_IO_V2 extends IPSModule
 	private function DS2482Reset() 
 	{
     		$this->SendDebug("DS2482Reset", "Function: Resetting DS2482", 0);
-		$this->SetMUXforInternal();
 		$Result = $this->CommandClientSocket(pack("L*", 60, $this->GetBuffer("OW_Handle"), 240, 0), 16); //reset DS2482
 		
 		If ($Result < 0) {
@@ -2420,7 +2413,6 @@ class GeCoS_IO_V2 extends IPSModule
 	{
     		$this->SendDebug("OWReset", "I2C Reset", 0);
 		// Write Byte to Handle
-		$this->SetMUXforInternal();
 		$Result = $this->CommandClientSocket(pack("L*", 60, $this->GetBuffer("OW_Handle"), 180, 0), 16);//1-wire reset
 		
 		If ($Result < 0) {
@@ -2470,7 +2462,6 @@ class GeCoS_IO_V2 extends IPSModule
 	private function OWWriteByte($byte) 
 	{
 		//$this->SendDebug("OWWriteByte", "Function: Write Byte to One-Wire", 0);
-    		$this->SetMUXforInternal();
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 225, 240), 16); //set read pointer (E1) to the status register (F0)
 		If ($Result < 0) {
 			$this->SendDebug("OWWriteByte", "I2C Write Failed", 0);
@@ -2502,7 +2493,6 @@ class GeCoS_IO_V2 extends IPSModule
         		}
     		}
 		
-		$this->SetMUXforInternal();
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 165, $byte), 16); //set write byte command (A5) and send data (byte)
 		If ($Result < 0) { //Device failed to acknowledge
         		$this->SendDebug("OWWriteByte", "I2C Write Byte Failed.", 0);
@@ -2542,7 +2532,6 @@ class GeCoS_IO_V2 extends IPSModule
 		if ($this->GetBuffer("owTripletDirection") > 0) {
 			$this->SetBuffer("owTripletDirection", 255);
 		}
-		$this->SetMUXforInternal();
 		$Result = $this->CommandClientSocket(pack("LLLLCC", 57, $this->GetBuffer("OW_Handle"), 0, 2, 120, $this->GetBuffer("owTripletDirection")), 16); //send 1-wire triplet and direction
 		If ($Result < 0) { //Device failed to acknowledge message
         		$this->SendDebug("OWTriplet", "OneWire Triplet Failed", 0);
