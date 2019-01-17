@@ -304,13 +304,6 @@ class GeCoS_IO_V2 extends IPSModule
 					// RTC einrichten
 					$RTC_Handle = $this->GetOnboardI2CHandle(104);
 					$this->SetBuffer("RTC_Handle", $RTC_Handle);
-					// 1-Wire einrichten
-					$OW_Handle = $this->GetOnboardI2CHandle(24);
-					$this->SetBuffer("OW_Handle", $OW_Handle);
-					If ($OW_Handle >= 0) {
-						// DS 2482 zurücksetzen
-						$this->DS2482Reset();
-					}
 					// https://pastebin.com/0d93ZuRb
 				}
 				elseif ($Board == 1) {
@@ -324,13 +317,14 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetMUX(7);
 					$RTC_Handle = $this->GetOnboardI2CHandle(104);
 					$this->SetBuffer("RTC_Handle", $RTC_Handle);
-					// 1-Wire einrichten
-					$OW_Handle = $this->GetOnboardI2CHandle(24);
-					$this->SetBuffer("OW_Handle", $OW_Handle);
-					If ($OW_Handle >= 0) {
-						// DS 2482 zurücksetzen
-						$this->DS2482Reset();
-					}
+					
+				}
+				// 1-Wire einrichten
+				$OW_Handle = $this->GetOnboardI2CHandle(24);
+				$this->SetBuffer("OW_Handle", $OW_Handle);
+				If ($OW_Handle >= 0) {
+					// DS 2482 zurücksetzen
+					$this->DS2482Reset();
 				}
 				$this->SendDebug("RTC Handle", $RTC_Handle, 0);	
 				$this->SendDebug("OW_Handle", $OW_Handle, 0);
@@ -355,26 +349,9 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("Serial_Handle", $SerialHandle);
 				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				
-				
-				
-				/*
-				$Script = "tag 999 wait p0 mils p1 evt p2 jmp 999";
-				//$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).pack("C*", $Script), 16);
-				$SerialScriptID = $this->CommandClientSocket(pack("L*", 38, 0, 0, strlen($Script)).$Script, 16);
-				$this->SetBuffer("SerialScriptID", $SerialScriptID );
-				$Parameter = array();
-				$Parameter = array(32768, 50, 1);
-				$this->SendDebug("Serial Skript ID", "SerialScriptID: ".(int)$SerialScriptID, 0);
-				If ($this->GetBuffer("SerialScriptID") >= 0) {
-					$Result = $this->StartProc((int)$SerialScriptID, serialize($Parameter));
-				}
-				*/
-					
 				// Vorbereitung beendet
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
 				$this->SetBuffer("ModuleReady", 1);
-				
-				
 				
 				// Ermitteln der genutzten I2C-Adressen
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
@@ -478,6 +455,9 @@ class GeCoS_IO_V2 extends IPSModule
 					$I2CInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 					If (($data->DeviceAddress >= 16) AND ($data->DeviceAddress <= 23)) {
 						$I2CInstanceArray[$data->InstanceID]["Notification"] = 1;
+					}
+					elseIf (($data->DeviceAddress >= 32) AND ($data->DeviceAddress <= 35)) {
+						$I2CInstanceArray[$data->InstanceID]["Notification"] = 2;
 					}
 					else {
 						$I2CInstanceArray[$data->InstanceID]["Notification"] = 0;
