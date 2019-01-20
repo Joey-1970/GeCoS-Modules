@@ -1001,6 +1001,11 @@ class GeCoS_IO_V2 extends IPSModule
 										$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
 										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
 									}
+									elseIf (($I2CInstanceArray[$Type]["Notification"] == 2) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 4)) {
+										$this->SetMUX(4);
+										$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$Type]["Handle"], 0x0E, 4, 4), 16 + 4);
+										$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result_2", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
+									}
 								}
 							}
 							
@@ -1018,6 +1023,11 @@ class GeCoS_IO_V2 extends IPSModule
 											$this->SetMUX(5);
 											$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
 											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
+										}
+										elseIf (($I2CInstanceArray[$Type]["Notification"] == 2) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 4)) {
+											$this->SetMUX(5);
+											$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$Type]["Handle"], 0x0E, 4, 4), 16 + 4);
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result_2", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
 										}
 									}
 								}
@@ -1039,6 +1049,11 @@ class GeCoS_IO_V2 extends IPSModule
 											$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
 											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
 										}
+										elseIf (($I2CInstanceArray[$Type]["Notification"] == 2) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 4)) {
+											$this->SetMUX(5);
+											$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$Type]["Handle"], 0x0E, 4, 4), 16 + 4);
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result_2", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
+										}
 									}
 								}
 
@@ -1056,6 +1071,11 @@ class GeCoS_IO_V2 extends IPSModule
 											$this->SetMUX(6);
 											$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$Type]["Handle"], 0, 0), 16);
 											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
+										}
+										elseIf (($I2CInstanceArray[$Type]["Notification"] == 2) AND ($I2CInstanceArray[$Type]["DeviceBus"] == 4)) {
+											$this->SetMUX(6);
+											$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$Type]["Handle"], 0x0E, 4, 4), 16 + 4);
+											$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"interrupt_with_result_2", "InstanceID" => $I2CInstanceArray[$Type]["InstanceID"], "Value" => $Result)));
 										}
 									}
 								}
