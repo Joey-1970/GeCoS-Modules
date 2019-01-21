@@ -252,10 +252,7 @@ class GeCoS_IO_V2 extends IPSModule
 				
 				$this->SetBuffer("Handle", -1);
 				$this->SetBuffer("NotifyCounter", 0);
-				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				$this->SetBuffer("Handle", $Handle);
-				$NotifyHandle = $this->CommandClientSocket(pack("L*", 18, 0, 0, 0));
-				$this->SetBuffer("NotifyHandle", $NotifyHandle);
+				
 				// Modes setzen
 				/*
 				# GPIO modes
@@ -359,6 +356,9 @@ class GeCoS_IO_V2 extends IPSModule
 				// Starttrigger für 1-Wire-Instanzen
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
 				
+				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
+				$this->SetBuffer("Handle", $Handle);
+				/*
 				If ($this->GetBuffer("Handle") >= 0) {
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
@@ -369,7 +369,7 @@ class GeCoS_IO_V2 extends IPSModule
 						$this->CommandClientSocket(pack("L*", 19, $Handle, 134610944, 0), 16);
 					}
 				}
-				
+				*/
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
 			}
@@ -1505,7 +1505,7 @@ class GeCoS_IO_V2 extends IPSModule
            				//IPS_LogMessage("GeCoS_IO Handle",$response[4]);
            				$this->SendDebug("Notification Keep Alive", "gestartet, Handle: ".$response[4], 0);
 					$this->SetBuffer("Handle", $response[4]);
-					/*
+					
 					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
@@ -1515,7 +1515,7 @@ class GeCoS_IO_V2 extends IPSModule
 						// Notify GPIO 17 + 18 + 27= Bitmask 134610944
 						$this->CommandClientSocket(pack("L*", 19, $response[4], 134610944, 0), 16);
 					}
-					*/
+					
 					// Event für GPIO 15 TxD
 					$this->CommandClientSocket(pack("L*", 115, $response[4], 1, 0), 16);
            			}
