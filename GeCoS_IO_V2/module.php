@@ -362,11 +362,11 @@ class GeCoS_IO_V2 extends IPSModule
 				If ($this->GetBuffer("Handle") >= 0) {
 					If ($Board = 0) {
 						// Notify GPIO 17 + 27= Bitmask 134348800
-						$this->CommandClientSocket(pack("L*", 19, $Handle, 134348800, 0), 16);
+						$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("NotifyHandle"), 134348800, 0), 16);
 					}
 					elseIf ($Board = 1) {
 						// Notify GPIO 17 + 18 + 27= Bitmask 134610944
-						$this->CommandClientSocket(pack("L*", 19, $Handle, 134610944, 0), 16);
+						$this->CommandClientSocket(pack("L*", 19, $this->GetBuffer("NotifyHandle"), 134610944, 0), 16);
 					}
 				}
 				
