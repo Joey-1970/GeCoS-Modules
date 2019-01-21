@@ -1014,6 +1014,7 @@ class GeCoS_IO_V2 extends IPSModule
 						}
 						// Wert von Pin 18
 						If ($Board == 1) {
+							$Bitvalue_18 = boolval($Level & pow(2, 18));
 							If (($Bit18Read == false) AND ($Bitvalue_18 == 0)) {
 								$this->SendDebug("Datenanalyse", "Interrupt - Bit 18 (I2C-Bus 1): ".(int)$Bitvalue_18, 0);
 
