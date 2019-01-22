@@ -513,9 +513,11 @@ class GeCoS_IO_V2 extends IPSModule
 			 case "i2c_4AnalogIn":
 				// I2CWS h bv - smb Write Byte: write byte
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
+					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 					$Result = $this->CommandClientSocket(pack("L*", 60, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Value, 0), 16);
 					If ($Result >= 0) {
 						IPS_Sleep($data->Time);
+						$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
 						$this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
 					}
 				}
