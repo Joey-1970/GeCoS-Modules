@@ -307,7 +307,7 @@
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 			$Result = $this->GetOutput();
 			If ($Result >= 0) {
-				$Result = $Bitmask & pow(2, $Output);
+				$Result = boolval(pow(2, $Output));
 			}
 		}
 		
