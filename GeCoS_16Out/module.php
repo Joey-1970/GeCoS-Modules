@@ -307,7 +307,7 @@
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 			$Result = $this->GetOutput();
 			If ($Result >= 0) {
-				$Result = boolval(pow(2, $Output));
+				$Result = boolval($Result & pow(2, $Output));
 			}
 		}
 		
