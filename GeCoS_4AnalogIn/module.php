@@ -242,7 +242,7 @@
 						$this->SetStatus(202);
 					}
 					else {
-						If (is_array(unserialize($Result)) {
+						If (is_array(unserialize($Result)) == true) {
 							$MeasurementData = unserialize($Result);
 							// Auslesen des Konfigurations-Registers
 							$Configuration = $MeasurementData[count($MeasurementData)];
