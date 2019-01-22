@@ -146,6 +146,7 @@
 					}	
 			   	}
 			   	break;			
+			/*
 			case "set_i2c_byte_block":
 			   	If ($data->InstanceID == $this->InstanceID) {
 			   		$this->SetBuffer("MeasurementData", $data->ByteArray);
@@ -210,6 +211,7 @@
 					SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value * 4.923 / 1000);
 				}
 			   	break;
+			*/
 	 	}
  	}
 	    
@@ -223,13 +225,82 @@
 			$i = 0;
 			for ($i = 0; $i <= 3; $i++) {
 				If ($this->ReadPropertyBoolean("Active_".$i) == true) {
+					$Result = false;
+					// Konfiguration erstellen
 					$Configuration = ($i << 5) | (1 << 4) | ($this->ReadPropertyInteger("Resolution_".$i) << 2) | $this->ReadPropertyInteger("Amplifier_".$i);
-
+					
+					// Konfiguration senden und bei Erfolg Ergebnisse bekommen
 					If ($this->ReadPropertyInteger("Resolution_".$i) <= 2) { 
-						$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 3, "Time" => $Time[$this->ReadPropertyInteger("Resolution_".$i)])));
+						$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 3, "Time" => $Time[$this->ReadPropertyInteger("Resolution_".$i)])));
 					}
 					elseif ($this->ReadPropertyInteger("Resolution_".$i) == 3) {
-						$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 4, "Time" => $Time[$this->ReadPropertyInteger("Resolution_".$i)])));
+						$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_4AnalogIn", "InstanceID" => $this->InstanceID, "Register" => $this->ReadPropertyInteger("DeviceAddress"), "Value" => $Configuration, "Count" => 4, "Time" => $Time[$this->ReadPropertyInteger("Resolution_".$i)])));
+					}
+				
+					If ($Result === false) {
+						$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
+						$this->SetStatus(202);
+					}
+					else {
+						If (is_array(unserialize($Result)) {
+							$MeasurementData = unserialize($Result);
+							// Auslesen des Konfigurations-Registers
+							$Configuration = $MeasurementData[count($MeasurementData)];
+							$Amplifier = ($Configuration & 3);
+							$Resolution = ($Configuration & 12) >> 2;
+							$Channel = ($Configuration & 96) >> 5;
+							$ReadyBit = ($Configuration & 128) >> 7;
+							If ($ReadyBit == false) {
+								$this->SendDebug("ReceiveData", "Kanal: ".$Channel, 0);
+								switch ($Resolution) {
+									case 0:	
+										$this->SendDebug("ReceiveData", "Auflösung 12 Bit", 0);
+										$SignBit = ($MeasurementData[1] & 8) >> 3;
+										$Value = (($MeasurementData[1] & 15) << 8) | $MeasurementData[2];
+										If ($SignBit == 0) {
+											$Value = $Value;
+										}
+										else {
+											$Value = -($this->bitflip($Value));
+										}
+										break;
+									case 1:
+										$this->SendDebug("ReceiveData", "Auflösung 14 Bit", 0);
+										$SignBit = ($MeasurementData[1] & 32) >> 5;
+										$Value = (($MeasurementData[1] & 63) << 8) | $MeasurementData[2];
+										If ($SignBit == 0) {
+											$Value = $Value * 0.25;
+										}
+										else {
+											$Value = -($this->bitflip($Value)) * 0.25;
+										}
+										break;
+									case 2:								
+										$this->SendDebug("ReceiveData", "Auflösung 16 Bit", 0);
+										$SignBit = ($MeasurementData[1] & 128) >> 7;
+										$Value = (($MeasurementData[1] & 255) << 8) | $MeasurementData[2];
+										If ($SignBit == 0) {
+											$Value = $Value * 0.0625;
+										}
+										else {
+											$Value = -($this->bitflip($Value)) * 0.0625;
+										}
+										break;
+									case 3:
+										$this->SendDebug("ReceiveData", "Auflösung 18 Bit", 0);
+										$SignBit = ($MeasurementData[1] & 2) >> 1;
+										$Value = (($MeasurementData[1] & 3) << 16) | ($MeasurementData[2] << 8) | $MeasurementData[3];
+										If ($SignBit == 0) {
+											$Value = $Value * 0.015625;
+										}
+										else {
+											$Value = -($this->bitflip($Value)) * 0.015625;
+										}
+										break;	
+								}	
+								SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value * 4.923 / 1000);
+							}
+						}
 					}
 				}
 			}
