@@ -1279,7 +1279,7 @@ class GeCoS_IO extends IPSModule
 					$Result = $ByteArray; 
 				}
 		            	else {
-           				IPS_LogMessage("GeCoS_IO I2C Read Bytes","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
+           				IPS_LogMessage("GeCoS_IO I2C Read Bytes on Handle","Handle: ".$response[2]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));
            			}
 				break;
 			case "57":
@@ -1307,7 +1307,7 @@ class GeCoS_IO extends IPSModule
 					//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_i2c_data", "InstanceID" => $this->InstanceArraySearch("Handle", $response[2]), "Register" => $response[3], "Value" => $response[4])));
 		            	}
 		            	else {
-		            		IPS_LogMessage("GeCoS_IO I2C Read Byte on Handle","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));	
+		            		IPS_LogMessage("GeCoS_IO I2C Write Byte on Handle","Handle: ".$response[2]." Register: ".$response[3]." Fehlermeldung: ".$this->GetErrorText(abs($response[4])));	
 		            	}
 		            	break;
 			case "61":
