@@ -48,6 +48,10 @@
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
 		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
+		If ($this->GetBoardVersion() == 1) {
+			$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 6);
+		}
+		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
@@ -285,6 +289,12 @@
 	private function unsetBit($byte, $significance) {
 	    // ein bestimmtes Bit auf 0 setzen
 	    return $byte & ~(1<<$significance);
+	}
+	 
+	private function GetBoardVersion()
+	{
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "getBoardVersion" )));	
+	return $Result;
 	}
 	    
 	private function HasActiveParent()
