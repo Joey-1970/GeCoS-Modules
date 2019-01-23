@@ -479,7 +479,10 @@ class GeCoS_IO_V2 extends IPSModule
 					$Result = false;
 				}
 				break;
-		
+			case "getBoardVersion":
+					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
+				 	$Result = $Board;
+				break;  
 			case "i2c_read_bytes":
 				// I2CRD h num - i2c Read bytes
 				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
