@@ -463,7 +463,7 @@ class GeCoS_IO extends IPSModule
 				}
 				break;
 			case "getBoardVersion":
-					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
+					$Board = 0;
 				 	$Result = $Board;
 				break;  
 			case "i2c_read_bytes":
