@@ -149,6 +149,7 @@
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinStatus($i, $Channel, $Value);
+					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -159,6 +160,7 @@
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinColor($i, $Value);
+					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -169,6 +171,7 @@
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValue($i, $Channel, $Value);
+					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
