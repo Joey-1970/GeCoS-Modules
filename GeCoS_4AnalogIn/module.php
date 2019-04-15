@@ -265,7 +265,7 @@
 	return $Result;
 	}
 	    
-	private function HasActiveParent()
+	protected function HasActiveParent()
     	{
 		$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
 		$Instance = @IPS_GetInstance($this->InstanceID);
