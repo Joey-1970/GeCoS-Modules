@@ -23,17 +23,31 @@
 			$this->EnableAction("Status_RGB_".($i + 1));
 			$this->RegisterVariableInteger("Color_RGB_".($i + 1), "Farbe ".($i + 1), "~HexColor", 20 + ($i * 70));
 			$this->EnableAction("Color_RGB_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensity Rot ".($i + 1), "Intensity.4096", 30 + ($i * 70) );
+			$this->RegisterVariableInteger("Intensity_R_".($i + 1), "Intensität Rot ".($i + 1), "Intensity.4096", 30 + ($i * 70) );
 			$this->EnableAction("Intensity_R_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensity Grün ".($i + 1), "Intensity.4096", 40 + ($i * 70));
+			$this->RegisterVariableInteger("Intensity_G_".($i + 1), "Intensität Grün ".($i + 1), "Intensity.4096", 40 + ($i * 70));
 			$this->EnableAction("Intensity_G_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensity Blau ".($i + 1), "Intensity.4096", 50 + ($i * 70));
+			$this->RegisterVariableInteger("Intensity_B_".($i + 1), "Intensität Blau ".($i + 1), "Intensity.4096", 50 + ($i * 70));
 			$this->EnableAction("Intensity_B_".($i + 1));
 			$this->RegisterVariableBoolean("Status_W_".($i + 1), "Status Weiß ".($i + 1), "~Switch", 60 + ($i * 70));
 			$this->EnableAction("Status_W_".($i + 1));
-			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensity Weiß ".($i + 1), "Intensity.4096", 70 + ($i * 70));
+			$this->RegisterVariableInteger("Intensity_W_".($i + 1), "Intensität Weiß ".($i + 1), "Intensity.4096", 70 + ($i * 70));
 			$this->EnableAction("Intensity_W_".($i + 1));			
 		}
+		$this->RegisterVariableBoolean("Status_RGB_5", "Status RGB Alle", "~Switch", 290);
+		$this->EnableAction("Status_RGB_5");
+		$this->RegisterVariableInteger("Color_RGB_5", "Farbe Alle", "~HexColor", 300);
+		$this->EnableAction("Color_RGB_5");
+		$this->RegisterVariableInteger("Intensity_R_5", "Intensität Rot Alle", "Intensity.4096", 310);
+		$this->EnableAction("Intensity_R_5");
+		$this->RegisterVariableInteger("Intensity_G_5", "Intensität Grün Alle", "Intensity.4096", 320);
+		$this->EnableAction("Intensity_G_5");
+		$this->RegisterVariableInteger("Intensity_B_5", "Intensität Blau Alle", "Intensity.4096", 330);
+		$this->EnableAction("Intensity_B_5");
+		$this->RegisterVariableBoolean("Status_W_5", "Status Weiß Alle", "~Switch", 340);
+		$this->EnableAction("Status_W_5");
+		$this->RegisterVariableInteger("Intensity_W_5", "Intensität Weiß Alle", "Intensity.4096", 350);
+		$this->EnableAction("Intensity_W_5");	
         }
  	
 	public function GetConfigurationForm() 
