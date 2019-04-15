@@ -143,13 +143,34 @@
 		
 		switch($Source) {
 		case "Status":
-			$this->SetOutputPinStatus($Group, $Channel, $Value);
+			If ($Group <= 4) {
+				$this->SetOutputPinStatus($Group, $Channel, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinStatus($i, $Channel, $Value);
+				}
+			}
 	            	break;
 		case "Color":
-	            	$this->SetOutputPinColor($Group, $Value);
+	            	If ($Group <= 4) {
+				$this->SetOutputPinColor($Group, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinColor($i, $Value);
+				}
+			}
 	            	break;
 		case "Intensity":
-	            	$this->SetOutputPinValue($Group, $Channel, $Value);
+	            	If ($Group <= 4) {
+				$this->SetOutputPinValue($Group, $Channel, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinValue($i, $Channel, $Value);
+				}
+			}
 	            	break;
 	        default:
 	            throw new Exception("Invalid Ident");
@@ -161,7 +182,7 @@
 	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
 	{ 
 		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
-		$Group = min(5, max(1, $Group));
+		$Group = min(4, max(1, $Group));
 		$Value = min(4095, max(0, $Value));
 		
 		$ChannelArray = [
