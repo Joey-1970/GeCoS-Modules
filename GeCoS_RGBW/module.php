@@ -131,58 +131,6 @@
 					}	
 			   	}
 			   	break;
-			case "set_i2c_data":
-			  	/*
-				If ($data->InstanceID == $this->InstanceID) {
-			  		$this->SendDebug("set_i2c_data", "Ausfuehrung", 0);
-					$Output = array(); 
-					$Output = unserialize($this->GetBuffer("Output"));
-					// Daten zur Kalibrierung
-			  		$this->SendDebug("set_i2c_data", "Register: ".$data->Register, 0);
-					$this->SendDebug("set_i2c_data", "Wert: ".$data->Value, 0);
-					
-					If (($data->Register >= 6) AND ($data->Register < 70)) {
-						$Output[$data->Register] = $data->Value;
-			  		}
-					
-					If ($data->Register % 2 !=0) {
-						$ChannelArray = [
-						    0 => "R",
-						    4 => "G",
-						    8 => "B",
-						    12=> "W",
-
-						];
-						
-						$Group = intval(($data->Register - 9) / 16) + 1;
-						$Channel = ($data->Register - 9) - (($Group - 1) * 16);
-						$Value = (($Output[$data->Register] & 15) << 8)  | $Output[$data->Register - 1]; 
-						$Status = boolval($Output[$data->Register] & 16);
-						
-						If ($Value <> GetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group))) {
-							SetValueInteger($this->GetIDForIdent("Intensity_".$ChannelArray[$Channel]."_".$Group), $Value);
-						}
-						If ($ChannelArray[$Channel] == "W") {
-							If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_W_".$Group))) {
-								SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), !$Status);
-							}
-						}
-						else {
-							If ($Status <> !GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group))) {
-								SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), !$Status);
-							}
-						}
-						// Farbrad setzen
-						$Value_R = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group)));
-						$Value_G = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group)));
-						$Value_B = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group)));
-						SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
-							
-					}
-					$this->SetBuffer("Output", serialize($Output));
-				}
-				*/
-			  	break; 
 	 	}
  	}
 	
@@ -213,7 +161,7 @@
 	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
 	{ 
 		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
-		$Group = min(4, max(1, $Group));
+		$Group = min(5, max(1, $Group));
 		$Value = min(4095, max(0, $Value));
 		
 		$ChannelArray = [
@@ -279,8 +227,6 @@
 				$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
 				// Ausgang abfragen
 				$this->GetOutput($StartAddress + 2);
-				//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
-				//$this->SetStatusVariables($StartAddress + 2, $Result);
 			}
 		}
 		else {
@@ -391,8 +337,6 @@
 			// Ausgänge initial einlesen
 			for ($i = 6; $i < 70; $i = $i + 4) {
 				$this->GetOutput($i + 2);
-				//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
-				//$this->SetStatusVariables($i + 2, $Result);
 			}
 		}
 	}
