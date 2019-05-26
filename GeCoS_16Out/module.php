@@ -500,7 +500,8 @@
 					IPS_LogMessage("GeCoS_16Out", "Setup: nicht erfolgreich!");
 				}
 			}
-		}    
+		}
+	}
 	    
 	private function setBit($byte, $significance) { 
  		// ein bestimmtes Bit auf 1 setzen
