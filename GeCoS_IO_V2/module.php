@@ -8,12 +8,6 @@ class GeCoS_IO_V2 extends IPSModule
             	parent::__construct($InstanceID);
 	}
 	
-	public function __destruct()
-	{
-		if ($this->Socket)
-		    	socket_close($this->Socket);
-	} 
-	
 	public function Create() 
 	{
 	    	parent::Create();
@@ -210,8 +204,8 @@ class GeCoS_IO_V2 extends IPSModule
 				If (IPS_GetProperty($ParentID, 'Host') <> $this->ReadPropertyString('IPAddress')) {
 		                	IPS_SetProperty($ParentID, 'Host', $this->ReadPropertyString('IPAddress'));
 				}
-				If (IPS_GetProperty($ParentID, 'Port') <> 8888) {
-		                	IPS_SetProperty($ParentID, 'Port', 8888);
+				If (IPS_GetProperty($ParentID, 'Port') <> 8000) {
+		                	IPS_SetProperty($ParentID, 'Port', 8000);
 				}
 				If (IPS_GetProperty($ParentID, 'Open') <> $this->ReadPropertyBoolean("Open")) {
 		                	IPS_SetProperty($ParentID, 'Open', $this->ReadPropertyBoolean("Open"));
@@ -239,121 +233,22 @@ class GeCoS_IO_V2 extends IPSModule
 						
 			If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
 				$this->SetSummary($this->ReadPropertyString('IPAddress'));
-				$this->SendDebug("ApplyChangges", "Starte Vorbereitung", 0);
+				$this->SendDebug("ApplyChanges", "Starte Vorbereitung", 0);
 				$this->CheckConfig();
-				// Hardware und Softwareversion feststellen
-				$this->CommandClientSocket(pack("LLLL", 17, 0, 0, 0).pack("LLLL", 26, 0, 0, 0), 32);
+
 				
-				// I2C-Handle zurücksetzen
-				$this->ResetI2CHandle(0);
 				
-				// Serial-Handle zurücksetzen
-				$this->ResetSerialHandle();
 				
-				$this->SetBuffer("Handle", -1);
-				$this->SetBuffer("NotifyCounter", 0);
-				
-				// Modes setzen
-				/*
-				# GPIO modes
-				INPUT  = 0
-				OUTPUT = 1
-				ALT0   = 4
-				ALT1   = 5
-				ALT2   = 6
-				ALT3   = 7
-				ALT4   = 3
-				ALT5   = 2
-				*/
-				// Konfiguration der I²C-Pin
-				$this->CommandClientSocket(pack("L*", 0, 2, 4, 0).pack("L*", 0, 3, 4, 0), 32);
-				
-				// MUX identifizieren zur Differenzierung der Boardversion
-				$MUX_Handle = $this->GetMUXHandle();
-				$this->SetBuffer("MUX_Handle", $MUX_Handle);
-				$this->SendDebug("MUX Handle", $MUX_Handle, 0);
-				If ($MUX_Handle >= 0) {
-					// MUX setzen
-					$this->SetMUX(1);
-				}
-				else {
-					$this->SetStatus(201);
-					$this->SendDebug("ApplyChangges", "Fehler bei der MUX-Erkennung!", 0);
-					return;
-				}
-				$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
-				
-				// Pullup/Pulldown setzen
-				/*
-				# GPIO Pull Up Down
-				PUD_OFF  = 0
-				PUD_DOWN = 1
-				PUD_UP   = 2
-				*/
-				
-				If ($Board == 0) {
-					// Konfiguration der Interupt-Eingänge
-					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 27, 0, 0), 32);
-					// Setzen der Pull-Up
-					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 27, 2, 0), 32);
-					// RTC einrichten
-					$RTC_Handle = $this->GetOnboardI2CHandle(104);
-					$this->SetBuffer("RTC_Handle", $RTC_Handle);
-					// https://pastebin.com/0d93ZuRb
-				}
-				elseif ($Board == 1) {
-					// Konfiguration der Interupt-Eingänge
-					$this->CommandClientSocket(pack("L*", 0, 17, 0, 0).pack("L*", 0, 18, 0, 0).pack("L*", 0, 27, 0, 0), 48);
-					// Setzen der Pull-Up
-					$this->CommandClientSocket(pack("L*", 2, 17, 2, 0).pack("L*", 2, 18, 2, 0).pack("L*", 2, 27, 2, 0), 48);
-					// RTC einrichten
-					$this->SetMUX(7);
-					$RTC_Handle = $this->GetOnboardI2CHandle(104);
-					$this->SetBuffer("RTC_Handle", $RTC_Handle);
-					
-				}
-				// 1-Wire einrichten
-				$OW_Handle = $this->GetOnboardI2CHandle(24);
-				$this->SetBuffer("OW_Handle", $OW_Handle);
-				If ($OW_Handle >= 0) {
-					// DS 2482 zurücksetzen
-					$this->DS2482Reset();
-				}
-				$this->SendDebug("RTC Handle", $RTC_Handle, 0);	
-				$this->SendDebug("OW_Handle", $OW_Handle, 0);
-				
-					
-				// Raspberry Pi 3 = Alt5(Rxd1/TxD1) => 2
-				// Alle anderen = Alt0(Rxd0/TxD0) => 4
-				If ($this->GetBuffer("Default_Serial_Bus") == 0) {
-					$this->CommandClientSocket(pack("L*", 0, 14, 4, 0).pack("L*", 0, 15, 4, 0), 32);
-				}
-				elseif ($this->GetBuffer("Default_Serial_Bus") == 1) {
-					// Beim Raspberry Pi 3 ist Bus 0 schon durch die Bluetooth-Schnittstelle belegt
-					$this->CommandClientSocket(pack("L*", 0, 14, 2, 0).pack("L*", 0, 15, 2, 0), 32);
-				}
-				
-				// Notify Stoppen
-				If ($this->GetBuffer("Handle") >= 0) {
-					//$this->ClientSocket(pack("L*", 21, $this->GetBuffer("Handle"), 0, 0));
-				}
-				
-				$SerialHandle = $this->CommandClientSocket(pack("L*", 76, $this->ReadPropertyInteger('Baud'), 0, strlen($this->ReadPropertyString('ConnectionString')) ).$this->ReadPropertyString('ConnectionString'), 16);
-				$this->SetBuffer("Serial_Handle", $SerialHandle);
-				$this->SendDebug("Serial Handle", $SerialHandle, 0);
 				
 				// Vorbereitung beendet
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
 				$this->SetBuffer("ModuleReady", 1);
 				
 				// Ermitteln der genutzten I2C-Adressen
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_i2c")));
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_modules")));
 				
 				// Starttrigger für 1-Wire-Instanzen
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_start_trigger")));
-				
-				$Handle = $this->ClientSocket(pack("L*", 99, 0, 0, 0));
-				$this->SetBuffer("Handle", $Handle);
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_start_trigger")));
 				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
