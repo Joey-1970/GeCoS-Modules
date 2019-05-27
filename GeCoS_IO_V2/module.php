@@ -401,6 +401,11 @@ class GeCoS_IO_V2 extends IPSModule
 		}
 	}
 	
+	public function GetRTC_Data()
+	{
+		$this->SendDebug("GetRTC_Data", "Ausfuehrung", 0);
+	}
+	
 	private function SSH_Connect(String $Command)
 	{
 	        If (($this->ReadPropertyBoolean("Open") == true) ) {
