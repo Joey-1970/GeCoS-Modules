@@ -182,22 +182,7 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		If (IPS_GetKernelRunlevel() == 10103) {				
 			$this->SetBuffer("ModuleReady", 0);
-			$this->SetBuffer("Default_Serial_Bus", 0);
-			$this->SetBuffer("MUX_Handle", -1);
-			$this->SetBuffer("MUX_Channel", 1);
-			$this->SetBuffer("RTC_Handle", -1);
-			$this->SetBuffer("Serial_Handle", -1);
-			$this->SetBuffer("OW_Handle", -1);
-			$this->SetBuffer("NotifyCounter", -1);
-			$this->SetBuffer("CS_Handle", 0);
 			
-			$this->SetBuffer("owLastDevice", 0);
-			$this->SetBuffer("owLastDiscrepancy", 0);
-			$this->SetBuffer("owTripletDirection", 1);
-			$this->SetBuffer("owTripletFirstBit", 0);
-			$this->SetBuffer("owTripletSecondBit", 0);
-			$this->SetBuffer("owDeviceAddress_0", 0);
-			$this->SetBuffer("owDeviceAddress_1", 0);
 			$ParentID = $this->GetParentID();
 			
 			If ($ParentID > 0) {
@@ -235,11 +220,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetSummary($this->ReadPropertyString('IPAddress'));
 				$this->SendDebug("ApplyChanges", "Starte Vorbereitung", 0);
 				$this->CheckConfig();
-
-				
-				
-				
-				
+			
 				// Vorbereitung beendet
 				$this->SendDebug("ApplyChanges", "Beende Vorbereitung", 0);
 				$this->SetBuffer("ModuleReady", 1);
@@ -265,7 +246,7 @@ class GeCoS_IO_V2 extends IPSModule
 	
 	public function GetConfigurationForParent()
 	{
-	  	$JsonArray = array( "Host" => $this->ReadPropertyString('IPAddress'), "Port" => 8888, "Open" => $this->ReadPropertyBoolean("Open"));
+	  	$JsonArray = array( "Host" => $this->ReadPropertyString('IPAddress'), "Port" => 8000, "Open" => $this->ReadPropertyBoolean("Open"));
 	  	$Json = json_encode($JsonArray);        
 	  	return $Json;
 	}  
@@ -375,443 +356,33 @@ class GeCoS_IO_V2 extends IPSModule
 				}
 				break;
 			case "getBoardVersion":
-					$Board = GetValueInteger($this->GetIDForIdent("Boardversion"));
+					$Board = 2; // aktuell eine Konstante
 				 	$Result = $Board;
 				break;  
-			case "i2c_read_bytes":
-				// I2CRD h num - i2c Read bytes
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
-				}
-				break;  
-			case "i2c_write_bytes":
-				// I2CWD h bvs - i2c Write data
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$ByteArray = array();
-					$ByteArray = unserialize($data->ByteArray);
-					$this->CommandClientSocket(pack("L*", 57, $I2CInstanceArray[$data->InstanceID]["Handle"], 0, count($ByteArray)).pack("C*", ...$ByteArray), 16);
-				}
-				break;	
-			case "i2c_PCA9655E_Read": // Module 16In und 16 Out
-				// I2CRW h r - smb Read Word Data: read word from register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-				}
-				break;  
-			case "i2c_PCA9655E_Write": // Module 16In und 16 Out
-				//I2CWW h r wv - smb Write Word Data: write word to register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 64, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
-				}
-				break;   
-			 case "i2c_4AnalogIn":
-				// I2CWS h bv - smb Write Byte: write byte
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 60, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Value, 0), 16);
-					If ($Result == true) {
-						IPS_Sleep($data->Time);
-						$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-						$Result = $this->CommandClientSocket(pack("L*", 56, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Count, 0), 16 + ($data->Count));
-					}
-				}
-				break;	
-			case "i2c_read_byte":
-		   		// I2CRB h r - smb Read Byte Data: read byte from register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-				}
-		   		break;
-			case "i2c_read_2_byte":
-		   		// I2CRB h r - smb Read Byte Data: read byte from register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
-								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0), 32);
-				}
-		   		break;
-			case "i2c_read_6_byte":
-		   		// I2CRB h r - smb Read Byte Data: read byte from register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0).
-								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 0).
-								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0).
-								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 5, 0).
-								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 0).
-								   pack("L*", 61, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 9, 0), 96);
-				}
-		   		break;
-			case "i2c_write_byte":
-		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
-				}
-		   		break;
-			case "i2c_PCA9685_Write": // Module PWM und RGBW
-		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value), 16);
-				}
-		   		break;
-			case "i2c_PCA9685_Read": // Module PWM und RGBW
-				// I2CRW h r - smb Read Word Data: read word from register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-				}
-				break;  
-			case "i2c_PCA9685_Read_Group": // Modul RGBW
-				// I2CRW h r - smb Read Word Data: read word from register
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Color = Array();
-					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 0), 16);
-					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 0), 16);
-					$Color[] = $this->CommandClientSocket(pack("L*", 63, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 0), 16);
-					$Result = serialize($Color);
-				}
-				break;  
-			case "i2c_write_4_byte":
-		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 3, 4, $data->Value_4), 64);
-				}
-		   		break;
-			case "i2c_write_12_byte":
-		   		// I2CWB h r bv - smb Write Byte Data: write byte to register  	
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$this->CommandClientSocket(pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Value_1).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 1, 4, $data->Value_2).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 2, 4, $data->Value_3).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 3, 4, $data->Value_4).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 4, 4, $data->Value_5).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 5, 4, $data->Value_6).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 6, 4, $data->Value_7).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 7, 4, $data->Value_8).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 8, 4, $data->Value_9).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 9, 4, $data->Value_10).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 10, 4, $data->Value_11).
-								   pack("L*", 62, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register + 11, 4, $data->Value_12), 192);
-				}
-		   		break;
-			case "i2c_MCP23017_write": 
-				// I2CWI h r bvs - smb Write I2C Block Data
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$ParameterArray = array();
-					$ParameterArray = unserialize($data->Parameter);
-					$Result = $this->CommandClientSocket(pack("LLLLC*", 68, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, count($ParameterArray), 
-										  ...$ParameterArray), 16);
-				}
-				break;
-			case "i2c_MCP23017_read":
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$Result = $this->CommandClientSocket(pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 16 + ($data->Count));
-				}
-				break;  
-			case "i2c_MCP23017_write_read":
-				If ($I2CInstanceArray[$data->InstanceID]["Handle"] >= 0) {
-					$this->SetMUX($I2CInstanceArray[$data->InstanceID]["DeviceBus"]);
-					$ParameterArray = array();
-					$ParameterArray = unserialize($data->Parameter);
-					$Result = $this->CommandClientSocket(pack("LLLLC*", 68, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, count($ParameterArray), 
-										  ...$ParameterArray).
-									     pack("L*", 67, $I2CInstanceArray[$data->InstanceID]["Handle"], $data->Register, 4, $data->Count), 32 + ($data->Count));
-				}
-				break;  
-			// Serielle Kommunikation
-			case "serial_write":
-				$Message = utf8_decode($data->Message);
-				$this->WriteSerial($Message);
-				IPS_Sleep(100);
-				$this->CheckSerial();
-				break;
 			
-		    
-		    	// 1-Wire
-		    	case "get_OWDevices":
-				 If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					$j = 0;
-					$OWDeviceArray = array();
-					$this->OWSearchStart();
-					$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-					$DeviceSerialArray = array();
-					If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
-						for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-							$DeviceSerial = $OWDeviceArray[$i][1];
-							$FamilyCode = substr($DeviceSerial, -2);
-							If (($FamilyCode == $data->FamilyCode) AND ($OWDeviceArray[$i][2] == 0)) {
-								$DeviceSerialArray[$j][0] = $DeviceSerial; // DeviceAdresse
-								$DeviceSerialArray[$j][1] = $OWDeviceArray[$i][5]; // Erster Teil der Adresse
-								$DeviceSerialArray[$j][2] = $OWDeviceArray[$i][6]; // Zweiter Teil der Adresse
-								$j = $j + 1;
-							}
-						}
-					}
-					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_OWDevices", "InstanceID" => $data->InstanceID, "Result"=>serialize($DeviceSerialArray) ))); 
-				 	$Result = true;
+			
+			
+			case "StatusAllIn": // Module 16In
+				// Auslesen des aktuellen Status
+				
+				break;   
+			
+			
+			// Raspberry Pi Kommunikation
+		    	case "get_RPi_connect":
+				// SSH Connection
+				If ($data->IsArray == false) {
+					// wenn es sich um ein einzelnes Kommando handelt
+					//IPS_LogMessage("IPS2GPIO SSH-Connect", $data->Command );
+					$Result = $this->SSH_Connect($data->Command);
+					//IPS_LogMessage("IPS2GPIO SSH-Connect", $Result );
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>false  )));
 				}
 				else {
-					$Result = false;
+					// wenn es sich um ein Array von Kommandos handelt
+					$Result = $this->SSH_Connect_Array($data->Command);
+					$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>true  )));
 				}
-				 break;
-		  	case "set_OWDevices":
-				If ($this->GetBuffer("ModuleReady") == 1) {
-					// die genutzten Device Adressen anlegen
-					$OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
-					$OWDeviceArray = array();
-					$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-					If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
-						for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-							If ($OWDeviceArray[$i][1] == $data->DeviceSerial) {
-								$OWInstanceArray[$data->InstanceID]["Address_0"] = $OWDeviceArray[$i][5];
-								$OWInstanceArray[$data->InstanceID]["Address_1"] = $OWDeviceArray[$i][6];
-							}
-						}
-					}
-					else {
-						$OWInstanceArray[$data->InstanceID]["Address_0"] = 0;
-						$OWInstanceArray[$data->InstanceID]["Address_1"] = 0;	
-					}
-					 $OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
-					 $this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
-					 // Messages einrichten
-					 $this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
-					 $this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
-					 $Result = true;
-				}
-				break;
-			case "get_DS18S20Temperature":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					if (IPS_SemaphoreEnter("OW", 3000))
-					 {
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						if ($this->OWVerify()) {
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0x44); //start conversion
-								IPS_Sleep($data->Time); //Wait for conversion
-								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-								$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-								if ($this->OWReset()) { //Reset was successful
-									$this->OWSelect();
-									$this->OWWriteByte(0xBE); //Read Scratchpad
-									$Celsius = $this->OWRead_18S20_Temperature();
-									$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18S20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
-								}
-							}
-						}
-						else {
-							$this->SendDebug("get_DS18S20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-						}
-						IPS_SemaphoreLeave("OW");
-					}
-					else {
-						$this->SendDebug("DS18S20Temperature", "Semaphore Abbruch", 0);
-					}
-				}
-				break;
-			 case "get_DS18B20Temperature":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					if (IPS_SemaphoreEnter("OW", 3000))
-					{
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						if ($this->OWVerify()) {
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0x44); //start conversion
-								IPS_Sleep($data->Time); //Wait for conversion
-								$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-								$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-								if ($this->OWReset()) { //Reset was successful
-									$this->OWSelect();
-									$this->OWWriteByte(0xBE); //Read Scratchpad
-									$Celsius = $this->OWRead_18B20_Temperature(); 
-									$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS18B20Temperature", "InstanceID" => $data->InstanceID, "Result"=>$Celsius )));
-								}
-							}
-						}
-						else {
-							$this->SendDebug("get_DS18B20Temperature", "OWVerify: Device wurde nicht gefunden!", 0);
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-						}
-						IPS_SemaphoreLeave("OW");
-					}
-					else {
-						$this->SendDebug("DS18B20Temperature", "Semaphore Abbruch", 0);
-					}
-				}
- 				break;
-			case "set_DS18B20Setup":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					if (IPS_SemaphoreEnter("OW", 3000))
-					{
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(78); 
-							$this->OWWriteByte(0); 
-							$this->OWWriteByte(0); 
-							$this->OWWriteByte($data->Resolution); 
-						}
-						IPS_SemaphoreLeave("OW");
-					}
-					else {
-						$this->SendDebug("DS18B20Setup", "Semaphore Abbruch", 0);
-					}
-				}
- 				break;
-			case "get_DS2413State":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					if (IPS_SemaphoreEnter("OW", 2000))
-					{
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						if ($this->OWVerify()) {
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0xF5); //PIO ACCESS READ
-								$Result = $this->OWRead_2413_State();	
-								$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_DS2413State", "InstanceID" => $data->InstanceID, "Result"=>$Result )));
-							}
-						}
-						else {
-							$this->SendDebug("get_DS2413State", "OWVerify: Device wurde nicht gefunden!", 0);
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-						}
-						IPS_SemaphoreLeave("OW");
-					}
-					else {
-						$this->SendDebug("DS2413State", "Semaphore Abbruch", 0);
-					}
-				}
- 				break;
-			case "set_DS2413Setup":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					if (IPS_SemaphoreEnter("OW", 3000))
-					{
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						if ($this->OWReset()) { //Reset was successful
-							$this->OWSelect();
-							$this->OWWriteByte(0x5A); //PIO ACCESS WRITE
-							$Value = $data->Setup;
-							$this->OWWriteByte($Value); 
-							$this->OWWriteByte($Value ^ 0xFF); 
-						 }
-						IPS_SemaphoreLeave("OW");
-					}
-					else {
-						$this->SendDebug("DS2413Setup", "Semaphore Abbruch", 0);
-					}
-				}
- 				break;
-			case "get_DS2438Measurement":
-				If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-					if (IPS_SemaphoreEnter("OW", 3000))
-					{
-						$this->SetBuffer("owDeviceAddress_0", $data->DeviceAddress_0);
-						$this->SetBuffer("owDeviceAddress_1", $data->DeviceAddress_1);
-						if ($this->OWVerify()) {
-							// Erster Schritt: VDD ermitteln
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0x4E);
-								$this->OWWriteByte(0x00);
-								$this->OWWriteByte(0x07);
-								if ($this->OWReset()) { //Reset was successful
-									$this->OWSelect();
-									$this->OWWriteByte(0xB4); //start A/D V conversion
-									IPS_Sleep(10); //Wait for conversion
-									if ($this->OWReset()) { //Reset was successful
-										$this->OWSelect();
-										$this->OWWriteByte(0xB8); //Recall memory
-										$this->OWWriteByte(0x00); //Recall memory
-										IPS_Sleep(10); 
-										if ($this->OWReset()) { //Reset was successful
-											$this->OWSelect();
-											$this->OWWriteByte(0xBE); //Read Scratchpad
-											$this->OWWriteByte(0x00); //Read Scratchpad
-											list($Celsius, $Voltage_VAD, $Current) = $this->OWRead_2438();
-										}
-									}
-								}	
-							}
-							if ($this->OWReset()) { //Reset was successful
-								$this->OWSelect();
-								$this->OWWriteByte(0x4E);
-								$this->OWWriteByte(0x00);
-								$this->OWWriteByte(0x0F);
-								if ($this->OWReset()) { //Reset was successful
-									$this->OWSelect();
-									$this->OWWriteByte(0x44); //start C° conversion
-									IPS_Sleep(10); //Wait for conversion
-									if ($this->OWReset()) { //Reset was successful
-										$this->OWSelect();
-										$this->OWWriteByte(0xB4); //start A/D V conversion
-										IPS_Sleep(10); //Wait for conversion
-										if ($this->OWReset()) { //Reset was successful
-											$this->OWSelect();
-											$this->OWWriteByte(0xB8); //Recall memory
-											$this->OWWriteByte(0x00); //Recall memory
-											IPS_Sleep(10); 
-											if ($this->OWReset()) { //Reset was successful
-												$this->OWSelect();
-												$this->OWWriteByte(0xBE); //Read Scratchpad
-												$this->OWWriteByte(0x00); //Read Scratchpad
-												list($Celsius, $Voltage_VDD, $Current) = $this->OWRead_2438();
-												$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
-													"Function"=>"set_DS2438", "InstanceID" => $data->InstanceID, "Temperature"=>$Celsius, "Voltage_VDD"=>$Voltage_VDD , "Voltage_VAD"=>$Voltage_VAD, "Current"=>$Current )));
-											}
-										}
-									}
-								}
-							}
-						}
-						else {
-							$this->SendDebug("get_DS2438Measurement", "OWVerify: Device wurde nicht gefunden!", 0);
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-						}
-						IPS_SemaphoreLeave("OW");
-					}
-					else {
-						$this->SendDebug("DS2438Measurement", "Semaphore Abbruch", 0);
-					}
-				}
-				break;
-			// Raspberry Pi Kommunikation
-		    case "get_RPi_connect":
-		   	// SSH Connection
-			If ($data->IsArray == false) {
-				// wenn es sich um ein einzelnes Kommando handelt
-				//IPS_LogMessage("IPS2GPIO SSH-Connect", $data->Command );
-				$Result = $this->SSH_Connect($data->Command);
-				//IPS_LogMessage("IPS2GPIO SSH-Connect", $Result );
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>false  )));
-			}
-			else {
-				// wenn es sich um ein Array von Kommandos handelt
-				$Result = $this->SSH_Connect_Array($data->Command);
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_RPi_connect", "InstanceID" => $data->InstanceID, "CommandNumber" => $data->CommandNumber, "Result"=>utf8_encode($Result), "IsArray"=>true  )));
-			}
 			break;
 				 
 		}
