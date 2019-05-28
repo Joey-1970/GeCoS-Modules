@@ -122,6 +122,7 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
+			/*
 			// I²C-Devices einlesen und in das Values-Array kopieren
 			$DeviceArray = array();
 			$DeviceArray = unserialize($this->SearchI2CDevices());
@@ -150,6 +151,7 @@ class GeCoS_IO_V2 extends IPSModule
 			else {
 				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine 1-Wire-Devices gefunden.");
 			}
+			*/
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 			$arrayElements[] = array("type" => "Label", "label" => "Setzen der Real-Time-Clock auf IPS-Zeit:");
 			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIOV2_SetRTC_Data($id);');		
