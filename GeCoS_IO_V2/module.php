@@ -358,7 +358,11 @@ class GeCoS_IO_V2 extends IPSModule
 					$Board = 2; // aktuell eine Konstante
 				 	$Result = $Board;
 				break;  
-			
+			// Kommunikation zur Server-Software
+			case "SAO": // Module 16Out
+				// Auslesen des aktuellen Status
+				$Result = $this->ClientSocket("{SAO}"))
+				break;   
 			
 			
 			case "StatusAllIn": // Module 16In
@@ -396,11 +400,15 @@ class GeCoS_IO_V2 extends IPSModule
 					
 	}
 	
-	private function ClientSocket(String $message)
+	private function ClientSocket(String $Message)
 	{
+		$Success = false;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$res = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($message))));
+			$Success = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($Message."\r\n"))));
+			$this->SendDebug("ClientSocket", "Text: ".$Message." Erfolg: ".$Success, 0);
+			
 		}
+	Return $Success;
 	}
 	
 	public function GetRTC_Data()
