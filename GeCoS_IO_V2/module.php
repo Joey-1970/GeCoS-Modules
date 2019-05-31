@@ -317,34 +317,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$I2CInstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
 					$I2CInstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
 					$I2CInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
-					If (($data->DeviceAddress >= 16) AND ($data->DeviceAddress <= 23)) {
-						$I2CInstanceArray[$data->InstanceID]["Notification"] = 1;
-					}
-					elseIf (($data->DeviceAddress >= 32) AND ($data->DeviceAddress <= 35)) {
-						$I2CInstanceArray[$data->InstanceID]["Notification"] = 2;
-					}
-					else {
-						$I2CInstanceArray[$data->InstanceID]["Notification"] = 0;
-					}
-					// MUX auf den erforderlichen Channel stellen
-					$this->SetMUX($data->DeviceBus);
-					$Handle = $this->CommandClientSocket(pack("L*", 54, 1, $data->DeviceAddress, 4, 0), 16);
-					$this->SendDebug("Set Used I2C", "Handle fuer Device-Adresse ".$data->DeviceAddress." an Bus ".($data->DeviceBus - 4).": ".$Handle, 0);
-					$I2CInstanceArray[$data->InstanceID]["Handle"] = $Handle;
 					$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
-					// Testweise lesen
-					If ($Handle >= 0) {
-						$Result = $this->CommandClientSocket(pack("L*", 59, $Handle, 0, 0), 16);
-						If ($Result >= 0) {
-							$this->SendDebug("Set Used I2C", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".($data->DeviceBus - 4)." erfolgreich!", 0);
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 102)));
-						}
-						else {
-							$this->SendDebug("Set Used I2C", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".($data->DeviceBus - 4)." nicht erfolgreich!", 0);
-							IPS_LogMessage("GeCoS_IO", "Test-Lesen auf Device-Adresse ".$data->DeviceAddress." Bus ".($data->DeviceBus - 4)." nicht erfolgreich!");
-							$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"status", "InstanceID" => $data->InstanceID, "Status" => 201)));
-						}		
-					}
 					// Messages einrichten
 					$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 					$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
