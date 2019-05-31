@@ -111,12 +111,23 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
-			   case "get_used_i2c":
+			case "SAO":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$Value = 0; // Test!
+					// Statusvariablen setzen
+					for ($i = 0; $i <= 15; $i++) {
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$Value) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Value);
+						}
+					}
+				}
+				break; 
+			case "get_used_i2c":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
 				}
 				break;
-			   case "status":
+			case "status":
 			   	If ($data->InstanceID == $this->InstanceID) {
 				   	If ($this->ReadPropertyBoolean("Open") == true) {				
 						$this->SetStatus($data->Status);
@@ -229,23 +240,7 @@
 	{
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAO")));
-			/*		
-			// Statusvariablen setzen
-			for ($i = 0; $i <= 7; $i++) {
-				// OLATA A
-				$Value = $OLATA & pow(2, $i);
-				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$Value) {
-					SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Value);
-				}
-				// Port B
-				$Value = $OLATB & pow(2, $i);
-				If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$Value) {
-					SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $Value);
-				}
-			}
-			*/				
-					
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAO")));		
 		}
 	return $Result;
 	}
