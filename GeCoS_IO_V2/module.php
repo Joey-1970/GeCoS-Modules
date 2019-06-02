@@ -390,7 +390,7 @@ class GeCoS_IO_V2 extends IPSModule
 			case "SOM":
 				$this->SendDebug("ReceiveData", "SOM", 0);
 				break;
-			 
+			}
 		}
 					
 	}
