@@ -366,10 +366,32 @@ class GeCoS_IO_V2 extends IPSModule
 	}
 	
 	 public function ReceiveData($JSONString) {	
- 	    	 // Empfangene Daten vom I/O
+		 // Empfangene Daten vom I/O
 	    	 $Data = json_decode($JSONString);
 	    	 $Message = utf8_decode($Data->Buffer);
 		 $this->SendDebug("ReceiveData", "Datenempfang: ".$Message, 0);
+		 
+		 $DataArray = array();
+		 preg_match_all('({[^}]*})', $Message, $DataArray);
+		 $this->SendDebug("ReceiveData", "Datenaufloesung: ".serialize($DataArray), 0);
+
+		 for ($i = 0; $i <= Count($DataArray); $i++) {
+		    	$Value = str_replace(array("{", "}"), "", $DataArray[0][$i]);
+		    	$ValueArray = explode(";", $Value);
+		    	// Erstes Datenfeld enthält die Befehle
+			$Command = $ValueArray[0];
+			$Bus = $ValueArray[1];
+			$Adress = $ValueArray[2];
+			
+			switch ($Command) {
+			case "SAO":
+				$this->SendDebug("ReceiveData", "SAO", 0);
+				break;
+			case "SOM":
+				$this->SendDebug("ReceiveData", "SOM", 0);
+				break;
+			 
+		}
 					
 	}
 	
