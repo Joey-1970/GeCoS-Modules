@@ -385,12 +385,14 @@ class GeCoS_IO_V2 extends IPSModule
 		    	$ValueArray = explode(";", $Value);
 		    	// Erstes Datenfeld enthält die Befehle
 			$Command = $ValueArray[0];
-			$Bus = $ValueArray[1];
-			$Adress = $ValueArray[2];
+			$DeviceBus = intval($ValueArray[1]);
+			$DeviceAddress = intval($ValueArray[2]);
 			
 			switch ($Command) {
 			case "SAO":
 				$this->SendDebug("ReceiveData", "SAO", 0);
+				$InstanceID = $this->InstanceArrayHandleSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instant ID: ".$InstanceID, 0);
 				break;
 			case "SOM":
 				$this->SendDebug("ReceiveData", "SOM", 0);
@@ -640,13 +642,14 @@ class GeCoS_IO_V2 extends IPSModule
 	
 	private function InstanceArrayHandleSearch(Int $DeviceBus, Int $DeviceAddress)
 	{
+		// Ermittelt anhand der Daten die Instanz-ID
 		$Result = -1;
 		$I2CInstanceArray = Array();
 		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
 		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
 			foreach ($I2CInstanceArray as $Type => $Properties) {
 				If (($I2CInstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($I2CInstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
-				    $Result = $I2CInstanceArray[$Type]["Handle"];
+				    $Result = $I2CInstanceArray[$Type]["InstanceID"];
 				}
 			}
 		}
