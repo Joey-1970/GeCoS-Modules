@@ -388,6 +388,7 @@ class GeCoS_IO_V2 extends IPSModule
 			$Command = $ValueArray[0];
 			$DeviceBus = intval($ValueArray[1]);
 			$DeviceAddress = intval($ValueArray[2]);
+			$this->SendDebug("ReceiveData", "Bus: ".$DeviceBus." Adresse: ".$DeviceAddress, 0);
 			
 			switch ($Command) {
 			case "SAO":
