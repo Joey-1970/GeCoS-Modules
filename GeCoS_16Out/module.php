@@ -12,7 +12,7 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 25);
-		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterPropertyInteger("DeviceBus", 0);
 		$this->RegisterPropertyInteger("StartOption", -1);
 		$this->RegisterPropertyInteger("StartValue", 0);
 		
@@ -46,11 +46,9 @@
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
-		If ($this->GetBoardVersion() == 1) {
-			$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 6);
-		}
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 2);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
