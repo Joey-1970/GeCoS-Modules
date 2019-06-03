@@ -310,8 +310,9 @@ class GeCoS_IO_V2 extends IPSModule
 		 switch ($data->Function) {
 		 // interne Kommunikation
 		   	// I2C Kommunikation
-		   	case "set_used_i2c":		   	
-				If ($this->GetBuffer("ModuleReady") == 1) {
+		   	case "set_used_modules":		   	
+				$this->SendDebug("set_used_modules", "Ausfuehrung", 0);
+				 If ($this->GetBuffer("ModuleReady") == 1) {
 					// die genutzten Device Adressen anlegen
 					$I2CInstanceArray[$data->InstanceID]["InstanceID"] = $data->InstanceID; 
 					$I2CInstanceArray[$data->InstanceID]["DeviceBus"] = $data->DeviceBus;
