@@ -319,6 +319,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$I2CInstanceArray[$data->InstanceID]["DeviceAddress"] = $data->DeviceAddress;
 					$I2CInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 					$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
+					 $this->SendDebug("set_used_modules", serialize($I2CInstanceArray), 0);
 					// Messages einrichten
 					$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 					$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
@@ -393,7 +394,7 @@ class GeCoS_IO_V2 extends IPSModule
 			switch ($Command) {
 			case "SAO":
 				$this->SendDebug("ReceiveData", "SAO", 0);
-				$InstanceID = $this->InstanceArrayHandleSearch($DeviceBus, $DeviceAddress);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instant ID: ".$InstanceID, 0);
 				break;
 			case "SOM":
@@ -642,13 +643,13 @@ class GeCoS_IO_V2 extends IPSModule
 	return $Result;
 	}
 	
-	private function InstanceArrayHandleSearch(Int $DeviceBus, Int $DeviceAddress)
+	private function InstanceIDSearch(Int $DeviceBus, Int $DeviceAddress)
 	{
 		// Ermittelt anhand der Daten die Instanz-ID
 		$Result = -1;
 		$I2CInstanceArray = Array();
 		$I2CInstanceArray = unserialize($this->GetBuffer("I2CInstanceArray"));
-		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 5) {
+		If (count($I2CInstanceArray, COUNT_RECURSIVE) >= 4) {
 			foreach ($I2CInstanceArray as $Type => $Properties) {
 				If (($I2CInstanceArray[$Type]["DeviceBus"] == $DeviceBus) AND ($I2CInstanceArray[$Type]["DeviceAddress"] == $DeviceAddress)) {
 				    $Result = $I2CInstanceArray[$Type]["InstanceID"];
