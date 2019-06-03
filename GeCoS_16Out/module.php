@@ -111,6 +111,7 @@
 	 	switch ($data->Function) {
 			case "SAO":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->SendDebug("ReceiveData", "SAO", 0);
 					$Value = 0; // Test!
 					// Statusvariablen setzen
 					for ($i = 0; $i <= 15; $i++) {
