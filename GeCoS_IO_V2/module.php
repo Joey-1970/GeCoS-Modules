@@ -382,7 +382,7 @@ class GeCoS_IO_V2 extends IPSModule
 			 return;
 		 }
 		 
-		 for ($i = 0; $i <= Count($DataArray); $i++) {
+		 for ($i = 0; $i <= Count($DataArray) - 1; $i++) {
 		    	$Value = str_replace(array("{", "}"), "", $DataArray[0][$i]);
 		    	$ValueArray = explode(";", $Value);
 		    	// Erstes Datenfeld enthält die Befehle
@@ -396,6 +396,14 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDebug("ReceiveData", "SAO", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instant ID: ".$InstanceID, 0);
+				$State = 0;
+    				for ($j = 3; $j <= 18; $j++) {
+            				If ($ValueArray[$j] == 1) {
+			    			$State = $State + pow(2, ($j - 3));
+            				}	
+				}
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAO", "InstanceID" => $InstanceID, "State" => $State)));
+
 				break;
 			case "SOM":
 				$this->SendDebug("ReceiveData", "SOM", 0);
