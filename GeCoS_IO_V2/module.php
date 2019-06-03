@@ -231,7 +231,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_start_trigger")));
 				
 				$this->SetStatus(102);
-				$this->SetTimerInterval("RTC_Data", 15 * 1000);
+				$this->SetTimerInterval("RTC_Data", 300 * 1000);
 			}
 			else {
 				$this->SetTimerInterval("RTC_Data", 0);
