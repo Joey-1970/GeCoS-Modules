@@ -164,7 +164,7 @@
 				$Bitmask = $this->unsetBit($Bitmask, $Output);
 			}
 			
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "InstanceID" => $this->InstanceID, "Value" => $Bitmask )));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Value" => $Bitmask )));
 				
 			for ($i = 0; $i <= 15; $i++) {
 				$Bitvalue = boolval($Bitmask & pow(2, $i));					
