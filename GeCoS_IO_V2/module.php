@@ -340,7 +340,10 @@ class GeCoS_IO_V2 extends IPSModule
 				break;   
 			case "SOM": // Module 16Out
 				// Setzen des Status
-				$Result = $this->ClientSocket("{SOM;}");
+				$DeviceBus = intval($data->DeviceBus);
+				$DeviceAddress = intval($data->DeviceAddress);
+				$Value = intval($data->Value);
+				$Result = $this->ClientSocket("{SOM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Value."}");
 				break; 
 			
 			case "StatusAllIn": // Module 16In
