@@ -112,11 +112,12 @@
 			case "SAO":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->SendDebug("ReceiveData", "SAO", 0);
-					$Value = 0; // Test!
+					$Value = intval($data->Value); // Test!
 					// Statusvariablen setzen
 					for ($i = 0; $i <= 15; $i++) {
-						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$Value) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Value);
+						$Bitvalue = boolval($Value & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 						}
 					}
 				}
