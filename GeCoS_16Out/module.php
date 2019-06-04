@@ -112,7 +112,8 @@
 			case "SAO":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->SendDebug("ReceiveData", "SAO", 0);
-					$Value = intval($data->Value); // Test!
+					$Value = intval($data->Value); 
+					$this->SetBuffer("OutputBank", $Value);
 					// Statusvariablen setzen
 					for ($i = 0; $i <= 15; $i++) {
 						$Bitvalue = boolval($Value & pow(2, $i));					
@@ -154,84 +155,25 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("SetOutputPin", "Value: ".$Value, 0);
-			If ($this->ReadPropertyInteger("DeviceAddress") >= 36) {
-				// 16OutV2
-				$SetPort = $Output;
-				// Bank ermitteln
-				If ($Output <=7) {
-					$Bitmask = $this->GetBuffer("OLATA");
-					$Register = 0x14;
-				}
-				else {
-					$Bitmask = $this->GetBuffer("OLATB");
-					$Register = 0x15;
-					$Output = $Output - 8;
-				}
-				// Bit setzen bzw. löschen
-				If ($Value == true) {
-					$Bitmask = $this->setBit($Bitmask, $Output);
-				}
-				else {
-					$Bitmask = $this->unsetBit($Bitmask, $Output);
-				}
-				// Neuen Wert senden
-				$OutputArray = Array();
-				$OutputArray[0] = $Bitmask;
-				$tries = 3;
-				do {
-					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => $Register, 
-												  "Parameter" => serialize($OutputArray) )));
-					If ($Result) {
-						$this->SendDebug("SetOutputPin", "Output ".$SetPort." Value: ".$Value." erfolgreich", 0);
-						If (GetValueBoolean($this->GetIDForIdent("Output_X".$SetPort)) <> $Value) {
-							SetValueBoolean($this->GetIDForIdent("Output_X".$SetPort), $Value);
-						}
-						$this->GetOutput();
-						$this->SetStatus(102);
-						$Result = true;
-						break;
-					}
-					else {
-						$this->SetStatus(202);
-						$Result = false;
-						$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
-					}
-				$tries--;
-				} while ($tries);  
+			
+			$Bitmask = $this->GetBuffer("OutputBank");
+			If ($Value == true) {
+				$Bitmask = $this->setBit($Bitmask, $Output);
 			}
 			else {
-				// 16OutV1
-				$Bitmask = $this->GetBuffer("OutputBank");
-				If ($Value == true) {
-					$Bitmask = $this->setBit($Bitmask, $Output);
-				}
-				else {
-					$Bitmask = $this->unsetBit($Bitmask, $Output);
-				}
-				$tries = 3;
-				do {
-					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Bitmask )));
-					If ($Result) {
-						$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." erfolgreich", 0);
-						for ($i = 0; $i <= 15; $i++) {
-							$Bitvalue = boolval($Bitmask & pow(2, $i));					
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-							}
-						}
-						$this->GetOutput();
-						$this->SetStatus(102);
-						$Result = true;
-						break;
-					}
-					else {
-						$this->SetStatus(202);
-						$Result = false;
-						$this->SendDebug("SetOutputPin", "Output ".$Output." Value: ".$Value." nicht erfolgreich!", 0);
-					}
-				$tries--;
-				} while ($tries); 
+				$Bitmask = $this->unsetBit($Bitmask, $Output);
 			}
+			
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "InstanceID" => $this->InstanceID, "Value" => $Bitmask )));
+				
+			for ($i = 0; $i <= 15; $i++) {
+				$Bitvalue = boolval($Bitmask & pow(2, $i));					
+				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+					SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+				}
+			}
+			$this->GetOutput();
+			
 		}
 	return $Result;
 	}	
