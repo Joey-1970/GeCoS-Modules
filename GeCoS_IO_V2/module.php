@@ -338,7 +338,10 @@ class GeCoS_IO_V2 extends IPSModule
 				// Auslesen des aktuellen Status
 				$Result = $this->ClientSocket("{SAO}");
 				break;   
-			
+			case "SOM": // Module 16Out
+				// Setzen des Status
+				$Result = $this->ClientSocket("{SOM;}");
+				break; 
 			
 			case "StatusAllIn": // Module 16In
 				// Auslesen des aktuellen Status
