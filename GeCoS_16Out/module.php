@@ -11,7 +11,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 25);
+ 	    	$this->RegisterPropertyInteger("DeviceAddress", 36);
 		$this->RegisterPropertyInteger("DeviceBus", 0);
 		$this->RegisterPropertyInteger("StartOption", -1);
 		$this->RegisterPropertyInteger("StartValue", 0);
