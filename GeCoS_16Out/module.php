@@ -79,7 +79,6 @@
 		$this->SetSummary("0x".dechex($this->ReadPropertyInteger("DeviceAddress"))." - I²C-Bus ".($this->ReadPropertyInteger("DeviceBus") - 4));
 
 		$this->SetBuffer("OutputBank", 0);
-		$this->SetBuffer("ErrorCounter", 0);
 
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
