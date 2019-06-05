@@ -17,8 +17,8 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
- 	    	$this->RegisterPropertyInteger("DeviceAddress", 16);
-		$this->RegisterPropertyInteger("DeviceBus", 4);
+ 	    	$this->RegisterPropertyInteger("DeviceAddress", 32);
+		$this->RegisterPropertyInteger("DeviceBus", 0);
 		$this->RegisterTimer("GetInput", 0, 'GeCoS16In_GetInput($_IPS["TARGET"]);');
 		
 		//Status-Variablen anlegen
@@ -43,20 +43,15 @@
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
  		
 		$arrayOptions = array();
-		for ($i = 16; $i <= 23; $i++) {
-		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." - V1.x", "value" => $i);
-		}
 		for ($i = 32; $i <= 35; $i++) {
 		    	$arrayOptions[] = array("label" => $i." / 0x".strtoupper(dechex($i))." - V2.x", "value" => $i);
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
-		If ($this->GetBoardVersion() == 1) {
-			$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 6);
-		}
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 2);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
@@ -81,12 +76,10 @@
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
-				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
+				$Filter = '((.*"Function":"get_used_modules".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 				$this->SetReceiveDataFilter($Filter);
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
 				If ($Result == true) {
-					// Setup
-					$this->Setup();
 					$this->GetInput();
 					$this->SetTimerInterval("GetInput", 15 * 1000);
 				}
@@ -191,43 +184,13 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetInput", "Ausfuehrung", 0);
-			$tries = 3;
-			do {
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "StatusAllIn", "InstanceID" => $this->InstanceID)));
-				If ($Result < 0) {
-					$this->SendDebug("GetInput", "Einlesen der Werte fehlerhaft!", 0);
-					$this->SetStatus(202);
-					$Result = false;
-				}
-				else {
-					If (is_array(unserialize($Result))) {
-						$this->SetStatus(102);
-						$OutputArray = array();
-						// für Eingänge PORT benutzen
-						$OutputArray = unserialize($Result);
-						$GPIOA = $OutputArray[1];
-						$GPIOB = $OutputArray[2];
-						$Result = ($GPIOB << 8) | $GPIOA;
-
-						$this->SendDebug("GetInput", "GPIOA: ".$GPIOA." GPIOB: ".$GPIOB, 0);
-						// Statusvariablen setzen
-						for ($i = 0; $i <= 7; $i++) {
-							// Port A
-							$Value = $GPIOA & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Value);
-							}
-							// Port B
-							$Value = $GPIOB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Input_X".($i + 8))) == !$Value) {
-								SetValueBoolean($this->GetIDForIdent("Input_X".($i + 8)), $Value);
-							}
-						}
-						break;
-					}
-				}
-			$tries--;
-			} while ($tries);  
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAI")));
+			If ($Result == true) {
+				$this->SetStatus(102);
+			}
+			else {
+				$this->SetStatus(202);
+			}
 		}
 	return $Result;
 	}
@@ -283,14 +246,6 @@
 			} while ($tries);  
 		}
 	}   
-
-	
-	
-	private function GetBoardVersion()
-	{
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "getBoardVersion" )));	
-	return $Result;
-	}
 	    
 	protected function HasActiveParent()
     	{
