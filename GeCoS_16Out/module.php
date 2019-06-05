@@ -88,7 +88,6 @@
 				$this->SetReceiveDataFilter($Filter);
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 				If ($Result == true) {
-					
 					$this->GetOutput();
 				}
 			}
@@ -161,16 +160,21 @@
 				$Bitmask = $this->unsetBit($Bitmask, $Output);
 			}
 			
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Value" => $Bitmask )));
-				
-			for ($i = 0; $i <= 15; $i++) {
-				$Bitvalue = boolval($Bitmask & pow(2, $i));					
-				If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-					SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-				}
-			}
-			$this->GetOutput();
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Value" => $Bitmask )));
 			
+			If ($Result == true) {
+				$this->SetStatus(102);
+				for ($i = 0; $i <= 15; $i++) {
+					$Bitvalue = boolval($Bitmask & pow(2, $i));					
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+					}
+				}
+				$this->GetOutput();
+			}
+			else {
+				$this->SetStatus(202);
+			}
 		}
 	return $Result;
 	}	
@@ -192,8 +196,9 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 			$Result = $this->GetOutput();
-			If ($Result >= 0) {
-				$Result = boolval($Result & pow(2, $Output));
+			If ($Result == true) {
+				$OutputBank  = $this->GetBuffer("OutputBank");
+				$Result = boolval($OutputBank & pow(2, $Output));
 			}
 		}
 		
@@ -206,70 +211,20 @@
 		$Result = -1;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("SetOutputBank", "Value: ".$Value, 0);
-			If ($this->ReadPropertyInteger("DeviceAddress") >= 36) {
-				// 16OutV2
-				$OLATA = $Value & 255;
-				$OLATB = ($Value >> 8) & 255;
-				$OutputArray = Array();
-				$OutputArray[0] = $OLATA;
-				$OutputArray[1] = $OLATB;
-				$tries = 3;
-				do {
-					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_MCP23017_write", "InstanceID" => $this->InstanceID, "Register" => 0x14, 
-												  "Parameter" => serialize($OutputArray) )));
-					If ($Result) {
-						$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
-
-						for ($i = 0; $i <= 7; $i++) {
-							// OLATA A
-							$SetPort = $OLATA & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) == !$SetPort) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $SetPort);
-							}
-							// Port B
-							$SetPort = $OLATB & pow(2, $i);
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".($i + 8))) == !$SetPort) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".($i + 8)), $SetPort);
-							}
-						}	
-						$this->GetOutput();
-						$this->SetStatus(102);
-						$Result = true;
-						break;
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Value" => $Value )));
+			
+			If ($Result == true) {
+				$this->SetStatus(102);
+				for ($i = 0; $i <= 15; $i++) {
+					$Bitvalue = boolval($Value & pow(2, $i));					
+					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 					}
-					else {
-						$this->SetStatus(202);
-						$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
-						$Result = false;
-					}
-				$tries--;
-				} while ($tries); 
+				}
+				$this->GetOutput();
 			}
 			else {
-				// 16OutV1
-				$tries = 3;
-				do {
-					$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9655E_Write", "InstanceID" => $this->InstanceID, "Register" => 2, "Value" => $Value )));
-					If ($Result) {
-						$this->SendDebug("SetOutput", "Value: ".$Value." erfolgreich", 0);
-						for ($i = 0; $i <= 15; $i++) {
-							$Bitvalue = boolval($Value & pow(2, $i));					
-							If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-								SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-							}
-						}
-						$this->GetOutput();
-						$this->SetStatus(102);
-						$Result = true;
-						break;
-					}
-					else {
-						$this->SetStatus(202);
-						$this->SendDebug("SetOutput", "Value: ".$Value." nicht erfolgreich!", 0);
-						$Result = false;
-					}
-				$tries--;
-				} while ($tries); 
+				$this->SetStatus(202);
 			}
 		}
 	return $Result;
@@ -283,12 +238,6 @@
 	private function unsetBit($byte, $significance) {
 	    // ein bestimmtes Bit auf 0 setzen
 	    return $byte & ~(1<<$significance);
-	}
-	
-	private function GetBoardVersion()
-	{
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "getBoardVersion" )));	
-	return $Result;
 	}
 	    
 	protected function HasActiveParent()
