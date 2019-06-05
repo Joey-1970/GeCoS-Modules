@@ -183,7 +183,13 @@
 		$Result = false;
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAO")));		
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAO")));
+			If ($Result == true) {
+				$this->SetStatus(102);
+			}
+			else {
+				$this->SetStatus(202);
+			}
 		}
 	return $Result;
 	}
