@@ -346,9 +346,9 @@ class GeCoS_IO_V2 extends IPSModule
 				$Result = $this->ClientSocket("{SOM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Value."}");
 				break; 
 			
-			case "StatusAllIn": // Module 16In
+			case "SAI": // Module 16In
 				// Auslesen des aktuellen Status
-				
+				$Result = $this->ClientSocket("{SAI}");
 				break;   
 			
 			
@@ -408,6 +408,14 @@ class GeCoS_IO_V2 extends IPSModule
 				break;
 			case "SOM":
 				$this->SendDebug("ReceiveData", "SOM", 0);
+				break;
+			case "SAI":
+				$this->SendDebug("ReceiveData", "SAI", 0);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instant ID: ".$InstanceID, 0);
+				$Value = intval($ValueArray[3]);
+				$StatusMessage = $ValueArray[4];
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAI", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			}
 		}
