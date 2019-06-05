@@ -100,7 +100,20 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
-			case "get_used_i2c":
+			case "SAI":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->SendDebug("ReceiveData", "SAI", 0);
+					$Value = intval($data->Value); 
+					// Statusvariablen setzen
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Value & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
+					}
+				}
+				break; 
+			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
 				}
