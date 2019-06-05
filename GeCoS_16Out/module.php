@@ -76,7 +76,7 @@
             	parent::ApplyChanges();
 		
 		// Summary setzen
-		$this->SetSummary("0x".dechex($this->ReadPropertyInteger("DeviceAddress"))." - I²C-Bus ".($this->ReadPropertyInteger("DeviceBus") - 4));
+		$this->SetSummary("0x".dechex($this->ReadPropertyInteger("DeviceAddress"))." - I²C-Bus ".($this->ReadPropertyInteger("DeviceBus")));
 
 		$this->SetBuffer("OutputBank", 0);
 
