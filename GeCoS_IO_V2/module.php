@@ -230,6 +230,9 @@ class GeCoS_IO_V2 extends IPSModule
 				// Starttrigger für 1-Wire-Instanzen
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_start_trigger")));
 				
+				// Sucht nach Modulen
+				$Result = $this->ClientSocket("{MOD}");
+				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 300 * 1000);
 			}
