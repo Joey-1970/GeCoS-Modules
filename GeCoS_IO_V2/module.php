@@ -424,7 +424,14 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDebug("ReceiveData", "MOD", 0);
 				$ModulesArray = Array();
 				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
+				$ModuleTyp = $ValueArray[3];
+				$Key = $DeviceBus."_".$DeviceAddress."_".$ModuleTyp;
+				$ModulesArray[$Key][0] = $ModuleTyp;
+				$ModulesArray[$Key][1] = $DeviceAddress;
+				$ModulesArray[$Key][2] = $DeviceBus;
+				$ModulesArray[$Key][3] = ""; //InstanzID
 				/*
+					{MOD;0;0x23;IN;}
 					$DeviceArray[$k][0] = $DeviceName[$i];
 					$DeviceArray[$k][1] = $SearchArray[$i];
 					$DeviceArray[$k][2] = $j - 4;
