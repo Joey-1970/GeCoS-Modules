@@ -444,7 +444,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$ModulesArray[$Key][4] = "Inaktiv";
 					$ModulesArray[$Key][4] = "#FF0000";
 				}
-				$this->SetBuffer("ModulesArray", serialize($ModulesArray))
+				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 				break;
 			}
 		}
