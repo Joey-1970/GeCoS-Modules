@@ -48,6 +48,9 @@ class GeCoS_IO_V2 extends IPSModule
 		$ModulesArray = Array();
 		$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 		
+		$I2CInstanceArray = Array();
+		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
+		
 		$OWDeviceArray = array();
 		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
 	}
@@ -122,21 +125,22 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
-			/*
+			
 			// I²C-Devices einlesen und in das Values-Array kopieren
 			$DeviceArray = array();
-			$DeviceArray = unserialize($this->SearchI2CDevices());
+			$DeviceArray = unserialize($this->GetBuffer("ModulesArray"));
 			$arrayValues = array();
 			If (count($DeviceArray , COUNT_RECURSIVE) >= 4) {
-				for ($i = 0; $i < Count($DeviceArray); $i++) {
+				for ($i = 1; $i < Count($DeviceArray); $i++) {
 					$arrayValues[] = array("DeviceTyp" => $DeviceArray[$i][0], "DeviceAddress" => $DeviceArray[$i][1], "DeviceBus" => $DeviceArray[$i][2], "InstanceID" => $DeviceArray[$i][3], "DeviceStatus" => $DeviceArray[$i][4], "rowColor" => $DeviceArray[$i][5]);
 				}
 				$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => "", "columns" => $arrayColumns, "values" => $arrayValues);
 			}
 			else {
-				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine I²C-Devices gefunden.");
+				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine Module gefunden.");
 			}
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+			/*
 			// 1-Wire-Devices einlesen und in das Values-Array kopieren
 			$OWDeviceArray = array();
 			$this->OWSearchStart();
@@ -425,30 +429,22 @@ class GeCoS_IO_V2 extends IPSModule
 				$ModulesArray = Array();
 				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
 				$ModuleTyp = $ValueArray[3];
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$Key = $DeviceBus."_".$DeviceAddress."_".$ModuleTyp;
 				$ModulesArray[$Key][0] = $ModuleTyp;
 				$ModulesArray[$Key][1] = $DeviceAddress;
 				$ModulesArray[$Key][2] = $DeviceBus;
-				$ModulesArray[$Key][3] = ""; //InstanzID
-				/*
-					{MOD;0;0x23;IN;}
-					$DeviceArray[$k][0] = $DeviceName[$i];
-					$DeviceArray[$k][1] = $SearchArray[$i];
-					$DeviceArray[$k][2] = $j - 4;
-					
-					If ($Result >= 0) {
-						$DeviceArray[$k][3] = $this->InstanceArraySearch("Handle", $Handle);
-						$DeviceArray[$k][4] = "OK";
-						// Farbe grün für erreichbare und registrierte Instanzen
-						$DeviceArray[$k][5] = "#00FF00";						
-					}
-					else {
-						$DeviceArray[$k][3] = 0;
-						$DeviceArray[$k][4] = "Inaktiv";
-						// Farbe rot für nicht erreichbare aber registrierte Instanzen
-						$DeviceArray[$k][5] = "#FF0000";
-					}	
-				*/	
+				If ($InstanceID >= 0) {
+					$ModulesArray[$Key][3] = $InstanceID; //InstanzID
+					$ModulesArray[$Key][4] = "OK";
+					$ModulesArray[$Key][4] = "#00FF00";
+				}
+				else {
+					$ModulesArray[$Key][3] = 0; //InstanzID
+					$ModulesArray[$Key][4] = "Inaktiv";
+					$ModulesArray[$Key][4] = "#FF0000";
+				}
+				$this->SetBuffer("ModulesArray", serialize($ModulesArray))
 				break;
 			}
 		}
