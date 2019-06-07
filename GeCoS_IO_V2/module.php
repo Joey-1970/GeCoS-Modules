@@ -429,7 +429,7 @@ class GeCoS_IO_V2 extends IPSModule
 	{
 		$Success = false;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			$Success = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($Message."\r\n"))));
+			$Success = $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($Message))));
 			$Success = true;
 			$this->SendDebug("ClientSocket", "Text: ".$Message." Erfolg: ".$Success, 0);
 			
