@@ -45,8 +45,8 @@ class GeCoS_IO_V2 extends IPSModule
 			
 		$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 60);
 		
-		$I2CInstanceArray = Array();
-		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
+		$ModulesArray = Array();
+		$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 		
 		$OWDeviceArray = array();
 		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
@@ -419,6 +419,29 @@ class GeCoS_IO_V2 extends IPSModule
 				$Value = intval($ValueArray[3]);
 				$StatusMessage = $ValueArray[4];
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAI", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				break;
+			case "MOD":
+				$this->SendDebug("ReceiveData", "MOD", 0);
+				$ModulesArray = Array();
+				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
+				/*
+					$DeviceArray[$k][0] = $DeviceName[$i];
+					$DeviceArray[$k][1] = $SearchArray[$i];
+					$DeviceArray[$k][2] = $j - 4;
+					
+					If ($Result >= 0) {
+						$DeviceArray[$k][3] = $this->InstanceArraySearch("Handle", $Handle);
+						$DeviceArray[$k][4] = "OK";
+						// Farbe grün für erreichbare und registrierte Instanzen
+						$DeviceArray[$k][5] = "#00FF00";						
+					}
+					else {
+						$DeviceArray[$k][3] = 0;
+						$DeviceArray[$k][4] = "Inaktiv";
+						// Farbe rot für nicht erreichbare aber registrierte Instanzen
+						$DeviceArray[$k][5] = "#FF0000";
+					}	
+				*/	
 				break;
 			}
 		}
