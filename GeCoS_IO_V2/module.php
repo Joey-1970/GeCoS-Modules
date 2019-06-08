@@ -125,15 +125,15 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
-			/*
+			
 			// I²C-Devices einlesen und in das Values-Array kopieren
 			$Result = $this->ClientSocket("{MOD}");
 			$DeviceArray = array();
 			$DeviceArray = unserialize($this->GetBuffer("ModulesArray"));
 			$arrayValues = array();
 			If (count($DeviceArray , COUNT_RECURSIVE) >= 4) {
-				for ($i = 0; $i < Count($DeviceArray); $i++) {
-					$arrayValues[] = array("DeviceTyp" => $DeviceArray[$i][0], "DeviceAddress" => $DeviceArray[$i][1], "DeviceBus" => $DeviceArray[$i][2], "InstanceID" => $DeviceArray[$i][3], "DeviceStatus" => $DeviceArray[$i][4], "rowColor" => $DeviceArray[$i][5]);
+				foreach ($Array as $Value) {
+					$arrayValues[] = array("DeviceTyp" => $Value[0], "DeviceAddress" => $Value[1], "DeviceBus" => $Value[2], "InstanceID" => $Value[3], "DeviceStatus" => $Value[4], "rowColor" => $Value[5]);
 				}
 				$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => "", "columns" => $arrayColumns, "values" => $arrayValues);
 			}
@@ -141,7 +141,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine Module gefunden.");
 			}
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-			
+			/*
 			// 1-Wire-Devices einlesen und in das Values-Array kopieren
 			$OWDeviceArray = array();
 			$this->OWSearchStart();
