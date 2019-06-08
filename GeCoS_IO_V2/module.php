@@ -438,12 +438,12 @@ class GeCoS_IO_V2 extends IPSModule
 				If ($InstanceID >= 0) {
 					$ModulesArray[$Key][3] = $InstanceID; //InstanzID
 					$ModulesArray[$Key][4] = "OK";
-					$ModulesArray[$Key][4] = "#00FF00";
+					$ModulesArray[$Key][5] = "#00FF00";
 				}
 				else {
 					$ModulesArray[$Key][3] = 0; //InstanzID
 					$ModulesArray[$Key][4] = "Inaktiv";
-					$ModulesArray[$Key][4] = "#FF0000";
+					$ModulesArray[$Key][5] = "#FF0000";
 				}
 				$this->SendDebug("ReceiveData", serialize($ModulesArray), 0);
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
