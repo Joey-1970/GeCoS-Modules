@@ -132,7 +132,7 @@ class GeCoS_IO_V2 extends IPSModule
 			$DeviceArray = unserialize($this->GetBuffer("ModulesArray"));
 			$arrayValues = array();
 			If (count($DeviceArray , COUNT_RECURSIVE) >= 4) {
-				foreach ($Array as $Value) {
+				foreach ($DeviceArray as $Value) {
 					$arrayValues[] = array("DeviceTyp" => $Value[0], "DeviceAddress" => $Value[1], "DeviceBus" => $Value[2], "InstanceID" => $Value[3], "DeviceStatus" => $Value[4], "rowColor" => $Value[5]);
 				}
 				$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => "", "columns" => $arrayColumns, "values" => $arrayValues);
