@@ -140,6 +140,11 @@
 		$Output = min(15, max(0, $Output));
 		$Value = min(4095, max(0, $Value));
 		
+		// Ausgang setzen
+		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
+
+		//"PWM" = "Set PWM Module" -> {PWM;I2C-Kanal;Adresse;Kanal;Wert} 
+		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
 		$Status = GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
