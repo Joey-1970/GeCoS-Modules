@@ -12,7 +12,7 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 80);
-		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterPropertyInteger("DeviceBus", 0);
 		$this->RegisterPropertyInteger("Frequency", 100);
 		
 		// Profil anlegen
@@ -46,11 +46,10 @@
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
-		If ($this->GetBoardVersion() == 1) {
-			$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 6);
-		}
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 2);
+		
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		
@@ -81,12 +80,11 @@
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
 				//ReceiveData-Filter setzen
-				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|.*"Function":"status".*)';
+				$Filter = '((.*"Function":"get_used_modules".*|.*"InstanceID":'.$this->InstanceID.'.*)|.*"Function":"status".*)';
 				$this->SetReceiveDataFilter($Filter);
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 				If ($Result == true) {
-					// Setup
-					$this->Setup();
+					$this->SetStatus(102);
 				}
 			}
 			else {
@@ -100,7 +98,7 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
-			case "get_used_i2c":
+			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
 				}
