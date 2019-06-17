@@ -10,7 +10,7 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 105);
-		$this->RegisterPropertyInteger("DeviceBus", 4);
+		$this->RegisterPropertyInteger("DeviceBus", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterPropertyInteger("Resolution_0", 0);
 		$this->RegisterPropertyInteger("Resolution_1", 0);
@@ -55,11 +55,9 @@
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Device Adresse", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 4);
-		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 5);
-		If ($this->GetBoardVersion() == 1) {
-			$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 6);
-		}
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 0", "value" => 0);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 1", "value" => 1);
+		$arrayOptions[] = array("label" => "GeCoS I²C-Bus 2", "value" => 2);
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		
@@ -111,9 +109,9 @@
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {			
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
-				$Filter = '((.*"Function":"get_used_i2c".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
+				$Filter = '((.*"Function":"get_used_modules".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*|.*"Function":"interrupt".*))';
 				$this->SetReceiveDataFilter($Filter);
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_i2c", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
 				If ($Result == true) {
 					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
 					$this->GetInput();
@@ -257,12 +255,6 @@
 	   	}
 		// Rückgabe als Integer
 	return bindec($not);
-	}
-	    
-	private function GetBoardVersion()
-	{
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "getBoardVersion" )));	
-	return $Result;
 	}
 	    
 	protected function HasActiveParent()
