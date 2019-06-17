@@ -358,7 +358,10 @@ class GeCoS_IO_V2 extends IPSModule
 				// Auslesen des aktuellen Status
 				$Result = $this->ClientSocket("{SAI}");
 				break;   
-			
+			case "SAM": // Module AnalogIn
+				// Auslesen des aktuellen Status
+				$Result = $this->ClientSocket("{SAM}");
+				break;   
 			
 			// Raspberry Pi Kommunikation
 		    	case "get_RPi_connect":
@@ -424,6 +427,15 @@ class GeCoS_IO_V2 extends IPSModule
 				$Value = intval($ValueArray[3]);
 				$StatusMessage = $ValueArray[4];
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAI", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				break;
+			case "SAM":
+				$this->SendDebug("ReceiveData", "SAM", 0);
+				// {SAM;0;0x69;AnalogChannel;Resolution;Amplifier}
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$Channel = intval($ValueArray[3]);
+				$Resolution = intval($ValueArray[4]);
+				$Amplifier = intval($ValueArray[5]);
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAM", "InstanceID" => $InstanceID, "Channel" => $Channel, "Resolution" => $Resolution, "Amplifier" => $Amplifier, "StatusMessage" => $StatusMessage)));
 				break;
 			case "MOD":
 				$this->SendDebug("ReceiveData", "MOD", 0);
