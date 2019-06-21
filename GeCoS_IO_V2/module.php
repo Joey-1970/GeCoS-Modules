@@ -440,7 +440,8 @@ class GeCoS_IO_V2 extends IPSModule
 				$Channel = intval($ValueArray[3]);
 				$Resolution = intval($ValueArray[4]);
 				$Amplifier = intval($ValueArray[5]);
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAM", "InstanceID" => $InstanceID, "Channel" => $Channel, "Resolution" => $Resolution, "Amplifier" => $Amplifier, "StatusMessage" => $StatusMessage)));
+				$Value = floatval($ValueArray[6]);
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAM", "InstanceID" => $InstanceID, "Channel" => $Channel, "Resolution" => $Resolution, "Amplifier" => $Amplifier, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "MOD":
 				$this->SendDebug("ReceiveData", "MOD", 0);
