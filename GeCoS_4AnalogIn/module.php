@@ -114,6 +114,7 @@
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
 				If ($Result == true) {
 					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
+					$this->SetStatus(102);
 					$this->GetInput();
 				}
 			}
@@ -132,6 +133,19 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
+			case "SAM":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->SendDebug("ReceiveData", "SAM", 0);
+					$Channel = intval($data->Channel); 
+					$Resolution = intval($data->Resolution); 
+					$Amplifier = intval($data->Amplifier);
+					$Value = intval($data->Value); 
+					If (GetValueFloat($this->GetIDForIdent("Input_X".$Channel)) <> $Value) {
+						SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value);
+					}
+					
+				}
+				break;
 			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
