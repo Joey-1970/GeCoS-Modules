@@ -360,7 +360,12 @@ class GeCoS_IO_V2 extends IPSModule
 				break;   
 			case "SAM": // Module AnalogIn
 				// Auslesen des aktuellen Status
-				$Result = $this->ClientSocket("{SAM}");
+				$DeviceBus = intval($data->DeviceBus);
+				$DeviceAddress = intval($data->DeviceAddress);
+				$Channel = intval($data->Channel);
+				$Resolution = intval($data->Resolution);
+				$Amplifier = intval($data->Amplifier);
+				$Result = $this->ClientSocket("{SAM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$Resolution.";".$Amplifier."}");
 				break;   
 			
 			// Raspberry Pi Kommunikation
