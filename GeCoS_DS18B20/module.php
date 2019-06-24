@@ -45,14 +45,14 @@
 			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
 			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => 0);
 			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => 0);
-			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => $arrayValues);
+			$arrayOptions[] = array("caption" => "Sensorauswahl", "value" => $arrayValues);
 		}
 		else {
 			$arrayValues = Array();
 			$arrayValues[] = array("name" => "DeviceAddress", "value" => $this->ReadPropertyString("DeviceAddress"));
 			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $this->ReadPropertyInteger("DeviceAddress_0"));
 			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $this->ReadPropertyInteger("DeviceAddress_1"));
-			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $arrayValues);
+			$arrayOptions[] = array("caption" => $this->ReadPropertyString("DeviceAddress"), "value" => $arrayValues);
 		}
 		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
@@ -60,25 +60,25 @@
 				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
 				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
 				$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $OWDeviceArray[$i][2]);
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
+				$arrayOptions[] = array("caption" => $OWDeviceArray[$i][0], "value" => $arrayValues);
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
-		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
-		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
-		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
+		$arrayOptions[] = array("caption" => "9-Bit", "value" => 0);
+		$arrayOptions[] = array("caption" => "10-Bit", "value" => 1);
+		$arrayOptions[] = array("caption" => "11-Bit", "value" => 2);
+		$arrayOptions[] = array("caption" => "12-Bit", "value" => 3);
 		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
 			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		}
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "Label", "caption" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 	
 		$arrayActions = array();
-		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
+		$arrayActions[] = array("type" => "Label", "caption" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
 		
 		
  		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
