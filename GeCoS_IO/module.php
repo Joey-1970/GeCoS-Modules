@@ -622,9 +622,9 @@ class GeCoS_IO extends IPSModule
 		    
 		    	// 1-Wire
 		    	case "get_OWDevices":
+				 $OWDeviceArray = array();
 				 If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 					$j = 0;
-					$OWDeviceArray = array();
 					$this->OWSearchStart();
 					$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 					$DeviceSerialArray = array();
@@ -644,7 +644,7 @@ class GeCoS_IO extends IPSModule
 				 	$Result = serialize($DeviceSerialArray);
 				}
 				else {
-					$Result = false;
+					$Result = serialize($DeviceSerialArray);
 				}
 				 break;
 		  	case "set_OWDevices":
