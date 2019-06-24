@@ -624,6 +624,7 @@ class GeCoS_IO extends IPSModule
 		    	case "get_OWDevices":
 				 $OWDeviceArray = array();
 				 $DeviceSerialArray = array();
+				 
 				 If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 					$j = 0;
 					$this->OWSearchStart();
