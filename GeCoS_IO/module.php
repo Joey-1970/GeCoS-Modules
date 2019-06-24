@@ -623,11 +623,11 @@ class GeCoS_IO extends IPSModule
 		    	// 1-Wire
 		    	case "get_OWDevices":
 				 $OWDeviceArray = array();
+				 $DeviceSerialArray = array();
 				 If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 					$j = 0;
 					$this->OWSearchStart();
 					$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-					$DeviceSerialArray = array();
 					If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 4) {
 						for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 							$DeviceSerial = $OWDeviceArray[$i][1];
