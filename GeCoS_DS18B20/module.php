@@ -36,9 +36,10 @@
 		$arrayOptions = array();
 		
 		// Hier mus der Abruf der DS1820 erfolgen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
-		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+		$OWDeviceArray = unserialize($Result);
+		//$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
 			$arrayValues = Array();
 			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
