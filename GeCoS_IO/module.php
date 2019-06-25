@@ -1510,10 +1510,10 @@ class GeCoS_IO extends IPSModule
 			$Year = $this->CommandClientSocket(pack("L*", 61, $this->GetBuffer("RTC_Handle"), 6, 0), 16);
 			$Year = str_pad(dechex($Year & 255), 2 ,'0', STR_PAD_LEFT);
 			If ($Century == 1) {
-				$Year = $Year + 2000;
+				$Year = intval($Year) + 2000;
 			}
 			else {
-				$Year = $Year + 1900;	
+				$Year = intval($Year) + 1900;	
 			}
 			$Timestamp = mktime(intval($Hour), intval($Min), intval($Sec), intval($Month), intval($Date), intval($Year));
 			SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $Timestamp);
