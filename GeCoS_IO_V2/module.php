@@ -468,13 +468,12 @@ class GeCoS_IO_V2 extends IPSModule
 				break;
 			case "RRTC":
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
-				$ServerTime = mktime(intval($ValueArray[4], intval($ValueArray[5], intval($ValueArray[6], intval($ValueArray[2], intval($ValueArray[1], intval($ValueArray[3]);
+				$ServerTime = mktime(intval($ValueArray[4]), intval($ValueArray[5]), intval($ValueArray[6]), intval($ValueArray[2]), intval($ValueArray[1]), intval($ValueArray[3]));
+				SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $ServerTime);
 				break;
-			}
-			 
-			 
-		}
 					
+			}
+		}
 	}
 	
 	private function ClientSocket(String $Message)
