@@ -491,8 +491,17 @@ class GeCoS_IO_V2 extends IPSModule
 	public function GetRTC_Data()
 	{
 		$this->SendDebug("GetRTC_Data", "Ausfuehrung", 0);
-		If (($this->ReadPropertyBoolean("Open") == true) ) {
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
 			$Result = $this->ClientSocket("{RRTC}");
+		}
+	}
+	
+	public function SetRTC_Data()
+	{
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
+			// Set RTC -> {SRTC;TT;MM;JJJJ;HH;MM;SS}
+			$Result = $this->ClientSocket("{SRTC;".date("d").";".date("m").";".date("Y").";".date("H").";".date("i").";".date("s")."}");
+			$this->GetRTC_Data();
 		}
 	}
 	
