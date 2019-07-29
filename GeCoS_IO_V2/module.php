@@ -466,7 +466,13 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDebug("ReceiveData", serialize($ModulesArray), 0);
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 				break;
+			case "RRTC":
+				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
+				$ServerTime = mktime(intval($ValueArray[4], intval($ValueArray[5], intval($ValueArray[6], intval($ValueArray[2], intval($ValueArray[1], intval($ValueArray[3]);
+				break;
 			}
+			 
+			 
 		}
 					
 	}
@@ -486,6 +492,9 @@ class GeCoS_IO_V2 extends IPSModule
 	public function GetRTC_Data()
 	{
 		$this->SendDebug("GetRTC_Data", "Ausfuehrung", 0);
+		If (($this->ReadPropertyBoolean("Open") == true) ) {
+			$Result = $this->ClientSocket("{RRTC}");
+		}
 	}
 	
 	private function SSH_Connect(String $Command)
