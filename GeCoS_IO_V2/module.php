@@ -367,7 +367,20 @@ class GeCoS_IO_V2 extends IPSModule
 				$Amplifier = intval($data->Amplifier);
 				$Result = $this->ClientSocket("{SAM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$Resolution.";".$Amplifier."}");
 				break;   
-			
+			case "SPWM": // Module 16PWM
+				// Auslesen des aktuellen Status
+				$Result = $this->ClientSocket("{SPWM}");
+				break;
+			case "PWM": // Module 16PWM
+				// Setzen des Status
+				$DeviceBus = intval($data->DeviceBus);
+				$DeviceAddress = intval($data->DeviceAddress);
+				$Channel = intval($data->Channel);
+				$State = intval($data->State);
+				$Value = intval($data->Value);
+				//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert}
+				$Result = $this->ClientSocket("{PWM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$State.";".$Value."}");
+				break;
 			// Raspberry Pi Kommunikation
 		    	case "get_RPi_connect":
 				// SSH Connection
