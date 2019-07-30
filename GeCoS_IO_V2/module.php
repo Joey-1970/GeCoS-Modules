@@ -437,6 +437,11 @@ class GeCoS_IO_V2 extends IPSModule
 				break;
 			case "SOM":
 				$this->SendDebug("ReceiveData", "SOM", 0);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
+				$Value = intval($ValueArray[3]);
+				$StatusMessage = $ValueArray[4];
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SOM", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "SAI":
 				$this->SendDebug("ReceiveData", "SAI", 0);
