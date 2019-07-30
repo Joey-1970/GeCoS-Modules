@@ -430,7 +430,7 @@ class GeCoS_IO_V2 extends IPSModule
 			case "SAO":
 				$this->SendDebug("ReceiveData", "SAO", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
-				$this->SendDebug("ReceiveData", "Instant ID: ".$InstanceID, 0);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Value = intval($ValueArray[3]);
 				$StatusMessage = $ValueArray[4];
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAO", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
@@ -441,7 +441,7 @@ class GeCoS_IO_V2 extends IPSModule
 			case "SAI":
 				$this->SendDebug("ReceiveData", "SAI", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
-				$this->SendDebug("ReceiveData", "Instant ID: ".$InstanceID, 0);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Value = intval($ValueArray[3]);
 				$StatusMessage = $ValueArray[4];
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAI", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
@@ -480,11 +480,21 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 				break;
 			case "RRTC":
+				$this->SendDebug("ReceiveData", "RRTC", 0);
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
 				$ServerTime = mktime(intval($ValueArray[4]), intval($ValueArray[5]), intval($ValueArray[6]), intval($ValueArray[2]), intval($ValueArray[1]), intval($ValueArray[3]));
 				SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $ServerTime);
 				break;
-					
+			case "PWM":
+				$this->SendDebug("ReceiveData", "PWM", 0);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
+				$Channel = intval($ValueArray[3]);
+				$State = intval($ValueArray[4]);
+				$Value = intval($ValueArray[5]);
+				$StatusMessage = $ValueArray[6];
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"PWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				break;	
 			}
 		}
 	}
