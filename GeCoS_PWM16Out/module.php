@@ -156,7 +156,7 @@
 		// Ausgang setzen
 		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
 
-		//"PWM" = "Set PWM Module" -> {PWM;I2C-Kanal;Adresse;Kanal;Wert} 
+		//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert} Status=0/1 (0=Aus,1=Ein), Wert=0-100
 		
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
@@ -208,41 +208,6 @@
 		}
 	}     
 	    
-	private function Setup()
-	{
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			$this->SendDebug("Setup", "Ausfuehrung", 0);
-			// Mode 1 in Sleep setzen
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 16)));
-			If (!$Result) {
-				$this->SendDebug("Setup", "Ausfuehrung in Sleep setzen fehlerhaft!", 0);
-			}
-			IPS_Sleep(10);
-			// Prescale einstellen
-			$PreScale = round((25000000 / (4096 * $this->ReadPropertyInteger("Frequency"))) - 1);
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 254, "Value" => $PreScale)));
-			If (!$Result) {
-				$this->SendDebug("Setup", "Prescale setzen fehlerhaft!", 0);
-			}
-			// Mode 1 in Sleep zurücksetzen
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 0, "Value" => 32)));
-			If (!$Result) {
-				$this->SendDebug("Setup", "Mode 1 setzen fehlerhaft!", 0);
-			}
-			// Mode 2 auf Ausgänge setzen
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Write", "InstanceID" => $this->InstanceID, "Register" => 1, "Value" => 4)));
-			If (!$Result) {
-				$this->SendDebug("Setup", "Mode 2 setzen fehlerhaft!", 0);
-			}
-			// Ausgänge initial einlesen
-			for ($i = 6; $i < 70; $i = $i + 4) {
-				$this->GetOutput($i + 2);
-				//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $i + 2)));
-				//$this->SetStatusVariables($i + 2, $Result);
-			}
-		}
-	}
-	
 	private function GetOutput(Int $Register)
 	{
 		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
