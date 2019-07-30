@@ -10,7 +10,7 @@
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
-		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
+		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 80);
 		$this->RegisterPropertyInteger("DeviceBus", 0);
 		$this->RegisterPropertyInteger("Frequency", 100);
@@ -74,8 +74,6 @@
 		
 		// Summary setzen
 		$this->SetSummary("0x".dechex($this->ReadPropertyInteger("DeviceAddress"))." - I²C-Bus ".($this->ReadPropertyInteger("DeviceBus") - 4));
-
-		$this->SetBuffer("ErrorCounter", 0);
 		
 		If ((IPS_GetKernelRunlevel() == 10103) AND ($this->HasActiveParent() == true)) {
 			If ($this->ReadPropertyBoolean("Open") == true) {
@@ -98,6 +96,21 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
+			case "SPWM":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->SendDebug("ReceiveData", "SPWM", 0);
+					/*
+					$Value = intval($data->Value); 
+					// Statusvariablen setzen
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Value & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
+					}
+					*/
+				}
+				break; 
 			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
