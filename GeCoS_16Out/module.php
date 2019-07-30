@@ -118,6 +118,20 @@
 					}
 				}
 				break; 
+			case "SOM":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->SendDebug("ReceiveData", "SOM", 0);
+					$Value = intval($data->Value); 
+					$this->SetBuffer("OutputBank", $Value);
+					// Statusvariablen setzen
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Value & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
+						}
+					}
+				}
+				break; 
 			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
@@ -163,13 +177,8 @@
 			$this->SendDebug("SetOutputPin", "Result: ".$Result, 0);
 			If ($Result == true) {
 				$this->SetStatus(102);
-				for ($i = 0; $i <= 15; $i++) {
-					$Bitvalue = boolval($Bitmask & pow(2, $i));					
-					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
-						SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
-					}
-				}
-				$this->GetOutput();
+				SetValueBoolean($this->GetIDForIdent("Output_X".$Output), $Value);
+				//$this->GetOutput();
 			}
 			else {
 				$this->SetStatus(202);
