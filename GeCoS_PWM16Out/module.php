@@ -180,19 +180,12 @@
 	{
 		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $Register)));
-			if (($Result === NULL) OR ($Result < 0) OR ($Result > 65536)) {// Falls der Splitter einen Fehler hat und 'nichts' zurückgibt.
-				$this->SetBuffer("ErrorCounter", ($this->GetBuffer("ErrorCounter") + 1));
-				$this->SendDebug("GetOutput", "Keine gueltige Antwort: ".$Result, 0);
-				IPS_LogMessage("GeCoS_PWM16Out", "GetOutput: Keine gueltige Antwort: ".$Result);
-				If ($this->GetBuffer("ErrorCounter") <= 3) {
-					$this->GetOutput($Register);
-				}
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SPWM")));
+			If ($Result == true) {
+				$this->SetStatus(102);
 			}
 			else {
-				$this->SendDebug("GetOutput", "Ergebnis: ".$Result, 0);
-				$this->SetStatusVariables($Register, $Result);
-				$this->SetBuffer("ErrorCounter", 0);
+				$this->SetStatus(202);
 			}
 		}
 	}
@@ -228,22 +221,6 @@
 	        IPS_SetVariableProfileIcon($Name, $Icon);
 	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
 	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);    
-	}
-	
-	private function setBit($byte, $significance) { 
- 		// ein bestimmtes Bit auf 1 setzen
- 		return $byte | 1<<$significance;   
- 	} 
-	
-	private function unsetBit($byte, $significance) {
-	    // ein bestimmtes Bit auf 0 setzen
-	    return $byte & ~(1<<$significance);
-	}
-	 
-	private function GetBoardVersion()
-	{
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "getBoardVersion" )));	
-	return $Result;
 	}
 	    
 	protected function HasActiveParent()
