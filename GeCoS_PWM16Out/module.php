@@ -111,6 +111,21 @@
 					*/
 				}
 				break; 
+			case "PWM":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$this->SendDebug("ReceiveData", "SPWM", 0);
+					/*
+					$Value = intval($data->Value); 
+					// Statusvariablen setzen
+					for ($i = 0; $i <= 15; $i++) {
+						$Bitvalue = boolval($Value & pow(2, $i));					
+						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
+							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
+						}
+					}
+					*/
+				}
+				break; 
 			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
@@ -157,7 +172,6 @@
 			// Ausgang setzen
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" = $State, "Value" => $Value )));
 			//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert} Status=0/1 (0=Aus,1=Ein), Wert=0-100
-			$this->GetOutput();
 		}
 	}
 	
@@ -171,8 +185,6 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" = $State, "Value" => $Value )));
-			// Ausgang abfragen
-			$this->GetOutput();
 		}
 	}     
 	    
