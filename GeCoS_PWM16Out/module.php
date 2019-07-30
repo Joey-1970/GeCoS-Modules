@@ -147,68 +147,36 @@
 	}
 	    
 	// Beginn der Funktionen
-	public function SetOutputPinValue(Int $Output, Int $Value)
+	public function SetOutputPinValue(Int $Channel, Int $Value)
 	{ 
 		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
-		$Output = min(15, max(0, $Output));
+		$Channel = min(15, max(0, $Channel));
 		$Value = min(4095, max(0, $Value));
-		
-		// Ausgang setzen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
-
-		//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert} Status=0/1 (0=Aus,1=Ein), Wert=0-100
-		
-		$ByteArray = array();
-		$StartAddress = ($Output * 4) + 6;
-		$Status = GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
-		$L_Bit = $Value & 255;
-		$H_Bit = $Value >> 8;
-		
-		If ($Status == true) {
-			$H_Bit = $this->unsetBit($H_Bit, 4);
-		}
-		else {
-			$H_Bit = $this->setBit($H_Bit, 4);
-		}
+		$State = GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel));
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
-			// Ausgang abfragen
-			$this->GetOutput($StartAddress + 2);
-			//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
-			//$this->SetStatusVariables($StartAddress + 2, $Result);
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" = $State, "Value" => $Value )));
+			//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert} Status=0/1 (0=Aus,1=Ein), Wert=0-100
+			$this->GetOutput();
 		}
 	}
 	
-	public function SetOutputPinStatus(Int $Output, Bool $Status)
+	public function SetOutputPinStatus(Int $Channel, Bool $State)
 	{ 
 		$this->SendDebug("SetOutputPinStatus", "Ausfuehrung", 0);
-		$Output = min(15, max(0, $Output));
-		$Status = min(1, max(0, $Status));
+		$Channel = min(15, max(0, $Channel));
+		$State = min(1, max(0, $State));
+		$Value = GetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel));
 		
-		$ByteArray = array();
-		$StartAddress = ($Output * 4) + 6;
-		$Value = GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
-		$L_Bit = $Value & 255;
-		$H_Bit = $Value >> 8;
-		
-		If ($Status == true) {
-			$H_Bit = $this->unsetBit($H_Bit, 4);
-		}
-		else {
-			$H_Bit = $this->setBit($H_Bit, 4);
-		}
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" = $State, "Value" => $Value )));
 			// Ausgang abfragen
-			$this->GetOutput($StartAddress + 2);
-			//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
-			//$this->SetStatusVariables($StartAddress + 2, $Result);
+			$this->GetOutput();
 		}
 	}     
 	    
-	private function GetOutput(Int $Register)
+	private function GetOutput()
 	{
 		$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 		If ($this->ReadPropertyBoolean("Open") == true) {
