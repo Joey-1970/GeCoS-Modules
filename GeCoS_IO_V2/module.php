@@ -412,14 +412,14 @@ class GeCoS_IO_V2 extends IPSModule
 		 preg_match_all('({[^}]*})', $Message, $DataArray);
 		 $this->SendDebug("ReceiveData", "Datenaufloesung: ".serialize($DataArray), 0);
 		
-		 If (count($DataArray,  COUNT_RECURSIVE) <= 1) {
+		 If (count($DataArray, COUNT_RECURSIVE) <= 1) {
     			  $this->SendDebug("ReceiveData", "Keine sinnvollen Daten erhalten", 0);
 			 return;
 		 }
 		 
 		 $this->SendDebug("ReceiveData", "Count($DataArray): ".Count($DataArray)." Count($DataArray, COUNT_RECURSIVE): ".Count($DataArray, COUNT_RECURSIVE), 0);
 		 
-		 for ($i = 0; $i <= Count($DataArray) - 1; $i++) {
+		 for ($i = 0; $i <= Count($DataArray, COUNT_RECURSIVE) - 1; $i++) {
 		    	$Value = str_replace(array("{", "}"), "", $DataArray[0][$i]);
 		    	$ValueArray = explode(";", $Value);
 		    	// Erstes Datenfeld enthält die Befehle
