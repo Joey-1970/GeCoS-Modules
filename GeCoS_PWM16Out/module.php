@@ -172,7 +172,7 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" => $State, "Value" => $Value )));
-			//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert} Status=0/1 (0=Aus,1=Ein), Wert=0-100
+			SetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel), $Value);
 		}
 	}
 	
@@ -186,6 +186,7 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "PWM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" => $State, "Value" => $Value )));
+			SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel), $State);
 		}
 	}     
 	    
@@ -202,22 +203,6 @@
 			}
 		}
 	}
-	
-	private function SetStatusVariables(Int $Register, Int $Value)
-	{
-		$Intensity = $Value & 4095;
-		$Status = !boolval($Value & 4096); 
-		$Number = ($Register - 8) / 4;
-		
-		$this->SendDebug("SetStatusVariables", "Itensitaet: ".$Intensity." Status: ".(int)$Status, 0);
-		
-		If ($Intensity <> GetValueInteger($this->GetIDForIdent("Output_Int_X".$Number))) {
-			SetValueInteger($this->GetIDForIdent("Output_Int_X".$Number), $Intensity);
-		}
-		If ($Status <> GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number))) {
-			SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Number), $Status);
-		}				
-	}    
 	
 	private function RegisterProfileInteger($Name, $Icon, $Prefix, $Suffix, $MinValue, $MaxValue, $StepSize)
 	{
