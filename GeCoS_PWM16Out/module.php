@@ -84,6 +84,7 @@
 				If ($Result == true) {
 					$this->SetStatus(102);
 				}
+				$this->GetOutput();
 			}
 			else {
 				$this->SetStatus(104);
@@ -99,16 +100,16 @@
 			case "SPWM":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->SendDebug("ReceiveData", "SPWM", 0);
-					/*
+					$Channel = intval($data->Channel);
+					$State = boolval($data->State);
 					$Value = intval($data->Value); 
 					// Statusvariablen setzen
-					for ($i = 0; $i <= 15; $i++) {
-						$Bitvalue = boolval($Value & pow(2, $i));					
-						If (GetValueBoolean($this->GetIDForIdent("Input_X".$i)) <> $Bitvalue) {
-							SetValueBoolean($this->GetIDForIdent("Input_X".$i), $Bitvalue);
-						}
+					If (GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel)) <> $State) {
+						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel), $State);
 					}
-					*/
+					If (GetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel)) <> $Value) {
+						SetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel), $Value);
+					}	
 				}
 				break; 
 			case "PWM":
