@@ -501,14 +501,14 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"PWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;	
 			case "SPWM":
-				$this->SendDebug("ReceiveData", "PWM", 0);
+				$this->SendDebug("ReceiveData", "SPWM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Channel = intval($ValueArray[3]);
 				$State = intval($ValueArray[4]);
 				$Value = intval($ValueArray[5]);
 				$StatusMessage = $ValueArray[6];
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"PWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SPWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;	
 			}
 		}
