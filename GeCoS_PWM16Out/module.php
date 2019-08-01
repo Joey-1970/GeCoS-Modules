@@ -13,7 +13,6 @@
 		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
  	    	$this->RegisterPropertyInteger("DeviceAddress", 80);
 		$this->RegisterPropertyInteger("DeviceBus", 0);
-		$this->RegisterPropertyInteger("Frequency", 100);
 		
 		// Profil anlegen
 		$this->RegisterProfileInteger("Intensity.4096", "Intensity", "", " %", 0, 4095, 1);
@@ -53,10 +52,6 @@
 		
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceBus", "caption" => "GeCoS I²C-Bus", "options" => $arrayOptions );
 		
-		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "100", "value" => 100);
-		$arrayOptions[] = array("label" => "200", "value" => 200);
-		$arrayElements[] = array("type" => "Select", "name" => "Frequency", "caption" => "Frequenz (Hz)", "options" => $arrayOptions );
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 		
