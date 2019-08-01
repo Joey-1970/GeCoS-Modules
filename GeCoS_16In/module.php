@@ -102,8 +102,8 @@
 	 	switch ($data->Function) {
 			case "SAI":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$this->SendDebug("ReceiveData", "SAI", 0);
 					$Value = intval($data->Value); 
+					$this->SendDebug("ReceiveData", "SAI Value: ".$Value, 0);
 					// Statusvariablen setzen
 					for ($i = 0; $i <= 15; $i++) {
 						$Bitvalue = boolval($Value & pow(2, $i));					
