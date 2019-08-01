@@ -239,7 +239,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$Result = $this->ClientSocket("{MOD}");
 				
 				$this->SetStatus(102);
-				$this->SetTimerInterval("RTC_Data", 300 * 1000);
+				$this->SetTimerInterval("RTC_Data", 15 * 1000);
 			}
 			else {
 				$this->SetTimerInterval("RTC_Data", 0);
@@ -491,6 +491,16 @@ class GeCoS_IO_V2 extends IPSModule
 				SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $ServerTime);
 				break;
 			case "PWM":
+				$this->SendDebug("ReceiveData", "PWM", 0);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
+				$Channel = intval($ValueArray[3]);
+				$State = intval($ValueArray[4]);
+				$Value = intval($ValueArray[5]);
+				$StatusMessage = $ValueArray[6];
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"PWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				break;	
+			case "SPWM":
 				$this->SendDebug("ReceiveData", "PWM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
