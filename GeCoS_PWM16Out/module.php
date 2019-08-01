@@ -99,10 +99,10 @@
 	 	switch ($data->Function) {
 			case "SPWM":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$this->SendDebug("ReceiveData", "SPWM", 0);
 					$Channel = intval($data->Channel);
 					$State = boolval($data->State);
 					$Value = intval($data->Value); 
+					$this->SendDebug("ReceiveData", "SPWM Channel: ".$Channel." State: ".$State." Value: ".$Value, 0);
 					// Statusvariablen setzen
 					If (GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel)) <> $State) {
 						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel), $State);
@@ -114,10 +114,10 @@
 				break; 
 			case "PWM":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$this->SendDebug("ReceiveData", "PWM", 0);
 					$Channel = intval($data->Channel);
 					$State = boolval($data->State);
 					$Value = intval($data->Value); 
+					$this->SendDebug("ReceiveData", "PWM Channel: ".$Channel." State: ".$State." Value: ".$Value, 0);
 					// Statusvariablen setzen
 					If (GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel)) <> $State) {
 						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel), $State);
