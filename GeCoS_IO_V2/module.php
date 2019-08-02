@@ -509,6 +509,8 @@ class GeCoS_IO_V2 extends IPSModule
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
 				$ServerTime = mktime(intval($ValueArray[4]), intval($ValueArray[5]), intval($ValueArray[6]), intval($ValueArray[2]), intval($ValueArray[1]), intval($ValueArray[3]));
 				SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $ServerTime);
+				$Temp = floatval($ValueArray[7]);
+				SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
 				break;
 			case "PWM":
 				$this->SendDebug("ReceiveData", "PWM", 0);
