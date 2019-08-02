@@ -381,7 +381,7 @@ class GeCoS_IO_V2 extends IPSModule
 				//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert}
 				$Result = $this->ClientSocket("{PWM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$State.";".$Value."}");
 				break;
-			case "SPWM": // Module 4RGBW
+			case "SRGBW": // Module 4RGBW
 				// Auslesen des aktuellen Status
 				$Result = $this->ClientSocket("{SRGBW}");
 				break;
@@ -543,6 +543,20 @@ class GeCoS_IO_V2 extends IPSModule
 				$ValueW = intval($ValueArray[9]);
 				$StatusMessage = $ValueArray[10];
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"RGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, "StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, "StatusMessage" => $StatusMessage)));
+				break;	
+			case "SRGBW":
+				$this->SendDebug("ReceiveData", "PWM", 0);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
+				$Channel = intval($ValueArray[3]);
+				$StateRGB = intval($ValueArray[4]);
+				$StateW = intval($ValueArray[5]);
+				$ValueR = intval($ValueArray[6]);
+				$ValueG = intval($ValueArray[7]);
+				$ValueB = intval($ValueArray[8]);
+				$ValueW = intval($ValueArray[9]);
+				$StatusMessage = $ValueArray[10];
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SRGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, "StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, "StatusMessage" => $StatusMessage)));
 				break;	
 			}
 		}
