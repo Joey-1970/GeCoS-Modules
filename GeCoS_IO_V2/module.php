@@ -381,6 +381,24 @@ class GeCoS_IO_V2 extends IPSModule
 				//{PWM;I2C-Kanal;Adresse;PWMKanal;Status;Wert}
 				$Result = $this->ClientSocket("{PWM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$State.";".$Value."}");
 				break;
+			case "SPWM": // Module 4RGBW
+				// Auslesen des aktuellen Status
+				$Result = $this->ClientSocket("{SRGBW}");
+				break;
+			case "RGBW": // Module 16PWM
+				// Setzen des Status
+				$DeviceBus = intval($data->DeviceBus);
+				$DeviceAddress = intval($data->DeviceAddress);
+				$Channel = intval($data->Channel);
+				$StateRGB = intval($data->StateRGB);
+				$StateW = intval($data->StateW);
+				$ValueR = intval($data->ValueR);
+				$ValueG = intval($data->ValueG);
+				$ValueB = intval($data->ValueB);
+				$ValueW = intval($data->ValueW);
+				// {RGBW;I2C-Kanal;Adresse;RGBWKanal;StatusRGB;StatusW;R;G;B;W}
+				$Result = $this->ClientSocket("{PWM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$StateRGB.";".$StateB.";".$ValueR.";".$ValueR.";".$ValueG.";".$ValueB.";".$ValueW."}");
+				break; 
 			// Raspberry Pi Kommunikation
 		    	case "get_RPi_connect":
 				// SSH Connection
@@ -511,6 +529,20 @@ class GeCoS_IO_V2 extends IPSModule
 				$Value = intval($ValueArray[5]);
 				$StatusMessage = $ValueArray[6];
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SPWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				break;
+			case "RGBW":
+				$this->SendDebug("ReceiveData", "PWM", 0);
+				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
+				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
+				$Channel = intval($ValueArray[3]);
+				$StateRGB = intval($ValueArray[4]);
+				$StateW = intval($ValueArray[5]);
+				$ValueR = intval($ValueArray[6]);
+				$ValueG = intval($ValueArray[7]);
+				$ValueB = intval($ValueArray[8]);
+				$ValueW = intval($ValueArray[9]);
+				$StatusMessage = $ValueArray[10];
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"RGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, "StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, "StatusMessage" => $StatusMessage)));
 				break;	
 			}
 		}
