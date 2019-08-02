@@ -192,24 +192,22 @@
 		    "W" => 12,
 		];
 		
-		$StartAddress = (($Group - 1) * 16) + $ChannelArray[$Channel] + 6;
+		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$StatusRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		$ValueR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		$ValueG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		$ValueB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		$ValueW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));
 		
-		If ($Channel == "W") {
-			$Status = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
-		}
-		else {
-			$Status = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		return;
+		
+		
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			// Ausgang setzen
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "RGBW", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" => $State, "Value" => $Value )));
+			SetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel), $Value);
 		}
 		
-		$L_Bit = $Value & 255;
-		$H_Bit = $Value >> 8;
-		
-		If ($Status == true) {
-			$H_Bit = $this->unsetBit($H_Bit, 4);
-		}
-		else {
-			$H_Bit = $this->setBit($H_Bit, 4);
-		}
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
