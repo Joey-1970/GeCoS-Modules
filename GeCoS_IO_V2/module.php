@@ -442,18 +442,17 @@ class GeCoS_IO_V2 extends IPSModule
 		 
 		 $this->SendDebug("ReceiveData", "Count($DataArray): ".Count($DataArray)." Count($DataArray, COUNT_RECURSIVE): ".Count($DataArray, COUNT_RECURSIVE), 0);
 		 
-		 for ($i = 0; $i <= Count($DataArray, COUNT_RECURSIVE) - 1; $i++) {
+		 for ($i = 0; $i < Count($DataArray, COUNT_RECURSIVE) - 1; $i++) {
 		    	$Value = str_replace(array("{", "}"), "", $DataArray[0][$i]);
 		    	$ValueArray = explode(";", $Value);
 		    	// Erstes Datenfeld enthält die Befehle
 			$Command = $ValueArray[0];
 			$DeviceBus = intval($ValueArray[1]);
 			$DeviceAddress = hexdec($ValueArray[2]);
-			$this->SendDebug("ReceiveData", "Bus: ".$DeviceBus." Adresse: ".$DeviceAddress, 0);
+			$this->SendDebug("ReceiveData", "Command: ".$Command." Bus: ".$DeviceBus." Adresse: ".$DeviceAddress, 0);
 			
 			switch ($Command) {
 			case "SAO":
-				$this->SendDebug("ReceiveData", "SAO", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Value = intval($ValueArray[3]);
@@ -461,7 +460,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAO", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "SOM":
-				$this->SendDebug("ReceiveData", "SOM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Value = intval($ValueArray[3]);
@@ -469,7 +467,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SOM", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "SAI":
-				$this->SendDebug("ReceiveData", "SAI", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Value = intval($ValueArray[3]);
@@ -477,7 +474,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAI", "InstanceID" => $InstanceID, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "SAM":
-				$this->SendDebug("ReceiveData", "SAM", 0);
 				// {SAM;0;0x69;AnalogChannel;Resolution;Amplifier}
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$Channel = intval($ValueArray[3]);
@@ -487,7 +483,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAM", "InstanceID" => $InstanceID, "Channel" => $Channel, "Resolution" => $Resolution, "Amplifier" => $Amplifier, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "MOD":
-				$this->SendDebug("ReceiveData", "MOD", 0);
 				$ModulesArray = Array();
 				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
 				$ModuleTyp = $ValueArray[3];
@@ -510,7 +505,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 				break;
 			case "RRTC":
-				$this->SendDebug("ReceiveData", "RRTC", 0);
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
 				$ServerTime = mktime(intval($ValueArray[4]), intval($ValueArray[5]), intval($ValueArray[6]), intval($ValueArray[2]), intval($ValueArray[1]), intval($ValueArray[3]));
 				SetValueInteger($this->GetIDForIdent("RTC_Timestamp"), $ServerTime);
@@ -518,7 +512,6 @@ class GeCoS_IO_V2 extends IPSModule
 				SetValueFloat($this->GetIDForIdent("RTC_Temperature"), $Temp);
 				break;
 			case "PWM":
-				$this->SendDebug("ReceiveData", "PWM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Channel = intval($ValueArray[3]);
@@ -528,7 +521,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"PWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;	
 			case "SPWM":
-				$this->SendDebug("ReceiveData", "SPWM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Channel = intval($ValueArray[3]);
@@ -538,7 +530,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SPWM", "InstanceID" => $InstanceID, "Channel" => $Channel, "State" => $State, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "RGBW":
-				$this->SendDebug("ReceiveData", "PWM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Channel = intval($ValueArray[3]);
@@ -552,7 +543,6 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"RGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, "StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, "StatusMessage" => $StatusMessage)));
 				break;	
 			case "SRGBW":
-				$this->SendDebug("ReceiveData", "PWM", 0);
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
 				$Channel = intval($ValueArray[3]);
