@@ -33,8 +33,6 @@ class GeCoS_IO_V2 extends IPSModule
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 99, "Unbekannter Fehler!", "Alert", -1);
 		
 		// Statusvariablen anlegen
-		$this->RegisterVariableString("Hardware", "Hardware", "", 20);
-		
 		$this->RegisterVariableInteger("Boardversion", "GeCoS-Server", "IPS2CeCoSIO.Boardversion", 25);
 			
 		$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
