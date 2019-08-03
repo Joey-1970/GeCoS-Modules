@@ -440,7 +440,7 @@ class GeCoS_IO_V2 extends IPSModule
 			 return;
 		 }
 		 
-		 $this->SendDebug("ReceiveData", "Count($DataArray): ".Count($DataArray)." Count($DataArray, COUNT_RECURSIVE): ".Count($DataArray, COUNT_RECURSIVE), 0);
+		 //$this->SendDebug("ReceiveData", "Count($DataArray): ".Count($DataArray)." Count($DataArray, COUNT_RECURSIVE): ".Count($DataArray, COUNT_RECURSIVE), 0);
 		 
 		 for ($i = 0; $i < Count($DataArray, COUNT_RECURSIVE) - 1; $i++) {
 		    	$Value = str_replace(array("{", "}"), "", $DataArray[0][$i]);
