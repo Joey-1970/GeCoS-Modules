@@ -430,7 +430,7 @@ class GeCoS_IO_V2 extends IPSModule
 		 preg_match_all('({[^}]*})', $Message, $DataArray);
 		 $this->SendDebug("ReceiveData", "Datenaufloesung: ".serialize($DataArray), 0);
 		
-		 If is_array($DataArray) == false {
+		 If (is_array($DataArray) == false) {
 		 	$this->SendDebug("ReceiveData", "Keine sinnvollen Daten erhalten", 0);
 			return;
 		 }
