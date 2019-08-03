@@ -557,6 +557,7 @@ class GeCoS_IO_V2 extends IPSModule
 				break;	
 			}
 		}
+		SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
 	}
 	
 	private function ClientSocket(String $Message)
