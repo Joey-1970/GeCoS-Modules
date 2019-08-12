@@ -176,9 +176,9 @@
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Value" => $Bitmask )));
 			$this->SendDebug("SetOutputPin", "Result: ".$Result, 0);
 			If ($Result == true) {
-				$this->SetStatus(102);
 				SetValueBoolean($this->GetIDForIdent("Output_X".$Output), $Value);
-				//$this->GetOutput();
+				$this->SetBuffer("OutputBank", $Bitmask);
+				$this->SetStatus(102);
 			}
 			else {
 				$this->SetStatus(202);
