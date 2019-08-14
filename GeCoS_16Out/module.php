@@ -188,7 +188,7 @@
 			}
 			else {
 				$this->SendDebug("SetOutputPin", "Keine Ausfuehrung moeglich!", 0);
-			]
+			}
 		}
 	return $Result;
 	}	
