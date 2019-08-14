@@ -122,6 +122,7 @@
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$Value = intval($data->Value);
 					$this->SendDebug("ReceiveData", "SOM Value: ".$Value, 0);
+					/*
 					$this->SetBuffer("OutputBank", $Value);
 					// Statusvariablen setzen
 					for ($i = 0; $i <= 15; $i++) {
@@ -130,6 +131,7 @@
 							SetValueBoolean($this->GetIDForIdent("Output_X".$i), $Bitvalue);
 						}
 					}
+					*/
 				}
 				break; 
 			case "get_used_modules":
