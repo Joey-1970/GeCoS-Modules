@@ -192,6 +192,11 @@
 	public function SetOutput(Int $Group, Bool $StateRGB, Bool $StateW, Int $IntensityR, Int $IntensityG, Int $IntensityB, Int $IntensityW)  
 	{
 		//{RGBW;I2C-Kanal;Adresse;RGBWKanal;StatusRGB;StatusW;R;G;B;W}
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			// Ausgang setzen
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "RGBW", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Group" => $Group, 
+									    "StateRGB" => $StateRGB, "StateW" => $StateW, "IntensityR" => $IntensityR, "IntensityG" => $IntensityG, "IntensityB" => $IntensityB, "IntensityW" => $IntensityW )));
+		}
 	}
 		
 	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
