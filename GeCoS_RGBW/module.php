@@ -134,18 +134,28 @@
 	public function RequestAction($Ident, $Value) 
 	{
 		$Parts = explode("_", $Ident);
-		$Source = $Parts[0];
-		$Channel = $Parts[1];
+		$Source = $Parts[0]."_".$Parts[1];
 		$Group = $Parts[2];
 		
 		switch($Source) {
-		case "Status":
+		case "Status_RGB":
 			If ($Group <= 4) {
-				$this->SetOutputPinStatus($Group, $Channel, $Value);
+				$this->SetOutputPinStatusRGB($Group, $Value);
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinStatus($i, $Channel, $Value);
+					$this->SetOutputPinStatusRGB($Group, $Value);
+					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
+				}
+			}
+	            	break;
+		case "Status_W":
+			If ($Group <= 4) {
+				$this->SetOutputPinStatusW($Group, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinStatusW($Group, $Value);
 					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				}
 			}
