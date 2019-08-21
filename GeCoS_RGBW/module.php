@@ -189,6 +189,11 @@
 	}
 	    
 	// Beginn der Funktionen
+	public function SetOutput(Int $Group, Bool $StateRGB, Bool $StateW, Int $IntensityR, Int $IntensityG, Int $IntensityB, Int $IntensityW)  
+	{
+		//{RGBW;I2C-Kanal;Adresse;RGBWKanal;StatusRGB;StatusW;R;G;B;W}
+	}
+		
 	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
 	{ 
 		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
