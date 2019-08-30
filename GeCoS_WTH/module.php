@@ -40,6 +40,9 @@
 		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 30);
 		$this->DisableAction("Temperature");
 		
+		$this->RegisterVariableFloat("TemperatureOW", "1-Wire Temperatur", "~Temperature", 35);
+		$this->DisableAction("Temperature");
+		
 		$this->RegisterVariableFloat("Pressure", "Luftdruck (abs)", "~AirPressure.F", 40);
 		$this->DisableAction("Pressure");
 		
@@ -151,6 +154,11 @@
 			$contents = utf8_encode($contents); 
 			$data = json_decode($contents);
 			$Temp = floatval($data->Temperatur);
+			If (property_exists($data, "TemperaturOW")) {
+            			If (floatval($data->TemperaturOW) > -127.0) {
+					SetValueFloat($this->GetIDForIdent("TemperatureOW"), floatval($data->TemperaturOW));
+				}
+        		}        		
 			$Pressure = floatval($data->Luftdruck); 
 			$Humidity = floatval($data->Luftfeuchtigkeit); 
 			
