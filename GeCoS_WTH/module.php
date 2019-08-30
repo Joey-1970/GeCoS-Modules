@@ -154,10 +154,11 @@
 			$contents = utf8_encode($contents); 
 			$data = json_decode($contents);
 			$Temp = floatval($data->Temperatur);
-			if (property_exists($data, "TemperaturOW")) {
-            			SetValueFloat($this->GetIDForIdent("TemperatureOW"), floatval($data->TemperaturOW));
-        		}
-        		
+			If (property_exists($data, "TemperaturOW")) {
+            			If (floatval($data->TemperaturOW) > -127.0) {
+					SetValueFloat($this->GetIDForIdent("TemperatureOW"), floatval($data->TemperaturOW));
+				}
+        		}  
 			$Pressure = floatval($data->Luftdruck); 
 			$Humidity = floatval($data->Luftfeuchtigkeit); 
 			
