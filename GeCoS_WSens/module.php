@@ -29,6 +29,7 @@
 		
 		// Profile erstellen		
 		$this->RegisterProfileFloat("GeCoS.gm3", "Drops", "", " g/m³", 0, 1000, 0.1, 1);
+		$this->RegisterProfileInteger("GeCoS.ppm", "Gauge", "", " ppm", 0, 6000, 1);
 		
 		$this->RegisterProfileInteger("GeCoS.AirQuality", "Information", "", "", 0, 6, 1);
 		IPS_SetVariableProfileAssociation("GeCoS.AirQuality", 0, "Kalibrierung", "Information", -1);
@@ -43,62 +44,49 @@
 		
 		//Status-Variablen anlegen
 		$this->RegisterVariableFloat("Hardware", "Hardware-Version", "", 10);
-		$this->DisableAction("Hardware");
 		
 		$this->RegisterVariableFloat("Firmware", "Firmware-Version", "", 20);
-		$this->DisableAction("Firmware");
 		
 		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 30);
-		$this->DisableAction("Temperature");
 		
 		$this->RegisterVariableFloat("Pressure", "Luftdruck (abs)", "~AirPressure.F", 40);
-		$this->DisableAction("Pressure");
 		
 		$this->RegisterVariableFloat("PressureRel", "Luftdruck (rel)", "~AirPressure.F", 50);
-		$this->DisableAction("PressureRel");
 		
 		$this->RegisterVariableFloat("HumidityAbs", "Luftfeuchtigkeit (abs)", "GeCoS.gm3", 60);
-		$this->DisableAction("HumidityAbs");
 		
 		$this->RegisterVariableFloat("Humidity", "Luftfeuchtigkeit (rel)", "~Humidity.F", 70);
-		$this->DisableAction("Humidity");
 		
 		$this->RegisterVariableFloat("DewPointTemperature", "Taupunkt Temperatur", "~Temperature", 80);
-		$this->DisableAction("DewPointTemperature");
 		
 		$this->RegisterVariableFloat("PressureTrend1h", "Luftdruck 1h-Trend", "~AirPressure.F", 90);
-		$this->DisableAction("PressureTrend1h");
 		
 		$this->RegisterVariableFloat("PressureTrend3h", "Luftdruck 3h-Trend", "~AirPressure.F", 100);
-		$this->DisableAction("PressureTrend3h");
 		
 		$this->RegisterVariableFloat("PressureTrend12h", "Luftdruck 12h-Trend", "~AirPressure.F", 110);
-		$this->DisableAction("PressureTrend12h");
 		
 		$this->RegisterVariableFloat("PressureTrend24h", "Luftdruck 24h-Trend", "~AirPressure.F", 120);
-		$this->DisableAction("PressureTrend24h");
 		
 		$this->RegisterVariableInteger("AirQuality", "Luftqualität", "GeCoS.AirQuality", 130);
-		$this->DisableAction("AirQuality");
 		SetValueInteger($this->GetIDForIdent("AirQuality"), 0);
 		
 		$this->RegisterVariableInteger("AirQualityIndex", "Luftqualität Index", "", 140);
-		$this->DisableAction("AirQualityIndex");
+		
+		$this->RegisterVariableInteger("AirQualityGenauigkeit", "Luftqualität Genauigkeit", "", 142);
+		
+		$this->RegisterVariableInteger("CO2", "CO 2", "GeCoS.ppm", 144);
+		
+		$this->RegisterVariableInteger("CO2Genauigkeit", "CO 2 Genauigkeit", "", 146);
 		
 		$this->RegisterVariableInteger("Intensity_W", "Intensität Weiß", "GeCoS.Lux", 150);
-	        $this->DisableAction("Intensity_W");
 		
 		$this->RegisterVariableInteger("Intensity_R", "Intensität Rot", "GeCoS.Lux", 160);
-	        $this->DisableAction("Intensity_R");
 		
 		$this->RegisterVariableInteger("Intensity_G", "Intensität Grün", "GeCoS.Lux", 170);
-	        $this->DisableAction("Intensity_G");
 		
 		$this->RegisterVariableInteger("Intensity_B", "Intensität Blau", "GeCoS.Lux", 180);
-	        $this->DisableAction("Intensity_B");
 		
 		$this->RegisterVariableInteger("FailureCode", "Fehlercode", "", 190);
-		$this->DisableAction("FailureCode");
 		SetValueInteger($this->GetIDForIdent("FailureCode"), 0);
         }
  	
@@ -214,6 +202,17 @@
 				
 			}
 			
+			If (property_exists($data, "Luftqualitaet-Genauigkeit")) {
+				SetValueInteger($this->GetIDForIdent("AirQualityGenauigkeit"), intval($data->Luftqualitaet-Genauigkeit));
+        		}  
+			
+			If (property_exists($data, "CO2")) {
+				SetValueInteger($this->GetIDForIdent("CO2"), intval($data->CO2));
+        		}  
+			
+			If (property_exists($data, "CO2-Genauigkeit")) {
+				SetValueInteger($this->GetIDForIdent("CO2Genauigkeit"), intval($data->CO2-Genauigkeit));
+        		}  
 			
 			$Ambient = intval($data->{'Intensitaet-Weiss'});
     			$Red = intval($data->{'Intensitaet-Rot'});
