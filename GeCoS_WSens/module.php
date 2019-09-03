@@ -203,7 +203,7 @@
 			}
 			
 			If (property_exists($data, "Luftqualitaet-Genauigkeit")) {
-				SetValueInteger($this->GetIDForIdent("AirQualityGenauigkeit"), intval($data->Luftqualitaet-Genauigkeit));
+				SetValueInteger($this->GetIDForIdent("AirQualityGenauigkeit"), intval($data->{'Luftqualitaet-Genauigkeit'}));
         		}  
 			
 			If (property_exists($data, "CO2")) {
@@ -211,7 +211,7 @@
         		}  
 			
 			If (property_exists($data, "CO2-Genauigkeit")) {
-				SetValueInteger($this->GetIDForIdent("CO2Genauigkeit"), intval($data->CO2-Genauigkeit));
+				SetValueInteger($this->GetIDForIdent("CO2Genauigkeit"), intval($data->{'CO2-Genauigkeit'}));
         		}  
 			
 			$Ambient = intval($data->{'Intensitaet-Weiss'});
