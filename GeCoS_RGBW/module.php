@@ -155,11 +155,55 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinStatusW($Group, $Value);
+					$this->SetOutputPinStateW($Group, $Value);
 					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
+		case "Intensity_R":
+	            	If ($Group <= 4) {
+				$this->SetOutputPinValueR($Group, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinValueR($i, $Channel, $Value);
+					SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				}
+			}
+	            	break;
+		case "Intensity_G":
+	            	If ($Group <= 4) {
+				$this->SetOutputPinValueG($Group, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinValueG($i, $Channel, $Value);
+					SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				}
+			}
+	            	break;
+		case "Intensity_B":
+	            	If ($Group <= 4) {
+				$this->SetOutputPinValueB($Group, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinValueB($i, $Channel, $Value);
+					SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				}
+			}
+	            	break;
+		case "Intensity_W":
+	            	If ($Group <= 4) {
+				$this->SetOutputPinValueW($Group, $Value);
+			}
+			elseif ($Group == 5) {
+				for ($i = 1; $i <= 4; $i++) {
+					$this->SetOutputPinValueW($i, $Channel, $Value);
+					SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				}
+			}
+	            	break;	
 		case "Color":
 	            	If ($Group <= 4) {
 				$this->SetOutputPinColor($Group, $Value);
@@ -167,17 +211,6 @@
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinColor($i, $Value);
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
-				}
-			}
-	            	break;
-		case "Intensity":
-	            	If ($Group <= 4) {
-				$this->SetOutputPinValue($Group, $Channel, $Value);
-			}
-			elseif ($Group == 5) {
-				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinValue($i, $Channel, $Value);
 					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -267,6 +300,21 @@
 		
 		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
 	}      
+	 
+	public function SetOutputPinStateW(Int $Group, Bool $StateW)
+	{ 
+		$this->SendDebug("SetOutputPinStatusW", "Ausfuehrung", 0);
+		$Group = min(4, max(1, $Group));
+		$State = min(1, max(0, $State));
+		//$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
+		
+		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
+	}         
 	    
 	public function SetOutputPinColor(Int $Group, Int $Color)
 	{
