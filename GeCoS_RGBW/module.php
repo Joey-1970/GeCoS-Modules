@@ -113,6 +113,29 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
+			//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
+				//"Function"=>"SRGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, 
+				//"StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, 
+				//"StatusMessage" => $StatusMessage)));
+			case "SRGBW":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$Channel = intval($data->Channel);
+					$StateRGB = boolval($data->StateRGB);
+					$StateW = boolval($data->StateW);
+					$ValueR = intval($data->ValueR); 
+					$ValueG = intval($data->ValueG);
+					$ValueB = intval($data->ValueB);
+					$ValueW = intval($data->ValueW);
+					$this->SendDebug("ReceiveData", "SRGBW Channel: ".$Channel." StateRGB: ".$StateRGB." Value: ".$Value, 0);
+					// Statusvariablen setzen
+					If (GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel)) <> $State) {
+						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel), $State);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel)) <> $Value) {
+						SetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel), $Value);
+					}	
+				}
+				break;
 			case "get_used_modules":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
 					$this->ApplyChanges();
