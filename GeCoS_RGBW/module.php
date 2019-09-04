@@ -231,49 +231,10 @@
 									    "StateRGB" => $StateRGB, "StateW" => $StateW, "IntensityR" => $IntensityR, "IntensityG" => $IntensityG, "IntensityB" => $IntensityB, "IntensityW" => $IntensityW )));
 		}
 	}
-		
-	public function SetOutputPinValue(Int $Group, String $Channel, Int $Value)
-	{ 
-		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
-		$Group = min(4, max(1, $Group));
-		$Value = min(4095, max(0, $Value));
-		
-		$ChannelArray = [
-		    "R" => 0,
-		    "G" => 4,
-		    "B" => 8,
-		    "W" => 12,
-		];
-		
-		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
-		$StatusRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
-		$ValueR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
-		$ValueG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
-		$ValueB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
-		$ValueW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));
-		
-		return;
-		
-		
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			// Ausgang setzen
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "RGBW", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Channel" => $Channel, "State" => $State, "Value" => $Value )));
-			SetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel), $Value);
-		}
-		
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			// Ausgang setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
-			// Ausgang abfragen
-			$this->GetOutput($StartAddress + 2);
-			//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
-			//$this->SetStatusVariables($StartAddress + 2, $Result);
-		}
-	}
-	
+			
 	public function SetOutputPinStateRGB(Int $Group, Bool $StateRGB)
 	{ 
-		$this->SendDebug("SetOutputPinStatusRGB", "Ausfuehrung", 0);
+		$this->SendDebug("SetOutputPinStateRGB", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
 		$State = min(1, max(0, $Status));
 		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
@@ -288,7 +249,7 @@
 	
 	public function SetOutputPinStateW(Int $Group, Bool $StateW)
 	{ 
-		$this->SendDebug("SetOutputPinStatusW", "Ausfuehrung", 0);
+		$this->SendDebug("SetOutputPinStateW", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
 		$State = min(1, max(0, $State));
 		//$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
@@ -301,20 +262,65 @@
 		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
 	}      
 	 
-	public function SetOutputPinStateW(Int $Group, Bool $StateW)
+	public function SetOutputPinValueR(Int $Group, Int $IntensityR)
 	{ 
-		$this->SendDebug("SetOutputPinStatusW", "Ausfuehrung", 0);
+		$this->SendDebug("SetOutputPinValueR", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
-		$State = min(1, max(0, $State));
-		//$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$IntensityR = min(4095, max(0, $State));
+		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
 		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
-		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		//$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
 		$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
 		$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
 		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
 		
 		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
 	}         
+	
+	public function SetOutputPinValueG(Int $Group, Int $IntensityG)
+	{ 
+		$this->SendDebug("SetOutputPinValueG", "Ausfuehrung", 0);
+		$Group = min(4, max(1, $Group));
+		$IntensityR = min(4095, max(0, $State));
+		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		//$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
+		
+		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
+	}            
+	
+	public function SetOutputPinValueB(Int $Group, Int $IntensityB)
+	{ 
+		$this->SendDebug("SetOutputPinValueB", "Ausfuehrung", 0);
+		$Group = min(4, max(1, $Group));
+		$IntensityR = min(4095, max(0, $State));
+		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		//$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
+		
+		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
+	}            
+	
+	public function SetOutputPinValueW(Int $Group, Int $IntensityW)
+	{ 
+		$this->SendDebug("SetOutputPinValueR", "Ausfuehrung", 0);
+		$Group = min(4, max(1, $Group));
+		$IntensityR = min(4095, max(0, $State));
+		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		//$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
+		
+		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
+	}            
 	    
 	public function SetOutputPinColor(Int $Group, Int $Color)
 	{
