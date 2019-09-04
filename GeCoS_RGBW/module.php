@@ -204,13 +204,13 @@
 				}
 			}
 	            	break;	
-		case "Color":
+		case "Color_RGB":
 	            	If ($Group <= 4) {
-				$this->SetOutputPinColor($Group, $Value);
+				$this->SetOutputColor($Group, $Value);
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinColor($i, $Value);
+					$this->SetOutputColor($i, $Value);
 					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -322,48 +322,26 @@
 		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
 	}            
 	    
-	public function SetOutputPinColor(Int $Group, Int $Color)
+	public function SetOutputColor(Int $Group, Int $Color)
 	{
-		$this->SendDebug("SetOutputPinColor", "Ausfuehrung", 0);
+		$this->SendDebug("SetOutputColor", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
 		
 		// Farbwerte aufsplitten
 		list($Value_R, $Value_G, $Value_B) = $this->Hex2RGB($Color);
-		
-		$StartAddress = (($Group - 1) * 16) + 6;
-		$Status = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
 		// Werte skalieren
-		$Value_R = 4095 / 255 * $Value_R;
-		$Value_G = 4095 / 255 * $Value_G;
-		$Value_B = 4095 / 255 * $Value_B;
+		$IntensityR = 4095 / 255 * $Value_R;
+		$IntensityG = 4095 / 255 * $Value_G;
+		$IntensityB = 4095 / 255 * $Value_B;
 		
-		$L_Bit_R = $Value_R & 255;
-		$H_Bit_R = $Value_R >> 8;
-		$L_Bit_G = $Value_G & 255;
-		$H_Bit_G = $Value_G >> 8;
-		$L_Bit_B = $Value_B & 255;
-		$H_Bit_B = $Value_B >> 8;
-		If ($Status == true) {
-			$H_Bit_R = $this->unsetBit($H_Bit_R, 4);
-			$H_Bit_G = $this->unsetBit($H_Bit_G, 4);
-			$H_Bit_B = $this->unsetBit($H_Bit_B, 4);
-		}
-		else {
-			$H_Bit_R = $this->setBit($H_Bit_R, 4);
-			$H_Bit_G = $this->setBit($H_Bit_G, 4);
-			$H_Bit_B = $this->setBit($H_Bit_B, 4);
-		}
-		If ($this->ReadPropertyBoolean("Open") == true) {
-			// Ausgang setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_12_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, 
-								  "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit_R, "Value_4" => $H_Bit_R, "Value_5" => 0, "Value_6" => 0, "Value_7" => $L_Bit_G, "Value_8" => $H_Bit_G, "Value_9" => 0, "Value_10" => 0, "Value_11" => $L_Bit_B, "Value_12" => $H_Bit_B)));
-			// Ausgang abfragen
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read_Group", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
-			$RGB = unserialize($Result);
-			for($i = 0; $i < count($RGB); $i++) {
-				$this->SetStatusVariables( ($StartAddress + 2) + ($i * 4), $RGB[$i]);
-			}
-		}
+		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		//$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		//$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		//$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
+		
+		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
 	}
 	    
 	private function GetOutput(Int $Register)
