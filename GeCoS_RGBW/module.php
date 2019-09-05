@@ -146,6 +146,11 @@
 					If (GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group)) <> $IntensityW) {
 						SetValueInteger($this->GetIDForIdent("Intensity_W_".$Group), $IntensityW);
 					}
+					// Werte skalieren
+					$Value_R = intval(255 / 4095 * $IntensityR);
+					$Value_G = intval(255 / 4095 * $IntensityG);
+					$Value_B = intval(255 / 4095 * $IntensityB);
+					SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
 				}
 				break;
 			case "RGBW":
@@ -177,6 +182,11 @@
 					If (GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group)) <> $IntensityW) {
 						SetValueInteger($this->GetIDForIdent("Intensity_W_".$Group), $IntensityW);
 					}
+					// Werte skalieren
+					$Value_R = intval(255 / 4095 * $IntensityR);
+					$Value_G = intval(255 / 4095 * $IntensityG);
+					$Value_B = intval(255 / 4095 * $IntensityB);
+					SetValueInteger($this->GetIDForIdent("Color_RGB_".$Group), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
 				}
 				break;
 			case "get_used_modules":
