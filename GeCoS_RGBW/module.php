@@ -126,7 +126,38 @@
 					$IntensityG = intval($data->IntensityG);
 					$IntensityB = intval($data->IntensityB);
 					$IntensityW = intval($data->IntensityW);
-					//$this->SendDebug("ReceiveData", "SRGBW Channel: ".$Channel." StateRGB: ".$StateRGB." Value: ".$Value, 0);
+					$this->SendDebug("ReceiveData", "SRGBW Group: ".$Group." StateRGB: ".$StateRGB." StateW: ".$StateW." IntensityR: ".$IntensityR." IntensityG: ".$IntensityG." IntensityB: ".$IntensityB." IntensityW: ".$IntensityW, 0);
+					// Statusvariablen setzen
+					If (GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group)) <> $StateRGB) {
+						SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), $StateRGB);
+					}
+					If (GetValueBoolean($this->GetIDForIdent("Status_W_".$Group)) <> $StateW) {
+						SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), $StateW);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group)) <> $IntensityR) {
+						SetValueInteger($this->GetIDForIdent("Intensity_R_".$Group), $IntensityR);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group)) <> $IntensityG) {
+						SetValueInteger($this->GetIDForIdent("Intensity_G_".$Group), $IntensityG);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group)) <> $IntensityB) {
+						SetValueInteger($this->GetIDForIdent("Intensity_B_".$Group), $IntensityB);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group)) <> $IntensityW) {
+						SetValueInteger($this->GetIDForIdent("Intensity_W_".$Group), $IntensityW);
+					}
+				}
+				break;
+			case "RGBW":
+			   	If ($this->ReadPropertyBoolean("Open") == true) {
+					$Group = intval($data->Group);
+					$StateRGB = boolval($data->StateRGB);
+					$StateW = boolval($data->StateW);
+					$IntensityR = intval($data->IntensityR); 
+					$IntensityG = intval($data->IntensityG);
+					$IntensityB = intval($data->IntensityB);
+					$IntensityW = intval($data->IntensityW);
+					$this->SendDebug("ReceiveData", "RGBW Group: ".$Group." StateRGB: ".$StateRGB." StateW: ".$StateW." IntensityR: ".$IntensityR." IntensityG: ".$IntensityG." IntensityB: ".$IntensityB." IntensityW: ".$IntensityW, 0);
 					// Statusvariablen setzen
 					If (GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group)) <> $StateRGB) {
 						SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), $StateRGB);
