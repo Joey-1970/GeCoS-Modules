@@ -119,21 +119,33 @@
 				//"StatusMessage" => $StatusMessage)));
 			case "SRGBW":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$Channel = intval($data->Channel);
+					$Group = intval($data->Group);
 					$StateRGB = boolval($data->StateRGB);
 					$StateW = boolval($data->StateW);
-					$ValueR = intval($data->ValueR); 
-					$ValueG = intval($data->ValueG);
-					$ValueB = intval($data->ValueB);
-					$ValueW = intval($data->ValueW);
-					$this->SendDebug("ReceiveData", "SRGBW Channel: ".$Channel." StateRGB: ".$StateRGB." Value: ".$Value, 0);
+					$IntensityR = intval($data->IntensityR); 
+					$IntensityG = intval($data->IntensityG);
+					$IntensityB = intval($data->IntensityB);
+					$IntensityW = intval($data->IntensityW);
+					//$this->SendDebug("ReceiveData", "SRGBW Channel: ".$Channel." StateRGB: ".$StateRGB." Value: ".$Value, 0);
 					// Statusvariablen setzen
-					If (GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel)) <> $State) {
-						SetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Channel), $State);
+					If (GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group)) <> $StateRGB) {
+						SetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group), $StateRGB);
 					}
-					If (GetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel)) <> $Value) {
-						SetValueInteger($this->GetIDForIdent("Output_Int_X".$Channel), $Value);
-					}	
+					If (GetValueBoolean($this->GetIDForIdent("Status_W_".$Group)) <> $StateW) {
+						SetValueBoolean($this->GetIDForIdent("Status_W_".$Group), $StateW);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group)) <> $IntensityR) {
+						SetValueInteger($this->GetIDForIdent("Intensity_R_".$Group), $IntensityR);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group)) <> $IntensityG) {
+						SetValueInteger($this->GetIDForIdent("Intensity_G_".$Group), $IntensityG);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group)) <> $IntensityB) {
+						SetValueInteger($this->GetIDForIdent("Intensity_B_".$Group), $IntensityB);
+					}
+					If (GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group)) <> $IntensityW) {
+						SetValueInteger($this->GetIDForIdent("Intensity_W_".$Group), $IntensityW);
+					}
 				}
 				break;
 			case "get_used_modules":
