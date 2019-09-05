@@ -387,15 +387,15 @@ class GeCoS_IO_V2 extends IPSModule
 				// Setzen des Status
 				$DeviceBus = intval($data->DeviceBus);
 				$DeviceAddress = intval($data->DeviceAddress);
-				$Channel = intval($data->Channel);
+				$Group = intval($data->Group);
 				$StateRGB = intval($data->StateRGB);
 				$StateW = intval($data->StateW);
-				$ValueR = intval($data->ValueR);
-				$ValueG = intval($data->ValueG);
-				$ValueB = intval($data->ValueB);
-				$ValueW = intval($data->ValueW);
+				$IntensityR = intval($data->IntensityR);
+				$IntensityG = intval($data->IntensityG);
+				$IntensityB = intval($data->IntensityB);
+				$IntensityW = intval($data->IntensityW);
 				// {RGBW;I2C-Kanal;Adresse;RGBWKanal;StatusRGB;StatusW;R;G;B;W}
-				$Result = $this->ClientSocket("{PWM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Channel.";".$StateRGB.";".$StateB.";".$ValueR.";".$ValueR.";".$ValueG.";".$ValueB.";".$ValueW."}");
+				$Result = $this->ClientSocket("{RGBW;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Group.";".$StateRGB.";".$StateB.";".$IntensityR.";".$IntensityG.";".$IntensityB.";".$IntensityW."}");
 				break; 
 			// Raspberry Pi Kommunikation
 		    	case "get_RPi_connect":
