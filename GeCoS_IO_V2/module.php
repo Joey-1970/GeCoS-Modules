@@ -530,29 +530,29 @@ class GeCoS_IO_V2 extends IPSModule
 			case "RGBW":
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
-				$Channel = intval($ValueArray[3]);
+				$Group = intval($ValueArray[3]);
 				$StateRGB = intval($ValueArray[4]);
 				$StateW = intval($ValueArray[5]);
-				$ValueR = intval($ValueArray[6]);
-				$ValueG = intval($ValueArray[7]);
-				$ValueB = intval($ValueArray[8]);
-				$ValueW = intval($ValueArray[9]);
+				$IntensityR = intval($ValueArray[6]);
+				$IntensityG = intval($ValueArray[7]);
+				$IntensityB = intval($ValueArray[8]);
+				$IntensityW = intval($ValueArray[9]);
 				$StatusMessage = $ValueArray[10];
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"RGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, "StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, "StatusMessage" => $StatusMessage)));
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"RGBW", "InstanceID" => $InstanceID, "Group" => $Group, "StateRGB" => $StateRGB, "StateW" => $StateW, "IntensityR" => $IntensityR, "IntensityG" => $IntensityG, "IntensityB" => $IntensityB, "IntensityW" => $IntensityW, "StatusMessage" => $StatusMessage)));
 				break;	
 			case "SRGBW":
 				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", "Instanz ID: ".$InstanceID, 0);
-				$Channel = intval($ValueArray[3]);
+				$Group = intval($ValueArray[3]);
 				$StateRGB = intval($ValueArray[4]);
 				$StateW = intval($ValueArray[5]);
-				$ValueR = intval($ValueArray[6]);
-				$ValueG = intval($ValueArray[7]);
-				$ValueB = intval($ValueArray[8]);
-				$ValueW = intval($ValueArray[9]);
+				$IntensityR = intval($ValueArray[6]);
+				$IntensityG = intval($ValueArray[7]);
+				$IntensityB = intval($ValueArray[8]);
+				$IntensityW = intval($ValueArray[9]);
 				$StatusMessage = $ValueArray[10];
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SRGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, "StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, "StatusMessage" => $StatusMessage)));
-				break;	
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"RGBW", "InstanceID" => $InstanceID, "Group" => $Group, "StateRGB" => $StateRGB, "StateW" => $StateW, "IntensityR" => $IntensityR, "IntensityG" => $IntensityG, "IntensityB" => $IntensityB, "IntensityW" => $IntensityW, "StatusMessage" => $StatusMessage)));
+				break;
 			}
 		}
 		SetValueInteger($this->GetIDForIdent("LastKeepAlive"), time() );
