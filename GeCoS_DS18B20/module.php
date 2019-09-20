@@ -75,7 +75,7 @@
 		}
 		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "caption" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
+		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
 	
 		$arrayActions = array();
 		$arrayActions[] = array("type" => "Label", "caption" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
