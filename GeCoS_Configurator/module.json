@@ -1,0 +1,14 @@
+{
+  "id": "{F0C51EE3-DC17-0C97-39DE-FBBD7F9DE8C1}",
+  "name": "GeCoS_Configurator",
+  "type": 4,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_Configurator"
+  ],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "childRequirements": [],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "prefix": "GeCoSConf"
+}
