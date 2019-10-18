@@ -81,7 +81,8 @@
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));		
 				If ($Result == true) {
 					$this->GetInput();
-					$this->SetTimerInterval("GetInput", 15 * 1000);
+					//$this->SetTimerInterval("GetInput", 15 * 1000);
+					$this->SetTimerInterval("GetInput", 0);
 				}
 			}
 			else {
