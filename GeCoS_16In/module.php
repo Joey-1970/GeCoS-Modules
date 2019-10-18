@@ -88,8 +88,8 @@
 					// Setup
 					$this->Setup();
 					$this->GetInput();
-					//$this->SetTimerInterval("GetInput", 15 * 1000);
-					$this->SetTimerInterval("GetInput", 0);
+					$this->SetTimerInterval("GetInput", 15 * 1000);
+					//$this->SetTimerInterval("GetInput", 0);
 				}
 			}
 			else {
