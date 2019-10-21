@@ -342,6 +342,9 @@ class GeCoS_IO_V2 extends IPSModule
 			// Kommunikation zur Server-Software
 			case "MOD": // Module auslesen
 				$Result = $this->ClientSocket("{MOD}");
+				$DeviceArray = array();
+				$DeviceArray = $this->GetBuffer("ModulesArray");
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"MOD", "Devices"=>$DeviceArray)));
 				break;   
 			case "SAO": // Module 16Out
 				// Auslesen des aktuellen Status
