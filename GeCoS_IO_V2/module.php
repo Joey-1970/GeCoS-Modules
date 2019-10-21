@@ -340,6 +340,9 @@ class GeCoS_IO_V2 extends IPSModule
 				 	$Result = $Board;
 				break;  
 			// Kommunikation zur Server-Software
+			case "MOD": // Module auslesen
+				$Result = $this->ClientSocket("{MOD}");
+				break;   
 			case "SAO": // Module 16Out
 				// Auslesen des aktuellen Status
 				$Result = $this->ClientSocket("{SAO}");
