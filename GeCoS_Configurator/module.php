@@ -74,8 +74,9 @@
 	private function GetData()
 	{
 		$DeviceArray = array();
-		
-		
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "MOD")));
+		$DeviceArray = unserialize($Result);
+		$this->SendDebug("GetData", $Result, 0);
 	return serialize($DeviceArray);
 	}
 	
