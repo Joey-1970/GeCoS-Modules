@@ -77,6 +77,12 @@
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "MOD")));
 		$DeviceArray = unserialize($Result);
 		$this->SendDebug("GetData", $Result, 0);
+		
+		
+		//$arrayValues[] = array("DeviceTyp" => $Value[0], "DeviceAddress" => $Value[1], "DeviceBus" => $Value[2], "InstanceID" => $Value[3], "DeviceStatus" => $Value[4], "rowColor" => $Value[5]);
+
+		
+		
 	return serialize($DeviceArray);
 	}
 	
