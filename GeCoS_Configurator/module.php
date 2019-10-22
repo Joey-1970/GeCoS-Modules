@@ -38,7 +38,7 @@
 			$arrayCreate = array();
 			
 			$arrayCreate[] = array("moduleID" => "{47286CAD-187A-6D88-89F0-BDA50CBF712F}", 
-					       "configuration" => array("StationID" => 0], "Timer_1" => 10));
+					       "configuration" => array("StationID" => 0, "Timer_1" => 10));
 			
 			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
 					       "instanceID" => 0, "create" => $arrayCreate);
