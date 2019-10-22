@@ -91,7 +91,7 @@
 
 		
 		
-	return serialize($DeviceArray);
+	return serialize($Devices);
 	}
 	
 	function GetGeCoSInstanceID()
