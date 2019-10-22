@@ -37,8 +37,8 @@
 		for ($i = 0; $i < Count($DeviceArray); $i++) {
 			$arrayCreate = array();
 			
-			$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]);, 
-					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"]));
+			$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
+					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"]) );
 			
 			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
 					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
