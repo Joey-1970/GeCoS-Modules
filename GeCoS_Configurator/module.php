@@ -41,7 +41,7 @@
 					       "configuration" => array("StationID" => 0, "Timer_1" => 10));
 			
 			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
-					       "instanceID" => 0, "create" => $arrayCreate);
+					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
 			
 		}
 		
@@ -83,7 +83,7 @@
 			$Devices[$i]["DeviceType"] = $Device[0];
 			$Devices[$i]["DeviceAddress"] = $Device[1];
 			$Devices[$i]["DeviceBus"] = $Device[2];
-			
+			$Devices[$i]["Instance"] = $this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
 			$i = $i + 1;
 		}
 		
@@ -96,14 +96,16 @@
 	
 	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
 	{
-		$guid = "{47286CAD-187A-6D88-89F0-BDA50CBF712F}";
+		$DeviceArray = array("IN"->"{EF63175E-F346-4A87-A828-F4C422F7F948}");
+		
+		$GUID = $DeviceArray[$DeviceType];
 	    	$Result = 0;
 	    	// Modulinstanzen suchen
 	    	$InstanceArray = array();
-	    	$InstanceArray = (IPS_GetInstanceListByModuleID($guid));
+	    	$InstanceArray = (IPS_GetInstanceListByModuleID($GUID));
 	    	foreach($InstanceArray as $Module) {
-        		If (strtolower(IPS_GetProperty($Module, "StationID")) == strtolower($StationID)) {
-            			$this->SendDebug("GetStationInstanceID", "Gefundene Instanz: ".$Module, 0);
+        		If ((IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
+            			$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
 				$Result = $Module;
 				break;
         		}
