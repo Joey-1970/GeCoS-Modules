@@ -96,7 +96,7 @@
 	
 	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
 	{
-		$DeviceArray = array("IN"->"{EF63175E-F346-4A87-A828-F4C422F7F948}");
+		$DeviceArray = array("IN" => "{EF63175E-F346-4A87-A828-F4C422F7F948}");
 		
 		$GUID = $DeviceArray[$DeviceType];
 	    	$Result = 0;
