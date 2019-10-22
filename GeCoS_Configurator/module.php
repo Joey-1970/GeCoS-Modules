@@ -25,8 +25,8 @@
 		$arraySort = array("column" => "DeviceBus", "direction" => "ascending");
 		
 		$arrayColumns = array();
-		$arrayColumns[] = array("caption" => "I²C-Bus", "name" => "DeviceBus", "width" => "100px", "visible" => true);
-		$arrayColumns[] = array("caption" => "Typ", "name" => "DeviceType", "width" => "250px", "visible" => true);
+		$arrayColumns[] = array("caption" => "Typ", "name" => "DeviceType", "width" => "150px", "visible" => true);
+		$arrayColumns[] = array("caption" => "I²C-Bus", "name" => "DeviceBus", "width" => "75", "visible" => true);
 		$arrayColumns[] = array("caption" => "Adresse", "name" => "DeviceAddress", "width" => "auto", "visible" => true);
 		
 		$DeviceArray = array();
