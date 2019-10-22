@@ -36,10 +36,10 @@
 		$arrayValues = array();
 		for ($i = 0; $i < Count($DeviceArray); $i++) {
 			$arrayCreate = array();
-			/*
+			
 			$arrayCreate[] = array("moduleID" => "{47286CAD-187A-6D88-89F0-BDA50CBF712F}", 
 					       "configuration" => array("StationID" => $StationArray[$i]["StationsID"], "Timer_1" => 10));
-			*/
+			
 			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
 					       "instanceID" => 0, "create" => $arrayCreate);
 			
