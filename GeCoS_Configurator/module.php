@@ -96,7 +96,8 @@
 	
 	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
 	{
-		$DeviceArray = array("IN" => "{EF63175E-F346-4A87-A828-F4C422F7F948}", "UNB" => "{}");
+		$DeviceArray = array("IN" => "{EF63175E-F346-4A87-A828-F4C422F7F948}", "UNB" => "{}", 
+				     "OUT" => "{EC701E32-032F-4FBD-B161-F66890DD0A9C}");
 
 	    	$Result = 0;
 		If ($DeviceType <> "UNB") {
