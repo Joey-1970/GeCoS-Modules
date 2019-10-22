@@ -96,23 +96,25 @@
 	
 	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
 	{
-		$DeviceArray = array("IN" => "{EF63175E-F346-4A87-A828-F4C422F7F948}");
-		
-		$GUID = $DeviceArray[$DeviceType];
+		$DeviceArray = array("IN" => "{EF63175E-F346-4A87-A828-F4C422F7F948}", "UNB" => "{}");
+
 	    	$Result = 0;
-	    	// Modulinstanzen suchen
-	    	$InstanceArray = array();
-	    	$InstanceArray = (IPS_GetInstanceListByModuleID($GUID));
-	    	foreach($InstanceArray as $Module) {
-        		If ((IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
-            			$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
-				$Result = $Module;
-				break;
-        		}
-        		else {
-            			$Result = 0;
-        		}
-    		}
+		If ($DeviceType <> "UNB") {
+			$GUID = $DeviceArray[$DeviceType];
+			// Modulinstanzen suchen
+			$InstanceArray = array();
+			$InstanceArray = (IPS_GetInstanceListByModuleID($GUID));
+			foreach($InstanceArray as $Module) {
+				If ((IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
+					$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
+					$Result = $Module;
+					break;
+				}
+				else {
+					$Result = 0;
+				}
+			}
+		}
 	return $Result;
 	}
 }
