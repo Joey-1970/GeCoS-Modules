@@ -39,10 +39,10 @@
 			/*
 			$arrayCreate[] = array("moduleID" => "{47286CAD-187A-6D88-89F0-BDA50CBF712F}", 
 					       "configuration" => array("StationID" => $StationArray[$i]["StationsID"], "Timer_1" => 10));
-			$arrayValues[] = array("Brand" => $StationArray[$i]["Brand"], "Name" => $StationArray[$i]["Name"], "Street" => $StationArray[$i]["Street"],
-					       "Place" => $StationArray[$i]["Place"], "instanceID" => $StationArray[$i]["InstanceID"], 
-					       "create" => $arrayCreate);
 			*/
+			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
+					       "instanceID" => 0, "create" => $arrayCreate);
+			
 		}
 		
 		$arrayElements[] = array("type" => "Configurator", "name" => "GeCoS_Modules", "caption" => "GeCoS-Module", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
@@ -77,7 +77,15 @@
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "MOD")));
 		$DeviceArray = unserialize($Result);
 		$this->SendDebug("GetData", $Result, 0);
-		
+		$Devices = array();
+		$i = 0;
+		foreach($DeviceArray as $Key => $Device) {
+			$Devices[$i]["DeviceType"] = $Device[0];
+			$Devices[$i]["DeviceAddress"] = $Device[1];
+			$Devices[$i]["DeviceBus"] = $Device[2];
+			
+			$i = $i + 1;
+		}
 		
 		//$arrayValues[] = array("DeviceTyp" => $Value[0], "DeviceAddress" => $Value[1], "DeviceBus" => $Value[2], "InstanceID" => $Value[3], "DeviceStatus" => $Value[4], "rowColor" => $Value[5]);
 
