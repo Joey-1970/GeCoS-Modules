@@ -94,7 +94,7 @@
 	return serialize($Devices);
 	}
 	
-	function GetGeCoSInstanceID()
+	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
 	{
 		$guid = "{47286CAD-187A-6D88-89F0-BDA50CBF712F}";
 	    	$Result = 0;
