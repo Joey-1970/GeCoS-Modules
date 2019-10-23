@@ -401,7 +401,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$IntensityB = intval($data->IntensityB);
 				$IntensityW = intval($data->IntensityW);
 				// {RGBW;I2C-Kanal;Adresse;RGBWKanal;StatusRGB;StatusW;R;G;B;W}
-				$Result = $this->ClientSocket("{RGBW;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Group.";".$StateRGB.";".$StateB.";".$IntensityR.";".$IntensityG.";".$IntensityB.";".$IntensityW."}");
+				$Result = $this->ClientSocket("{RGBW;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Group.";".$StateRGB.";".$StateW.";".$IntensityR.";".$IntensityG.";".$IntensityB.";".$IntensityW."}");
 				break; 
 			// Raspberry Pi Kommunikation
 		    	case "get_RPi_connect":
