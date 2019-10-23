@@ -22,7 +22,7 @@
 				
 		$arrayElements = array(); 
 		$arraySort = array();
-		$arraySort = array("column" => "DeviceBus", "direction" => "ascending");
+		$arraySort = array("column" => "DeviceType", "direction" => "ascending");
 		
 		$arrayColumns = array();
 		$arrayColumns[] = array("caption" => "Typ", "name" => "DeviceType", "width" => "150px", "visible" => true);
@@ -38,7 +38,7 @@
 			$arrayCreate = array();
 			
 			$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
-					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"]) );
+					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
 			
 			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
 					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
@@ -86,11 +86,6 @@
 			$Devices[$i]["Instance"] = $this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
 			$i = $i + 1;
 		}
-		
-		//$arrayValues[] = array("DeviceTyp" => $Value[0], "DeviceAddress" => $Value[1], "DeviceBus" => $Value[2], "InstanceID" => $Value[3], "DeviceStatus" => $Value[4], "rowColor" => $Value[5]);
-
-		
-		
 	return serialize($Devices);
 	}
 	
@@ -101,15 +96,17 @@
 			$GUID = $this->DeviceTypeToGUID($DeviceType);
 			// Modulinstanzen suchen
 			$InstanceArray = array();
-			$InstanceArray = (IPS_GetInstanceListByModuleID($GUID));
-			foreach($InstanceArray as $Module) {
-				If ((IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
-					$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
-					$Result = $Module;
-					break;
-				}
-				else {
-					$Result = 0;
+			$InstanceArray = @(IPS_GetInstanceListByModuleID($GUID));
+			If (is_array($InstanceArray)) {
+				foreach($InstanceArray as $Module) {
+					If ((IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
+						$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
+						$Result = $Module;
+						break;
+					}
+					else {
+						$Result = 0;
+					}
 				}
 			}
 		}
