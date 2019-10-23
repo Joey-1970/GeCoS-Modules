@@ -123,7 +123,7 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
-			
+			/*
 			// I²C-Devices einlesen und in das Values-Array kopieren
 			$Result = $this->ClientSocket("{MOD}");
 			$DeviceArray = array();
@@ -139,7 +139,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine Module gefunden.");
 			}
 			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-			/*
+			
 			// 1-Wire-Devices einlesen und in das Values-Array kopieren
 			$OWDeviceArray = array();
 			$this->OWSearchStart();
