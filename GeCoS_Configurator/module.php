@@ -26,7 +26,7 @@
 		
 		$arrayColumns = array();
 		$arrayColumns[] = array("caption" => "Typ", "name" => "DeviceType", "width" => "150px", "visible" => true);
-		$arrayColumns[] = array("caption" => "I²C-Bus", "name" => "DeviceBus", "width" => "75", "visible" => true);
+		$arrayColumns[] = array("caption" => "I²C-Bus", "name" => "DeviceBus", "width" => "75px", "visible" => true);
 		$arrayColumns[] = array("caption" => "Adresse", "name" => "DeviceAddress", "width" => "auto", "visible" => true);
 		
 		$DeviceArray = array();
