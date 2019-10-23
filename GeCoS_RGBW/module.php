@@ -219,7 +219,7 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinStateRGB($Group, $Value);
+					$this->SetOutputPinStateRGB($i, $Value);
 					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -230,7 +230,7 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinStateW($Group, $Value);
+					$this->SetOutputPinStateW($i, $Value);
 					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -241,7 +241,7 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinValueR($i, $Channel, $Value);
+					$this->SetOutputPinValueR($i, $Value);
 					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -252,7 +252,7 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinValueG($i, $Channel, $Value);
+					$this->SetOutputPinValueG($i, $Value);
 					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -263,7 +263,7 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinValueB($i, $Channel, $Value);
+					$this->SetOutputPinValueB($i, $Value);
 					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
@@ -274,7 +274,7 @@
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinValueW($i, $Channel, $Value);
+					$this->SetOutputPinValueW($i, $Value);
 					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
