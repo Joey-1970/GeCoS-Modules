@@ -218,9 +218,9 @@
 				$this->SetOutputPinStateRGB($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinStateRGB($i, $Value);
-					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -229,9 +229,9 @@
 				$this->SetOutputPinStateW($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				SetValueBoolean($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
-					$this->SetOutputPinStateW($i, $Value);
-					SetValueBoolean($this->GetIDForIdent($Ident), $Value);
+					$this->SetOutputPinStateW($i, $Value);					
 				}
 			}
 	            	break;
@@ -240,9 +240,11 @@
 				$this->SetOutputPinValueR($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				// ColorPicker und Slider setzen
+				$this->SetAllColor();
+				SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueR($i, $Value);
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -251,9 +253,11 @@
 				$this->SetOutputPinValueG($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				// ColorPicker und Slider setzen
+				$this->SetAllColor();
+				SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueG($i, $Value);
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -262,9 +266,11 @@
 				$this->SetOutputPinValueB($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				// ColorPicker und Slider setzen
+				$this->SetAllColor();
+				SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueB($i, $Value);
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -273,9 +279,11 @@
 				$this->SetOutputPinValueW($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				// ColorPicker und Slider setzen
+				$this->SetAllColor();
+				SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueW($i, $Value);
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;	
@@ -284,9 +292,9 @@
 				$this->SetOutputColor($Group, $Value);
 			}
 			elseif ($Group == 5) {
+				SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputColor($i, $Value);
-					SetValueInteger($this->GetIDForIdent($Ident), $Value);
 				}
 			}
 	            	break;
@@ -417,6 +425,15 @@
 		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
 		
 		$this->SetOutput($Group, $StateRGB, $StateW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
+	}
+	    
+	private function SetAllColor()
+	{
+		// Werte skalieren
+		$Value_R = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_R_5")));
+		$Value_G = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_G_5")));
+		$Value_B = intval(255 / 4095 * GetValueInteger($this->GetIDForIdent("Intensity_B_5")));
+		SetValueInteger($this->GetIDForIdent("Color_RGB_5"), $this->RGB2Hex($Value_R, $Value_G, $Value_B));
 	}
 	    
 	private function GetOutput(Int $Register)
