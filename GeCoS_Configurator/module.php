@@ -40,7 +40,7 @@
 			$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
 					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
 			
-			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"],
+			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
 					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
 			
 		}
@@ -99,7 +99,7 @@
 			$InstanceArray = @(IPS_GetInstanceListByModuleID($GUID));
 			If (is_array($InstanceArray)) {
 				foreach($InstanceArray as $Module) {
-					If ((IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
+					If ((@IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (@IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
 						$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
 						$Result = $Module;
 						break;
