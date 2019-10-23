@@ -241,8 +241,8 @@
 			}
 			elseif ($Group == 5) {
 				// ColorPicker und Slider setzen
-				$this->SetAllColor();
 				SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				$this->SetAllColor();
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueR($i, $Value);
 				}
@@ -254,8 +254,8 @@
 			}
 			elseif ($Group == 5) {
 				// ColorPicker und Slider setzen
-				$this->SetAllColor();
 				SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				$this->SetAllColor();
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueG($i, $Value);
 				}
@@ -267,8 +267,8 @@
 			}
 			elseif ($Group == 5) {
 				// ColorPicker und Slider setzen
-				$this->SetAllColor();
 				SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				$this->SetAllColor();
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueB($i, $Value);
 				}
@@ -280,8 +280,8 @@
 			}
 			elseif ($Group == 5) {
 				// ColorPicker und Slider setzen
-				$this->SetAllColor();
 				SetValueInteger($this->GetIDForIdent($Ident), $Value);
+				$this->SetAllColor();
 				for ($i = 1; $i <= 4; $i++) {
 					$this->SetOutputPinValueW($i, $Value);
 				}
