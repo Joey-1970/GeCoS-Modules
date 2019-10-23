@@ -226,7 +226,7 @@
 	            	break;
 		case "Status_W":
 			If ($Group <= 4) {
-				$this->SetOutputPinStatusW($Group, $Value);
+				$this->SetOutputPinStateW($Group, $Value);
 			}
 			elseif ($Group == 5) {
 				for ($i = 1; $i <= 4; $i++) {
