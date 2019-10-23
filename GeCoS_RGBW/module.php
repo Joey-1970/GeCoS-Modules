@@ -326,7 +326,7 @@
 	{ 
 		$this->SendDebug("SetOutputPinStateW", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
-		$State = min(1, max(0, $State));
+		$StateW = min(1, max(0, $StateW));
 		//$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
 		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
 		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
