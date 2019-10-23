@@ -40,11 +40,13 @@
 			If ($DeviceArray[$i]["DeviceType"] <> "UNB") {
 				$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
 					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
-			}
-			
-			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
+				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
 					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
-			
+			}
+			else {
+				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
+					       "instanceID" => $DeviceArray[$i]["Instance"]);
+			}
 		}
 		
 		$arrayElements[] = array("type" => "Configurator", "name" => "GeCoS_Modules", "caption" => "GeCoS-Module", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
