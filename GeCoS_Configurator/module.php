@@ -37,8 +37,10 @@
 		for ($i = 0; $i < Count($DeviceArray); $i++) {
 			$arrayCreate = array();
 			
-			$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
+			If ($DeviceArray[$i]["DeviceType"] <> "UNB") {
+				$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
 					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
+			}
 			
 			$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
 					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
