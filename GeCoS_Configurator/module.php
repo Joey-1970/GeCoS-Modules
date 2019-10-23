@@ -26,7 +26,7 @@
 		
 		$arrayColumns = array();
 		$arrayColumns[] = array("caption" => "Typ", "name" => "DeviceType", "width" => "150px", "visible" => true);
-		$arrayColumns[] = array("caption" => "I²C-Bus", "name" => "DeviceBus", "width" => "75px", "visible" => true);
+		$arrayColumns[] = array("caption" => "GeCoS-Bus", "name" => "DeviceBus", "width" => "75px", "visible" => true);
 		$arrayColumns[] = array("caption" => "Adresse", "name" => "DeviceAddress", "width" => "auto", "visible" => true);
 		
 		$DeviceArray = array();
@@ -78,15 +78,18 @@
 		$DeviceArray = array();
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "MOD")));
 		$DeviceArray = unserialize($Result);
-		$this->SendDebug("GetData", $Result, 0);
-		$Devices = array();
-		$i = 0;
-		foreach($DeviceArray as $Key => $Device) {
-			$Devices[$i]["DeviceType"] = $Device[0];
-			$Devices[$i]["DeviceAddress"] = $Device[1];
-			$Devices[$i]["DeviceBus"] = $Device[2];
-			$Devices[$i]["Instance"] = $this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
-			$i = $i + 1;
+		If (is_array($DeviceArray)) {
+			$this->SetStatus(102);
+			$this->SendDebug("GetData", $Result, 0);
+			$Devices = array();
+			$i = 0;
+			foreach($DeviceArray as $Key => $Device) {
+				$Devices[$i]["DeviceType"] = $Device[0];
+				$Devices[$i]["DeviceAddress"] = $Device[1];
+				$Devices[$i]["DeviceBus"] = $Device[2];
+				$Devices[$i]["Instance"] = $this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
+				$i = $i + 1;
+			}
 		}
 	return serialize($Devices);
 	}
