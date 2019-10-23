@@ -341,7 +341,7 @@
 	{ 
 		$this->SendDebug("SetOutputPinValueR", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
-		$IntensityR = min(4095, max(0, $State));
+		$IntensityR = min(4095, max(0, $IntensityR));
 		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
 		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
 		//$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
@@ -356,7 +356,7 @@
 	{ 
 		$this->SendDebug("SetOutputPinValueG", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
-		$IntensityR = min(4095, max(0, $State));
+		$IntensityG = min(4095, max(0, $IntensityG));
 		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
 		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
 		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
@@ -371,7 +371,7 @@
 	{ 
 		$this->SendDebug("SetOutputPinValueB", "Ausfuehrung", 0);
 		$Group = min(4, max(1, $Group));
-		$IntensityR = min(4095, max(0, $State));
+		$IntensityB = min(4095, max(0, $IntensityB));
 		$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
 		$StateRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
 		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
