@@ -218,8 +218,6 @@
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
 			// Ausgang abfragen
 			$this->GetOutput($StartAddress + 2);
-			//$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_PCA9685_Read", "InstanceID" => $this->InstanceID, "Register" => $StartAddress + 2)));
-			//$this->SetStatusVariables($StartAddress + 2, $Result);
 		}
 	}
 	
@@ -476,5 +474,63 @@
 		}
         return false;
     	}  
+	
+	    
+	// Beginn der Sonderfunktionen
+	public function SetOutputPinValue(Int $Output, Int $Value)
+	{ 
+		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
+		$Output = min(15, max(0, $Output));
+		$Value = min(4095, max(0, $Value));
+		
+		$ByteArray = array();
+		$StartAddress = ($Output * 4) + 6;
+		// zu korrigieren
+		$State = true; //GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
+		
+		$L_Bit = $Value & 255;
+		$H_Bit = $Value >> 8;
+		
+		If ($State == true) {
+			$H_Bit = $this->unsetBit($H_Bit, 4);
+		}
+		else {
+			$H_Bit = $this->setBit($H_Bit, 4);
+		}
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			// Ausgang setzen
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
+			// Ausgang abfragen
+			$this->GetOutput($StartAddress + 2);
+		}
+	}
+	
+	public function SetOutputPinState(Int $Output, Bool $State)
+	{ 
+		$this->SendDebug("SetOutputPinStatus", "Ausfuehrung", 0);
+		$Output = min(15, max(0, $Output));
+		$State = min(1, max(0, $State));
+		
+		$ByteArray = array();
+		$StartAddress = ($Output * 4) + 6;
+		// zu korrigieren
+		$Value = 0;//GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
+		
+		$L_Bit = $Value & 255;
+		$H_Bit = $Value >> 8;
+		
+		If ($State == true) {
+			$H_Bit = $this->unsetBit($H_Bit, 4);
+		}
+		else {
+			$H_Bit = $this->setBit($H_Bit, 4);
+		}
+		If ($this->ReadPropertyBoolean("Open") == true) {
+			// Ausgang setzen
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "i2c_write_4_byte", "InstanceID" => $this->InstanceID, "Register" => $StartAddress, "Value_1" => 0, "Value_2" => 0, "Value_3" => $L_Bit, "Value_4" => $H_Bit)));
+			// Ausgang abfragen
+			$this->GetOutput($StartAddress + 2);
+		}
+	}   
 }
 ?>
