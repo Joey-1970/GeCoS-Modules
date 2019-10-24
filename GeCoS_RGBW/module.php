@@ -112,13 +112,9 @@
 	    	// Empfangene Daten vom Gateway/Splitter
 	    	$data = json_decode($JSONString);
 	 	switch ($data->Function) {
-			//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", 
-				//"Function"=>"SRGBW", "InstanceID" => $InstanceID, "Channel" => $Channel, "StateRGB" => $StateRGB, 
-				//"StateW" => $StateW, "ValueR" => $ValueR, "ValueG" => $ValueG, "ValueB" => $ValueB, "ValueW" => $ValueW, 
-				//"StatusMessage" => $StatusMessage)));
 			case "SRGBW":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$Group = intval($data->Group);
+					$Group = intval($data->Group) + 1;
 					$StateRGB = boolval($data->StateRGB);
 					$StateW = boolval($data->StateW);
 					$IntensityR = intval($data->IntensityR); 
@@ -154,7 +150,7 @@
 				break;
 			case "RGBW":
 			   	If ($this->ReadPropertyBoolean("Open") == true) {
-					$Group = intval($data->Group);
+					$Group = intval($data->Group) + 1;
 					$StateRGB = boolval($data->StateRGB);
 					$StateW = boolval($data->StateW);
 					$IntensityR = intval($data->IntensityR); 
@@ -310,7 +306,7 @@
 		//{RGBW;I2C-Kanal;Adresse;RGBWKanal;StatusRGB;StatusW;R;G;B;W}
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			// Ausgang setzen
-			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "RGBW", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Group" => $Group, 
+			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "RGBW", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Group" => ($Group - 1), 
 									    "StateRGB" => $StateRGB, "StateW" => $StateW, "IntensityR" => $IntensityR, "IntensityG" => $IntensityG, "IntensityB" => $IntensityB, "IntensityW" => $IntensityW )));
 		}
 	}
