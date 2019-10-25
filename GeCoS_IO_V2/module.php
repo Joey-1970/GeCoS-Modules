@@ -17,8 +17,6 @@ class GeCoS_IO_V2 extends IPSModule
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
 		$this->RegisterPropertyString("User", "User");
 	    	$this->RegisterPropertyString("Password", "Passwort");
-		$this->RegisterPropertyString("I2C_Devices", "");
-		$this->RegisterPropertyString("OW_Devices", "");
 		$this->RegisterPropertyString("Raspi_Config", "");
 		$this->RegisterPropertyInteger("SerialDevice", 1);
 		$this->RegisterPropertyInteger("Baud", 9600);
@@ -236,6 +234,7 @@ class GeCoS_IO_V2 extends IPSModule
 				
 				// Sucht nach Modulen
 				$Result = $this->ClientSocket("{MOD}");
+				$Result = $this->ClientSocket("{OWS}");
 				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
@@ -346,6 +345,11 @@ class GeCoS_IO_V2 extends IPSModule
 				$Devices = $this->GetBuffer("ModulesArray");
 				$Result = $Devices;
 				break;   
+			case "OWS": // Module auslesen
+				$Result = $this->ClientSocket("{OWS}");
+				$Devices = $this->GetBuffer("OWArray");
+				$Result = $OWDevices;
+				break;  
 			case "SAO": // Module 16Out
 				// Auslesen des aktuellen Status
 				$Result = $this->ClientSocket("{SAO}");
@@ -451,8 +455,10 @@ class GeCoS_IO_V2 extends IPSModule
 		    	$ValueArray = explode(";", $Value);
 		    	// Erstes Datenfeld enthält die Befehle
 			$Command = $ValueArray[0];
-			$DeviceBus = intval($ValueArray[1]);
-			$DeviceAddress = hexdec($ValueArray[2]);
+			If (substr($Command, 0, 2) <> "OW") {
+				$DeviceBus = intval($ValueArray[1]);
+				$DeviceAddress = hexdec($ValueArray[2]);
+			}
 			$this->SendDebug("ReceiveData", "Command: ".$Command." Bus: ".$DeviceBus." Adresse: ".$DeviceAddress, 0);
 			
 			switch ($Command) {
@@ -489,24 +495,22 @@ class GeCoS_IO_V2 extends IPSModule
 			case "MOD":
 				$ModulesArray = Array();
 				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
-				$ModuleTyp = $ValueArray[3];
-				$InstanceID = $this->InstanceIDSearch($DeviceBus, $DeviceAddress);
-				$Key = $DeviceBus."_".$DeviceAddress."_".$ModuleTyp;
-				$ModulesArray[$Key][0] = $ModuleTyp;
+				$ModuleType = $ValueArray[3];
+				$Key = $DeviceBus."_".$DeviceAddress."_".$ModuleType;
+				$ModulesArray[$Key][0] = $ModuleType;
 				$ModulesArray[$Key][1] = $DeviceAddress;
 				$ModulesArray[$Key][2] = $DeviceBus;
-				If ($InstanceID >= 0) {
-					$ModulesArray[$Key][3] = $InstanceID; //InstanzID
-					$ModulesArray[$Key][4] = "OK";
-					$ModulesArray[$Key][5] = "#00FF00";
-				}
-				else {
-					$ModulesArray[$Key][3] = 0; //InstanzID
-					$ModulesArray[$Key][4] = "Inaktiv";
-					$ModulesArray[$Key][5] = "#FF0000";
-				}
 				$this->SendDebug("ReceiveData", serialize($ModulesArray), 0);
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
+				break;
+			case "OMS":
+				$OWArray = Array();
+				$OWArray = unserialize($this->GetBuffer("OWArray"));
+				$OWType = $ValueArray[1];
+				$OWDescription = $this->GetOWHardware(substr($OWType, 0, 2));
+				$ModulesArray[$OWType] = $OWType;
+				$this->SendDebug("ReceiveData", serialize($OWArray), 0);
+				$this->SetBuffer("OWArray", serialize($OWArray));
 				break;
 			case "RRTC":
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
