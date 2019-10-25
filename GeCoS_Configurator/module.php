@@ -50,43 +50,7 @@
 		}
 		
 		$arrayElements[] = array("type" => "Configurator", "name" => "GeCoS_Modules", "caption" => "GeCoS-Module", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
-		/*
-		// 1-Wire Devices
-		$arrayElements = array(); 
-		$arraySort = array();
-		$arraySort = array("column" => "OWType", "direction" => "ascending");
 		
-		$arrayColumns = array();
-		$arrayColumns[] = array("caption" => "Typ", "name" => "OWType", "width" => "150px", "visible" => true);
-		$arrayColumns[] = array("caption" => "Serial", "name" => "OWSerial", "width" => "auto", "visible" => true);
-
-		$OWArray = array();
-		If ($this->HasActiveParent() == true) {
-			$OWArray = unserialize($this->GetOWData());
-		}
-		$arrayValues = array();
-		for ($i = 0; $i < Count($OWArray); $i++) {
-			$arrayCreate = array();
-			
-			If ($DeviceArray[$i]["DeviceType"] <> "UNB") {
-				$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
-					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
-				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
-					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
-			}
-			else {
-				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
-					       "instanceID" => $DeviceArray[$i]["Instance"]);
-			}
-			
-			$arrayValues[] = array("OWType" => $OWArray[$i]["OWType"], "OWSerial" => $OWArray[$i]["OWSerial"],
-					       "instanceID" => $OWArray[$i]["Instance"]);
-		}
-		
-		$arrayElements[] = array("type" => "Configurator", "name" => "OWDevices", "caption" => "1-Wire-Komponenten", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
-
-		
-		*/
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
 		
@@ -133,28 +97,7 @@
 		
 	return serialize($Devices);
 	}
-	
-	private function GetOWData()
-	{
-		$OWArray = array();
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));	
-		$OWArray = unserialize($Result);
-		If (is_array($OWArray)) {
-			$this->SetStatus(102);
-			$this->SendDebug("GetOWData", $Result, 0);
-			$Devices = array();
-			$i = 0;
-			foreach($OWArray as $Key => $Device) {
-				$Devices[$i]["OWType"] = $Device;
-				$Devices[$i]["OWSerial"] = $Key;
-				$Devices[$i]["Instance"] = 0; //$this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
-				$i = $i + 1;
-			}
-		}
-	
-	return serialize($Devices);
-	}    
-	    
+	   
 	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
 	{
 	    	$Result = 0;
