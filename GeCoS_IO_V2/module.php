@@ -347,7 +347,7 @@ class GeCoS_IO_V2 extends IPSModule
 				break;   
 			case "OWS": // Module auslesen
 				$Result = $this->ClientSocket("{OWS}");
-				$Devices = $this->GetBuffer("OWArray");
+				$OWDevices = $this->GetBuffer("OWArray");
 				$Result = $OWDevices;
 				break;  
 			case "SAO": // Module 16Out
@@ -508,7 +508,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$OWArray = unserialize($this->GetBuffer("OWArray"));
 				$OWType = $ValueArray[1];
 				$OWDescription = $this->GetOWHardware(substr($OWType, 0, 2));
-				$ModulesArray[$OWType] = $OWType;
+				$ModulesArray[$OWType] = $OWDescription;
 				$this->SendDebug("ReceiveData", serialize($OWArray), 0);
 				$this->SetBuffer("OWArray", serialize($OWArray));
 				break;
