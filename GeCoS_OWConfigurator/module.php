@@ -1,6 +1,6 @@
 <?
     // Klassendefinition
-    class GeCoS_Configurator extends IPSModule 
+    class GeCoS_OWConfigurator extends IPSModule 
     {
 	    
 	// Überschreibt die interne IPS_Create($id) Funktion
@@ -19,38 +19,7 @@
 		$arrayStatus[] = array("code" => 102, "icon" => "active", "caption" => "Instanz ist aktiv");
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
 		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "I²C-Kommunikationfehler!");
-		// GeCoS-Module		
-		$arrayElements = array(); 
-		$arraySort = array();
-		$arraySort = array("column" => "DeviceType", "direction" => "ascending");
 		
-		$arrayColumns = array();
-		$arrayColumns[] = array("caption" => "Typ", "name" => "DeviceType", "width" => "150px", "visible" => true);
-		$arrayColumns[] = array("caption" => "GeCoS-Bus", "name" => "DeviceBus", "width" => "75px", "visible" => true);
-		$arrayColumns[] = array("caption" => "Adresse", "name" => "DeviceAddress", "width" => "auto", "visible" => true);
-		
-		$DeviceArray = array();
-		If ($this->HasActiveParent() == true) {
-			$DeviceArray = unserialize($this->GetData());
-		}
-		$arrayValues = array();
-		for ($i = 0; $i < Count($DeviceArray); $i++) {
-			$arrayCreate = array();
-			
-			If ($DeviceArray[$i]["DeviceType"] <> "UNB") {
-				$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
-					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
-				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
-					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
-			}
-			else {
-				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
-					       "instanceID" => $DeviceArray[$i]["Instance"]);
-			}
-		}
-		
-		$arrayElements[] = array("type" => "Configurator", "name" => "GeCoS_Modules", "caption" => "GeCoS-Module", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
-		/*
 		// 1-Wire Devices
 		$arrayElements = array(); 
 		$arraySort = array();
@@ -61,12 +30,12 @@
 		$arrayColumns[] = array("caption" => "Serial", "name" => "OWSerial", "width" => "auto", "visible" => true);
 		$OWArray = array();
 		If ($this->HasActiveParent() == true) {
-			$OWArray = unserialize($this->GetOWData());
+			$OWArray = unserialize($this->GetData());
 		}
 		$arrayValues = array();
 		for ($i = 0; $i < Count($OWArray); $i++) {
 			$arrayCreate = array();
-			
+			/*
 			If ($DeviceArray[$i]["DeviceType"] <> "UNB") {
 				$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
 					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
@@ -77,7 +46,7 @@
 				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
 					       "instanceID" => $DeviceArray[$i]["Instance"]);
 			}
-			
+			*/
 			$arrayValues[] = array("OWType" => $OWArray[$i]["OWType"], "OWSerial" => $OWArray[$i]["OWSerial"],
 					       "instanceID" => $OWArray[$i]["Instance"]);
 		}
@@ -111,28 +80,6 @@
 	    
 	// Beginn der Funktionen
 	private function GetData()
-	{
-		$DeviceArray = array();
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "MOD")));
-		$DeviceArray = unserialize($Result);
-		If (is_array($DeviceArray)) {
-			$this->SetStatus(102);
-			$this->SendDebug("GetData", $Result, 0);
-			$Devices = array();
-			$i = 0;
-			foreach($DeviceArray as $Key => $Device) {
-				$Devices[$i]["DeviceType"] = $Device[0];
-				$Devices[$i]["DeviceAddress"] = $Device[1];
-				$Devices[$i]["DeviceBus"] = $Device[2];
-				$Devices[$i]["Instance"] = $this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
-				$i = $i + 1;
-			}
-		}
-		
-	return serialize($Devices);
-	}
-	
-	private function GetOWData()
 	{
 		$OWArray = array();
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));	
