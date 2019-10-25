@@ -99,17 +99,17 @@
 	return serialize($Devices);
 	}    
 	    
-	function GetGeCoSInstanceID(string $DeviceType, int $DeviceBus, int $DeviceAddress)
+	function GetGeCoSInstanceID($OWSerial)
 	{
 	    	$Result = 0;
 		If ($DeviceType <> "UNB") {
-			$GUID = $this->DeviceTypeToGUID($DeviceType);
+			$GUID = $this->FamilyCodeToGUID($FamilyCode);
 			// Modulinstanzen suchen
 			$InstanceArray = array();
 			$InstanceArray = @(IPS_GetInstanceListByModuleID($GUID));
 			If (is_array($InstanceArray)) {
 				foreach($InstanceArray as $Module) {
-					If ((@IPS_GetProperty($Module, "DeviceAddress") == $DeviceAddress) AND (@IPS_GetProperty($Module, "DeviceBus") == $DeviceBus)) {
+					If (@IPS_GetProperty($Module, "DeviceAddress") == $OWSerial) {
 						$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
 						$Result = $Module;
 						break;
@@ -123,14 +123,11 @@
 	return $Result;
 	}
 	    
-	private function DeviceTypeToGUID(string $DeviceType)
+	private function FamilyCodeToGUID(string $FamilyCode)
 	{
-		$DeviceArray = array("IN" => "{EF63175E-F346-4A87-A828-F4C422F7F948}", "UNB" => "{}", 
-				     "OUT" => "{EC701E32-032F-4FBD-B161-F66890DD0A9C}", 
-				     "PWM" => "{E6CD7AEF-064A-42EF-A5CD-B81453DA762C}", 
-				     "RGBW" => "{8A40AFDC-979B-4688-A014-3BA2B70550E8}", 
-				     "ANA" => "{39E6BA4A-A94E-4058-B099-794A627B63E0}");
-		$GUID = $DeviceArray[$DeviceType];
+		$FamilyCodeArray = array("10" => "{8179FCFF-E441-4FAC-BCC3-1B97E9D45052}", 
+				     "28" => "{18CFA944-CFC9-4A72-8D2A-231604FF7D2A}");
+		$GUID = $FamilyCodeArray[$FamilyCode];
 	return $GUID;
 	}
 }
