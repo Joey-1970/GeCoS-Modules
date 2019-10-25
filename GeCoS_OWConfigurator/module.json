@@ -1,0 +1,14 @@
+{
+  "id": "{9DBC8957-BE04-6DF5-BE47-ED7367666A78}",
+  "name": "GeCoS_OWConfigurator",
+  "type": 4,
+  "vendor": "GeCoS-Modules",
+  "aliases":
+  [
+    "GeCoS_OWConfigurator"
+  ],
+  "parentRequirements": ["{47113C57-29FE-4A60-9D0E-840022883B89}"],
+  "childRequirements": [],
+  "implemented": ["{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}"],
+  "prefix": "GeCoSOWConf"
+}
