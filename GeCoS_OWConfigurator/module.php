@@ -26,7 +26,7 @@
 		$arraySort = array("column" => "OWType", "direction" => "ascending");
 		
 		$arrayColumns = array();
-		$arrayColumns[] = array("caption" => "Typ", "name" => "OWType", "width" => "150px", "visible" => true);
+		$arrayColumns[] = array("caption" => "Typ", "name" => "OWType", "width" => "250px", "visible" => true);
 		$arrayColumns[] = array("caption" => "Serial", "name" => "OWSerial", "width" => "auto", "visible" => true);
 		$OWArray = array();
 		If ($this->HasActiveParent() == true) {
