@@ -508,9 +508,11 @@ class GeCoS_IO_V2 extends IPSModule
 				$OWArray = unserialize($this->GetBuffer("OWArray"));
 				$OWType = $ValueArray[1];
 				$OWDescription = $this->GetOWHardware(substr($OWType, 0, 2));
-				$OWArray[$OWType] = $OWDescription;
-				$this->SendDebug("ReceiveData", serialize($OWArray), 0);
-				$this->SetBuffer("OWArray", serialize($OWArray));
+				If ($OWDescription <> "Unbekannter 1-Wire-Typ!") {
+					$OWArray[$OWType] = $OWDescription;
+					$this->SendDebug("ReceiveData", serialize($OWArray), 0);
+					$this->SetBuffer("OWArray", serialize($OWArray));
+				}
 				break;
 			case "RRTC":
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
