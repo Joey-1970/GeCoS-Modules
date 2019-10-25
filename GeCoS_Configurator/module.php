@@ -93,6 +93,10 @@
 				$i = $i + 1;
 			}
 		}
+		$OWArray = array();
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));
+		$this->SendDebug("GetData", "OW: ".$Result, 0);
+
 	return serialize($Devices);
 	}
 	
