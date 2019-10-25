@@ -47,8 +47,8 @@ class GeCoS_IO_V2 extends IPSModule
 		$I2CInstanceArray = Array();
 		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 		
-		$OWDeviceArray = array();
-		$this->SetBuffer("OWDeviceArray", serialize($OWDeviceArray));
+		$OWArray = array();
+		$this->SetBuffer("OWArray", serialize($OWArray));
 	}
   
 	public function GetConfigurationForm() 
