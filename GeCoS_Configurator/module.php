@@ -145,8 +145,8 @@
 			$Devices = array();
 			$i = 0;
 			foreach($OWArray as $Key => $Device) {
-				$Devices[$i]["OWType"] = $Device[0];
-				$Devices[$i]["OWSerial"] = $Device[1];
+				$Devices[$i]["OWType"] = $Key;
+				$Devices[$i]["OWSerial"] = $Device;
 				$Devices[$i]["Instance"] = 0; //$this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
 				$i = $i + 1;
 			}
