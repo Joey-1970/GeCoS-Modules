@@ -53,7 +53,6 @@
 		
 		$arrayElements[] = array("type" => "Configurator", "name" => "OWDevices", "caption" => "1-Wire-Komponenten", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
 		
-		*/
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
 		
