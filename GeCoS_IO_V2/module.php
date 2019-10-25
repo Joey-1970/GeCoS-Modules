@@ -503,7 +503,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDebug("ReceiveData", serialize($ModulesArray), 0);
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 				break;
-			case "OMS":
+			case "OWS":
 				$OWArray = Array();
 				$OWArray = unserialize($this->GetBuffer("OWArray"));
 				$OWType = $ValueArray[1];
