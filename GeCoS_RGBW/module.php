@@ -477,7 +477,7 @@
 	
 	    
 	// Beginn der Sonderfunktionen
-	public function SetOutputPinValue(Int $Output, Int $Value)
+	public function PWMSetOutputPinValue(Int $Output, Int $Value, bool $State)
 	{ 
 		$this->SendDebug("SetOutputPinValue", "Ausfuehrung", 0);
 		$Output = min(15, max(0, $Output));
@@ -486,7 +486,7 @@
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
 		// zu korrigieren
-		$State = true; //GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
+		//$State = true; //GetValueBoolean($this->GetIDForIdent("Output_Bln_X".$Output));
 		
 		$L_Bit = $Value & 255;
 		$H_Bit = $Value >> 8;
@@ -505,7 +505,7 @@
 		}
 	}
 	
-	public function SetOutputPinState(Int $Output, Bool $State)
+	public function PWMSetOutputPinState(Int $Output, Bool $State, Int $Value)
 	{ 
 		$this->SendDebug("SetOutputPinStatus", "Ausfuehrung", 0);
 		$Output = min(15, max(0, $Output));
@@ -514,7 +514,7 @@
 		$ByteArray = array();
 		$StartAddress = ($Output * 4) + 6;
 		// zu korrigieren
-		$Value = 0;//GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
+		//$Value = 0;//GetValueInteger($this->GetIDForIdent("Output_Int_X".$Output));
 		
 		$L_Bit = $Value & 255;
 		$H_Bit = $Value >> 8;
