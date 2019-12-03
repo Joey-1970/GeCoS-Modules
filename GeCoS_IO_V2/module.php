@@ -104,57 +104,7 @@ class GeCoS_IO_V2 extends IPSModule
 	
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		
-		$arraySort = array();
-		$arraySort = array("column" => "DeviceTyp", "direction" => "ascending");
-		$arrayColumns = array();
-		$arrayColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "120px", "add" => "");
-		$arrayColumns[] = array("label" => "Adresse", "name" => "DeviceAddress", "width" => "60px", "add" => "");
-		$arrayColumns[] = array("label" => "Bus", "name" => "DeviceBus", "width" => "60px", "add" => "");
-		$arrayColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "70px", "add" => "");
-		$arrayColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
-		
-		$arrayOWColumns = array();
-		$arrayOWColumns[] = array("label" => "Typ", "name" => "DeviceTyp", "width" => "120px", "add" => "");
-		$arrayOWColumns[] = array("label" => "Serien-Nr.", "name" => "DeviceSerial", "width" => "120px", "add" => "");
-		$arrayOWColumns[] = array("label" => "Instanz ID", "name" => "InstanceID", "width" => "70px", "add" => "");
-		$arrayOWColumns[] = array("label" => "Status", "name" => "DeviceStatus", "width" => "auto", "add" => "");
-		
-		
 		If (($this->ConnectionTest()) AND ($this->ReadPropertyBoolean("Open") == true))  {
-			/*
-			// I²C-Devices einlesen und in das Values-Array kopieren
-			$Result = $this->ClientSocket("{MOD}");
-			$DeviceArray = array();
-			$DeviceArray = unserialize($this->GetBuffer("ModulesArray"));
-			$arrayValues = array();
-			If (count($DeviceArray , COUNT_RECURSIVE) >= 4) {
-				foreach ($DeviceArray as $Value) {
-					$arrayValues[] = array("DeviceTyp" => $Value[0], "DeviceAddress" => $Value[1], "DeviceBus" => $Value[2], "InstanceID" => $Value[3], "DeviceStatus" => $Value[4], "rowColor" => $Value[5]);
-				}
-				$arrayElements[] = array("type" => "List", "name" => "I2C_Devices", "caption" => "I²C-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => "", "columns" => $arrayColumns, "values" => $arrayValues);
-			}
-			else {
-				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine Module gefunden.");
-			}
-			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-			
-			// 1-Wire-Devices einlesen und in das Values-Array kopieren
-			$OWDeviceArray = array();
-			$this->OWSearchStart();
-			$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-			If (count($OWDeviceArray , COUNT_RECURSIVE) >= 4) {
-				$arrayOWValues = array();
-				for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-					$arrayOWValues[] = array("DeviceTyp" => $OWDeviceArray[$i][0], "DeviceSerial" => $OWDeviceArray[$i][1], "InstanceID" => $OWDeviceArray[$i][2], "DeviceStatus" => $OWDeviceArray[$i][3], "rowColor" => $OWDeviceArray[$i][4]);
-				}
-				$arrayElements[] = array("type" => "List", "name" => "OW_Devices", "caption" => "1-Wire-Devices", "rowCount" => 5, "add" => false, "delete" => false, "sort" => "", "columns" => $arrayOWColumns, "values" => $arrayOWValues);
-			}
-			else {
-				$arrayElements[] = array("type" => "Label", "label" => "Es wurden keine 1-Wire-Devices gefunden.");
-			}
-			
-			$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-			*/
 			$arrayElements[] = array("type" => "Label", "label" => "Setzen der Real-Time-Clock auf IPS-Zeit:");
 			$arrayElements[] = array("type" => "Button", "label" => "RTC setzen", "onClick" => 'GeCoSIOV2_SetRTC_Data($id);');		
 		}
@@ -326,6 +276,25 @@ class GeCoS_IO_V2 extends IPSModule
 					$I2CInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
 					$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
 					 $this->SendDebug("set_used_modules", serialize($I2CInstanceArray), 0);
+					// Messages einrichten
+					$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
+					$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
+					$Result = true;
+				}
+				else {
+					$Result = false;
+				}
+				break;
+			// OW Kommunikation
+		   	case "set_used_OWDevices":		   	
+				$this->SendDebug("set_used_OWDevices", "Ausfuehrung", 0);
+				 If ($this->GetBuffer("ModuleReady") == 1) {
+					// die genutzten Device Adressen anlegen
+					$OWInstanceArray[$data->InstanceID]["InstanceID"] = $data->InstanceID; 
+					$OWInstanceArray[$data->InstanceID]["DeviceSerial"] = $data->DeviceSerial;
+					$OWInstanceArray[$data->InstanceID]["Status"] = "Angemeldet";
+					$this->SetBuffer("OWInstanceArray", serialize($OWInstanceArray));
+					 $this->SendDebug("set_used_OWDevices", serialize($OWInstanceArray), 0);
 					// Messages einrichten
 					$this->RegisterMessage($data->InstanceID, 11101); // Instanz wurde verbunden
 					$this->RegisterMessage($data->InstanceID, 11102); // Instanz wurde getrennt
