@@ -140,5 +140,27 @@
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18S20Temperature", "Time" => 750, "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress") )));
 		}
 	}
+	    
+	private function GetData()
+	{
+		$OWArray = array();
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));	
+		$OWArray = unserialize($Result);
+		If (is_array($OWArray)) {
+			$this->SetStatus(102);
+			$this->SendDebug("GetOWData", $Result, 0);
+			$Devices = array();
+			$i = 0;
+			foreach($OWArray as $Key => $Device) {
+				$OWFamilyCode = substr($Key, 0, 2);
+				If ($OWFamilyCode = "10") {
+					$Devices[$i]["OWSerial"] = $Key;
+					$i = $i + 1;
+				}
+			}
+		}
+	
+	return serialize($Devices);
+	}   
 }
 ?>
