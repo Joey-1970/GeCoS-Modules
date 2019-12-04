@@ -10,7 +10,6 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
-		//$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18S20_Measurement($_IPS["TARGET"]);');
 		
@@ -47,25 +46,12 @@
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Geräte-ID", "options" => $arrayOptions );
-		/*
-		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
-		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
-		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
-		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
-		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
-			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
-		}
-		*/
+
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
-
-		$arrayActions = array();
-		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
+		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");		
 		
-		
- 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
+ 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements)); 		 
  	}           
 	  
         // Überschreibt die intere IPS_ApplyChanges($id) Funktion
