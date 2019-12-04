@@ -32,9 +32,8 @@
 		$arrayOptions = array();
 		
 		// Hier mus der Abruf der DS1820 erfolgen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "10", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
-		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+		$OWDeviceArray = unserialize($this->GetData());
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
 			$arrayValues = Array();
 			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
@@ -45,11 +44,11 @@
 			$arrayValues[] = array("name" => "DeviceAddress", "value" => $this->ReadPropertyString("DeviceAddress"));
 			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $arrayValues);
 		}
-		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
+		If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
 				$arrayValues = Array();
-				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
+				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i]);
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $arrayValues);
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
@@ -150,12 +149,11 @@
 			$this->SetStatus(102);
 			$this->SendDebug("GetOWData", $Result, 0);
 			$Devices = array();
-			$i = 0;
 			foreach($OWArray as $Key => $Device) {
 				$OWFamilyCode = substr($Key, 0, 2);
 				If ($OWFamilyCode = "10") {
-					$Devices[$i]["OWSerial"] = $Key;
-					$i = $i + 1;
+					$this->SendDebug("GetData", $Key, 0);
+					$Devices[] = $Key;
 				}
 			}
 		}
