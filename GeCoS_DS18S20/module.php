@@ -116,15 +116,9 @@
 			case "get_start_trigger":
 			   	$this->ApplyChanges();
 				break;
-			case "set_OWDevices":
-			   	If ($data->InstanceID == $this->InstanceID) {
-					$this->SetBuffer("OWDeviceArray", $data->Result);
-					$this->SendDebug("ReceiveData", $data->Result, 0);
-			   	}
-			   	break;
-			case "set_DS18S20Temperature":
-			   	If ($data->InstanceID == $this->InstanceID) {
-					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
+			case "OWV":
+			   	If ($data->DeviceAddress == $this->$this->ReadPropertyString("DeviceAddress")) {
+					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Value);
 			   		$this->SetStatus(102);
 				}
 			   	break;	
