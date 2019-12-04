@@ -143,7 +143,6 @@
 			$Devices = array();
 			foreach($OWArray as $Key => $Device) {
 				$OWFamilyCode = substr($Key, 0, 2);
-				$this->SendDebug("GetData", "-".$OWFamilyCode."-", 0);
 				If ($OWFamilyCode == "28") {
 					$Devices[] = $Key;
 				}
