@@ -35,20 +35,14 @@
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetData());
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
-			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
-			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => $arrayValues);
+			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => 0);
 		}
 		else {
-			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => $this->ReadPropertyString("DeviceAddress"));
-			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $arrayValues);
+			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $this->ReadPropertyString("DeviceAddress"));
 		}
 		If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				$arrayValues = Array();
-				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i]);
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" => $arrayValues);
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" =>$OWDeviceArray[$i]);
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Geräte-ID", "options" => $arrayOptions );
