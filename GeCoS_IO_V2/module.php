@@ -314,29 +314,29 @@ class GeCoS_IO_V2 extends IPSModule
 				$Devices = $this->GetBuffer("ModulesArray");
 				$Result = $Devices;
 				break;   
-			case "OWS": // Module auslesen
+			case "OWS": // 1-Wire auslesen
 				$Result = $this->ClientSocket("{OWS}");
 				$OWDevices = $this->GetBuffer("OWArray");
 				$Result = $OWDevices;
 				break;  
-			case "SAO": // Module 16Out
-				// Auslesen des aktuellen Status
+			case "OWV": // 1-Wire Werte
+				$DeviceAddress = $data->DeviceAddress;
+				$Result = $this->ClientSocket("{OWV;".$DeviceAddress."}");
+				break; 
+			case "SAO": // Module 16Out lesen
 				$Result = $this->ClientSocket("{SAO}");
 				break;   
-			case "SOM": // Module 16Out
-				// Setzen des Status
+			case "SOM": // Module 16Out setzen
 				$DeviceBus = intval($data->DeviceBus);
 				$DeviceAddress = intval($data->DeviceAddress);
 				$Value = intval($data->Value);
 				$Result = $this->ClientSocket("{SOM;".$DeviceBus.";0x".dechex($DeviceAddress).";".$Value."}");
 				break; 
-			
 			case "SAI": // Module 16In
 				// Auslesen des aktuellen Status
 				$Result = $this->ClientSocket("{SAI}");
 				break;   
-			case "SAM": // Module AnalogIn
-				// Auslesen des aktuellen Status
+			case "SAM": // Module AnalogIn lesen
 				$DeviceBus = intval($data->DeviceBus);
 				$DeviceAddress = intval($data->DeviceAddress);
 				$Channel = intval($data->Channel);
@@ -485,6 +485,13 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SendDebug("ReceiveData", serialize($OWArray), 0);
 					$this->SetBuffer("OWArray", serialize($OWArray));
 				}
+				break;
+			case "OWV":
+				$DeviceAddress = $ValueArray[1];
+				$Value = floatval($ValueArray[2]);
+				$StatusMessage = $ValueArray[3];
+				$this->SendDebug("ReceiveData", $DeviceAddress." - ".$Value, 0);
+				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"OWV", "InstanceID" => $InstanceID, "DeviceAddress" => $DeviceAddress, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "RRTC":
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
