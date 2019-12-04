@@ -136,7 +136,6 @@
 			foreach($OWArray as $Key => $Device) {
 				$OWFamilyCode = substr($Key, 0, 2);
 				If ($OWFamilyCode == "10") {
-					$this->SendDebug("GetData", $Key, 0);
 					$Devices[] = $Key;
 				}
 			}
