@@ -8,17 +8,14 @@
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
-		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
+		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
 		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
-		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
-		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
 		$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
 		
 		//Status-Variablen anlegen
 		$this->RegisterVariableFloat("Temperature", "Temperatur", "~Temperature", 10);
-          	$this->DisableAction("Temperature");
         }
  	
 	public function GetConfigurationForm() 
@@ -36,33 +33,20 @@
 		$arrayOptions = array();
 		
 		// Hier mus der Abruf der DS1820 erfolgen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "28", "InstanceID" => $this->InstanceID)));
 		$OWDeviceArray = Array();
-		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
+		$OWDeviceArray = unserialize($this->GetData());
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
-			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
-			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => 0);
-			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => 0);
-			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => $arrayValues);
+			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => "Sensorauswahl");
 		}
 		else {
-			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => $this->ReadPropertyString("DeviceAddress"));
-			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $this->ReadPropertyInteger("DeviceAddress_0"));
-			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $this->ReadPropertyInteger("DeviceAddress_1"));
-			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $arrayValues);
+			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $this->ReadPropertyString("DeviceAddress"));
 		}
-		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
+		If (count($OWDeviceArray) > 0) {
 			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				$arrayValues = Array();
-				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
-				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
-				$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $OWDeviceArray[$i][2]);
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
+				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" =>$OWDeviceArray[$i]);
 			}
 		}
-		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
@@ -72,15 +56,12 @@
 		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
 			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		}
+		
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
-	
-		$arrayActions = array();
-		$arrayActions[] = array("type" => "Label", "label" => "Diese Funktionen stehen erst nach Eingabe und Übernahme der erforderlichen Daten zur Verfügung!");
+		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
 		
-		
- 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements, "actions" => $arrayActions)); 		 
+ 		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements)); 		 
  	}           
 	  
         // Überschreibt die intere IPS_ApplyChanges($id) Funktion
@@ -99,14 +80,12 @@
 			If ($this->ReadPropertyBoolean("Open") == true) {	
 				//ReceiveData-Filter setzen
 				$Filter = '(.*"Function":"get_start_trigger".*|.*"InstanceID":'.$this->InstanceID.'.*)';
-				$this->SetReceiveDataFilter($Filter);
-				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
+				//$this->SetReceiveDataFilter($Filter);
+				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_OWDevices", "DeviceSerial" => $this->ReadPropertyString("DeviceAddress"), "InstanceID" => $this->InstanceID)));		
 				If ($Result == true) {
 					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
-					$this->Setup();
 					$this->Measurement();
 					$this->SetStatus(102);
-					$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 				}
 			}
 			else {
@@ -137,50 +116,43 @@
 			case "get_start_trigger":
 			   	$this->ApplyChanges();
 				break;
-			case "set_OWDevices":
-			   	If ($data->InstanceID == $this->InstanceID) {
-					$this->SetBuffer("OWDeviceArray", $data->Result);
-					$this->SendDebug("ReceiveData", $data->Result, 0);
-			   	}
-			   	break;
-			case "set_DS18B20Temperature":
-			   	If ($data->InstanceID == $this->InstanceID) {
-					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Result);
+			case "OWV":
+			   	If ($data->DeviceAddress == $this->$this->ReadPropertyString("DeviceAddress")) {
+					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Value);
 			   		$this->SetStatus(102);
 				}
 			   	break;	
 	 	}
  	}
 	    
-	// Beginn der Funktionen
-	private function Setup()
-	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$Resolution = array( 31, 63, 95, 127);
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS18B20Setup", "Resolution" => $Resolution[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
-		}
-	}
-	    
+	// Beginn der Funktionen    
 	public function Measurement()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$Time = array( 95, 190, 380, 750);
 			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18B20Temperature", "Time" => $Time[$this->ReadPropertyInteger("Resolution")], "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWV", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress") )));
 		}
 	}
 	    
-	protected function HasActiveParent()
-    	{
-		$this->SendDebug("HasActiveParent", "Ausfuehrung", 0);
-		$Instance = @IPS_GetInstance($this->InstanceID);
-		if ($Instance['ConnectionID'] > 0)
-		{
-			$Parent = IPS_GetInstance($Instance['ConnectionID']);
-			if ($Parent['InstanceStatus'] == 102)
-			return true;
+	private function GetData()
+	{
+		$OWArray = array();
+		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));	
+		$OWArray = unserialize($Result);
+		If (is_array($OWArray)) {
+			$this->SetStatus(102);
+			$this->SendDebug("GetOWData", $Result, 0);
+			$Devices = array();
+			foreach($OWArray as $Key => $Device) {
+				$OWFamilyCode = substr($Key, 0, 2);
+				If ($OWFamilyCode = "10") {
+					$this->SendDebug("GetData", $Key, 0);
+					$Devices[] = $Key;
+				}
+			}
 		}
-        return false;
-    	}  
+	
+	return serialize($Devices);
+	}   
 }
 ?>
