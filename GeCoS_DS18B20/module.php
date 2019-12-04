@@ -53,9 +53,7 @@
 		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
 		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
 		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
-		If ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") {
-			$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
-		}
+		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
