@@ -137,7 +137,7 @@
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
 			// Messung ausführen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS18S20Temperature", "Time" => 750, "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress") )));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWV", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress") )));
 		}
 	}
 	    
