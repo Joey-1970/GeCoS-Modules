@@ -102,7 +102,8 @@
 	private function GetGeCoSInstanceID(string $OWSerial)
 	{
 	    	$Result = 0;
-		$GUID = $this->FamilyCodeToGUID($FamilyCode);
+		$OWFamilyCode = substr($OWSerial, 0, 2);
+		$GUID = $this->FamilyCodeToGUID($OWFamilyCode);
 		// Modulinstanzen suchen
 		$InstanceArray = array();
 		$InstanceArray = @(IPS_GetInstanceListByModuleID($GUID));
