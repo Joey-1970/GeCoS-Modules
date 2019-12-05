@@ -91,7 +91,7 @@
 			foreach($OWArray as $Key => $Device) {
 				$Devices[$i]["OWType"] = $Device;
 				$Devices[$i]["OWSerial"] = $Key;
-				$Devices[$i]["Instance"] = 0; //$this->GetGeCoSInstanceID($Device[0], $Device[2], $Device[1]);
+				$Devices[$i]["Instance"] = $this->GetGeCoSInstanceID($Key);
 				$i = $i + 1;
 			}
 		}
@@ -99,27 +99,26 @@
 	return serialize($Devices);
 	}    
 	    
-	function GetGeCoSInstanceID($OWSerial)
+	private function GetGeCoSInstanceID(string $OWSerial)
 	{
 	    	$Result = 0;
-		If ($DeviceType <> "UNB") {
-			$GUID = $this->FamilyCodeToGUID($FamilyCode);
-			// Modulinstanzen suchen
-			$InstanceArray = array();
-			$InstanceArray = @(IPS_GetInstanceListByModuleID($GUID));
-			If (is_array($InstanceArray)) {
-				foreach($InstanceArray as $Module) {
-					If (@IPS_GetProperty($Module, "DeviceAddress") == $OWSerial) {
-						$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
-						$Result = $Module;
-						break;
-					}
-					else {
-						$Result = 0;
-					}
+		$GUID = $this->FamilyCodeToGUID($FamilyCode);
+		// Modulinstanzen suchen
+		$InstanceArray = array();
+		$InstanceArray = @(IPS_GetInstanceListByModuleID($GUID));
+		If (is_array($InstanceArray)) {
+			foreach($InstanceArray as $Module) {
+				If (@IPS_GetProperty($Module, "DeviceAddress") == $OWSerial) {
+					$this->SendDebug("GetGeCoSInstanceID", "Gefundene Instanz: ".$Module, 0);
+					$Result = $Module;
+					break;
+				}
+				else {
+					$Result = 0;
 				}
 			}
 		}
+		
 	return $Result;
 	}
 	    
