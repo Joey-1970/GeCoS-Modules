@@ -107,7 +107,7 @@
 			   	$this->ApplyChanges();
 				break;
 			case "OWV":
-			   	If ($data->DeviceAddress == $this->$this->ReadPropertyString("DeviceAddress")) {
+			   	If ($data->DeviceAddress == $this->ReadPropertyString("DeviceAddress")) {
 					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Value);
 			   		$this->SetStatus(102);
 				}
