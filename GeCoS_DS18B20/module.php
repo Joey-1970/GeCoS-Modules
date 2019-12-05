@@ -49,10 +49,10 @@
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Geräte-ID", "options" => $arrayOptions );
 		
 		$arrayOptions = array();
-		$arrayOptions[] = array("label" => "9-Bit", "value" => 0);
-		$arrayOptions[] = array("label" => "10-Bit", "value" => 1);
-		$arrayOptions[] = array("label" => "11-Bit", "value" => 2);
-		$arrayOptions[] = array("label" => "12-Bit", "value" => 3);
+		$arrayOptions[] = array("label" => "9-Bit", "value" => 31);
+		$arrayOptions[] = array("label" => "10-Bit", "value" => 63);
+		$arrayOptions[] = array("label" => "11-Bit", "value" => 95);
+		$arrayOptions[] = array("label" => "12-Bit", "value" => 127);
 		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
 		
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
@@ -132,6 +132,14 @@
 		}
 	}
 	    
+	private function Resolution()
+	{
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
+			// Resolution setzen
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWC", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress"), "Resolution" => $this->ReadPropertyInteger("Resolution") )));
+		}
+	}
+	   
 	private function GetData()
 	{
 		$OWArray = array();
