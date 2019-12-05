@@ -322,6 +322,11 @@ class GeCoS_IO_V2 extends IPSModule
 			case "OWV": // 1-Wire Werte
 				$DeviceAddress = $data->DeviceAddress;
 				$Result = $this->ClientSocket("{OWV;".$DeviceAddress."}");
+				break;
+			case "OWC": // 1-Wire Resolution
+				$DeviceAddress = $data->DeviceAddress;
+				$Resolution = $data->Resolution;
+				$Result = $this->ClientSocket("{OWV;".$DeviceAddress.";".$Resolution."}");
 				break; 
 			case "SAO": // Module 16Out lesen
 				$Result = $this->ClientSocket("{SAO}");
@@ -492,6 +497,13 @@ class GeCoS_IO_V2 extends IPSModule
 				$StatusMessage = $ValueArray[3];
 				$this->SendDebug("ReceiveData", $DeviceAddress." - ".$Value, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"OWV", "InstanceID" => $InstanceID, "DeviceAddress" => $DeviceAddress, "Value" => $Value, "StatusMessage" => $StatusMessage)));
+				break;
+			case "OWC":
+				$DeviceAddress = $ValueArray[1];
+				$Resolution = intval($ValueArray[2]);
+				$StatusMessage = $ValueArray[3];
+				$this->SendDebug("ReceiveData", $DeviceAddress." - ".$Resolution, 0);
+				//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"OWV", "InstanceID" => $InstanceID, "DeviceAddress" => $DeviceAddress, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "RRTC":
 				//{RRTC;TT;MM;JJJJ;HH;MM;SS;OK}
