@@ -35,20 +35,17 @@
 		$arrayValues = array();
 		for ($i = 0; $i < Count($OWArray); $i++) {
 			$arrayCreate = array();
-			/*
-			If ($DeviceArray[$i]["DeviceType"] <> "UNB") {
-				$arrayCreate[] = array("moduleID" => $this->DeviceTypeToGUID($DeviceArray[$i]["DeviceType"]), 
-					       "configuration" => array("DeviceAddress" => $DeviceArray[$i]["DeviceAddress"], "DeviceBus" => $DeviceArray[$i]["DeviceBus"], "Open" => true) );
-				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
-					       "instanceID" => $DeviceArray[$i]["Instance"], "create" => $arrayCreate);
+			$FamilyCode = substr($OWArray[$i]["OWSerial"], 0, 2);
+			If (($FamilyCode == "10") OR ($FamilyCode == "28")) {
+				$arrayCreate[] = array("moduleID" => $this->FamilyCodeToGUID($FamilyCode), 
+					       "configuration" => array("DeviceAddress" => $OWArray[$i]["OWSerial"], "Open" => true) );
+				$arrayValues[] = array("OWType" => $OWArray[$i]["OWType"], "OWSerial" => $OWArray[$i]["OWSerial"],
+					       "instanceID" => $OWArray[$i]["Instance"], "create" => $arrayCreate);
 			}
 			else {
-				$arrayValues[] = array("DeviceBus" => $DeviceArray[$i]["DeviceBus"], "DeviceType" => $DeviceArray[$i]["DeviceType"], "DeviceAddress" => $DeviceArray[$i]["DeviceAddress"]." / 0x".strtoupper(dechex($DeviceArray[$i]["DeviceAddress"])),
-					       "instanceID" => $DeviceArray[$i]["Instance"]);
-			}
-			*/
-			$arrayValues[] = array("OWType" => $OWArray[$i]["OWType"], "OWSerial" => $OWArray[$i]["OWSerial"],
+				$arrayValues[] = array("OWType" => $OWArray[$i]["OWType"], "OWSerial" => $OWArray[$i]["OWSerial"],
 					       "instanceID" => $OWArray[$i]["Instance"]);
+			}
 		}
 		
 		$arrayElements[] = array("type" => "Configurator", "name" => "OWDevices", "caption" => "1-Wire-Komponenten", "rowCount" => 10, "delete" => false, "sort" => $arraySort, "columns" => $arrayColumns, "values" => $arrayValues);
