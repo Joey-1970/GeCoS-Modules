@@ -495,6 +495,7 @@ class GeCoS_IO_V2 extends IPSModule
 				$DeviceAddress = $ValueArray[1];
 				$Value = floatval($ValueArray[2]);
 				$StatusMessage = $ValueArray[3];
+				$InstanceID = 0; //$this->InstanceIDSearch($DeviceBus, $DeviceAddress);
 				$this->SendDebug("ReceiveData", $DeviceAddress." - ".$Value, 0);
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"OWV", "InstanceID" => $InstanceID, "DeviceAddress" => $DeviceAddress, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
