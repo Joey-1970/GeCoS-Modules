@@ -326,7 +326,7 @@ class GeCoS_IO_V2 extends IPSModule
 			case "OWC": // 1-Wire Resolution
 				$DeviceAddress = $data->DeviceAddress;
 				$Resolution = $data->Resolution;
-				$Result = $this->ClientSocket("{OWV;".$DeviceAddress.";".$Resolution."}");
+				$Result = $this->ClientSocket("{OWC;".$DeviceAddress.";".$Resolution."}");
 				break; 
 			case "SAO": // Module 16Out lesen
 				$Result = $this->ClientSocket("{SAO}");
