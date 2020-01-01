@@ -9,7 +9,7 @@
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
-		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
+		$this->RegisterPropertyString("DeviceAddress", "Sensor ID");
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18S20_Measurement($_IPS["TARGET"]);');
 		
@@ -32,6 +32,7 @@
 		$arrayOptions = array();
 		
 		// Hier mus der Abruf der DS1820 erfolgen
+		/*
 		$OWDeviceArray = Array();
 		$OWDeviceArray = unserialize($this->GetData());
 		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
@@ -46,7 +47,9 @@
 			}
 		}
 		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Geräte-ID", "options" => $arrayOptions );
-
+		*/
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "DeviceAddress", "caption" => "Sensor ID");
+		
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");		
@@ -123,7 +126,7 @@
 			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWV", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress") )));
 		}
 	}
-	    
+	/*    
 	private function GetData()
 	{
 		$OWArray = array();
@@ -143,5 +146,6 @@
 	
 	return serialize($Devices);
 	}   
+	*/
 }
 ?>
