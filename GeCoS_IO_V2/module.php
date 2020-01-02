@@ -43,12 +43,13 @@ class GeCoS_IO_V2 extends IPSModule
 		
 		$ModulesArray = Array();
 		$this->SetBuffer("ModulesArray", serialize($ModulesArray));
-		
-		$I2CInstanceArray = Array();
-		$this->SetBuffer("I2CInstanceArray", serialize($I2CInstanceArray));
+		$ModuleSearch = "false";
+		$this->SetBuffer("ModuleSearch", $ModuleSearch);
 		
 		$OWArray = array();
 		$this->SetBuffer("OWArray", serialize($OWArray));
+		$OWSearch = "false";
+		$this->SetBuffer("OWSearch", $OWSearch);
 	}
   
 	public function GetConfigurationForm() 
@@ -310,16 +311,32 @@ class GeCoS_IO_V2 extends IPSModule
 				break;  
 			// Kommunikation zur Server-Software
 			case "MOD": // Module auslesen
-				$Result = $this->ClientSocket("{MOD}");
-				$Devices = $this->GetBuffer("ModulesArray");
-				$Result = $Devices;
+				$ModuleSearch = $this->GetBuffer("ModuleSearch");
+				If ($ModuleSearch == "false") {
+					$ModuleSearch = "true";
+					$this->SetBuffer("ModuleSearch", $ModuleSearch);
+					
+					$ModulesArray = Array();
+					$this->SetBuffer("ModulesArray", serialize($ModulesArray));
+
+					$Result = $this->ClientSocket("{MOD}");
+					$Devices = $this->GetBuffer("ModulesArray");
+					$Result = $Devices;
+				}
 				break;   
 			case "OWS": // 1-Wire auslesen		
-				$OWArray = array();
-				$this->SetBuffer("OWArray", serialize($OWArray));
-				$Result = $this->ClientSocket("{OWS}");
-				$OWDevices = $this->GetBuffer("OWArray");
-				$Result = $OWDevices;
+				$OWSearch = $this->GetBuffer("OWSearch");
+				If ($OWSearch == "false") {
+					$OWSearch = "true";
+					$this->SetBuffer("OWSearch", $OWSearch);
+					
+					$OWArray = array();
+					$this->SetBuffer("OWArray", serialize($OWArray));
+					
+					$Result = $this->ClientSocket("{OWS}");
+					$$OWArray = $this->GetBuffer("OWArray");
+					$Result = $$OWArray;
+				}
 				break;  
 			case "OWV": // 1-Wire Werte
 				$DeviceAddress = $data->DeviceAddress;
@@ -472,6 +489,8 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAM", "InstanceID" => $InstanceID, "Channel" => $Channel, "Resolution" => $Resolution, "Amplifier" => $Amplifier, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "MOD":
+				$ModuleSearch = "false";
+				$this->SetBuffer("ModuleSearch", $ModuleSearch);
 				$ModulesArray = Array();
 				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
 				$ModuleType = $ValueArray[3];
@@ -483,6 +502,8 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 				break;
 			case "OWS":
+				$OWSearch = "false";
+				$this->SetBuffer("OWSearch", $OWSearch);
 				$OWArray = Array();
 				$OWArray = unserialize($this->GetBuffer("OWArray"));
 				$OWType = $ValueArray[1];
