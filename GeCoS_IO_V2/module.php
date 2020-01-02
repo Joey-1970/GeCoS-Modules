@@ -317,7 +317,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetBuffer("ModuleSearch", $ModuleSearch);
 					
 					$ModulesArray = Array();
-					$this->SetBuffer("ModulesArray", serialize($ModulesArray));
+					//$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 
 					$Result = $this->ClientSocket("{MOD}");
 					$Devices = $this->GetBuffer("ModulesArray");
@@ -331,7 +331,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetBuffer("OWSearch", $OWSearch);
 					
 					$OWArray = array();
-					$this->SetBuffer("OWArray", serialize($OWArray));
+					//$this->SetBuffer("OWArray", serialize($OWArray));
 					
 					$Result = $this->ClientSocket("{OWS}");
 					$$OWArray = $this->GetBuffer("OWArray");
