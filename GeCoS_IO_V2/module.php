@@ -348,7 +348,7 @@ class GeCoS_IO_V2 extends IPSModule
 					
 					$Result = $this->ClientSocket("{OWS}");
 					
-					$tries = 10;
+					$tries = 40;
 					do {
 						$OWSearch = $this->GetBuffer("OWSearch");
 						If ($OWSearch == "true") {
