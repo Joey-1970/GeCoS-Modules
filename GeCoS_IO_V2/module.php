@@ -665,7 +665,14 @@ class GeCoS_IO_V2 extends IPSModule
 	public function GetSystemStatus()
 	{
 		$Result = $this->SSH_Connect("systemctl is-active gecos.service");
+		$Result = trim($Result, "\x00..\x1F");
 		$this->SendDebug("GetSystemStatus", $Result, 0);
+		If ($Result == "active") {
+			SetValueBoolean($this->GetIDForIdent("ServerStatus"), true);
+		}
+		else {
+			SetValueBoolean($this->GetIDForIdent("ServerStatus"), false);
+		}
 	}
 	
 	private function SSH_Connect(String $Command)
