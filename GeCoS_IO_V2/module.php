@@ -317,9 +317,22 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetBuffer("ModuleSearch", $ModuleSearch);
 					
 					$ModulesArray = Array();
-					//$this->SetBuffer("ModulesArray", serialize($ModulesArray));
+					$this->SetBuffer("ModulesArray", serialize($ModulesArray));
 
 					$Result = $this->ClientSocket("{MOD}");
+					
+					$tries = 10;
+					do {
+						$ModuleSearch = $this->GetBuffer("ModuleSearch");
+						If ($ModuleSearch == "true") {
+							usleep(250000);
+						}
+						else {
+							break;
+						}
+						$tries--;
+					} while ($tries);
+					
 					$Devices = $this->GetBuffer("ModulesArray");
 					$Result = $Devices;
 				}
@@ -331,9 +344,22 @@ class GeCoS_IO_V2 extends IPSModule
 					$this->SetBuffer("OWSearch", $OWSearch);
 					
 					$OWArray = array();
-					//$this->SetBuffer("OWArray", serialize($OWArray));
+					$this->SetBuffer("OWArray", serialize($OWArray));
 					
 					$Result = $this->ClientSocket("{OWS}");
+					
+					$tries = 10;
+					do {
+						$OWSearch = $this->GetBuffer("OWSearch");
+						If ($OWSearch == "true") {
+							usleep(250000);
+						}
+						else {
+							break;
+						}
+						$tries--;
+					} while ($tries);
+					
 					$OWArray = $this->GetBuffer("OWArray");
 					$Result = $OWArray;
 				}
@@ -490,29 +516,37 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"SAM", "InstanceID" => $InstanceID, "Channel" => $Channel, "Resolution" => $Resolution, "Amplifier" => $Amplifier, "Value" => $Value, "StatusMessage" => $StatusMessage)));
 				break;
 			case "MOD":
-				$ModuleSearch = "false";
-				$this->SetBuffer("ModuleSearch", $ModuleSearch);
-				$ModulesArray = Array();
-				$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
 				$ModuleType = $ValueArray[3];
-				$Key = $DeviceBus."_".$DeviceAddress."_".$ModuleType;
-				$ModulesArray[$Key][0] = $ModuleType;
-				$ModulesArray[$Key][1] = $DeviceAddress;
-				$ModulesArray[$Key][2] = $DeviceBus;
-				$this->SendDebug("ReceiveData", serialize($ModulesArray), 0);
-				$this->SetBuffer("ModulesArray", serialize($ModulesArray));
+				If ($ModuleType == "END") {
+					$ModuleSearch = "false";
+					$this->SetBuffer("ModuleSearch", $ModuleSearch);
+				}
+				else {
+					$ModulesArray = Array();
+					$ModulesArray = unserialize($this->GetBuffer("ModulesArray"));
+					$Key = $DeviceBus."_".$DeviceAddress."_".$ModuleType;
+					$ModulesArray[$Key][0] = $ModuleType;
+					$ModulesArray[$Key][1] = $DeviceAddress;
+					$ModulesArray[$Key][2] = $DeviceBus;
+					$this->SendDebug("ReceiveData", serialize($ModulesArray), 0);
+					$this->SetBuffer("ModulesArray", serialize($ModulesArray));
+				}
 				break;
 			case "OWS":
-				$OWSearch = "false";
-				$this->SetBuffer("OWSearch", $OWSearch);
-				$OWArray = Array();
-				$OWArray = unserialize($this->GetBuffer("OWArray"));
 				$OWType = $ValueArray[1];
-				$OWDescription = $this->GetOWHardware(substr($OWType, 0, 2));
-				If ($OWDescription <> "Unbekannter 1-Wire-Typ!") {
-					$OWArray[$OWType] = $OWDescription;
-					$this->SendDebug("ReceiveData", serialize($OWArray), 0);
-					$this->SetBuffer("OWArray", serialize($OWArray));
+				If ($OWType == "END") {
+					$OWSearch = "false";
+					$this->SetBuffer("OWSearch", $OWSearch);
+				}
+				else {
+					$OWArray = Array();
+					$OWArray = unserialize($this->GetBuffer("OWArray"));
+					$OWDescription = $this->GetOWHardware(substr($OWType, 0, 2));
+					If ($OWDescription <> "Unbekannter 1-Wire-Typ!") {
+						$OWArray[$OWType] = $OWDescription;
+						$this->SendDebug("ReceiveData", serialize($OWArray), 0);
+						$this->SetBuffer("OWArray", serialize($OWArray));
+					}
 				}
 				break;
 			case "OWV":
