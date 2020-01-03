@@ -8,6 +8,14 @@ class GeCoS_IO_V2 extends IPSModule
             	parent::__construct($InstanceID);
 	}
 	
+	public function Destroy() 
+	{
+		//Never delete this line!
+		parent::Destroy();
+		$this->SetTimerInterval("GetSystemStatus", 0);
+		$this->SetTimerInterval("RTC_Data", 0);
+	}
+	
 	public function Create() 
 	{
 	    	parent::Create();
@@ -22,6 +30,7 @@ class GeCoS_IO_V2 extends IPSModule
 		$this->RegisterPropertyInteger("Baud", 9600);
             	$this->RegisterPropertyString("ConnectionString", "/dev/serial0");
 		$this->RegisterTimer("RTC_Data", 0, 'GeCoSIOV2_GetRTC_Data($_IPS["TARGET"]);');
+		$this->RegisterTimer("GetSystemStatus", 0, 'GeCoSIOV2_GetSystemStatus($_IPS["TARGET"]);');
 	    	$this->RequireParent("{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}");
 		
 		// Profile anlegen
@@ -38,8 +47,10 @@ class GeCoS_IO_V2 extends IPSModule
 		$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 40);
 			
 		$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 50);
+		
+		$this->RegisterVariableBoolean("ServerStatus", "Server Status", "", 60);
 			
-		$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 60);
+		$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 70);
 		
 		$ModulesArray = Array();
 		$this->SetBuffer("ModulesArray", serialize($ModulesArray));
@@ -189,9 +200,11 @@ class GeCoS_IO_V2 extends IPSModule
 				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
+				$this->SetTimerInterval("GetSystemStatus", 30 * 1000);
 			}
 			else {
 				$this->SetTimerInterval("RTC_Data", 0);
+				$this->SetTimerInterval("GetSystemStatus", 0);
 				$this->SetStatus(104);
 			}
 		}
@@ -647,6 +660,12 @@ class GeCoS_IO_V2 extends IPSModule
 			$Result = $this->ClientSocket("{SRTC;".date("d").";".date("m").";".date("Y").";".date("H").";".date("i").";".date("s")."}");
 			$this->GetRTC_Data();
 		}
+	}
+	
+	public function GetSystemStatus()
+	{
+		$Result = $this->SSH_Connect("systemctl is-active gecos.service");
+		$this->SendDebug("GetSystemStatus", $Result, 0);
 	}
 	
 	private function SSH_Connect(String $Command)
