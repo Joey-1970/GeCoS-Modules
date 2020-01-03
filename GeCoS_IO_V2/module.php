@@ -321,7 +321,7 @@ class GeCoS_IO_V2 extends IPSModule
 
 					$Result = $this->ClientSocket("{MOD}");
 					
-					$tries = 10;
+					$tries = 20;
 					do {
 						$ModuleSearch = $this->GetBuffer("ModuleSearch");
 						If ($ModuleSearch == "true") {
@@ -348,7 +348,7 @@ class GeCoS_IO_V2 extends IPSModule
 					
 					$Result = $this->ClientSocket("{OWS}");
 					
-					$tries = 40;
+					$tries = 20;
 					do {
 						$OWSearch = $this->GetBuffer("OWSearch");
 						If ($OWSearch == "true") {
