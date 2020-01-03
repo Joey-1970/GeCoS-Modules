@@ -334,8 +334,8 @@ class GeCoS_IO_V2 extends IPSModule
 					//$this->SetBuffer("OWArray", serialize($OWArray));
 					
 					$Result = $this->ClientSocket("{OWS}");
-					$$OWArray = $this->GetBuffer("OWArray");
-					$Result = $$OWArray;
+					$OWArray = $this->GetBuffer("OWArray");
+					$Result = $OWArray;
 				}
 				break;  
 			case "OWV": // 1-Wire Werte
