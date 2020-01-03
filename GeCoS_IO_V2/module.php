@@ -39,6 +39,10 @@ class GeCoS_IO_V2 extends IPSModule
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 1, "Version 2", "Information", -1);
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.Boardversion", 99, "Unbekannter Fehler!", "Alert", -1);
 		
+		$this->RegisterProfileBoolean("IPS2CeCoSIO.ActiveInactive", "Information");
+		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.ActiveInactive", 0, "Inaktiv", 0xFF0000, -1);
+		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.ActiveInactive", 1, "Aktiv", 0x00FF00, -1);
+		
 		// Statusvariablen anlegen
 		$this->RegisterVariableInteger("Boardversion", "GeCoS-Server", "IPS2CeCoSIO.Boardversion", 25);
 			
@@ -48,7 +52,7 @@ class GeCoS_IO_V2 extends IPSModule
 			
 		$this->RegisterVariableInteger("RTC_Timestamp", "RTC Zeitstempel", "~UnixTimestamp", 50);
 		
-		$this->RegisterVariableBoolean("ServerStatus", "Server Status", "", 60);
+		$this->RegisterVariableBoolean("ServerStatus", "Server Status", "IPS2CeCoSIO.ActiveInactive", 60);
 			
 		$this->RegisterVariableInteger("LastKeepAlive", "Letztes Keep Alive", "~UnixTimestamp", 70);
 		
@@ -963,5 +967,20 @@ class GeCoS_IO_V2 extends IPSModule
 	        IPS_SetVariableProfileText($Name, $Prefix, $Suffix);
 	        IPS_SetVariableProfileValues($Name, $MinValue, $MaxValue, $StepSize);    
 	}    
+	
+	private function RegisterProfileBoolean($Name, $Icon)
+	{
+	        if (!IPS_VariableProfileExists($Name))
+	        {
+	            IPS_CreateVariableProfile($Name, 0);
+	        }
+	        else
+	        {
+	            $profile = IPS_GetVariableProfile($Name);
+	            if ($profile['ProfileType'] != 0)
+	                throw new Exception("Variable profile type does not match for profile " . $Name);
+	        }
+	        IPS_SetVariableProfileIcon($Name, $Icon);
+	}        
 }
 ?>
