@@ -534,7 +534,7 @@ class GeCoS_IO_V2 extends IPSModule
 				break;
 			case "OWS":
 				$OWType = $ValueArray[1];
-				If ($OWType == "END") {
+				If (($OWType == "END") OR ($OWType == "Fehler")) {
 					$OWSearch = "false";
 					$this->SetBuffer("OWSearch", $OWSearch);
 				}
