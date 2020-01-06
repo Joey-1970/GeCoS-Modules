@@ -193,14 +193,14 @@ class GeCoS_IO_V2 extends IPSModule
 				$this->SetBuffer("ModuleReady", 1);
 				
 				// Ermitteln der genutzten I2C-Adressen
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_modules")));
+				//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"get_used_modules")));
 				
 				// Starttrigger für 1-Wire-Instanzen
-				$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_start_trigger")));
+				//$this->SendDataToChildren(json_encode(Array("DataID" => "{573FFA75-2A0C-48AC-BF45-FCB01D6BF910}", "Function"=>"set_start_trigger")));
 				
 				// Sucht nach Modulen
-				$Result = $this->ClientSocket("{MOD}");
-				$Result = $this->ClientSocket("{OWS}");
+				//$Result = $this->ClientSocket("{MOD}");
+				//$Result = $this->ClientSocket("{OWS}");
 				
 				$this->SetStatus(102);
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
