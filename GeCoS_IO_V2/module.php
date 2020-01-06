@@ -143,6 +143,8 @@ class GeCoS_IO_V2 extends IPSModule
 		//Never delete this line!
 		parent::ApplyChanges();
 		
+		SetValueBoolean($this->GetIDForIdent("ServerStatus"), false);
+		
 		// Nachrichten abonnieren
 		// Kernel
 	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
@@ -847,6 +849,7 @@ class GeCoS_IO_V2 extends IPSModule
 		      
 			$status = @fsockopen($this->ReadPropertyString("IPAddress"), 8000, $errno, $errstr, 10);
 				if (!$status) {
+					SetValueBoolean($this->GetIDForIdent("ServerStatus"), false);
 					IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
 					$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
 					// Versuchen PIGPIO zu starten
@@ -877,6 +880,7 @@ class GeCoS_IO_V2 extends IPSModule
 	   			}
 		}
 		else {
+			SetValueBoolean($this->GetIDForIdent("ServerStatus"), false);
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
 			$this->SetStatus(201);
