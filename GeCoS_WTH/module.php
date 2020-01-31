@@ -198,10 +198,20 @@
 			$v = log10($dd/6.1078);
 			$td = $b * $v / ($a - $v);
 			$af = pow(10,5) * 18.016 / 8314.3 * $dd / ($Temp + 273.15);
-			// Taupunkttemperatur
-			SetValueFloat($this->GetIDForIdent("DewPointTemperature"), round($td, 2));
-			// Absolute Feuchtigkeit
-			SetValueFloat($this->GetIDForIdent("HumidityAbs"), round($af, 2));
+			If (is_infinite($td) == false) {
+				// Taupunkttemperatur
+				SetValueFloat($this->GetIDForIdent("DewPointTemperature"), round($td, 2));
+			} else {
+				// Taupunkttemperatur
+				SetValueFloat($this->GetIDForIdent("DewPointTemperature"), round(0, 2));
+			}
+			If (is_infinite($af) == false) {
+				// Absolute Feuchtigkeit
+				SetValueFloat($this->GetIDForIdent("HumidityAbs"), round($af, 2));
+			} else {
+				// Absolute Feuchtigkeit
+				SetValueFloat($this->GetIDForIdent("HumidityAbs"), round(0, 2));
+			}
 			
 			// Relativen Luftdruck
 			$Altitude = $this->ReadPropertyInteger("Altitude");
