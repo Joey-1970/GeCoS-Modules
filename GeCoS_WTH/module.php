@@ -204,6 +204,7 @@
 			} else {
 				// Taupunkttemperatur
 				SetValueFloat($this->GetIDForIdent("DewPointTemperature"), round(0, 2));
+				$this->SendDebug("RequestData", "Fehlerhafte Werte! - BME280 - Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
 			}
 			If (is_infinite($af) == false) {
 				// Absolute Feuchtigkeit
@@ -211,7 +212,9 @@
 			} else {
 				// Absolute Feuchtigkeit
 				SetValueFloat($this->GetIDForIdent("HumidityAbs"), round(0, 2));
+				$this->SendDebug("RequestData", "Fehlerhafte Werte! - BME280 - Temp: ".$Temp." C Luftfeuchte: ".$Humidity."% Luftdruck: ".$Pressure." hPa", 0);		
 			}
+			
 			// Relativen Luftdruck
 			$Altitude = $this->ReadPropertyInteger("Altitude");
 			If ($this->ReadPropertyInteger("Temperature_ID") > 0) {
