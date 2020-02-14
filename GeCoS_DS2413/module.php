@@ -8,10 +8,8 @@
             	// Diese Zeile nicht löschen.
             	parent::Create();
  	    	$this->RegisterPropertyBoolean("Open", false);
-		$this->ConnectParent("{5F50D0FC-0DBB-4364-B0A3-C900040C5C35}");
-		$this->RegisterPropertyString("DeviceAddress", "Sensorauswahl");
-		$this->RegisterPropertyInteger("DeviceAddress_0", 0);
-		$this->RegisterPropertyInteger("DeviceAddress_1", 0);
+		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
+		$this->RegisterPropertyString("DeviceAddress", "Sensor ID");
 		$this->RegisterPropertyInteger("DeviceFunction_0", 1);
 		$this->RegisterPropertyInteger("DeviceFunction_1", 1);
 		$this->RegisterPropertyBoolean("Invert_0", false);
@@ -51,34 +49,7 @@
  		
 		$arrayOptions = array();
 		
-		// Hier mus der Abruf der DS1820 erfolgen
-		$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_OWDevices", "FamilyCode" => "3A", "InstanceID" => $this->InstanceID)));
-		$OWDeviceArray = Array();
-		$OWDeviceArray = unserialize($this->GetBuffer("OWDeviceArray"));
-		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
-			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => "Sensorauswahl");
-			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => 0);
-			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => 0);
-			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => $arrayValues);
-		}
-		else {
-			$arrayValues = Array();
-			$arrayValues[] = array("name" => "DeviceAddress", "value" => $this->ReadPropertyString("DeviceAddress"));
-			$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $this->ReadPropertyInteger("DeviceAddress_0"));
-			$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $this->ReadPropertyInteger("DeviceAddress_1"));
-			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $arrayValues);
-		}
-		If (count($OWDeviceArray ,COUNT_RECURSIVE) >= 3) {
-			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				$arrayValues = Array();
-				$arrayValues[] = array("name" => "DeviceAddress", "value" => $OWDeviceArray[$i][0]);
-				$arrayValues[] = array("name" => "DeviceAddress_0", "value" => $OWDeviceArray[$i][1]);
-				$arrayValues[] = array("name" => "DeviceAddress_1", "value" => $OWDeviceArray[$i][2]);
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i][0], "value" => $arrayValues);
-			}
-		}
-		$arrayElements[] = array("type" => "Select", "name" => "DeviceSerial", "caption" => "Geräte-ID", "options" => $arrayOptions );
+		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "DeviceAddress", "caption" => "Sensor ID");
 		
 		$arrayOptions = array();
 		$arrayOptions[] = array("label" => "Digital Input", "value" => 1);
@@ -93,7 +64,7 @@
 		
 		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
 		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
-		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
+		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
 	
 		$arrayActions = array();
 		If (($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl") AND ($this->ReadPropertyBoolean("Open") == true)) {
