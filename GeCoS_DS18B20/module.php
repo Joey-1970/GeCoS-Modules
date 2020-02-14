@@ -32,23 +32,6 @@
  		
 		$arrayOptions = array();
 		
-		// Hier mus der Abruf der DS1820 erfolgen
-		/*
-		$OWDeviceArray = Array();
-		$OWDeviceArray = unserialize($this->GetData());
-		If ($this->ReadPropertyString("DeviceAddress") == "Sensorauswahl") {
-			$arrayOptions[] = array("label" => "Sensorauswahl", "value" => "Sensorauswahl");
-		}
-		else {
-			$arrayOptions[] = array("label" => $this->ReadPropertyString("DeviceAddress"), "value" => $this->ReadPropertyString("DeviceAddress"));
-		}
-		If (count($OWDeviceArray) > 0) {
-			for ($i = 0; $i < Count($OWDeviceArray); $i++) {
-				$arrayOptions[] = array("label" => $OWDeviceArray[$i], "value" =>$OWDeviceArray[$i]);
-			}
-		}
-		$arrayElements[] = array("type" => "Select", "name" => "DeviceAddress", "caption" => "Geräte-ID", "options" => $arrayOptions );
-		*/
 		$arrayElements[] = array("type" => "ValidationTextBox", "name" => "DeviceAddress", "caption" => "Sensor ID");
 		
 		$arrayOptions = array();
