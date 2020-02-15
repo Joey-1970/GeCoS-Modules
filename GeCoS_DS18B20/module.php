@@ -123,29 +123,9 @@
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
 			// Resolution setzen
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWC", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress"), "Resolution" => $this->ReadPropertyInteger("Resolution") )));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWC", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress"), "Configuration" => $this->ReadPropertyInteger("Resolution") )));
 		}
 	}
-	/*   
-	private function GetData()
-	{
-		$OWArray = array();
-		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));	
-		$OWArray = unserialize($Result);
-		If (is_array($OWArray)) {
-			$this->SetStatus(102);
-			$this->SendDebug("GetOWData", $Result, 0);
-			$Devices = array();
-			foreach($OWArray as $Key => $Device) {
-				$OWFamilyCode = substr($Key, 0, 2);
-				If ($OWFamilyCode == "28") {
-					$Devices[] = $Key;
-				}
-			}
-		}
 	
-	return serialize($Devices);
-	}  
-	*/
 }
 ?>
