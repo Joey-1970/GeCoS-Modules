@@ -160,8 +160,8 @@
 	private function Setup()
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
-			$Result = ($this->ReadPropertyInteger("DeviceFunction_1") << 1) | $this->ReadPropertyInteger("DeviceFunction_0")| 252;
-			$this->SendDebug("Setup", "Wert: ".$Result, 0);
+			$Config = ($this->ReadPropertyInteger("DeviceFunction_1") << 1) | $this->ReadPropertyInteger("DeviceFunction_0");
+			$this->SendDebug("Setup", "Wert: ".$Config, 0);
 			
 			/* Value: 
 			0-> IOA+IOB = LOW, 
@@ -170,8 +170,7 @@
 			3-> IOA+IOB = High
 			{OWC;28-610119138fdf1b;3} -> {OWC;28-610119138fdf1b;3;OK}
 			*/
-			
-			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_DS2413Setup", "Setup" => $Result, "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWC", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress"), "Resolution" => $Config )));
 		}
 	}
 	    
@@ -179,13 +178,13 @@
 	{
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
 			// Messung ausführen
-			//$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "get_DS2413State", "InstanceID" => $this->InstanceID, "DeviceAddress_0" => $this->ReadPropertyInteger("DeviceAddress_0"), "DeviceAddress_1" => $this->ReadPropertyInteger("DeviceAddress_1"))));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWV", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress") )));
 		}
 	}
 	
 	public function SetPortStatus(int $Port, bool $Value)
 	{
-		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "Sensorauswahl")) {
+		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->ReadPropertyString("DeviceAddress") <> "")) {
 			$this->SendDebug("SetPortStatus", "Port: ".(int)$Port." Value: ".(int)$Value, 0);
 			// Eingabeparameter filtern
 			$Port = min(1, max(0, $Port));
