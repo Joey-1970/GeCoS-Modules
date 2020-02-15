@@ -36,7 +36,7 @@
 		for ($i = 0; $i < Count($OWArray); $i++) {
 			$arrayCreate = array();
 			$FamilyCode = substr($OWArray[$i]["OWSerial"], 0, 2);
-			If (($FamilyCode == "10") OR ($FamilyCode == "28")) {
+			If (($FamilyCode == "10") OR ($FamilyCode == "28") OR ($FamilyCode == "3a")) {
 				$arrayCreate[] = array("moduleID" => $this->FamilyCodeToGUID($FamilyCode), 
 					       "configuration" => array("DeviceAddress" => $OWArray[$i]["OWSerial"], "Open" => true) );
 				$arrayValues[] = array("OWType" => $OWArray[$i]["OWType"], "OWSerial" => $OWArray[$i]["OWSerial"],
@@ -124,6 +124,7 @@
 	private function FamilyCodeToGUID(string $FamilyCode)
 	{
 		$FamilyCodeArray = array("10" => "{8179FCFF-E441-4FAC-BCC3-1B97E9D45052}", 
+					"3a" => "{AFB9CF0C-CA31-4336-8B0F-E26168960417}",
 				     "28" => "{18CFA944-CFC9-4A72-8D2A-231604FF7D2A}");
 		$GUID = $FamilyCodeArray[$FamilyCode];
 	return $GUID;
