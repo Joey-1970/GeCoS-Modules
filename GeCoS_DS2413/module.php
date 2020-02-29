@@ -109,7 +109,7 @@
 					$this->Setup();
 					$this->Measurement();
 					$this->SetStatus(102);
-					$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
+					$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress"), 0);
 				}
 			}
 			else {
@@ -170,7 +170,7 @@
 			3-> IOA+IOB = High
 			{OWC;28-610119138fdf1b;3} -> {OWC;28-610119138fdf1b;3;OK}
 			*/
-			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWC", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress"), "Resolution" => $Config )));
+			$this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWC", "InstanceID" => $this->InstanceID, "DeviceAddress" => $this->ReadPropertyString("DeviceAddress"), "Configuration" => $Config )));
 		}
 	}
 	    
