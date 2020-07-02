@@ -2612,7 +2612,7 @@ class GeCoS_IO extends IPSModule
 			} 
 			else {
             			//$this->SendDebug("OWReadByte", "Read Status Byte: ".$Data, 0);
-            			if ($Data[0] & 0x01) { // 1-Wire Busy bit
+            			if ((is_array($Data)) AND ($Data[0] & 0x01)) { // 1-Wire Busy bit
                 			//server.log("One-Wire bus is busy");
                 			if ($loopcount > 100) {
                     				$this->SendDebug("OWReadByte", "One-Wire busy for too long", 0);
