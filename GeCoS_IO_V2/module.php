@@ -17,7 +17,8 @@ class GeCoS_IO_V2 extends IPSModule
 	public function Create() 
 	{
 	    	parent::Create();
-	    
+	    	$this->RegisterMessage(0, IPS_KERNELSTARTED);
+		
 	    	// Modul-Eigenschaftserstellung
 	    	$this->RegisterPropertyBoolean("Open", false);
 	    	$this->RegisterPropertyString("IPAddress", "127.0.0.1");
@@ -181,12 +182,8 @@ class GeCoS_IO_V2 extends IPSModule
 	{
 		//Never delete this line!
 		parent::ApplyChanges();
-		
-		// Nachrichten abonnieren
-		// Kernel
-	        $this->RegisterMessage(0, 10100); // Alle Kernelmessages (10103 muss im MessageSink ausgewertet werden.)
-		
-		If (IPS_GetKernelRunlevel() == 10103) {				
+				
+		If (IPS_GetKernelRunlevel() == KR_READY) {				
 			$this->SetBuffer("ModuleReady", 0);
 			$this->SetBuffer("Default_Serial_Bus", 0);
 			$this->SetBuffer("MUX_Handle", -1);
@@ -378,11 +375,9 @@ class GeCoS_IO_V2 extends IPSModule
 	public function MessageSink($TimeStamp, $SenderID, $Message, $Data)
     	{
 		switch ($Message) {
-			case 10100:
-				If ($Data[0] == 10103) {
-					$this->SendDebug("MessageSink", "IPS-Kernel ist bereit und läuft", 0);
-					$this->ApplyChanges();
-				}
+			case 10001:
+				// IPS_KERNELSTARTED
+				$this->ApplyChanges();
 				break;
 			case 11101:
 				$this->SendDebug("MessageSink", "Instanz ".$SenderID." wurde verbunden", 0);
