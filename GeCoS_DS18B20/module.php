@@ -10,7 +10,7 @@
  	    	$this->RegisterPropertyBoolean("Open", false);
 		$this->ConnectParent("{5F1C0403-4A74-4F14-829F-9A217CFB2D05}");
 		$this->RegisterPropertyString("DeviceAddress", "Sensor ID");
-		$this->RegisterPropertyInteger("Resolution", 0);
+		$this->RegisterPropertyInteger("Resolution", 31);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
 		$this->RegisterPropertyFloat("Offset", 0);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
