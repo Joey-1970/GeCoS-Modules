@@ -12,6 +12,7 @@
 		$this->RegisterPropertyString("DeviceAddress", "Sensor ID");
 		$this->RegisterPropertyInteger("Resolution", 0);
 		$this->RegisterPropertyInteger("Messzyklus", 60);
+		$this->RegisterPropertyFloat("Offset", 0);
 		$this->RegisterTimer("Messzyklus", 0, 'GeCoSDS18B20_Measurement($_IPS["TARGET"]);');
 		
 		//Status-Variablen anlegen
@@ -40,9 +41,9 @@
 		$arrayOptions[] = array("label" => "11-Bit", "value" => 95);
 		$arrayOptions[] = array("label" => "12-Bit", "value" => 127);
 		$arrayElements[] = array("type" => "Select", "name" => "Resolution", "caption" => "Präzision", "options" => $arrayOptions );
-		
-		$arrayElements[] = array("type" => "IntervalBox", "name" => "Messzyklus", "caption" => "Sekunden");
-		$arrayElements[] = array("type" => "Label", "label" => "_____________________________________________________________________________________________________");
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Offset", "caption" => "Offset", "digits" => 1, "suffix" => "°C", "minimum" => -10, "maximum" => 10);
+		$arrayElements[] = array("type" => "NumberSpinner", "name" => "Messzyklus", "caption" => "Sekunden");
+		$arrayElements[] = array("type" => "Label", "caption" => "_____________________________________________________________________________________________________");
 		$arrayElements[] = array("type" => "Button", "caption" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/';");
 		
  		return JSON_encode(array("status" => $arrayStatus, "elements" => $arrayElements)); 		 
@@ -103,7 +104,7 @@
 				break;
 			case "OWV":
 			   	If ($data->DeviceAddress == $this->ReadPropertyString("DeviceAddress")) {
-					SetValueFloat($this->GetIDForIdent("Temperature"), $data->Value);
+					SetValue("Temperature", $data->Value + $this->ReadPropertyFloat("Offset"));
 			   		$this->SetStatus(102);
 				}
 			   	break;	
