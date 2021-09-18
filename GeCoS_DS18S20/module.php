@@ -96,7 +96,7 @@
 				break;
 			case "OWV":
 			   	If ($data->DeviceAddress == $this->ReadPropertyString("DeviceAddress")) {
-					SetValue("Temperature", $data->Value + $this->ReadPropertyFloat("Offset"));
+					$this->SetValue("Temperature", floatval($data->Value) + floatval($this->ReadPropertyFloat("Offset")));
 			   		$this->SetStatus(102);
 				}
 			   	break;	
