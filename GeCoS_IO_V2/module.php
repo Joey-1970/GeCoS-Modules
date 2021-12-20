@@ -1131,7 +1131,7 @@ class GeCoS_IO_V2 extends IPSModule
 						$errorcode = socket_last_error();
 						$errormsg = socket_strerror($errorcode);
 						//IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Erstellen ".$errorcode." ".$errormsg);
-						//$this->SendDebug("CommandClientSocket", "Fehler beim Erstellen ".$errorcode." ".$errormsg, 0);
+						$this->SendDebug("CommandClientSocket", "Fehler beim Erstellen ".$errorcode." ".$errormsg, 0);
 						IPS_SemaphoreLeave("ClientSocket");
 						return;
 					}
@@ -1142,7 +1142,7 @@ class GeCoS_IO_V2 extends IPSModule
 						$errorcode = socket_last_error();
 						$errormsg = socket_strerror($errorcode);
 						//IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg);
-						//$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg, 0);
+						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbaus ".$errorcode." ".$errormsg, 0);
 						IPS_SemaphoreLeave("ClientSocket");
 						return;
 					}
