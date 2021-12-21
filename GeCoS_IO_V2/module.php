@@ -1183,7 +1183,7 @@ class GeCoS_IO_V2 extends IPSModule
 					IPS_SemaphoreLeave("ClientSocket");
 					return;
 				}
-				$this->SendDebug("CommandClientSocket", "Rueckantwort erhalten", 0);
+				//$this->SendDebug("CommandClientSocket", "Rueckantwort erhalten", 0);
 				
 				// Anfragen mit variabler Rückgabelänge
 				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
@@ -1201,7 +1201,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$DataArray = str_split($buf, 16);
 					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
 					for ($i = 0; $i < Count($DataArray); $i++) {
-						$this->SendDebug("CommandClientSocket", "Empfangene Datenpakete: ".$DataArray[$i], 0);
+						//$this->SendDebug("CommandClientSocket", "Empfangene Datenpakete: ".$DataArray[$i], 0);
 						$Result = $this->ClientResponse($DataArray[$i]);
 					}
 				}
