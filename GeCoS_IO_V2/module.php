@@ -1122,7 +1122,7 @@ class GeCoS_IO_V2 extends IPSModule
 	{
 		$Result = -999;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			if (IPS_SemaphoreEnter("ClientSocket", 2000))
+			if (IPS_SemaphoreEnter("ClientSocket", 3000))
 				{
 				if (!$this->Socket)
 				{
