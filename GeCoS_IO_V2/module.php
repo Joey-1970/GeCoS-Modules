@@ -1122,7 +1122,7 @@ class GeCoS_IO_V2 extends IPSModule
 	{
 		$Result = -999;
 		If (($this->ReadPropertyBoolean("Open") == true) AND ($this->GetParentStatus() == 102)) {
-			if (IPS_SemaphoreEnter("ClientSocket", 300))
+			if (IPS_SemaphoreEnter("ClientSocket", 2000))
 				{
 				if (!$this->Socket)
 				{
@@ -1135,7 +1135,7 @@ class GeCoS_IO_V2 extends IPSModule
 						IPS_SemaphoreLeave("ClientSocket");
 						return;
 					}
-					$this->SendDebug("CommandClientSocket", "Kein Fehler beim Erstellen des Sockets", 0);
+					//$this->SendDebug("CommandClientSocket", "Kein Fehler beim Erstellen des Sockets", 0);
 					// Timeout setzen
 					socket_set_option($this->Socket, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>2, "usec"=>0));
 					// Verbindung aufbauen
@@ -1147,7 +1147,7 @@ class GeCoS_IO_V2 extends IPSModule
 						IPS_SemaphoreLeave("ClientSocket");
 						return;
 					}
-					$this->SendDebug("CommandClientSocket", "Kein Fehler beim Verbinden des Sockets", 0);
+					//$this->SendDebug("CommandClientSocket", "Kein Fehler beim Verbinden des Sockets", 0);
 					if (!$this->Socket) {
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
@@ -1159,7 +1159,7 @@ class GeCoS_IO_V2 extends IPSModule
 						IPS_SemaphoreLeave("ClientSocket");
 						return $Result;
 					}
-					$this->SendDebug("CommandClientSocket", "Testpaket erfolgreich versendet", 0);
+					//$this->SendDebug("CommandClientSocket", "Testpaket erfolgreich versendet", 0);
 				}
 				// Message senden
 				if(!socket_send ($this->Socket, $message, strlen($message), 0))
@@ -1171,7 +1171,7 @@ class GeCoS_IO_V2 extends IPSModule
 					IPS_SemaphoreLeave("ClientSocket");
 					return;
 				}
-				$this->SendDebug("CommandClientSocket", "Kein Fehler beim Versenden der Message", 0);
+				//$this->SendDebug("CommandClientSocket", "Kein Fehler beim Versenden der Message", 0);
 				//Now receive reply from server
 				if(socket_recv ($this->Socket, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
 					$errorcode = socket_last_error();
