@@ -1135,6 +1135,7 @@ class GeCoS_IO_V2 extends IPSModule
 						IPS_SemaphoreLeave("ClientSocket");
 						return;
 					}
+					$this->SendDebug("CommandClientSocket", "Kein Fehler beim Erstellen des Sockets", 0);
 					// Timeout setzen
 					socket_set_option($this->Socket, SOL_SOCKET, SO_RCVTIMEO, array("sec"=>2, "usec"=>0));
 					// Verbindung aufbauen
@@ -1146,6 +1147,7 @@ class GeCoS_IO_V2 extends IPSModule
 						IPS_SemaphoreLeave("ClientSocket");
 						return;
 					}
+					$this->SendDebug("CommandClientSocket", "Kein Fehler beim Verbinden des Sockets", 0);
 					if (!$this->Socket) {
 						IPS_LogMessage("GeCoS_IO Socket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr);
 						$this->SendDebug("CommandClientSocket", "Fehler beim Verbindungsaufbau ".$errno." ".$errstr, 0);
@@ -1157,6 +1159,7 @@ class GeCoS_IO_V2 extends IPSModule
 						IPS_SemaphoreLeave("ClientSocket");
 						return $Result;
 					}
+					$this->SendDebug("CommandClientSocket", "Testpaket erfolgreich versendet", 0);
 				}
 				// Message senden
 				if(!socket_send ($this->Socket, $message, strlen($message), 0))
@@ -1168,6 +1171,7 @@ class GeCoS_IO_V2 extends IPSModule
 					IPS_SemaphoreLeave("ClientSocket");
 					return;
 				}
+				$this->SendDebug("CommandClientSocket", "Kein Fehler beim Versenden der Message", 0);
 				//Now receive reply from server
 				if(socket_recv ($this->Socket, $buf, $ResponseLen, MSG_WAITALL ) === FALSE) {
 					$errorcode = socket_last_error();
@@ -1179,11 +1183,15 @@ class GeCoS_IO_V2 extends IPSModule
 					IPS_SemaphoreLeave("ClientSocket");
 					return;
 				}
+				$this->SendDebug("CommandClientSocket", "Rueckantwort erhalten", 0);
+				
 				// Anfragen mit variabler Rückgabelänge
 				$CmdVarLen = array(56, 67, 70, 73, 75, 80, 88, 91, 92, 106, 109);
 				$MessageArray = unpack("L*", $buf);
 				$Command = $MessageArray[1];
-				//$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
+				
+				$this->SendDebug("CommandClientSocket", "Angeforderte Datenlaenge: ".$ResponseLen." Laenge der empfangenen Daten ".strlen($buf), 0);
+				
 				If (in_array($Command, $CmdVarLen)) {
 					$Result = $this->ClientResponse($buf);
 					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
@@ -1193,6 +1201,7 @@ class GeCoS_IO_V2 extends IPSModule
 					$DataArray = str_split($buf, 16);
 					//IPS_LogMessage("IPS2GPIO ReceiveData", strlen($buf)." Zeichen");
 					for ($i = 0; $i < Count($DataArray); $i++) {
+						$this->SendDebug("CommandClientSocket", "Empfangene Datenpakete: ".$DataArray[$i], 0);
 						$Result = $this->ClientResponse($DataArray[$i]);
 					}
 				}
