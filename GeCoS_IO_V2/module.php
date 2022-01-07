@@ -128,6 +128,7 @@ class GeCoS_IO_V2 extends IPSModule
 		$arrayElements[] = array("type" => "Button", "label" => "Herstellerinformationen", "onClick" => "echo 'https://www.gedad.de/projekte/projekte-f%C3%BCr-privat/gedad-control/'");
 		
 		$arrayActions = array();
+		
 		If ($this->ReadPropertyBoolean("Open") == true) {   
 			$arrayActions[] = array("type" => "Label", "label" => "Aktuell sind keine Testfunktionen definiert");
 		}
@@ -733,6 +734,20 @@ class GeCoS_IO_V2 extends IPSModule
 			$Result = serialize($ResultArray);
 		}
         return $Result;
+	}
+	
+	public function GetUpdate()
+	{
+		$this->SendDebug("GetUpdate", "Ausfuehrung", 0);
+		$Result = $this->SSH_Connect("wget -O /usr/local/bin/GeCoS-Server.py https://raw.githubusercontent.com/bgersmann/GeCoS-Server/master/GeCoS-Server.py");
+		$this->SendDebug("GetUpdate", "Ergebnis: ".$Result, 0);
+	}
+	
+	public function ServerRestart()
+	{
+		$this->SendDebug("ServerRestart", "Ausfuehrung", 0);
+		$Result = $this->SSH_Connect("sudo systemctl restart gecos.service");
+		$this->SendDebug("ServerRestart", "Ergebnis: ".$Result, 0);
 	}
 	
 	private function CheckConfig()
