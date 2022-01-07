@@ -316,6 +316,21 @@
 									    "StateRGB" => $StateRGB, "StateW" => $StateW, "IntensityR" => $IntensityR, "IntensityG" => $IntensityG, "IntensityB" => $IntensityB, "IntensityW" => $IntensityW )));
 		}
 	}
+	    
+	public function SetOutputPinStateRGBW(Int $Group, Bool $StateRGBW)
+	{ 
+		$this->SendDebug("SetOutputPinStateRGB", "Ausfuehrung", 0);
+		$Group = min(4, max(1, $Group));
+		$StateRGB = min(1, max(0, $StateRGB));
+		//$StateW = GetValueBoolean($this->GetIDForIdent("Status_W_".$Group));
+		//$StatusRGB = GetValueBoolean($this->GetIDForIdent("Status_RGB_".$Group));
+		$IntensityR = GetValueInteger($this->GetIDForIdent("Intensity_R_".$Group));
+		$IntensityG = GetValueInteger($this->GetIDForIdent("Intensity_G_".$Group));
+		$IntensityB = GetValueInteger($this->GetIDForIdent("Intensity_B_".$Group));
+		$IntensityW = GetValueInteger($this->GetIDForIdent("Intensity_W_".$Group));	
+		
+		$this->SetOutput($Group, $StateRGBW, $StateRGBW, $IntensityR, $IntensityG, $IntensityB, $IntensityW); 
+	}    	
 			
 	public function SetOutputPinStateRGB(Int $Group, Bool $StateRGB)
 	{ 
