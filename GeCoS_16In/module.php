@@ -86,12 +86,16 @@
 				}
 			}
 			else {
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 				$this->SetTimerInterval("GetInput", 0);
 			}	
 		}
 		else {
-			$this->SetStatus(104);
+			If ($this->GetStatus() <> 104) {
+				$this->SetStatus(104);
+			}
 			$this->SetTimerInterval("GetInput", 0);
 		}	
 	}
