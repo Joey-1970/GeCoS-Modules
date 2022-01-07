@@ -67,6 +67,10 @@ if (!function_exists('crypt_random_string')) {
      */
     function crypt_random_string($length)
     {
+        if (!$length) {
+            return '';
+        }
+
         if (CRYPT_RANDOM_IS_WINDOWS) {
             // method 1. prior to PHP 5.3, mcrypt_create_iv() would call rand() on windows
             if (extension_loaded('mcrypt') && version_compare(PHP_VERSION, '5.3.0', '>=')) {
@@ -101,7 +105,10 @@ if (!function_exists('crypt_random_string')) {
                 $fp = @fopen('/dev/urandom', 'rb');
             }
             if ($fp !== true && $fp !== false) { // surprisingly faster than !is_bool() or is_resource()
-                return fread($fp, $length);
+                $temp = fread($fp, $length);
+                if (strlen($temp) == $length) {
+                    return $temp;
+                }
             }
             // method 3. pretty much does the same thing as method 2 per the following url:
             // https://github.com/php/php-src/blob/7014a0eb6d1611151a286c0ff4f2238f92c120d6/ext/mcrypt/mcrypt.c#L1391
