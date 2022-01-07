@@ -125,7 +125,9 @@
 						$this->SetStatus($data->Status);
 					}
 					else {
-						$this->SetStatus(104);
+						If ($this->GetStatus() <> 104) {
+							$this->SetStatus(104);
+						}
 					}	
 			   	}
 			   	break;	
@@ -140,10 +142,14 @@
 			$this->SendDebug("GetInput", "Ausfuehrung", 0);
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAI")));
 			If ($Result == true) {
-				$this->SetStatus(102);
+				If ($this->GetStatus() <> 102) {
+					$this->SetStatus(102);
+				}
 			}
 			else {
-				$this->SetStatus(202);
+				If ($this->GetStatus() <> 202) {
+					$this->SetStatus(202);
+				}
 			}
 		}
 	return $Result;
