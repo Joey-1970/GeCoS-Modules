@@ -98,11 +98,15 @@
 				$this->SetReceiveDataFilter($Filter);
 				$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "set_used_modules", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "InstanceID" => $this->InstanceID)));
 				If ($Result == true) {
-					$this->SetStatus(102);
+					If ($this->GetStatus() <> 102) {
+						$this->SetStatus(102);
+					}
 				}
 			}
 			else {
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 			}	
 		}
 	}
@@ -195,7 +199,9 @@
 						$this->SetStatus($data->Status);
 					}
 					else {
-						$this->SetStatus(104);
+						If ($this->GetStatus() <> 104) {
+							$this->SetStatus(104);
+						}
 					}	
 			   	}
 			   	break;
@@ -438,10 +444,14 @@
 		If ($this->ReadPropertyBoolean("Open") == true) {
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SRGBW")));
 			If ($Result == true) {
-				$this->SetStatus(102);
+				If ($this->GetStatus() <> 102) {
+					$this->SetStatus(102);
+				}
 			}
 			else {
-				$this->SetStatus(202);
+				If ($this->GetStatus() <> 200) {
+					$this->SetStatus(200);
+				}
 			}
 		}
 	}
