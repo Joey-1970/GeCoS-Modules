@@ -66,10 +66,14 @@
 		
 		If (IPS_GetKernelRunlevel() == 10103) {	
 			If ($this->HasActiveParent() == true) {
-				$this->SetStatus(102);
+				If ($this->GetStatus() <> 102) {
+					$this->SetStatus(102);
+				}
 			}
 			else {
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 			}
 		}
 	}
@@ -82,7 +86,9 @@
 		$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "OWS")));	
 		$OWArray = unserialize($Result);
 		If (is_array($OWArray)) {
-			$this->SetStatus(102);
+			If ($this->GetStatus() <> 102) {
+				$this->SetStatus(102);
+			}
 			$this->SendDebug("GetOWData", $Result, 0);
 			$Devices = array();
 			$i = 0;
