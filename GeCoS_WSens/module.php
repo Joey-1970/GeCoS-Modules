@@ -152,11 +152,15 @@
 			}
 			$this->SetTimerInterval("Timer_1", ($Timer_1 * 1000));
 			$this->RequestData();
-			$this->SetStatus(102);
+			If ($this->GetStatus() <> 102) {
+				$this->SetStatus(102);
+			}
 		}
 		else {
 			$this->SetTimerInterval("Timer_1", 0);
-			$this->SetStatus(104);
+			If ($this->GetStatus() <> 104) {
+				$this->SetStatus(104);
+			}
 		}	
 	}
 	
@@ -169,11 +173,15 @@
 			$contents = @file_get_contents('http://'.$IP.'/json');
 			If ($contents === false) {
 				$this->SendDebug("RequestData", "Fehler bei der Datenermittlung!", 0);		
-				$this->SetStatus(202);
+				If ($this->GetStatus() <> 202) {
+					$this->SetStatus(202);
+				}
 				return false;
 			}
 			
-			$this->SetStatus(102);
+			If ($this->GetStatus() <> 102) {
+				$this->SetStatus(102);
+			}
 			$contents = utf8_encode($contents); 
 			$data = json_decode($contents);
 			$Temp = floatval($data->Temperatur);
