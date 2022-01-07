@@ -201,14 +201,18 @@ class GeCoS_IO_V2 extends IPSModule
 				//$Result = $this->ClientSocket("{MOD}");
 				//$Result = $this->ClientSocket("{OWS}");
 				
-				$this->SetStatus(102);
+				If ($this->GetStatus() <> 102) {
+					$this->SetStatus(102);
+				}
 				$this->SetTimerInterval("RTC_Data", 15 * 1000);
 				$this->SetTimerInterval("GetSystemStatus", 30 * 1000);
 			}
 			else {
 				$this->SetTimerInterval("RTC_Data", 0);
 				$this->SetTimerInterval("GetSystemStatus", 0);
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 			}
 		}
 		else {
@@ -872,14 +876,18 @@ class GeCoS_IO_V2 extends IPSModule
 					if (!$status) {
 						IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geschlossen!");
 						$this->SendDebug("Netzanbindung", "Port ist geschlossen!", 0);
-						$this->SetStatus(201);
+						If ($this->GetStatus() <> 201) {
+							$this->SetStatus(201);
+						}
 					}
 					else {
 						fclose($status);
 						//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
 						$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 						$result = true;
-						$this->SetStatus(102);
+						If ($this->GetStatus() <> 102) {
+							$this->SetStatus(102);
+						}
 					}
 	   			}
 	   			else {
@@ -887,14 +895,18 @@ class GeCoS_IO_V2 extends IPSModule
 					//IPS_LogMessage("GeCoS_IO Netzanbindung","Port ist geöffnet");
 					$this->SendDebug("Netzanbindung", "Port ist geoeffnet", 0);
 					$result = true;
-					$this->SetStatus(102);
+					If ($this->GetStatus() <> 102) {
+						$this->SetStatus(102);
+					}
 	   			}
 		}
 		else {
 			SetValueBoolean($this->GetIDForIdent("ServerStatus"), false);
 			IPS_LogMessage("GeCoS_IO Netzanbindung","IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!");
 			$this->SendDebug("Netzanbindung", "IP ".$this->ReadPropertyString("IPAddress")." reagiert nicht!", 0);
-			$this->SetStatus(201);
+			If ($this->GetStatus() <> 201) {
+				$this->SetStatus(201);
+			}
 		}
 	return $result;
 	}
