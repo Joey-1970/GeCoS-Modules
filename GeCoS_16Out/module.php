@@ -90,11 +90,15 @@
 				}
 			}
 			else {
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 			}	
 		}
 		else {
-			$this->SetStatus(104);
+			If ($this->GetStatus() <> 104) {
+				$this->SetStatus(104);
+			}
 		}
 	}
 	
@@ -144,7 +148,9 @@
 						$this->SetStatus($data->Status);
 					}
 					else {
-						$this->SetStatus(104);
+						If ($this->GetStatus() <> 104) {
+							$this->SetStatus(104);
+						}
 					}	
 			   	}
 			   	break;
@@ -181,10 +187,14 @@
 				If ($Result == true) {
 					SetValueBoolean($this->GetIDForIdent("Output_X".$Output), $Value);
 					$this->SetBuffer("OutputBank", $Bitmask);
-					$this->SetStatus(102);
+					If ($this->GetStatus() <> 102) {
+						$this->SetStatus(102);
+					}
 				}
 				else {
-					$this->SetStatus(202);
+					If ($this->GetStatus() <> 202) {
+						$this->SetStatus(202);
+					}
 				}
 				IPS_SemaphoreLeave("SetOutputPin");
 			}
@@ -202,10 +212,14 @@
 			$this->SendDebug("GetOutput", "Ausfuehrung", 0);
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SAO")));
 			If ($Result == true) {
-				$this->SetStatus(102);
+				If ($this->GetStatus() <> 102) {
+					$this->SetStatus(102);
+				}
 			}
 			else {
-				$this->SetStatus(202);
+				If ($this->GetStatus() <> 202) {
+					$this->SetStatus(202);
+				}
 			}
 		}
 	return $Result;
@@ -236,7 +250,9 @@
 			$Result = $this->SendDataToParent(json_encode(Array("DataID"=> "{47113C57-29FE-4A60-9D0E-840022883B89}", "Function" => "SOM", "DeviceAddress" => $this->ReadPropertyInteger("DeviceAddress"), "DeviceBus" => $this->ReadPropertyInteger("DeviceBus"), "Value" => $Value )));
 			
 			If ($Result == true) {
-				$this->SetStatus(102);
+				If ($this->GetStatus() <> 102) {
+					$this->SetStatus(102);
+				}
 				for ($i = 0; $i <= 15; $i++) {
 					$Bitvalue = boolval($Value & pow(2, $i));					
 					If (GetValueBoolean($this->GetIDForIdent("Output_X".$i)) <> $Bitvalue) {
@@ -246,7 +262,9 @@
 				$this->GetOutput();
 			}
 			else {
-				$this->SetStatus(202);
+				If ($this->GetStatus() <> 202) {
+					$this->SetStatus(202);
+				}
 			}
 		}
 	return $Result;
