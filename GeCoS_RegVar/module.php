@@ -43,7 +43,9 @@
 			$Filter = '((.*"Function":"set_serial_data".*|.*"InstanceID":'.$this->InstanceID.'.*)|(.*"Function":"status".*))';
 			$this->SetReceiveDataFilter($Filter);
 			
-			$this->SetStatus(102);
+			If ($this->GetStatus() <> 102) {
+				$this->SetStatus(102);
+			}
 		}
 	}
 	
