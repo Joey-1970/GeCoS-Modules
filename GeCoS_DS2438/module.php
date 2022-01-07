@@ -110,13 +110,17 @@
 					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
 					//$this->Setup();
 					$this->Measurement();
-					$this->SetStatus(102);
+					If ($this->GetStatus() <> 102) {
+						$this->SetStatus(102);
+					}
 					$this->SendDebug("ApplyChanges", $this->ReadPropertyString("DeviceAddress")." ".$this->ReadPropertyInteger("DeviceAddress_0")." ".$this->ReadPropertyInteger("DeviceAddress_1"), 0);
 				}
 			}
 			else {
 				$this->SetTimerInterval("Messzyklus", 0);
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 			}	
 		}
 		else {
@@ -136,7 +140,9 @@
 						$this->SetStatus($data->Status);
 					}
 					else {
-						$this->SetStatus(104);
+						If ($this->GetStatus() <> 104) {
+							$this->SetStatus(104);
+						}
 					}	
 			   	}
 			   	break;
