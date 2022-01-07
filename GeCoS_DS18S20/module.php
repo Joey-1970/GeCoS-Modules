@@ -63,12 +63,16 @@
 				If ($Result == true) {
 					$this->SetTimerInterval("Messzyklus", ($this->ReadPropertyInteger("Messzyklus") * 1000));
 					$this->Measurement();
-					$this->SetStatus(102);
+					If ($this->GetStatus() <> 102) {
+						$this->SetStatus(102);
+					}
 				}
 			}
 			else {
 				$this->SetTimerInterval("Messzyklus", 0);
-				$this->SetStatus(104);
+				If ($this->GetStatus() <> 104) {
+					$this->SetStatus(104);
+				}
 			}	
 		}
 		else {
@@ -87,7 +91,9 @@
 						$this->SetStatus($data->Status);
 					}
 					else {
-						$this->SetStatus(104);
+						If ($this->GetStatus() <> 104) {
+							$this->SetStatus(104);
+						}
 					}	
 			   	}
 			   	break;
@@ -97,7 +103,9 @@
 			case "OWV":
 			   	If ($data->DeviceAddress == $this->ReadPropertyString("DeviceAddress")) {
 					$this->SetValue("Temperature", floatval($data->Value) + floatval($this->ReadPropertyFloat("Offset")));
-			   		$this->SetStatus(102);
+			   		If ($this->GetStatus() <> 102) {
+						$this->SetStatus(102);
+					}
 				}
 			   	break;	
 	 	}
