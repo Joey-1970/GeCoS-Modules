@@ -44,9 +44,9 @@ class GeCoS_IO_V2 extends IPSModule
 		IPS_SetVariableProfileAssociation("IPS2CeCoSIO.ActiveInactive", 1, "Aktiv", 0x00FF00, -1);
 		
 		// Statusvariablen anlegen
-		$this->RegisterVariableInteger("Boardversion", "GeCoS-Server", "IPS2CeCoSIO.Boardversion", 25);
+		//$this->RegisterVariableInteger("Boardversion", "GeCoS-Server", "IPS2CeCoSIO.Boardversion", 25);
 			
-		$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
+		//$this->RegisterVariableInteger("SoftwareVersion", "SoftwareVersion", "", 30);
 			
 		$this->RegisterVariableFloat("RTC_Temperature", "RTC Temperatur", "~Temperature", 40);
 			
