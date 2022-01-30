@@ -142,7 +142,7 @@
 					$Channel = intval($data->Channel); 
 					$Resolution = intval($data->Resolution); 
 					$Amplifier = intval($data->Amplifier);
-					$Value = intval($data->Value); 
+					$Value = floatval($data->Value); 
 					$this->SendDebug("ReceiveData", "SAM Channel: ".$Channel." Resolution: ".$Resolution." Amplifier: ".$Amplifier." Value: ".$Value, 0);
 					If (GetValueFloat($this->GetIDForIdent("Input_X".$Channel)) <> $Value) {
 						SetValueFloat($this->GetIDForIdent("Input_X".$Channel), $Value);
