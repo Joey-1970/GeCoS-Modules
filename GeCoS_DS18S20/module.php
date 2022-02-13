@@ -102,10 +102,19 @@
 				break;
 			case "OWV":
 			   	If ($data->DeviceAddress == $this->ReadPropertyString("DeviceAddress")) {
-					$this->SetValue("Temperature", floatval($data->Value) + floatval($this->ReadPropertyFloat("Offset")));
-			   		If ($this->GetStatus() <> 102) {
-						$this->SetStatus(102);
+					If (floatval($data->Value) <> -85) {
+						$this->SetValue("Temperature", floatval($data->Value) + floatval($this->ReadPropertyFloat("Offset")));
+						If ($this->GetStatus() <> 102) {
+							$this->SetStatus(102);
+						}
 					}
+					else {
+						$this->SendDebug("ReceiveData", "Device liefert Fehlerwert -85", 0);
+						If ($this->GetStatus() <> 202) {
+							$this->SetStatus(202);
+						}
+					}
+					
 				}
 			   	break;	
 	 	}
