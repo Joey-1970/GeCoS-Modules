@@ -27,6 +27,7 @@
 		$arrayStatus[] = array("code" => 104, "icon" => "inactive", "caption" => "Instanz ist inaktiv");
 		$arrayStatus[] = array("code" => 200, "icon" => "error", "caption" => "Instanz ist fehlerhaft");
 		$arrayStatus[] = array("code" => 201, "icon" => "error", "caption" => "Device konnte nicht gefunden werden");
+		$arrayStatus[] = array("code" => 202, "icon" => "error", "caption" => "Device liefert Fehlerwert -85");
 		
 		$arrayElements = array(); 
 		$arrayElements[] = array("name" => "Open", "type" => "CheckBox",  "caption" => "Aktiv"); 
@@ -110,10 +111,19 @@
 				break;
 			case "OWV":
 			   	If ($data->DeviceAddress == $this->ReadPropertyString("DeviceAddress")) {
-					$this->SetValue("Temperature", floatval($data->Value) + floatval($this->ReadPropertyFloat("Offset")));
-			   		If ($this->GetStatus() <> 102) {
-						$this->SetStatus(102);
+					If (floatval($data->Value) <> -85) {
+						$this->SetValue("Temperature", floatval($data->Value) + floatval($this->ReadPropertyFloat("Offset")));
+						If ($this->GetStatus() <> 102) {
+							$this->SetStatus(102);
+						}
 					}
+					else {
+						$this->SendDebug("ReceiveData", "Device liefert Fehlerwert -85", 0);
+						If ($this->GetStatus() <> 202) {
+							$this->SetStatus(202);
+						}
+					}
+					
 				}
 			   	break;	
 	 	}
